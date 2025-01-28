@@ -1,0 +1,93 @@
+:root {
+  --core-elevation-shadow-230: 0px 1px 4px 0px rgba(0, 0, 0, 0.04), 0px 1px 4px
+    0px rgba(0, 0, 0, 0.08);
+  --corecoloropacityblack-100: rgba(0, 0, 0, 0.08);
+  --corecoloropacityblack-400: rgba(0, 0, 0, 0.48);
+  --corecoloropacityblack-600: rgba(0, 0, 0, 0.72);
+  --corecoloropacityblack-75: rgba(0, 0, 0, 0.04);
+  --corecolorsolidseawater-700: rgba(10, 160, 176, 1);
+  --corecolorsolidslate-50: rgba(255, 255, 255, 1);
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-font-size: 12px;
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-font-style: normal;
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-font-weight: 400;
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-labelpaired-bold-caption-line-height: 18px;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-font-size: 16px;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-font-style: normal;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-font-weight: 400;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-labelpaired-bold-md-line-height: 24px;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-font-size: 12px;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-font-style: normal;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-font-weight: 300;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-labelpaired-regular-caption-line-height: 18px;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-font-size: 14px;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-font-style: normal;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-font-weight: 300;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-labelpaired-regular-sm-line-height: 22px;
+  --desktop-semantic-typography-icon-standalone-bold-sm-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-standalone-bold-sm-font-size: 16px;
+  --desktop-semantic-typography-icon-standalone-bold-sm-font-style: normal;
+  --desktop-semantic-typography-icon-standalone-bold-sm-font-weight: 400;
+  --desktop-semantic-typography-icon-standalone-bold-sm-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-standalone-bold-sm-line-height: 24px;
+  --desktop-semantic-typography-icon-standalone-regular-md-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-standalone-regular-md-font-size: 20px;
+  --desktop-semantic-typography-icon-standalone-regular-md-font-style: normal;
+  --desktop-semantic-typography-icon-standalone-regular-md-font-weight: 300;
+  --desktop-semantic-typography-icon-standalone-regular-md-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-standalone-regular-md-line-height: 32px;
+  --desktop-semantic-typography-icon-standalone-regular-sm-font-family: "Font Awesome 6 Pro",
+    Helvetica;
+  --desktop-semantic-typography-icon-standalone-regular-sm-font-size: 16px;
+  --desktop-semantic-typography-icon-standalone-regular-sm-font-style: normal;
+  --desktop-semantic-typography-icon-standalone-regular-sm-font-weight: 300;
+  --desktop-semantic-typography-icon-standalone-regular-sm-letter-spacing: 0px;
+  --desktop-semantic-typography-icon-standalone-regular-sm-line-height: 24px;
+  --mobile-semantic-typography-body-md-bold-default-font-family: "IBM Plex Sans",
+    Helvetica;
+  --mobile-semantic-typography-body-md-bold-default-font-size: 16px;
+  --mobile-semantic-typography-body-md-bold-default-font-style: normal;
+  --mobile-semantic-typography-body-md-bold-default-font-weight: 700;
+  --mobile-semantic-typography-body-md-bold-default-letter-spacing: 0px;
+  --mobile-semantic-typography-body-md-bold-default-line-height: 24px;
+  --mobile-semantic-typography-body-sm-bold-default-font-family: "IBM Plex Sans",
+    Helvetica;
+  --mobile-semantic-typography-body-sm-bold-default-font-size: 14px;
+  --mobile-semantic-typography-body-sm-bold-default-font-style: normal;
+  --mobile-semantic-typography-body-sm-bold-default-font-weight: 700;
+  --mobile-semantic-typography-body-sm-bold-default-letter-spacing: 0px;
+  --mobile-semantic-typography-body-sm-bold-default-line-height: 22px;
+  --mobile-semantic-typography-body-sm-regular-default-font-family: "IBM Plex Sans",
+    Helvetica;
+  --mobile-semantic-typography-body-sm-regular-default-font-size: 14px;
+  --mobile-semantic-typography-body-sm-regular-default-font-style: normal;
+  --mobile-semantic-typography-body-sm-regular-default-font-weight: 400;
+  --mobile-semantic-typography-body-sm-regular-default-letter-spacing: 0px;
+  --mobile-semantic-typography-body-sm-regular-default-line-height: 22px;
+  --mobile-semantic-typography-caption-regular-default-font-family: "IBM Plex Sans",
+    Helvetica;
+  --mobile-semantic-typography-caption-regular-default-font-size: 12px;
+  --mobile-semantic-typography-caption-regular-default-font-style: normal;
+  --mobile-semantic-typography-caption-regular-default-font-weight: 400;
+  --mobile-semantic-typography-caption-regular-default-letter-spacing: 0px;
+  --mobile-semantic-typography-caption-regular-default-line-height: 18px;
+  --mobile-semantic-typography-heading-h5-font-family: "Ubuntu", Helvetica;
+  --mobile-semantic-typography-heading-h5-font-size: 16px;
+  --mobile-semantic-typography-heading-h5-font-style: normal;
+  --mobile-semantic-typography-heading-h5-font-weight: 700;
+  --mobile-semantic-typography-heading-h5-letter-spacing: 0px;
+  --mobile-semantic-typography-heading-h5-line-height: normal;
+}
