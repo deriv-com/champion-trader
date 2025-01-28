@@ -57,23 +57,47 @@ export interface MarketPrice {
 }
 
 // WebSocket Types
+export type WebSocketAction = 
+  | 'instrument_price'
+  | 'trade_status'
+  | 'account_info';
+
 export interface WebSocketMessage {
-  type: string;
+  action: WebSocketAction;
   data: any;
 }
 
-export interface WebSocketSubscription {
-  type: 'subscribe' | 'unsubscribe';
-  channel: string;
-  symbol?: string;
+export interface WebSocketRequest {
+  action: WebSocketAction;
+  data: {
+    symbol?: string;
+    duration?: number;
+    type?: 'RISE' | 'FALL';
+    [key: string]: any;
+  };
 }
 
-export interface WebSocketPrice extends MarketPrice {
-  channel: 'price';
+export interface WebSocketInstrumentPrice {
+  action: 'instrument_price';
+  data: {
+    symbol: string;
+    price: number;
+    timestamp: string;
+  };
 }
 
-export interface WebSocketTrade extends Trade {
-  channel: 'trade';
+export interface WebSocketTradeStatus {
+  action: 'trade_status';
+  data: Trade;
+}
+
+export interface WebSocketAccountInfo {
+  action: 'account_info';
+  data: {
+    balance: number;
+    currency: string;
+    [key: string]: any;
+  };
 }
 
 export type WebSocketEventMap = {

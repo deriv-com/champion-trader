@@ -1,30 +1,35 @@
 import { useEffect, useCallback, useState } from 'react';
-import { websocketService } from '@/services/api/websocket';
-import type { WebSocketMessage, WebSocketSubscription } from '@/services/api/types';
+import { WebSocketService } from '@/services/api/websocket';
+import type { WebSocketMessage, WebSocketRequest, WebSocketAction } from '@/services/api/types';
 
 interface UseWebSocketOptions {
+  service: WebSocketService;
   onMessage?: (message: WebSocketMessage) => void;
   onOpen?: () => void;
   onClose?: () => void;
   onError?: (error: Event) => void;
-  subscriptions?: WebSocketSubscription[];
+  initialAction?: WebSocketRequest;
   autoConnect?: boolean;
 }
 
 export const useWebSocket = ({
+  service,
   onMessage,
   onOpen,
   onClose,
   onError,
-  subscriptions = [],
+  initialAction,
   autoConnect = true,
-}: UseWebSocketOptions = {}) => {
+}: UseWebSocketOptions) => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handleOpen = useCallback(() => {
     setIsConnected(true);
+    if (initialAction) {
+      service.send(initialAction);
+    }
     onOpen?.();
-  }, [onOpen]);
+  }, [onOpen, service, initialAction]);
 
   const handleClose = useCallback(() => {
     setIsConnected(false);
@@ -54,52 +59,51 @@ export const useWebSocket = ({
   );
 
   const connect = useCallback(() => {
-    websocketService.connect();
-  }, []);
+    service.connect();
+  }, [service]);
 
   const disconnect = useCallback(() => {
-    websocketService.disconnect();
-  }, []);
+    service.disconnect();
+  }, [service]);
 
-  const send = useCallback((message: WebSocketMessage) => {
-    websocketService.send(message);
-  }, []);
+  const send = useCallback((request: WebSocketRequest) => {
+    service.send(request);
+  }, [service]);
 
-  // Set up event listeners and subscriptions
+  const stopAction = useCallback((action: WebSocketAction) => {
+    service.stopAction(action);
+  }, [service]);
+
+  // Set up event listeners and initial action
   useEffect(() => {
     if (autoConnect) {
       connect();
     }
 
     // Add event listeners
-    websocketService.on('open', handleOpen as any);
-    websocketService.on('close', handleClose as any);
-    websocketService.on('error', handleError as any);
-    websocketService.on('message', handleMessage as any);
-
-    // Set up subscriptions
-    subscriptions.forEach((subscription) => {
-      websocketService.subscribe(subscription);
-    });
+    service.on('open', handleOpen as any);
+    service.on('close', handleClose as any);
+    service.on('error', handleError as any);
+    service.on('message', handleMessage as any);
 
     // Cleanup
     return () => {
       // Remove event listeners
-      websocketService.off('open', handleOpen as any);
-      websocketService.off('close', handleClose as any);
-      websocketService.off('error', handleError as any);
-      websocketService.off('message', handleMessage as any);
+      service.off('open', handleOpen as any);
+      service.off('close', handleClose as any);
+      service.off('error', handleError as any);
+      service.off('message', handleMessage as any);
 
-      // Unsubscribe
-      subscriptions.forEach((subscription) => {
-        websocketService.unsubscribe(subscription);
-      });
+      if (initialAction) {
+        service.stopAction(initialAction.action);
+      }
 
       if (autoConnect) {
         disconnect();
       }
     };
   }, [
+    service,
     autoConnect,
     connect,
     disconnect,
@@ -107,7 +111,7 @@ export const useWebSocket = ({
     handleError,
     handleMessage,
     handleOpen,
-    subscriptions,
+    initialAction,
   ]);
 
   return {
@@ -115,5 +119,6 @@ export const useWebSocket = ({
     connect,
     disconnect,
     send,
+    stopAction,
   };
 };

@@ -1,98 +1,19 @@
-import {
-  WebSocketEventHandler,
-  WebSocketEventMap,
-  WebSocketMessage,
-  WebSocketSubscription,
-} from './types';
+import { WebSocketMessage, WebSocketRequest, WebSocketEventHandler, WebSocketEventMap, WebSocketAction } from './types';
 
 export class WebSocketService {
-  private static instance: WebSocketService;
   private ws: WebSocket | null = null;
   private readonly url: string;
-  private reconnectAttempts = 0;
-  private readonly maxReconnectAttempts = 5;
-  private reconnectDelay = 1000; // 1 second
-  private eventHandlers: Map<keyof WebSocketEventMap, Set<WebSocketEventHandler>>;
-  private subscriptions: Set<string> = new Set();
+  private readonly id: string;
+  private eventHandlers: Map<keyof WebSocketEventMap, Set<WebSocketEventHandler>> = new Map();
+  private activeActions: Set<WebSocketAction> = new Set();
 
-  private constructor(url?: string) {
+  constructor(id: string, url?: string) {
+    this.id = id;
     this.url = url || `${process.env.VITE_WS_URL || 'ws://localhost:3000'}/ws`;
-    this.eventHandlers = new Map();
-    Object.keys(this.getDefaultHandlers()).forEach((event) => {
+    
+    // Initialize event handler sets
+    ['open', 'close', 'error', 'message'].forEach(event => {
       this.eventHandlers.set(event as keyof WebSocketEventMap, new Set());
-    });
-  }
-
-  public static getInstance(url?: string): WebSocketService {
-    if (!WebSocketService.instance) {
-      WebSocketService.instance = new WebSocketService(url);
-    }
-    return WebSocketService.instance;
-  }
-
-  private getDefaultHandlers(): Record<keyof WebSocketEventMap, WebSocketEventHandler> {
-    return {
-      open: () => {
-        console.log('WebSocket connected');
-        this.reconnectAttempts = 0;
-        this.resubscribe();
-      },
-      close: (event: Event | CloseEvent | MessageEvent) => {
-        if (event instanceof CloseEvent) {
-          console.log('WebSocket disconnected:', event.reason);
-        }
-        this.handleReconnect();
-      },
-      error: (event: Event | CloseEvent | MessageEvent) => {
-        console.error('WebSocket error:', event);
-      },
-      message: (event: Event | CloseEvent | MessageEvent) => {
-        if (event instanceof MessageEvent) {
-          try {
-            const message: WebSocketMessage = JSON.parse(event.data);
-            this.handleMessage(message);
-          } catch (error) {
-            console.error('Error parsing WebSocket message:', error);
-          }
-        }
-      },
-    };
-  }
-
-  private handleMessage(message: WebSocketMessage): void {
-    // Dispatch message to all registered handlers
-    const handlers = this.eventHandlers.get('message');
-    if (handlers) {
-      handlers.forEach((handler) => {
-        try {
-          handler(new MessageEvent('message', { data: JSON.stringify(message) }));
-        } catch (error) {
-          console.error('Error in message handler:', error);
-        }
-      });
-    }
-  }
-
-  private async handleReconnect(): Promise<void> {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      this.reconnectAttempts++;
-      console.log(`Reconnecting... Attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
-      await new Promise((resolve) => setTimeout(resolve, this.reconnectDelay));
-      this.connect();
-    } else {
-      console.error('Max reconnection attempts reached');
-    }
-  }
-
-  private resubscribe(): void {
-    // Resubscribe to all active subscriptions after reconnect
-    this.subscriptions.forEach((subscriptionKey) => {
-      const [channel, symbol] = subscriptionKey.split(':');
-      this.send({
-        type: 'subscribe',
-        channel,
-        symbol: symbol || undefined,
-      });
     });
   }
 
@@ -104,16 +25,32 @@ export class WebSocketService {
     this.ws = new WebSocket(this.url);
 
     // Attach default handlers
-    const defaultHandlers = this.getDefaultHandlers();
-    Object.entries(defaultHandlers).forEach(([event, handler]) => {
-      this.ws?.addEventListener(event, handler as EventListener);
+    this.ws.addEventListener('open', (event) => {
+      console.log(`WebSocket [${this.id}] connected`);
+      this.eventHandlers.get('open')?.forEach(handler => handler(event));
     });
 
-    // Attach custom handlers
-    this.eventHandlers.forEach((handlers, event) => {
-      handlers.forEach((handler) => {
-        this.ws?.addEventListener(event, handler as EventListener);
-      });
+    this.ws.addEventListener('close', (event) => {
+      console.log(`WebSocket [${this.id}] disconnected`);
+      this.eventHandlers.get('close')?.forEach(handler => handler(event));
+    });
+
+    this.ws.addEventListener('error', (event) => {
+      console.error(`WebSocket [${this.id}] error:`, event);
+      this.eventHandlers.get('error')?.forEach(handler => handler(event));
+    });
+
+    this.ws.addEventListener('message', (event) => {
+      try {
+        const message: WebSocketMessage = JSON.parse(event.data);
+        // Create a new MessageEvent with the parsed data to match the hook's expectations
+        const messageEvent = new MessageEvent('message', {
+          data: JSON.stringify(message) // Keep as string to match hook's parsing expectation
+        });
+        this.eventHandlers.get('message')?.forEach(handler => handler(messageEvent));
+      } catch (error) {
+        console.error(`WebSocket [${this.id}] error parsing message:`, error);
+      }
     });
   }
 
@@ -121,69 +58,43 @@ export class WebSocketService {
     if (this.ws) {
       this.ws.close();
       this.ws = null;
+      this.activeActions.clear();
     }
   }
 
-  public subscribe(subscription: WebSocketSubscription): void {
-    const subscriptionKey = subscription.symbol
-      ? `${subscription.channel}:${subscription.symbol}`
-      : subscription.channel;
-
-    if (!this.subscriptions.has(subscriptionKey)) {
-      this.subscriptions.add(subscriptionKey);
-      const message: WebSocketSubscription = {
-        type: 'subscribe',
-        channel: subscription.channel,
-        symbol: subscription.symbol,
-      };
-      this.send(message);
-    }
-  }
-
-  public unsubscribe(subscription: WebSocketSubscription): void {
-    const subscriptionKey = subscription.symbol
-      ? `${subscription.channel}:${subscription.symbol}`
-      : subscription.channel;
-
-    if (this.subscriptions.has(subscriptionKey)) {
-      this.subscriptions.delete(subscriptionKey);
-      const message: WebSocketSubscription = {
-        type: 'unsubscribe',
-        channel: subscription.channel,
-        symbol: subscription.symbol,
-      };
-      this.send(message);
-    }
-  }
-
-  public send(message: WebSocketMessage | WebSocketSubscription): void {
+  public send(request: WebSocketRequest): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      this.activeActions.add(request.action);
+      this.ws.send(JSON.stringify(request));
     } else {
-      console.error('WebSocket is not connected');
+      console.error(`WebSocket [${this.id}] is not connected`);
     }
   }
 
   public on(event: keyof WebSocketEventMap, handler: WebSocketEventHandler): void {
-    const handlers = this.eventHandlers.get(event);
-    if (handlers) {
-      handlers.add(handler);
-      this.ws?.addEventListener(event, handler as EventListener);
-    }
+    this.eventHandlers.get(event)?.add(handler);
   }
 
   public off(event: keyof WebSocketEventMap, handler: WebSocketEventHandler): void {
-    const handlers = this.eventHandlers.get(event);
-    if (handlers) {
-      handlers.delete(handler);
-      this.ws?.removeEventListener(event, handler as EventListener);
-    }
+    this.eventHandlers.get(event)?.delete(handler);
+  }
+
+  public stopAction(action: WebSocketAction): void {
+    this.activeActions.delete(action);
   }
 
   // For testing purposes only
-  public setReconnectDelay(delay: number): void {
-    this.reconnectDelay = delay;
+  public setReconnectDelay(): void {
+    // No-op for now, can be implemented later if needed
   }
 }
 
-export const websocketService = WebSocketService.getInstance();
+// Create instances for different streams
+export const createWebSocketService = (id: string, url?: string) => {
+  return new WebSocketService(id, url);
+};
+
+// Create instances for different types of data
+export const marketWebSocket = createWebSocketService('market');
+export const tradeWebSocket = createWebSocketService('trade');
+export const accountWebSocket = createWebSocketService('account');

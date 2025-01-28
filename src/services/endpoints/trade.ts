@@ -1,4 +1,4 @@
-import { apiClient } from '../api/config';
+import { apiClient } from '../api/axios_interceptor';
 import { ApiResponse, Trade, TradeRequest, TradeResponse, PaginatedResponse } from '../api/types';
 
 export const tradeService = {

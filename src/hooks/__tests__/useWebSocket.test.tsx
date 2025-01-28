@@ -1,84 +1,108 @@
 import { renderHook, act } from '@testing-library/react';
 import { useWebSocket } from '../useWebSocket';
-import { websocketService } from '@/services/api/websocket';
-import { WebSocketMessage, WebSocketSubscription } from '@/services/api/types';
+import { createWebSocketService } from '@/services/api/websocket';
+import { WebSocketMessage, WebSocketRequest } from '@/services/api/types';
 
-// Mock websocketService
-jest.mock('@/services/api/websocket', () => ({
-  websocketService: {
+// Mock WebSocketService
+jest.mock('@/services/api/websocket', () => {
+  const mockService = {
     connect: jest.fn(),
     disconnect: jest.fn(),
     send: jest.fn(),
     on: jest.fn(),
     off: jest.fn(),
-    subscribe: jest.fn(),
-    unsubscribe: jest.fn(),
-  },
-}));
+    stopAction: jest.fn(),
+  };
+
+  return {
+    WebSocketService: jest.fn(() => mockService),
+    createWebSocketService: jest.fn(() => mockService),
+  };
+});
 
 describe('useWebSocket', () => {
+  let mockService: ReturnType<typeof createWebSocketService>;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockService = createWebSocketService('test');
   });
 
   it('should connect on mount when autoConnect is true', () => {
-    renderHook(() => useWebSocket());
-    expect(websocketService.connect).toHaveBeenCalled();
+    renderHook(() => useWebSocket({ service: mockService }));
+    expect(mockService.connect).toHaveBeenCalled();
   });
 
   it('should not connect on mount when autoConnect is false', () => {
-    renderHook(() => useWebSocket({ autoConnect: false }));
-    expect(websocketService.connect).not.toHaveBeenCalled();
+    renderHook(() => useWebSocket({ service: mockService, autoConnect: false }));
+    expect(mockService.connect).not.toHaveBeenCalled();
   });
 
   it('should set up event listeners on mount', () => {
-    renderHook(() => useWebSocket());
-    expect(websocketService.on).toHaveBeenCalledWith('open', expect.any(Function));
-    expect(websocketService.on).toHaveBeenCalledWith('close', expect.any(Function));
-    expect(websocketService.on).toHaveBeenCalledWith('error', expect.any(Function));
-    expect(websocketService.on).toHaveBeenCalledWith('message', expect.any(Function));
+    renderHook(() => useWebSocket({ service: mockService }));
+    expect(mockService.on).toHaveBeenCalledWith('open', expect.any(Function));
+    expect(mockService.on).toHaveBeenCalledWith('close', expect.any(Function));
+    expect(mockService.on).toHaveBeenCalledWith('error', expect.any(Function));
+    expect(mockService.on).toHaveBeenCalledWith('message', expect.any(Function));
   });
 
-  it('should handle subscriptions', () => {
-    const subscriptions: WebSocketSubscription[] = [
-      { type: 'subscribe', channel: 'price', symbol: 'BTCUSD' },
-    ];
+  it('should handle initial action on connect', () => {
+    const initialAction: WebSocketRequest = {
+      action: 'instrument_price',
+      data: { symbol: 'BTCUSD' }
+    };
 
-    renderHook(() => useWebSocket({ subscriptions }));
-    expect(websocketService.subscribe).toHaveBeenCalledWith(subscriptions[0]);
+    renderHook(() => useWebSocket({ service: mockService, initialAction }));
+
+    // Get the open handler
+    const openHandler = (mockService.on as jest.Mock).mock.calls.find(
+      ([event]) => event === 'open'
+    )?.[1];
+
+    // Simulate connection open
+    act(() => {
+      openHandler();
+    });
+
+    expect(mockService.send).toHaveBeenCalledWith(initialAction);
   });
 
   it('should clean up on unmount', () => {
-    const subscriptions: WebSocketSubscription[] = [
-      { type: 'subscribe', channel: 'price', symbol: 'BTCUSD' },
-    ];
+    const initialAction: WebSocketRequest = {
+      action: 'instrument_price',
+      data: { symbol: 'BTCUSD' }
+    };
 
-    const { unmount } = renderHook(() => useWebSocket({ subscriptions }));
+    const { unmount } = renderHook(() => useWebSocket({ 
+      service: mockService,
+      initialAction 
+    }));
+    
     unmount();
 
-    expect(websocketService.off).toHaveBeenCalledWith('open', expect.any(Function));
-    expect(websocketService.off).toHaveBeenCalledWith('close', expect.any(Function));
-    expect(websocketService.off).toHaveBeenCalledWith('error', expect.any(Function));
-    expect(websocketService.off).toHaveBeenCalledWith('message', expect.any(Function));
-    expect(websocketService.unsubscribe).toHaveBeenCalledWith(subscriptions[0]);
-    expect(websocketService.disconnect).toHaveBeenCalled();
+    expect(mockService.off).toHaveBeenCalledWith('open', expect.any(Function));
+    expect(mockService.off).toHaveBeenCalledWith('close', expect.any(Function));
+    expect(mockService.off).toHaveBeenCalledWith('error', expect.any(Function));
+    expect(mockService.off).toHaveBeenCalledWith('message', expect.any(Function));
+    expect(mockService.stopAction).toHaveBeenCalledWith(initialAction.action);
+    expect(mockService.disconnect).toHaveBeenCalled();
   });
 
   it('should handle message events', () => {
     const onMessage = jest.fn();
     const testMessage: WebSocketMessage = {
-      type: 'price',
-      data: { price: 100 },
+      action: 'instrument_price',
+      data: { price: 100, symbol: 'BTCUSD', timestamp: '2025-01-28T12:00:00Z' }
     };
 
     let messageHandler: (event: MessageEvent) => void;
-    (websocketService.on as jest.Mock).mockImplementation((event, handler) => {
+    (mockService.on as jest.Mock).mockImplementation((event, handler) => {
       if (event === 'message') {
         messageHandler = handler;
       }
     });
 
-    renderHook(() => useWebSocket({ onMessage }));
+    renderHook(() => useWebSocket({ service: mockService, onMessage }));
 
     // Simulate message event
     act(() => {
@@ -92,12 +116,12 @@ describe('useWebSocket', () => {
     let openHandler: () => void;
     let closeHandler: () => void;
 
-    (websocketService.on as jest.Mock).mockImplementation((event, handler) => {
+    (mockService.on as jest.Mock).mockImplementation((event, handler) => {
       if (event === 'open') openHandler = handler;
       if (event === 'close') closeHandler = handler;
     });
 
-    const { result } = renderHook(() => useWebSocket());
+    const { result } = renderHook(() => useWebSocket({ service: mockService }));
 
     expect(result.current.isConnected).toBe(false);
 
@@ -114,17 +138,21 @@ describe('useWebSocket', () => {
     expect(result.current.isConnected).toBe(false);
   });
 
-  it('should provide send function', () => {
-    const { result } = renderHook(() => useWebSocket());
-    const testMessage: WebSocketMessage = {
-      type: 'price',
-      data: { price: 100 },
+  it('should provide send and stopAction functions', () => {
+    const { result } = renderHook(() => useWebSocket({ service: mockService }));
+    const testRequest: WebSocketRequest = {
+      action: 'instrument_price',
+      data: { symbol: 'BTCUSD' }
     };
 
     act(() => {
-      result.current.send(testMessage);
+      result.current.send(testRequest);
     });
+    expect(mockService.send).toHaveBeenCalledWith(testRequest);
 
-    expect(websocketService.send).toHaveBeenCalledWith(testMessage);
+    act(() => {
+      result.current.stopAction('instrument_price');
+    });
+    expect(mockService.stopAction).toHaveBeenCalledWith('instrument_price');
   });
 });
