@@ -55,3 +55,32 @@ export interface MarketPrice {
   price: number;
   timestamp: string;
 }
+
+// WebSocket Types
+export interface WebSocketMessage {
+  type: string;
+  data: any;
+}
+
+export interface WebSocketSubscription {
+  type: 'subscribe' | 'unsubscribe';
+  channel: string;
+  symbol?: string;
+}
+
+export interface WebSocketPrice extends MarketPrice {
+  channel: 'price';
+}
+
+export interface WebSocketTrade extends Trade {
+  channel: 'trade';
+}
+
+export type WebSocketEventMap = {
+  open: Event;
+  close: CloseEvent;
+  error: Event;
+  message: MessageEvent;
+};
+
+export type WebSocketEventHandler = (event: Event | CloseEvent | MessageEvent) => void;
