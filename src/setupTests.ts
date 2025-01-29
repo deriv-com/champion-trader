@@ -1,9 +1,18 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
+
+import { apiConfig } from "./config/api";
+
+// Set up environment variables for tests
+process.env.NODE_ENV = "development";
+process.env.VITE_WS_URL = apiConfig.ws.baseUrl;
+process.env.VITE_WS_PUBLIC_PATH = apiConfig.ws.publicPath;
+process.env.VITE_WS_PROTECTED_PATH = apiConfig.ws.protectedPath;
+process.env.MODE = "test";
 
 // Mock TextEncoder/TextDecoder for React Router
 class TextEncoderMock {
   encode(str: string): Uint8Array {
-    return new Uint8Array([...str].map(c => c.charCodeAt(0)));
+    return new Uint8Array([...str].map((c) => c.charCodeAt(0)));
   }
 }
 
@@ -23,49 +32,47 @@ class WebSocketMock {
   static CLOSING = 2;
   static CLOSED = 3;
 
-  public readyState = WebSocketMock.CONNECTING;
+  public readyState: number = WebSocketMock.CONNECTING;
   public url: string;
-  private handlers: { [key: string]: ((event: any) => void)[] } = {};
+  private handlers: { [key: string]: Function[] } = {
+    open: [],
+    close: [],
+    error: [],
+    message: [],
+  };
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(_url: string) {
+    this.url = _url;
     setTimeout(() => {
       this.readyState = WebSocketMock.OPEN;
-      this.triggerEvent('open', new Event('open'));
+      this.triggerEvent("open", new Event("open"));
     }, 0);
   }
 
-  addEventListener(event: string, handler: (event: any) => void) {
-    if (!this.handlers[event]) {
-      this.handlers[event] = [];
+  addEventListener(type: string, listener: Function): void {
+    if (!this.handlers[type]) {
+      this.handlers[type] = [];
     }
-    this.handlers[event].push(handler);
+    this.handlers[type].push(listener);
   }
 
-  removeEventListener(event: string, handler: (event: any) => void) {
-    if (this.handlers[event]) {
-      this.handlers[event] = this.handlers[event].filter(h => h !== handler);
+  removeEventListener(type: string, listener: Function): void {
+    if (!this.handlers[type]) return;
+    const index = this.handlers[type].indexOf(listener);
+    if (index > -1) {
+      this.handlers[type].splice(index, 1);
     }
   }
 
-  send(data: string) {
-    if (this.readyState !== WebSocketMock.OPEN) {
-      throw new Error('WebSocket is not open');
-    }
-    // Simulate message echo for testing
-    this.triggerEvent('message', new MessageEvent('message', { data }));
+  triggerEvent(event: string, data: any) {
+    if (!this.handlers[event]) return;
+    this.handlers[event].forEach((handler) => {
+      handler.call(this, data);
+    });
   }
 
-  close() {
-    this.readyState = WebSocketMock.CLOSED;
-    this.triggerEvent('close', new CloseEvent('close'));
-  }
-
-  private triggerEvent(event: string, data: any) {
-    if (this.handlers[event]) {
-      this.handlers[event].forEach(handler => handler(data));
-    }
-  }
+  send = jest.fn();
+  close = jest.fn();
 }
 
 global.WebSocket = WebSocketMock as any;
