@@ -1,8 +1,8 @@
-import { apiClient } from '../axios_interceptor';
+import { apiClient } from '../../axios_interceptor';
 import {
   AvailableInstrumentsRequest,
   AvailableInstrumentsResponse,
-} from './types';
+} from '../types';
 
 /**
  * Fetches available trading instruments

@@ -104,6 +104,7 @@ The base WebSocket service provides common functionality:
 - Event handling
 - Message type safety
 - Environment-specific configuration
+- Authentication handling for protected endpoints
 
 ```typescript
 import { BaseWebSocketService } from '@/services/api/websocket';
@@ -134,10 +135,22 @@ import { ProtectedWebSocketService } from '@/services/api/websocket';
 
 class CustomProtectedService extends ProtectedWebSocketService<CustomMessageMap> {
   constructor(authToken: string) {
-    super(authToken, options);
+    super(authToken, {
+      // Optional WebSocket options
+      reconnectAttempts: 5,
+      reconnectInterval: 5000
+    });
   }
 }
 ```
+
+The authentication token is automatically handled by the service:
+1. The token is passed to the ProtectedWebSocketService constructor
+2. The service adds it to the request headers: `Authorization: Bearer <token>`
+3. The base service passes the token in the WebSocket handshake via the Authorization header
+4. The server validates the token and establishes the authenticated connection
+
+Note: The WebSocket connection uses the standard Authorization header mechanism, ensuring secure token transmission during the WebSocket handshake.
 
 ## React Hooks
 
@@ -219,7 +232,7 @@ function ContractPricing({ request, authToken }: { request: ContractPriceRequest
 - **Singleton WebSocket**: One WebSocket connection per service type
 - **Type Safety**: Full TypeScript support with message type checking
 - **Automatic Reconnection**: Configurable retry attempts and intervals
-- **Authentication**: Token-based auth with automatic token refresh
+- **Authentication**: Token-based auth with proper header handling
 - **Event Handling**: Strongly typed event handlers
 - **React Integration**: Custom hooks for easy integration with React components
 - **Testing**: Comprehensive test suite with mocked WebSocket functionality
@@ -242,7 +255,8 @@ function ContractPricing({ request, authToken }: { request: ContractPriceRequest
 
 4. **Authentication**:
    - Use ProtectedWebSocketService for authenticated endpoints
-   - Update auth tokens using the store's actions
+   - Pass auth tokens through the constructor, not directly to WebSocket
+   - Let the service handle the token formatting and headers
 
 5. **Performance**:
    - Subscribe only when necessary

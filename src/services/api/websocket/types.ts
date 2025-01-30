@@ -1,9 +1,9 @@
 // WebSocket Types
-export type WebSocketAction = 
-  | 'instrument_price'
-  | 'trade_status'
-  | 'account_info'
-  | 'contract_price';
+export type WebSocketAction =
+  | "instrument_price"
+  | "trade_status"
+  | "account_info"
+  | "contract_price";
 
 export interface WebSocketMessage {
   action: WebSocketAction;
@@ -16,36 +16,33 @@ export interface WebSocketRequest {
   data: {
     symbol?: string;
     duration?: number;
-    type?: 'CALL' | 'PUT';
+    type?: "CALL" | "PUT";
     [key: string]: any;
   };
 }
 
 export interface WebSocketInstrumentPrice {
-  action: 'instrument_price';
-  data: {
-    symbol: string;
-    price: number;
-    timestamp: string;
-  };
+  symbol: string;
+  price: number;
+  timestamp: string;
 }
 
 export interface WebSocketTradeStatus {
-  action: 'trade_status';
+  action: "trade_status";
   data: {
     id: string;
     symbol: string;
-    type: 'CALL' | 'PUT';
+    type: "CALL" | "PUT";
     amount: number;
     payout: number;
-    status: 'OPEN' | 'WON' | 'LOST';
+    status: "OPEN" | "WON" | "LOST";
     createdAt: string;
     expiresAt: string;
   };
 }
 
 export interface WebSocketAccountInfo {
-  action: 'account_info';
+  action: "account_info";
   data: {
     balance: number;
     currency: string;
@@ -60,7 +57,9 @@ export type WebSocketEventMap = {
   message: MessageEvent;
 };
 
-export type WebSocketEventHandler = (event: Event | CloseEvent | MessageEvent) => void;
+export type WebSocketEventHandler = (
+  event: Event | CloseEvent | MessageEvent
+) => void;
 
 export interface WebSocketError {
   error: string;
@@ -69,20 +68,20 @@ export interface WebSocketError {
 
 // Contract WebSocket Types
 export interface ContractPriceRequest {
-  duration: string;      // Format: <number><unit> (d/h/m/s)
-  instrument: string;    // e.g. "R_100"
+  duration: string; // Format: <number><unit> (d/h/m/s)
+  instrument: string; // e.g. "R_100"
   trade_type: "CALL" | "PUT";
-  currency: string;      // e.g. "USD"
-  payout: string;       // e.g. "100"
-  strike?: string;      // Optional, e.g. "1234.56"
+  currency: string; // e.g. "USD"
+  payout: string; // e.g. "100"
+  strike?: string; // Optional, e.g. "1234.56"
 }
 
 export interface ContractPriceResponse {
-  date_start: number;    // Unix timestamp
-  date_expiry: number;   // Unix timestamp
-  spot: string;         // Current market price
-  strike: string;       // Strike price
-  price: string;        // Contract price
+  date_start: number; // Unix timestamp
+  date_expiry: number; // Unix timestamp
+  spot: string; // Current market price
+  strike: string; // Strike price
+  price: string; // Contract price
   trade_type: "CALL" | "PUT";
   instrument: string;
   currency: string;
@@ -102,7 +101,7 @@ export interface InstrumentPriceResponse {
   instrument_id: string;
   bid: number;
   ask: number;
-  timestamp: string;    // ISO date-time
+  timestamp: string; // ISO date-time
 }
 
 export interface WebSocketMessageMap {

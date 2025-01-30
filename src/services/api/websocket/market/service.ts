@@ -1,13 +1,13 @@
-import { PublicWebSocketService } from '../base/public';
-import { 
+import { PublicWebSocketService } from "../base/public";
+import {
   WebSocketMessage,
   WebSocketMessageMap,
   InstrumentPriceRequest,
-  InstrumentPriceResponse
-} from '@/services/api/websocket/types';
+  InstrumentPriceResponse,
+} from "@/services/api/websocket/types";
 
 interface MarketWebSocketMap extends WebSocketMessageMap {
-  'instrument_price': {
+  instrument_price: {
     request: InstrumentPriceRequest;
     response: InstrumentPriceResponse;
   };
@@ -25,7 +25,7 @@ export class MarketWebSocketService extends PublicWebSocketService<MarketWebSock
 
   public subscribeToPrice(instrumentId: string): void {
     this.subscriptions.add(instrumentId);
-    this.send('instrument_price', { instrument_id: instrumentId });
+    this.send("instrument_price", { instrument_id: instrumentId });
   }
 
   public unsubscribeFromPrice(instrumentId: string): void {
@@ -34,16 +34,16 @@ export class MarketWebSocketService extends PublicWebSocketService<MarketWebSock
   }
 
   protected handleMessage(message: WebSocketMessage): void {
-    if (message.action === 'instrument_price') {
-      const handlers = this.messageHandlers.get('instrument_price');
-      handlers?.forEach(handler => handler(message.data as InstrumentPriceResponse));
-    }
+    const handlers = this.messageHandlers.get("instrument_price");
+    handlers?.forEach((handler) =>
+      handler(message as unknown as InstrumentPriceResponse)
+    );
   }
 
   public override connect(): void {
     super.connect();
     // Resubscribe to all instruments after reconnect
-    this.subscriptions.forEach(instrumentId => {
+    this.subscriptions.forEach((instrumentId) => {
       this.subscribeToPrice(instrumentId);
     });
   }

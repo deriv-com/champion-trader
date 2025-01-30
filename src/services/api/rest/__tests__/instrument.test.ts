@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { apiClient } from '../../axios_interceptor';
-import { getAvailableInstruments } from '../service';
+import { getAvailableInstruments } from '../instrument/service';
 import {
   AvailableInstrumentsRequest,
   AvailableInstrumentsResponse,

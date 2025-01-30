@@ -125,7 +125,10 @@ describe("MarketWebSocketService", () => {
       });
     }
 
-    expect(mockHandler).toHaveBeenCalledWith(mockData);
+    expect(mockHandler).toHaveBeenCalledWith({
+      action: "instrument_price",
+      data: mockData,
+    });
   });
 
   it("should handle connection errors", () => {
