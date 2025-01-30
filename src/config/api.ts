@@ -12,12 +12,12 @@ interface ApiConfig {
 const config: Record<string, ApiConfig> = {
   development: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'ws://localhost:8080',
+      baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api-596476576352.us-central1.run.app',
       publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'http://localhost:8080'
+      baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api-596476576352.us-central1.run.app'
     }
   },
   staging: {
@@ -47,12 +47,12 @@ const getConfig = () => {
   if (process.env.NODE_ENV === 'test') {
     return {
       ws: {
-        baseUrl: process.env.VITE_WS_URL || 'ws://localhost:8080',
+        baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api-596476576352.us-central1.run.app/ws',
         publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
         protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
       },
       rest: {
-        baseUrl: process.env.VITE_REST_URL || 'http://localhost:8080'
+        baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api-596476576352.us-central1.run.app'
       }
     };
   }

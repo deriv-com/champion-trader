@@ -1,6 +1,7 @@
 import { BaseWebSocketService } from './service';
 import { WebSocketMessage, WebSocketMessageMap } from '@/services/api/websocket/types';
 import { WebSocketOptions } from './types';
+import { apiConfig } from '@/config/api';
 
 export class ProtectedWebSocketService<T extends WebSocketMessageMap> extends BaseWebSocketService<T> {
   constructor(
@@ -14,6 +15,10 @@ export class ProtectedWebSocketService<T extends WebSocketMessageMap> extends Ba
         Authorization: `Bearer ${authToken}`
       }
     });
+  }
+
+  protected getWebSocketUrl(): string {
+    return `${apiConfig.ws.baseUrl}${apiConfig.ws.protectedPath}`;
   }
 
   protected handleMessage(message: WebSocketMessage): void {

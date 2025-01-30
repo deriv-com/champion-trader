@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
-import { ContractPriceResponse, WebSocketError, ContractPriceRequest } from '@/services/api/websocket/types';
-import { useWebSocketStore } from '@/stores/websocketStore';
+import { useEffect } from "react";
+import {
+  ContractPriceResponse,
+  WebSocketError,
+  ContractPriceRequest,
+} from "@/services/api/websocket/types";
+import { useWebSocketStore } from "@/stores/websocketStore";
 
 export interface UseContractWebSocketOptions {
   onPrice?: (price: ContractPriceResponse) => void;
@@ -20,7 +24,7 @@ export const useContractWebSocket = (
     cancelContractPrice,
     contractPrices,
     isContractConnected,
-    contractError
+    contractError,
   } = useWebSocketStore();
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export const useContractWebSocket = (
     trade_type: params.trade_type,
     currency: params.currency,
     payout: params.payout,
-    strike: params.strike
+    strike: params.strike,
   });
 
   useEffect(() => {
@@ -51,6 +55,7 @@ export const useContractWebSocket = (
   useEffect(() => {
     if (isContractConnected) {
       options.onConnect?.();
+      requestContractPrice(params);
     } else {
       options.onDisconnect?.();
     }
@@ -65,6 +70,6 @@ export const useContractWebSocket = (
   return {
     price: contractPrices[contractKey] || null,
     isConnected: isContractConnected,
-    error: contractError
+    error: contractError,
   };
 };

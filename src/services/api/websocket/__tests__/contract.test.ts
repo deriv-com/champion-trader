@@ -2,7 +2,9 @@
 jest.mock('@/config/api', () => ({
   apiConfig: {
     ws: {
-      baseUrl: 'wss://test.example.com'
+      baseUrl: 'wss://test.example.com',
+      publicPath: '/ws',
+      protectedPath: '/protected/ws'
     }
   }
 }));
@@ -67,7 +69,7 @@ describe('ContractWebSocketService', () => {
   it('should connect with auth token as protocol', () => {
     connectWebSocket();
 
-    expect(global.WebSocket).toHaveBeenCalledWith('wss://test.example.com/', ['Bearer.mock-token']);
+    expect(global.WebSocket).toHaveBeenCalledWith('wss://test.example.com/protected/ws?Authorization=Bearer+mock-token');
     expect(mockWs.addEventListener).toHaveBeenCalledWith('open', expect.any(Function));
     expect(mockWs.addEventListener).toHaveBeenCalledWith('close', expect.any(Function));
     expect(mockWs.addEventListener).toHaveBeenCalledWith('error', expect.any(Function));

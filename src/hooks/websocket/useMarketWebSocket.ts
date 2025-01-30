@@ -1,6 +1,9 @@
-import { useEffect } from 'react';
-import { InstrumentPriceResponse, WebSocketError } from '@/services/api/websocket/types';
-import { useWebSocketStore } from '@/stores/websocketStore';
+import { useEffect } from "react";
+import {
+  InstrumentPriceResponse,
+  WebSocketError,
+} from "@/services/api/websocket/types";
+import { useWebSocketStore } from "@/stores/websocketStore";
 
 export interface UseMarketWebSocketOptions {
   onPrice?: (price: InstrumentPriceResponse) => void;
@@ -13,13 +16,13 @@ export const useMarketWebSocket = (
   instrumentId: string,
   options: UseMarketWebSocketOptions = {}
 ) => {
-  const { 
-    initializeMarketService, 
-    subscribeToInstrumentPrice, 
+  const {
+    initializeMarketService,
+    subscribeToInstrumentPrice,
     unsubscribeFromInstrumentPrice,
     instrumentPrices,
     isMarketConnected,
-    marketError 
+    marketError,
   } = useWebSocketStore();
 
   useEffect(() => {
@@ -40,6 +43,7 @@ export const useMarketWebSocket = (
   useEffect(() => {
     if (isMarketConnected) {
       options.onConnect?.();
+      subscribeToInstrumentPrice(instrumentId);
     } else {
       options.onDisconnect?.();
     }
@@ -54,6 +58,6 @@ export const useMarketWebSocket = (
   return {
     price: instrumentPrices[instrumentId] || null,
     isConnected: isMarketConnected,
-    error: marketError
+    error: marketError,
   };
 };
