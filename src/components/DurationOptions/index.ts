@@ -1,0 +1,1 @@
+export { DurationOptions } from './DurationOptions';
