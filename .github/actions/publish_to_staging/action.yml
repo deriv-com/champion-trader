@@ -21,5 +21,5 @@ runs:
       run: |
         npm i wrangler@3.22.3
         cd dist
-        npx wrangler pages deploy . --project-name=${{ inputs.PROJECT_NAME }} --production
+        npx wrangler pages deploy . --project-name=${{ inputs.PROJECT_NAME }}
         echo "Staging URL: https://${{ inputs.PROJECT_NAME }}.pages.dev"
