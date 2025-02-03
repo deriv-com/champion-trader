@@ -1,0 +1,25 @@
+name: Publish to Staging
+description: Deploys the build to Cloudflare Pages Staging
+inputs:
+  CLOUDFLARE_ACCOUNT_ID:
+    description: Cloudflare account ID
+    required: true
+  CLOUDFLARE_API_TOKEN:
+    description: Cloudflare API token
+    required: true
+  PROJECT_NAME:
+    description: Cloudflare Pages project name
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Deploy to Staging
+      shell: bash
+      env:
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
+      run: |
+        npm i wrangler@3.22.3
+        cd dist
+        npx wrangler pages deploy . --project-name=${{ inputs.PROJECT_NAME }} --production
+        echo "Staging URL: https://${{ inputs.PROJECT_NAME }}.pages.dev"
