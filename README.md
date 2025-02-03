@@ -52,12 +52,12 @@ Default configurations per environment:
 ```typescript
 {
   ws: {
-    baseUrl: 'ws://localhost:8080',
+    baseUrl: 'ws://options-trading-api.deriv.ai',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
-    baseUrl: 'http://localhost:8080'
+    baseUrl: 'http://options-trading-api.deriv.ai'
   }
 }
 ```
@@ -66,12 +66,12 @@ Default configurations per environment:
 ```typescript
 {
   ws: {
-    baseUrl: 'wss://staging-api.deriv.com',
+    baseUrl: 'wss://options-trading-api.deriv.ai',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
-    baseUrl: 'https://staging-api.deriv.com'
+    baseUrl: 'https://options-trading-api.deriv.ai'
   }
 }
 ```
@@ -80,12 +80,12 @@ Default configurations per environment:
 ```typescript
 {
   ws: {
-    baseUrl: 'wss://api.deriv.com',
+    baseUrl: 'wss://options-trading-api.deriv.ai',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
-    baseUrl: 'https://api.deriv.com'
+    baseUrl: 'https://options-trading-api.deriv.ai'
   }
 }
 ```
