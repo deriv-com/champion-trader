@@ -1,0 +1,40 @@
+name: PR Test Deployment
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_ENV: development
+
+jobs:
+  build_and_preview:
+    name: Build and Deploy Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: ./.github/actions/setup_node
+
+      - name: Install dependencies
+        uses: ./.github/actions/npm_install_from_cache
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          RSBUILD_WS_URL: ${{ secrets.RSBUILD_WS_URL }}
+          RSBUILD_WS_PUBLIC_PATH: ${{ secrets.RSBUILD_WS_PUBLIC_PATH }}
+          RSBUILD_WS_PROTECTED_PATH: ${{ secrets.RSBUILD_WS_PROTECTED_PATH }}
+          RSBUILD_REST_URL: ${{ secrets.RSBUILD_REST_URL }}
+
+      - name: Publish to Cloudflare Pages
+        uses: ./.github/actions/publish_to_pages
+        with:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_BRANCH: pr-${{ github.event.pull_request.number }}
+          PROJECT_NAME: champion-trader

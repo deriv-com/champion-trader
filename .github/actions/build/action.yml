@@ -1,0 +1,26 @@
+name: Build Project
+description: Build the project with environment variables
+inputs:
+  RSBUILD_WS_URL:
+    description: WebSocket server URL
+    required: true
+  RSBUILD_WS_PUBLIC_PATH:
+    description: Public WebSocket endpoint path
+    required: true
+  RSBUILD_WS_PROTECTED_PATH:
+    description: Protected WebSocket endpoint path
+    required: true
+  RSBUILD_REST_URL:
+    description: REST API server URL
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Build project
+      shell: bash
+      env:
+        RSBUILD_WS_URL: ${{ inputs.RSBUILD_WS_URL }}
+        RSBUILD_WS_PUBLIC_PATH: ${{ inputs.RSBUILD_WS_PUBLIC_PATH }}
+        RSBUILD_WS_PROTECTED_PATH: ${{ inputs.RSBUILD_WS_PROTECTED_PATH }}
+        RSBUILD_REST_URL: ${{ inputs.RSBUILD_REST_URL }}
+      run: npm run build
