@@ -22,7 +22,7 @@ runs:
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
       run: |
-        npm i wrangler@3
+        npm i wrangler@3.22.3
         cd dist
         npx wrangler pages deploy . --project-name=${{ inputs.PROJECT_NAME }} --branch=${{ inputs.CF_BRANCH }}
         echo "Preview URL: https://${{ inputs.CF_BRANCH }}.${{ inputs.PROJECT_NAME }}.pages.dev"
