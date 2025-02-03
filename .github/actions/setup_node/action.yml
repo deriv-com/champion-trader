@@ -1,0 +1,10 @@
+name: Setup Node
+description: Sets up Node.js environment
+runs:
+  using: composite
+  steps:
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
