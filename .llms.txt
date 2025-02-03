@@ -1,0 +1,253 @@
+version: 1.0
+project: champion-trader
+repository: https://github.com/deriv/champion-trader
+license: MIT
+
+---
+SYSTEM
+
+Champion Trader is a React TypeScript trading application built with modern technologies and best practices.
+
+Tech Stack:
+- React 18
+- TypeScript
+- TailwindCSS
+- Zustand
+- Axios
+- Jest
+- Rsbuild
+
+---
+MISSION
+
+Create a high-performance, user-friendly trading platform that:
+1. Provides real-time market data via WebSocket
+2. Enables secure trading operations
+3. Maintains high code quality and test coverage
+4. Follows best practices and modern development standards
+
+---
+RULES
+
+1. Code Standards:
+   - Follow TypeScript strict mode
+   - Use functional components with hooks
+   - Follow Atomic Design principles
+   - Maintain type safety
+   - Write comprehensive tests
+
+2. File Structure:
+   - Components in src/components/
+   - Pages in src/screens/
+   - Services in src/services/
+   - State in src/stores/
+   - Types in src/types/
+
+3. Naming Conventions:
+   - PascalCase for components
+   - camelCase for functions/variables
+   - kebab-case for files
+   - UPPER_CASE for constants
+
+4. Testing Requirements:
+   - Jest + React Testing Library
+   - Min 90% coverage
+   - Test edge cases
+   - Mock external dependencies
+
+5. Documentation:
+   - JSDoc for components/functions
+   - README for directories
+   - Inline comments for complex logic
+
+---
+COMMANDS
+
+Development:
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+npm test -- --watch
+
+# Build for production
+npm run build
+```
+
+File Operations:
+```bash
+# View file
+read_file path/to/file
+
+# Update file
+write_to_file path/to/file
+replace_in_file path/to/file
+
+# Search code
+search_files src "pattern"
+```
+
+---
+EXAMPLES
+
+1. Component Creation:
+```typescript
+import React from 'react';
+
+interface ButtonProps {
+  onClick: () => void;
+  label: string;
+}
+
+export const Button = ({ onClick, label }: ButtonProps) => {
+  return (
+    <button
+      className="px-4 py-2 bg-blue-600 text-white rounded"
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+};
+```
+
+2. Hook Usage:
+```typescript
+import { useMarketWebSocket } from '@/hooks/websocket';
+
+function PriceDisplay({ instrumentId }: { instrumentId: string }) {
+  const { price, isConnected } = useMarketWebSocket(instrumentId);
+  return (
+    <div>
+      <div>Status: {isConnected ? 'Connected' : 'Disconnected'}</div>
+      <div>Price: {price}</div>
+    </div>
+  );
+}
+```
+
+3. Test Example:
+```typescript
+import { render, screen } from '@testing-library/react';
+import { Button } from './Button';
+
+describe('Button', () => {
+  it('renders with label', () => {
+    render(<Button label="Click me" onClick={() => {}} />);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+});
+```
+
+---
+ARCHITECTURE
+
+1. Component Architecture:
+   - Atomic Design
+   - Self-contained components
+   - Lazy loading
+   - Proper prop typing
+
+2. State Management:
+   - Zustand for global state
+   - React hooks for local state
+   - Proper store separation
+
+3. API Integration:
+   - REST via Axios
+   - WebSocket for real-time
+   - Service layer pattern
+
+4. Routing:
+   - React Router
+   - Lazy-loaded routes
+   - Protected routes
+
+---
+STYLE
+
+1. TypeScript:
+   - Use type inference
+   - Avoid any
+   - Use interfaces for objects
+   - Use proper generics
+
+2. React:
+   - Functional components
+   - Custom hooks
+   - Proper effect cleanup
+   - Memoization when needed
+
+3. CSS:
+   - TailwindCSS utilities
+   - Component-scoped styles
+   - Responsive design
+   - Dark mode support
+
+---
+TESTING
+
+1. Unit Tests:
+   - Component rendering
+   - User interactions
+   - Hook behavior
+   - Store updates
+
+2. Integration Tests:
+   - API interactions
+   - WebSocket connections
+   - State management
+   - Route changes
+
+3. Test Utils:
+   - Custom renders
+   - Common mocks
+   - Test helpers
+   - Fixtures
+
+---
+WORKFLOW
+
+1. Development:
+   - Feature branches
+   - TDD approach
+   - PR reviews
+   - CI/CD pipeline
+
+2. Code Review:
+   - Type safety
+   - Test coverage
+   - Performance
+   - Best practices
+
+3. Documentation:
+   - Update README
+   - Add JSDoc
+   - Update examples
+   - Keep docs current
+
+---
+SECURITY
+
+1. Authentication:
+   - Token management
+   - Protected routes
+   - Secure storage
+   - Session handling
+
+2. Data Safety:
+   - Input validation
+   - XSS prevention
+   - CSRF protection
+   - Secure headers
+
+3. Environment:
+   - Env variables
+   - Secret management
+   - SSL/HTTPS
+   - Access control

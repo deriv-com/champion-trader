@@ -2,6 +2,10 @@
 
 A React TypeScript trading application built with modern technologies and best practices.
 
+For a detailed overview of the project structure and organization, please see [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
+
+For guidelines on using AI assistance with this project, see [.llms.txt](.llms.txt) (following [llmstxt.org](https://llmstxt.org) specification).
+
 ## Technologies
 
 - React 18
