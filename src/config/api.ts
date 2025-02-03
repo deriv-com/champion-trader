@@ -1,3 +1,5 @@
+import { env } from './env';
+
 interface ApiConfig {
   ws: {
     baseUrl: string;
@@ -12,54 +14,53 @@ interface ApiConfig {
 const config: Record<string, ApiConfig> = {
   development: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api-596476576352.us-central1.run.app',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/ws'
+      baseUrl: env.WS_URL || 'wss://options-trading-api.deriv.ai',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api-596476576352.us-central1.run.app'
+      baseUrl: env.REST_URL || 'https://options-trading-api.deriv.ai'
     }
   },
   staging: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://staging-api.deriv.com',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+      baseUrl: env.WS_URL || 'wss://staging-api.deriv.com',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://staging-api.deriv.com'
+      baseUrl: env.REST_URL || 'https://staging-api.deriv.com'
     }
   },
   production: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://api.deriv.com',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+      baseUrl: env.WS_URL || 'wss://api.deriv.com',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://api.deriv.com'
+      baseUrl: env.REST_URL || 'https://api.deriv.com'
     }
   }
 };
 
 const getConfig = () => {
-  // In test environment, return the values from process.env directly
-  if (process.env.NODE_ENV === 'test') {
+  // In test environment, return the values from env directly
+  if (env.MODE === 'test') {
     return {
       ws: {
-        baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api-596476576352.us-central1.run.app/ws',
-        publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-        protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+        baseUrl: env.WS_URL || 'wss://options-trading-api.deriv.ai/ws',
+        publicPath: env.WS_PUBLIC_PATH || '/ws',
+        protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
       },
       rest: {
-        baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api-596476576352.us-central1.run.app'
+        baseUrl: env.REST_URL || 'https://options-trading-api.deriv.ai'
       }
     };
   }
 
   // For other environments, use the environment-specific config
-  const env = process.env.NODE_ENV || 'development';
-  return config[env];
+  return config[env.MODE];
 };
 
 export const apiConfig = getConfig();

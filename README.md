@@ -10,6 +10,7 @@ A React TypeScript trading application built with modern technologies and best p
 - Zustand for state management
 - Axios for API communication
 - Jest and React Testing Library for testing
+- Rsbuild for build tooling
 
 ## Getting Started
 
@@ -30,7 +31,7 @@ npm run dev
 ```
 
 After a few seconds, your project should be accessible at the address
-[http://localhost:5173/](http://localhost:5173/)
+[https://localhost:4113/](https://localhost:4113/)
 
 ## Environment Configuration
 
@@ -38,12 +39,22 @@ The application supports different environments (development, staging, productio
 
 ```bash
 # WebSocket Configuration
-VITE_WS_URL=ws://localhost:8080           # WebSocket server URL
-VITE_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
-VITE_WS_PROTECTED_PATH=/protected/ws      # Protected WebSocket endpoint path
+RSBUILD_WS_URL=ws://localhost:8080           # WebSocket server URL
+RSBUILD_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
+RSBUILD_WS_PROTECTED_PATH=/protected/ws      # Protected WebSocket endpoint path
 
 # REST API Configuration
-VITE_REST_URL=http://localhost:8080       # REST API server URL
+RSBUILD_REST_URL=http://localhost:8080       # REST API server URL
+```
+
+Environment variables are accessed through the centralized `env` module:
+
+```typescript
+import { env } from '@/config/env';
+
+// Access environment variables
+const wsUrl = env.WS_URL;
+const restUrl = env.REST_URL;
 ```
 
 Default configurations per environment:
@@ -54,7 +65,7 @@ Default configurations per environment:
   ws: {
     baseUrl: 'ws://localhost:8080',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
     baseUrl: 'http://localhost:8080'
@@ -68,7 +79,7 @@ Default configurations per environment:
   ws: {
     baseUrl: 'wss://staging-api.deriv.com',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
     baseUrl: 'https://staging-api.deriv.com'
@@ -82,7 +93,7 @@ Default configurations per environment:
   ws: {
     baseUrl: 'wss://api.deriv.com',
     publicPath: '/ws',
-    protectedPath: '/protected/ws'
+    protectedPath: '/ws'
   },
   rest: {
     baseUrl: 'https://api.deriv.com'
@@ -191,3 +202,7 @@ npm run build
 ```
 
 This will create an optimized production build in the `dist` directory.
+
+## HTTPS Development
+
+The development server runs with HTTPS enabled by default using a self-signed certificate. This is handled by the `@rsbuild/plugin-basic-ssl` plugin. When accessing the development server for the first time, you may need to accept the self-signed certificate in your browser.

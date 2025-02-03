@@ -15,14 +15,43 @@ rest/
 
 ## Configuration
 
-The REST API services use environment-specific configuration from `src/config/api.ts`. The base URL and other settings can be configured through environment variables:
+The REST API services use environment-specific configuration from `src/config/api.ts` which gets its values from our centralized environment module `src/config/env.ts`:
 
 ```typescript
+// src/config/env.ts
+export const env = {
+  WS_URL: process.env.RSBUILD_WS_URL,
+  WS_PUBLIC_PATH: process.env.RSBUILD_WS_PUBLIC_PATH,
+  WS_PROTECTED_PATH: process.env.RSBUILD_WS_PROTECTED_PATH,
+  REST_URL: process.env.RSBUILD_REST_URL,
+  MODE: process.env.NODE_ENV || 'development'
+} as const;
+
+// src/config/api.ts
 interface ApiConfig {
   rest: {
     baseUrl: string;
   };
 }
+
+// Environment-specific configurations
+const config = {
+  development: {
+    rest: {
+      baseUrl: env.REST_URL || 'http://localhost:8080'
+    }
+  },
+  staging: {
+    rest: {
+      baseUrl: env.REST_URL || 'https://staging-api.deriv.com'
+    }
+  },
+  production: {
+    rest: {
+      baseUrl: env.REST_URL || 'https://api.deriv.com'
+    }
+  }
+};
 ```
 
 ## Common Types
@@ -137,7 +166,7 @@ try {
    - Test error handling logic
 
 4. **Configuration**:
-   - Use environment variables for configuration
+   - Use environment variables through the centralized env module
    - Follow environment-specific settings
    - Use the configured Axios instance from axios_interceptor.ts
 

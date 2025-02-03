@@ -20,9 +20,19 @@ websocket/
 
 ## Configuration
 
-The WebSocket services use environment-specific configuration from `src/config/api.ts`:
+The WebSocket services use environment-specific configuration from `src/config/api.ts` which gets its values from our centralized environment module `src/config/env.ts`:
 
 ```typescript
+// src/config/env.ts
+export const env = {
+  WS_URL: process.env.RSBUILD_WS_URL,
+  WS_PUBLIC_PATH: process.env.RSBUILD_WS_PUBLIC_PATH,
+  WS_PROTECTED_PATH: process.env.RSBUILD_WS_PROTECTED_PATH,
+  REST_URL: process.env.RSBUILD_REST_URL,
+  MODE: process.env.NODE_ENV || 'development'
+} as const;
+
+// src/config/api.ts
 interface ApiConfig {
   ws: {
     baseUrl: string;
@@ -38,42 +48,42 @@ interface ApiConfig {
 const config = {
   development: {
     ws: {
-      baseUrl: 'ws://localhost:8080',
-      publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      baseUrl: env.WS_URL || 'ws://localhost:8080',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
     },
     rest: {
-      baseUrl: 'http://localhost:8080'
+      baseUrl: env.REST_URL || 'http://localhost:8080'
     }
   },
   staging: {
     ws: {
-      baseUrl: 'wss://staging-api.deriv.com',
-      publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      baseUrl: env.WS_URL || 'wss://staging-api.deriv.com',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
     },
     rest: {
-      baseUrl: 'https://staging-api.deriv.com'
+      baseUrl: env.REST_URL || 'https://staging-api.deriv.com'
     }
   },
   production: {
     ws: {
-      baseUrl: 'wss://api.deriv.com',
-      publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      baseUrl: env.WS_URL || 'wss://api.deriv.com',
+      publicPath: env.WS_PUBLIC_PATH || '/ws',
+      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
     },
     rest: {
-      baseUrl: 'https://api.deriv.com'
+      baseUrl: env.REST_URL || 'https://api.deriv.com'
     }
   }
 };
 ```
 
 These configurations can be overridden using environment variables:
-- VITE_WS_URL - WebSocket server URL
-- VITE_WS_PUBLIC_PATH - Public WebSocket endpoint path
-- VITE_WS_PROTECTED_PATH - Protected WebSocket endpoint path
-- VITE_REST_URL - REST API server URL
+- RSBUILD_WS_URL - WebSocket server URL
+- RSBUILD_WS_PUBLIC_PATH - Public WebSocket endpoint path
+- RSBUILD_WS_PROTECTED_PATH - Protected WebSocket endpoint path
+- RSBUILD_REST_URL - REST API server URL
 
 ## State Management
 
