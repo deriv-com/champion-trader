@@ -26,7 +26,7 @@ const config: Record<string, ApiConfig> = {
     ws: {
       baseUrl: env.WS_URL || 'wss://staging-api.deriv.com',
       publicPath: env.WS_PUBLIC_PATH || '/ws',
-      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
       baseUrl: env.REST_URL || 'https://staging-api.deriv.com'
@@ -36,7 +36,7 @@ const config: Record<string, ApiConfig> = {
     ws: {
       baseUrl: env.WS_URL || 'wss://api.deriv.com',
       publicPath: env.WS_PUBLIC_PATH || '/ws',
-      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
       baseUrl: env.REST_URL || 'https://api.deriv.com'
@@ -51,7 +51,7 @@ const getConfig = () => {
       ws: {
         baseUrl: env.WS_URL || 'wss://options-trading-api.deriv.ai/ws',
         publicPath: env.WS_PUBLIC_PATH || '/ws',
-        protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+        protectedPath: env.WS_PROTECTED_PATH || '/ws'
       },
       rest: {
         baseUrl: env.REST_URL || 'https://options-trading-api.deriv.ai'

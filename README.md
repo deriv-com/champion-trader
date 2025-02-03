@@ -45,7 +45,7 @@ The application supports different environments (development, staging, productio
 # WebSocket Configuration
 RSBUILD_WS_URL=ws://localhost:8080           # WebSocket server URL
 RSBUILD_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
-RSBUILD_WS_PROTECTED_PATH=/protected/ws      # Protected WebSocket endpoint path
+RSBUILD_WS_PROTECTED_PATH=/ws      # Protected WebSocket endpoint path
 
 # REST API Configuration
 RSBUILD_REST_URL=http://localhost:8080       # REST API server URL

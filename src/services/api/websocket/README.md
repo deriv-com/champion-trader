@@ -50,7 +50,7 @@ const config = {
     ws: {
       baseUrl: env.WS_URL || 'ws://localhost:8080',
       publicPath: env.WS_PUBLIC_PATH || '/ws',
-      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
       baseUrl: env.REST_URL || 'http://localhost:8080'
@@ -60,7 +60,7 @@ const config = {
     ws: {
       baseUrl: env.WS_URL || 'wss://staging-api.deriv.com',
       publicPath: env.WS_PUBLIC_PATH || '/ws',
-      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
       baseUrl: env.REST_URL || 'https://staging-api.deriv.com'
@@ -70,7 +70,7 @@ const config = {
     ws: {
       baseUrl: env.WS_URL || 'wss://api.deriv.com',
       publicPath: env.WS_PUBLIC_PATH || '/ws',
-      protectedPath: env.WS_PROTECTED_PATH || '/protected/ws'
+      protectedPath: env.WS_PROTECTED_PATH || '/ws'
     },
     rest: {
       baseUrl: env.REST_URL || 'https://api.deriv.com'
