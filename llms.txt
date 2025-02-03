@@ -1,0 +1,40 @@
+# Champion Trader
+
+> Champion Trader is a modern React TypeScript trading application that provides real-time market data and contract pricing through WebSocket connections. Built with React 18, TypeScript, TailwindCSS, Zustand for state management, and Axios for API communication, it follows Test-Driven Development (TDD) methodology and Atomic Component Design principles.
+
+The application is structured around modular, self-contained components and uses a sophisticated WebSocket architecture for real-time data handling. It supports multiple environments (development, staging, production) with environment-specific configurations.
+
+## Project Structure
+
+- [Project Overview](STRUCTURE.md): Complete project structure, organization, and best practices
+- [Directory Layout](STRUCTURE.md#source-code-src): Detailed source code organization
+- [Configuration Files](STRUCTURE.md#configuration-files): Build, development, and testing configurations
+- [Module Dependencies](STRUCTURE.md#module-dependencies): Core and development dependencies
+
+## Architecture
+
+- [Component Structure](src/components/README.md): Details on Atomic Component Design implementation and component organization
+- [WebSocket Architecture](src/services/api/websocket/README.md): Comprehensive documentation of the WebSocket implementation for real-time market data and contract pricing
+- [State Management](src/stores/README.md): Information about Zustand store implementation and state management patterns
+
+## API Integration
+
+- [REST API Documentation](src/services/api/rest/README.md): Available endpoints and usage examples for REST API integration
+- [WebSocket Hooks](src/hooks/websocket/README.md): React hooks for WebSocket integration, including market and contract data subscriptions
+
+## Development
+
+- [Getting Started](README.md): Project setup, prerequisites, and basic usage
+- [Development Guidelines](README.md#development-guidelines): Coding standards and best practices
+- [Import Path Configuration](README.md#import-paths): Path alias usage and configuration
+
+## Testing
+
+- [Testing Guidelines](README.md#testing-guidelines): TDD approach and testing requirements
+- [WebSocket Testing](src/services/api/websocket/README.md#testing): WebSocket-specific testing patterns and examples
+
+## Optional
+
+- [Environment Configuration](README.md#environment-configuration): Detailed environment-specific settings
+- [Version Control Guidelines](README.md#version-control): Commit message format and branching strategy
+- [Production Build](README.md#building-for-production): Production build process and optimization

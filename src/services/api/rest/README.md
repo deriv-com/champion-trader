@@ -1,235 +1,209 @@
-# REST API Architecture
+# REST API Integration
 
-This directory contains the REST API implementation using Axios with TypeScript support. The architecture is designed to be modular, type-safe, and easy to test.
+This directory contains the REST API service implementations for the trading application. The services are organized by domain and provide type-safe API interactions.
 
-## Structure
+## Service Organization
 
 ```
 rest/
-├── types.ts         # Common TypeScript interfaces
-├── instrument/      # Instrument-specific endpoints
-│   ├── service.ts  # Instrument service implementation
-│   └── __tests__/  # Instrument service tests
-└── __tests__/      # Common test files
+├── instrument/          # Instrument-related API endpoints
+│   └── service.ts      # Instrument service implementation
+├── types.ts            # Shared type definitions
+└── __tests__/         # Service tests
 ```
 
-## Configuration
+## API Configuration
 
-The REST API services use environment-specific configuration from `src/config/api.ts`. The base URL and other settings can be configured through environment variables:
+The REST API uses environment-specific configuration from `src/config/api.ts`:
 
 ```typescript
 interface ApiConfig {
   rest: {
-    baseUrl: string;
+    baseUrl: string;  // Base URL for REST API endpoints
   };
-}
-```
-
-## Common Types
-
-### Instrument Types
-```typescript
-interface Instrument {
-  id: string;    // e.g., "EURUSD"
-  name: string;  // e.g., "EUR/USD"
-}
-
-interface ErrorResponse {
-  error: string;
 }
 ```
 
 ## Available Endpoints
 
-### Instrument Service
+### Instruments API
 
-The instrument service handles all instrument-related API endpoints.
+Fetch available trading instruments:
 
-#### POST /available_instruments
-
-Retrieves a list of available trading instruments.
-
-##### Request
-```typescript
-interface AvailableInstrumentsRequest {
-  context: {
-    app_id: number;
-    account_type: string;
-  };
-  trace?: boolean;
-}
-```
-
-##### Response
-```typescript
-interface AvailableInstrumentsResponse {
-  instruments: Instrument[];
-}
-```
-
-##### Error Responses
-- 400 Bad Request: Missing or invalid parameters
-  ```typescript
-  {
-    error: "context is required" |
-           "app_id is required in context" |
-           "account_type is required in context"
-  }
-  ```
-- 500 Internal Server Error
-  ```typescript
-  {
-    error: "Failed to fetch available instruments"
-  }
-  ```
-
-##### Usage Example
 ```typescript
 import { getAvailableInstruments } from '@/services/api/rest/instrument/service';
 
-try {
-  const response = await getAvailableInstruments({
-    context: {
-      app_id: 1001,
-      account_type: 'real'
+interface InstrumentRequest {
+  context: {
+    app_id: number;
+    account_type: 'demo' | 'real';
+  };
+}
+
+interface Instrument {
+  id: string;
+  name: string;
+  type: string;
+  pip_size: number;
+}
+
+// Usage
+const response = await getAvailableInstruments({
+  context: {
+    app_id: 1001,
+    account_type: 'real'
+  }
+});
+// Returns: { instruments: Instrument[] }
+```
+
+## Implementation Pattern
+
+Services follow a consistent implementation pattern:
+
+```typescript
+import axios from 'axios';
+import { apiConfig } from '@/config/api';
+
+export class InstrumentService {
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = apiConfig.rest.baseUrl;
+  }
+
+  async getInstruments(request: InstrumentRequest): Promise<InstrumentResponse> {
+    try {
+      const response = await axios.get(`${this.baseUrl}/instruments`, {
+        params: request
+      });
+      return response.data;
+    } catch (error) {
+      // Error handling
+      throw error;
     }
-  });
-  
-  // Handle successful response
-  console.log('Available instruments:', response.instruments);
-} catch (error) {
-  if (axios.isAxiosError(error)) {
-    // Handle API errors
-    console.error('API Error:', error.response?.data.error);
-  } else {
-    // Handle other errors
-    console.error('Error:', error);
   }
 }
 ```
 
-## Features
+## Error Handling
 
-- **Type Safety**: Full TypeScript support with request/response type checking
-- **Error Handling**: Comprehensive error handling with typed error responses
-- **Axios Integration**: Uses configured Axios instance with interceptors
-- **Environment Support**: Configuration for development, staging, and production
-- **Testing**: Comprehensive test coverage with mocked Axios responses
-- **Modular Architecture**: Services are organized by domain (e.g., instruments)
+The services implement consistent error handling:
+
+```typescript
+interface ApiError {
+  code: string;
+  message: string;
+  details?: Record<string, any>;
+}
+
+try {
+  // API call
+} catch (error) {
+  if (axios.isAxiosError(error)) {
+    const apiError: ApiError = error.response?.data;
+    // Handle API error
+  }
+  throw error;
+}
+```
+
+## Testing
+
+Services are thoroughly tested:
+
+```typescript
+import { InstrumentService } from '../instrument/service';
+import axios from 'axios';
+
+jest.mock('axios');
+
+describe('InstrumentService', () => {
+  it('should fetch instruments', async () => {
+    const mockResponse = {
+      instruments: [
+        { id: 'BTCUSD', name: 'Bitcoin' }
+      ]
+    };
+    
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: mockResponse
+    });
+
+    const service = new InstrumentService();
+    const result = await service.getInstruments({
+      context: {
+        app_id: 1001,
+        account_type: 'real'
+      }
+    });
+
+    expect(result).toEqual(mockResponse);
+  });
+});
+```
 
 ## Best Practices
 
-1. **Type Safety**:
-   - Use TypeScript interfaces for all requests and responses
-   - Leverage type inference for better developer experience
-   - Keep types in sync with API specifications
-   - Define common types in types.ts
+1. **Type Safety**
+   - Use TypeScript interfaces for request/response types
+   - Validate API responses against types
+   - Handle type mismatches gracefully
 
-2. **Error Handling**:
-   - Always wrap API calls in try/catch blocks
-   - Use axios.isAxiosError for type-safe error handling
-   - Handle both API errors and network errors appropriately
+2. **Error Handling**
+   - Implement consistent error handling
+   - Provide meaningful error messages
+   - Log errors appropriately
 
-3. **Testing**:
-   - Mock Axios responses for predictable tests
-   - Test both success and error scenarios
-   - Verify correct request parameters
-   - Test error handling logic
+3. **Testing**
+   - Mock API responses
+   - Test error scenarios
+   - Verify request parameters
 
-4. **Configuration**:
-   - Use environment variables for configuration
-   - Follow environment-specific settings
-   - Use the configured Axios instance from axios_interceptor.ts
+4. **Performance**
+   - Implement request caching where appropriate
+   - Handle request cancellation
+   - Optimize request payloads
 
-5. **Service Organization**:
-   - Group related endpoints into domain-specific services
-   - Keep service implementations focused and single-responsibility
-   - Use clear, descriptive names for services and methods
+## Usage Guidelines
 
-## Testing Example
+1. **Service Instantiation**
+   ```typescript
+   const instrumentService = new InstrumentService();
+   ```
 
-```typescript
-import { AxiosError } from 'axios';
-import { apiClient } from '../../axios_interceptor';
-import { getAvailableInstruments } from '../instrument/service';
-import {
-  AvailableInstrumentsRequest,
-  AvailableInstrumentsResponse,
-  ErrorResponse,
-} from '../types';
+2. **Making Requests**
+   ```typescript
+   try {
+     const instruments = await instrumentService.getInstruments(request);
+     // Handle success
+   } catch (error) {
+     // Handle error
+   }
+   ```
 
-// Mock the axios client
-jest.mock('../../axios_interceptor');
-const mockApiClient = apiClient as jest.Mocked<typeof apiClient>;
+3. **Response Handling**
+   ```typescript
+   interface ApiResponse<T> {
+     data: T;
+     metadata?: {
+       timestamp: string;
+       version: string;
+     };
+   }
 
-describe('REST API Service', () => {
-  describe('getAvailableInstruments', () => {
-    const mockRequest: AvailableInstrumentsRequest = {
-      context: {
-        app_id: 1001,
-        account_type: 'real',
-      },
-    };
+   // Usage
+   const response = await instrumentService.getInstruments(request);
+   const instruments = response.data;
+   ```
 
-    const mockResponse: AvailableInstrumentsResponse = {
-      instruments: [
-        { id: 'EURUSD', name: 'EUR/USD' },
-        { id: 'GBPUSD', name: 'GBP/USD' },
-      ],
-    };
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should successfully fetch available instruments', async () => {
-      mockApiClient.post.mockResolvedValueOnce({ data: mockResponse });
-
-      const result = await getAvailableInstruments(mockRequest);
-
-      expect(mockApiClient.post).toHaveBeenCalledWith(
-        '/available_instruments',
-        mockRequest
-      );
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('should handle validation error', async () => {
-      const errorResponse: ErrorResponse = {
-        error: 'app_id is required in context',
-      };
-
-      mockApiClient.post.mockRejectedValueOnce(
-        new AxiosError(
-          'Bad Request',
-          '400',
-          undefined,
-          undefined,
-          { data: errorResponse, status: 400 } as any
-        )
-      );
-
-      await expect(getAvailableInstruments({
-        context: { app_id: 0, account_type: '' },
-      })).rejects.toThrow('Bad Request');
-    });
-
-    it('should handle server error', async () => {
-      const errorResponse: ErrorResponse = {
-        error: 'Failed to fetch available instruments',
-      };
-
-      mockApiClient.post.mockRejectedValueOnce(
-        new AxiosError(
-          'Internal Server Error',
-          '500',
-          undefined,
-          undefined,
-          { data: errorResponse, status: 500 } as any
-        )
-      );
-
-      await expect(getAvailableInstruments(mockRequest)).rejects.toThrow('Internal Server Error');
-    });
-  });
-});
+4. **Error Recovery**
+   ```typescript
+   try {
+     await instrumentService.getInstruments(request);
+   } catch (error) {
+     if (error.code === 'RATE_LIMIT') {
+       // Implement retry logic
+     }
+     throw error;
+   }

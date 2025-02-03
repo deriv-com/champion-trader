@@ -1,9 +1,9 @@
-/// <reference types="vite/client" />
+/// <reference types="@rsbuild/core/types" />
 
 declare namespace NodeJS {
   interface ProcessEnv {
-    VITE_WS_URL: string;
-    VITE_WS_PUBLIC_PATH: string;
-    VITE_WS_PROTECTED_PATH: string;
+    RSBUILD_WS_URL: string;
+    RSBUILD_WS_PUBLIC_PATH: string;
+    RSBUILD_WS_PROTECTED_PATH: string;
   }
 }

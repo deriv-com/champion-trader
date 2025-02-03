@@ -4,9 +4,9 @@ import { apiConfig } from "./config/api";
 
 // Set up environment variables for tests
 process.env.NODE_ENV = "development";
-process.env.VITE_WS_URL = apiConfig.ws.baseUrl;
-process.env.VITE_WS_PUBLIC_PATH = apiConfig.ws.publicPath;
-process.env.VITE_WS_PROTECTED_PATH = apiConfig.ws.protectedPath;
+process.env.RSBUILD_WS_URL = apiConfig.ws.baseUrl;
+process.env.RSBUILD_WS_PUBLIC_PATH = apiConfig.ws.publicPath;
+process.env.RSBUILD_WS_PROTECTED_PATH = apiConfig.ws.protectedPath;
 process.env.MODE = "test";
 
 // Mock TextEncoder/TextDecoder for React Router
