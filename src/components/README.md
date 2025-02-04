@@ -1,101 +1,127 @@
-# Component Architecture
+# Components Documentation
 
-This directory contains React components following Atomic Component Design principles. The components are organized to be modular, self-contained, and independently testable.
+## Table of Contents
+- [BottomSheet](#bottomsheet)
+- [TradeParam](#tradeparam)
+- [TradeButton](#tradebutton)
+- [Chart](#chart)
+- [DurationOptions](#durationoptions)
+- [AddMarketButton](#addmarketbutton)
 
-## Component Organization
+## BottomSheet
 
+A reusable bottom sheet component with drag-to-dismiss functionality.
+
+### Key Features
+- Single instance pattern using Zustand store
+- Dynamic height support (%, px, vh)
+- Theme-aware using Tailwind CSS variables
+- Drag gesture support with proper event cleanup
+- Content management through configuration
+
+### Usage
+
+```tsx
+// 1. Configure content in bottomSheetConfig.tsx
+export const bottomSheetConfig = {
+  'my-key': {
+    body: <MyContent />
+  }
+};
+
+// 2. Place component at root level
+<BottomSheet />
+
+// 3. Control from anywhere using the store
+const { setBottomSheet } = useBottomSheetStore();
+setBottomSheet(true, 'my-key', '50%');
 ```
-components/
-├── AddMarketButton/     # Market selection functionality
-├── BottomNav/          # Bottom navigation bar
-├── Chart/              # Trading chart visualization
-├── DurationOptions/    # Trade duration selection
-├── TradeButton/        # Trade execution controls
-├── TradeFields/        # Trade parameter inputs
-└── ui/                 # Shared UI components
+
+### State Management
+```typescript
+interface BottomSheetState {
+  showBottomSheet: boolean;
+  key: string | null;
+  height: string;
+  setBottomSheet: (show: boolean, key?: string, height?: string) => void;
+}
 ```
 
-## Design Principles
+### Recent Changes
+- Removed click-outside-to-close behavior
+- Added proper event listener cleanup
+- Migrated to theme-aware colors using Tailwind CSS variables
+- Improved touch event handling
+- Added dynamic height support
 
-1. **Atomic Design**
-   - Components are built from smallest to largest
-   - Each component has a single responsibility
-   - Components are self-contained with their own styles and logic
+## TradeParam
 
-2. **Styling**
-   - Uses TailwindCSS for consistent styling
-   - Styles are encapsulated within components
-   - Follows utility-first CSS principles
+A card component for displaying trade parameters.
 
-3. **State Management**
-   - Local state for component-specific logic
-   - Zustand for shared/global state
-   - Props for component configuration
+### Usage
+```tsx
+<TradeParam 
+  label="Stake" 
+  value="100" 
+  onClick={handleClick} // Optional
+/>
+```
 
-4. **Testing**
-   - Each component has its own test suite
-   - Tests cover component rendering and interactions
-   - Mock external dependencies when needed
+### Props
+```typescript
+interface TradeParamProps {
+  label: string;
+  value: string;
+  onClick?: () => void;
+}
+```
 
-## Component Guidelines
+### Recent Changes
+- Made component purely presentational
+- Added optional onClick handler
+- Cursor pointer only shows when onClick is provided
 
-1. **File Structure**
-   ```
-   ComponentName/
-   ├── ComponentName.tsx    # Main component implementation
-   ├── index.ts            # Public exports
-   └── __tests__/          # Test files
-       └── ComponentName.test.tsx
-   ```
+## TradeButton
 
-2. **Component Implementation**
-   ```typescript
-   import { useState } from 'react';
-   import { cn } from '@/lib/utils';
+[Documentation for TradeButton component]
 
-   interface ComponentProps {
-     // Props interface
-   }
+## Chart
 
-   export function Component({ ...props }: ComponentProps) {
-     // Implementation
-   }
-   ```
+[Documentation for Chart component]
 
-3. **Testing Pattern**
-   ```typescript
-   import { render, screen } from '@testing-library/react';
-   import { Component } from './Component';
+## DurationOptions
 
-   describe('Component', () => {
-     it('should render correctly', () => {
-       render(<Component />);
-       // Assertions
-     });
-   });
-   ```
+[Documentation for DurationOptions component]
 
-## Best Practices
+## AddMarketButton
 
-1. **Component Design**
-   - Keep components focused and single-purpose
-   - Use TypeScript interfaces for props
-   - Implement proper error boundaries
-   - Handle loading and error states
+[Documentation for AddMarketButton component]
 
-2. **Performance**
-   - Implement lazy loading where appropriate
-   - Memoize expensive calculations
-   - Optimize re-renders using React.memo when needed
+---
 
-3. **Accessibility**
-   - Use semantic HTML elements
-   - Include ARIA attributes where necessary
-   - Ensure keyboard navigation support
-   - Maintain proper color contrast
+## Component Design Principles
 
-4. **Code Quality**
-   - Follow consistent naming conventions
-   - Document complex logic
-   - Write comprehensive tests
-   - Use proper TypeScript types
+### 1. State Management
+- Use Zustand for global state
+- Keep components as pure as possible
+- Pass event handlers from parent components
+
+### 2. Styling
+- Use Tailwind CSS with theme variables
+- Follow design system color tokens
+- Ensure dark mode compatibility
+
+### 3. Performance
+- Implement proper cleanup
+- Use React.memo where beneficial
+- Lazy load when appropriate
+
+### 4. Accessibility
+- Follow WCAG guidelines
+- Ensure proper keyboard navigation
+- Maintain appropriate color contrast
+
+### 5. Testing
+- Write comprehensive unit tests
+- Test edge cases
+- Mock external dependencies

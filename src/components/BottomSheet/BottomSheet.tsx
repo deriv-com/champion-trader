@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
 
@@ -15,9 +15,6 @@ export const BottomSheet = () => {
     dragStartY.current = touch.clientY;
     currentY.current = 0;
     isDragging.current = true;
-
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("touchend", handleTouchEnd);
   }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
@@ -35,16 +32,25 @@ export const BottomSheet = () => {
   const handleTouchEnd = useCallback(() => {
     if (!sheetRef.current) return;
 
-    document.removeEventListener("touchmove", handleTouchMove);
-    document.removeEventListener("touchend", handleTouchEnd);
     isDragging.current = false;
-
     sheetRef.current.style.transform = "";
 
     if (currentY.current > 100) {
       setBottomSheet(false);
     }
   }, [setBottomSheet]);
+
+  useEffect(() => {
+    if (showBottomSheet) {
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("touchend", handleTouchEnd);
+
+      return () => {
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleTouchEnd);
+      };
+    }
+  }, [showBottomSheet, handleTouchMove, handleTouchEnd]);
 
   const body = key ? bottomSheetConfig[key]?.body : null;
 
@@ -59,7 +65,7 @@ export const BottomSheet = () => {
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-[#000000b8] z-50 animate-in fade-in-0"
+        className="fixed inset-0 bg-background/80 z-50 animate-in fade-in-0"
       />
 
       {/* Sheet */}
@@ -72,7 +78,7 @@ export const BottomSheet = () => {
           max-w-[800px]
           w-full
           mx-auto
-          bg-white
+          bg-background
           rounded-t-[16px]
           animate-in fade-in-0 slide-in-from-bottom
           duration-300
@@ -87,7 +93,7 @@ export const BottomSheet = () => {
           onTouchStart={handleTouchStart}
         >
           <div 
-            className="w-32 h-1 bg-[#E6E6E6] rounded-full hover:bg-gray-400 transition-colors cursor-grab active:cursor-grabbing" 
+            className="w-32 h-1 bg-muted hover:bg-muted-foreground transition-colors cursor-grab active:cursor-grabbing" 
           />
         </div>
 
