@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
-import { useMarketWebSocket } from "@/hooks/websocket";
 import { useClientStore } from "@/stores/clientStore";
 import { ContractSSEHandler } from "@/components/ContractSSEHandler";
 import { BalanceHandler } from "@/components/BalanceHandler";
@@ -21,21 +20,9 @@ const MenuPage = lazy(() =>
 );
 
 const AppContent = () => {
-  // Initialize market websocket for default instrument
-  const { isConnected } = useMarketWebSocket("R_100", {
-    onConnect: () => console.log("Market WebSocket Connected"),
-    onError: (error) => console.log("Market WebSocket Error:", error),
-    onPrice: (price) => console.log("Price Update:", price),
-  });
 
   const { token, isLoggedIn } = useClientStore();
 
-  // Log connection status changes
-  useEffect(() => {
-    if (!isConnected) {
-      console.log("Market WebSocket Disconnected");
-    }
-  }, [isConnected]);
 
   return (
     <MainLayout>

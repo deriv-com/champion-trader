@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
+    "lightweight-charts": "^5.0.1",
     "lucide-react": "^0.316.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

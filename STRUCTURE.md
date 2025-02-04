@@ -11,6 +11,7 @@ src/
 ├── components/       # Reusable UI components
 │   ├── BalanceDisplay/       # Displays the user balance.
 │   ├── BalanceHandler/       # Manages balance state.
+│   ├── Chart/               # Displays market data using WebSocket integration.
 │   └── ContractSSEHandler/   # Handles contract SSE streaming.
 ├── hooks/           # Custom React hooks
 │   ├── sse/        # SSE hooks for real-time data
