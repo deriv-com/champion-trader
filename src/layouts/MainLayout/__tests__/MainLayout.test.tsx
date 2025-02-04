@@ -20,7 +20,7 @@ describe('MainLayout', () => {
   it('applies correct layout classes', () => {
     renderWithRouter(<div>Test Content</div>);
     const container = screen.getByText('Test Content').parentElement?.parentElement;
-    expect(container).toHaveClass('flex flex-col min-h-screen');
+    expect(container).toHaveClass('flex flex-col flex-1');
   });
 
   it('renders with footer', () => {
