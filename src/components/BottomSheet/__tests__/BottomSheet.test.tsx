@@ -1,89 +1,105 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BottomSheet } from "../BottomSheet";
+import { useBottomSheetStore } from "@/stores/bottomSheetStore";
+
+// Mock the store and its types
+const mockUseBottomSheetStore = useBottomSheetStore as unknown as jest.Mock;
+jest.mock("@/stores/bottomSheetStore", () => ({
+  useBottomSheetStore: jest.fn()
+}));
+
+// Mock the config
+jest.mock("@/config/bottomSheetConfig", () => ({
+  bottomSheetConfig: {
+    'test-key': {
+      body: <div>Test Body Content</div>
+    }
+  }
+}));
 
 describe("BottomSheet", () => {
-  const mockHeader = <div>Test Header</div>;
-  const mockBody = <div>Test Body</div>;
-  const mockFooter = <div>Test Footer</div>;
-  const mockOnClose = jest.fn();
+  const mockSetBottomSheet = jest.fn();
 
-  it("renders header, body, and footer correctly", () => {
-    render(
-      <BottomSheet
-        isOpen={true}
-        onClose={mockOnClose}
-        header={mockHeader}
-        body={mockBody}
-        footer={mockFooter}
-      />
-    );
-
-    expect(screen.getByText("Test Header")).toBeInTheDocument();
-    expect(screen.getByText("Test Body")).toBeInTheDocument();
-    expect(screen.getByText("Test Footer")).toBeInTheDocument();
+  beforeEach(() => {
+    // Reset mocks
+    jest.clearAllMocks();
   });
 
-  it("applies custom height when provided", () => {
-    const { container } = render(
-      <BottomSheet
-        isOpen={true}
-        onClose={mockOnClose}
-        header={mockHeader}
-        body={mockBody}
-        footer={mockFooter}
-        height="50%"
-      />
-    );
+  it("renders body content when showBottomSheet is true", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '380px',
+      setBottomSheet: mockSetBottomSheet
+    });
 
-    const bottomSheet = container.firstChild as HTMLElement;
-    expect(bottomSheet).toHaveStyle({ height: "50%" });
+    render(<BottomSheet />);
+
+    expect(screen.getByText("Test Body Content")).toBeInTheDocument();
   });
 
-  it("applies full screen height when isFullScreen is true", () => {
-    const { container } = render(
-      <BottomSheet
-        isOpen={true}
-        onClose={mockOnClose}
-        header={mockHeader}
-        body={mockBody}
-        footer={mockFooter}
-        isFullScreen={true}
-      />
-    );
+  it("does not render when showBottomSheet is false", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: false,
+      key: null,
+      height: '380px',
+      setBottomSheet: mockSetBottomSheet
+    });
 
-    const bottomSheet = container.firstChild as HTMLElement;
-    expect(bottomSheet).toHaveStyle({ height: "100vh" });
+    render(<BottomSheet />);
+
+    expect(screen.queryByText("Test Body Content")).not.toBeInTheDocument();
   });
 
-  it("calls onClose when backdrop is clicked", () => {
-    render(
-      <BottomSheet
-        isOpen={true}
-        onClose={mockOnClose}
-        header={mockHeader}
-        body={mockBody}
-        footer={mockFooter}
-      />
-    );
+  it("applies custom height from store", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '50%',
+      setBottomSheet: mockSetBottomSheet
+    });
 
-    const backdrop = screen.getByTestId("bottom-sheet-backdrop");
-    fireEvent.click(backdrop);
-    expect(mockOnClose).toHaveBeenCalled();
+    const { container } = render(<BottomSheet />);
+
+    const bottomSheet = container.querySelector('[class*="fixed bottom-0"]');
+    expect(bottomSheet).toHaveStyle({ height: '50vh' });
   });
 
-  it("does not render when isOpen is false", () => {
-    render(
-      <BottomSheet
-        isOpen={false}
-        onClose={mockOnClose}
-        header={mockHeader}
-        body={mockBody}
-        footer={mockFooter}
-      />
-    );
+  it("handles drag to dismiss", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '380px',
+      setBottomSheet: mockSetBottomSheet
+    });
 
-    expect(screen.queryByText("Test Header")).not.toBeInTheDocument();
-    expect(screen.queryByText("Test Body")).not.toBeInTheDocument();
-    expect(screen.queryByText("Test Footer")).not.toBeInTheDocument();
+    const { container } = render(<BottomSheet />);
+
+    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
+    expect(handleBar).toBeInTheDocument();
+
+    // Simulate drag down
+    fireEvent.touchStart(handleBar!, { touches: [{ clientY: 0 }] });
+    fireEvent.touchMove(document, { touches: [{ clientY: 150 }] });
+    fireEvent.touchEnd(document);
+
+    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
+  });
+
+  it("does not close when clicking overlay", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '380px',
+      setBottomSheet: mockSetBottomSheet
+    });
+
+    const { container } = render(<BottomSheet />);
+
+    const overlay = container.querySelector('[class*="fixed inset-0"]');
+    expect(overlay).toBeInTheDocument();
+    fireEvent.click(overlay!);
+
+    expect(mockSetBottomSheet).not.toHaveBeenCalled();
   });
 });
