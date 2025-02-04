@@ -1,41 +1,54 @@
 # Champion Trader
 
-> Champion Trader is a modern React TypeScript trading application that provides real-time market data and contract pricing through WebSocket connections. Built with React 18, TypeScript, TailwindCSS, Zustand for state management, and Axios for API communication, it follows Test-Driven Development (TDD) methodology and Atomic Component Design principles.
+> Champion Trader is a modern React TypeScript trading application that provides real-time market data and contract pricing through efficient streaming technologies. Originally built with WebSocket connections, the application has evolved to primarily use Server-Sent Events (SSE) for improved performance, automatic reconnection, and easier integration with modern load balancers. Built with React 18, TypeScript, TailwindCSS, Zustand for state management, and Axios for API communication, the project strictly follows Test-Driven Development (TDD) methodology and Atomic Component Design principles.
 
-The application is structured around modular, self-contained components and uses a sophisticated WebSocket architecture for real-time data handling. It supports multiple environments (development, staging, production) with environment-specific configurations.
+The application is structured around modular, self-contained components and uses robust real-time data handling architectures. It supports multiple environments (development, staging, production) with environment-specific configurations and maintains a minimum of 90% test coverage across all components.
 
 ## Project Structure
 
-- [Project Overview](STRUCTURE.md): Complete project structure, organization, and best practices
+- [Project Overview](STRUCTURE.md): Complete project structure, organization, and development practices
 - [Directory Layout](STRUCTURE.md#source-code-src): Detailed source code organization
 - [Configuration Files](STRUCTURE.md#configuration-files): Build, development, and testing configurations
 - [Module Dependencies](STRUCTURE.md#module-dependencies): Core and development dependencies
 
 ## Architecture
 
-- [Component Structure](src/components/README.md): Details on Atomic Component Design implementation and component organization
-- [Bottom Sheet Store](src/stores/bottomSheetStore.ts): Centralized bottom sheet state management
-- [WebSocket Architecture](src/services/api/websocket/README.md): Comprehensive documentation of the WebSocket implementation for real-time market data and contract pricing
-- [State Management](src/stores/README.md): Information about Zustand store implementation and state management patterns
+- [Component Structure](src/components/README.md): Comprehensive guide on TDD implementation, Atomic Component Design, and component organization
+- [Bottom Sheet Store](src/stores/bottomSheetStore.ts): Centralized bottom sheet state management with TDD examples
+- [WebSocket Architecture](src/services/api/websocket/README.md): Documentation of the legacy WebSocket implementation (to be deprecated)
+- [SSE Services](src/services/api/sse/README.md): Documentation of the Server-Sent Events (SSE) implementation for real-time market and contract price updates
+- [State Management](src/stores/README.md): Detailed guide on Zustand store implementation, TDD approach, and state management patterns
+
+## Development Methodology
+
+- [Test-Driven Development](README.md#development-methodology): Detailed TDD process with Red-Green-Refactor cycle
+- [Atomic Component Design](README.md#atomic-component-design): Guidelines for building self-contained, independent components
+- [Testing Requirements](README.md#testing): Comprehensive testing approach with 90% coverage requirement
 
 ## API Integration
 
 - [REST API Documentation](src/services/api/rest/README.md): Available endpoints and usage examples for REST API integration
-- [WebSocket Hooks](src/hooks/websocket/README.md): React hooks for WebSocket integration, including market and contract data subscriptions
+- [WebSocket Hooks](src/hooks/websocket/README.md): Legacy WebSocket hooks (to be deprecated)
+- [SSE Services](src/services/api/sse/README.md): Real-time data streaming services leveraging SSE for improved reliability and performance
 
-## Development
+## State Management
 
-- [Getting Started](README.md): Project setup, prerequisites, and basic usage
-- [Development Guidelines](README.md#development-guidelines): Coding standards and best practices
-- [Import Path Configuration](README.md#import-paths): Path alias usage and configuration
+- [Store Organization](src/stores/README.md#store-organization): Detailed store structure and implementation
+- [TDD for Stores](src/stores/README.md#test-driven-development): Test-first approach for store development
+- [Store Guidelines](src/stores/README.md#store-guidelines): Best practices and patterns for state management
 
-## Testing
+## Component Development
 
-- [Testing Guidelines](README.md#testing-guidelines): TDD approach and testing requirements
-- [WebSocket Testing](src/services/api/websocket/README.md#testing): WebSocket-specific testing patterns and examples
+- [Component Guidelines](src/components/README.md#component-guidelines): Detailed component development process
+- [Testing Patterns](src/components/README.md#test-first-implementation): Comprehensive testing examples and patterns
+- [Best Practices](src/components/README.md#best-practices): Component design, testing, performance, and accessibility guidelines
 
 ## Optional
 
 - [Environment Configuration](README.md#environment-configuration): Detailed environment-specific settings
 - [Version Control Guidelines](README.md#version-control): Commit message format and branching strategy
 - [Production Build](README.md#building-for-production): Production build process and optimization
+
+## Documentation Updates
+
+This documentation is regularly maintained and updated to reflect the current state of the codebase. All changes to the implementation must be accompanied by corresponding updates to the relevant documentation files.

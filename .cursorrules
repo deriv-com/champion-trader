@@ -222,6 +222,28 @@ task_completion:
 
 ---
 
+## DOCUMENTATION MAINTENANCE
+
+documentation_maintenance:
+  description: Ensure all documentation is kept up-to-date with code changes
+  requirements:
+    - Update relevant README.md files when modifying components, hooks, or services
+    - Keep STRUCTURE.md in sync with architectural changes
+    - Maintain accurate API documentation
+    - Update llms.txt when making significant changes to:
+      - Project architecture
+      - Development practices
+      - Documentation structure
+      - Component organization
+      - Testing requirements
+  process:
+    - Identify affected documentation files
+    - Update documentation to reflect changes
+    - Verify documentation links and references
+    - Include documentation updates in commit messages
+
+---
+
 # Security
 
 ## Sensitive Files

@@ -130,7 +130,7 @@ export abstract class BaseWebSocketService<T extends WebSocketMessageMap> {
     };
 
     this.wsHandlers.error = (error: Event) => {
-      console.error("WebSocket error:", error);
+      console.log("WebSocket error:", error);
       this.options.onError?.(error);
       this.handleError({ error: "WebSocket connection error" });
     };
@@ -146,7 +146,7 @@ export abstract class BaseWebSocketService<T extends WebSocketMessageMap> {
 
         this.handleMessage(message);
       } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+        console.log("Error parsing WebSocket message:", error);
         this.handleError({ error: "Failed to parse WebSocket message" });
       }
     };
@@ -158,7 +158,7 @@ export abstract class BaseWebSocketService<T extends WebSocketMessageMap> {
   }
 
   protected handleError(error: WebSocketError): void {
-    console.error("WebSocket error:", error);
+    console.log("WebSocket error:", error);
     this.errorHandlers.forEach((handler) => handler(error));
   }
 

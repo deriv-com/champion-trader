@@ -1,178 +1,260 @@
 # Project Structure
 
-## Root Directory
+## Overview
 
-```
-/
-├── .env.example              # Environment variables template
-├── .gitignore               # Git ignore rules
-├── components.json          # UI components configuration
-├── global.css              # Global styles
-├── index.html              # Entry HTML file
-├── jest.config.cjs         # Jest testing configuration
-├── package.json            # Project dependencies and scripts
-├── postcss.config.cjs      # PostCSS configuration
-├── rsbuild.config.ts       # Rsbuild configuration
-├── styleguide.css         # Style guide definitions
-├── tailwind.config.cjs    # Tailwind CSS configuration
-└── tsconfig.json          # TypeScript configuration
-```
+The Champion Trader application follows a modular architecture with clear separation of concerns. This document outlines the project structure and key architectural decisions.
 
-## Source Code (/src)
+## Directory Structure
 
-### Core Files
 ```
 src/
-├── App.tsx                # Root React component
-├── index.tsx             # Application entry point
-├── global.css           # Global styles
-└── env.d.ts             # Environment type definitions
+├── components/       # Reusable UI components
+├── hooks/           # Custom React hooks
+│   ├── sse/        # SSE hooks for real-time data
+│   └── websocket/  # Legacy WebSocket hooks
+├── layouts/         # Page layouts
+├── screens/         # Page components
+├── services/        # API and service layer
+│   └── api/
+│       ├── rest/    # REST API services
+│       ├── sse/     # SSE services
+│       └── websocket/ # Legacy WebSocket services
+├── stores/          # Zustand stores
+└── types/          # TypeScript type definitions
 ```
 
-### Components
+## Development Practices
+
+### Test-Driven Development (TDD)
+
+All components and features follow TDD methodology:
+
 ```
-src/components/
-├── AddMarketButton/      # Market selection functionality
-├── BottomNav/           # Bottom navigation bar
-├── Chart/               # Trading chart visualization
-├── DurationOptions/     # Trade duration selection
-├── TradeButton/        # Trade execution controls
-├── TradeFields/        # Trade parameter inputs
-└── ui/                 # Shared UI components
+__tests__/
+├── components/     # Component tests
+│   ├── AddMarketButton/
+│   ├── BottomNav/
+│   ├── BottomSheet/
+│   ├── Chart/
+│   ├── DurationOptions/
+│   └── TradeButton/
+├── hooks/         # Hook tests
+│   ├── sse/
+│   └── websocket/
+├── services/      # Service tests
+│   └── api/
+│       ├── rest/
+│       ├── sse/
+│       └── websocket/
+└── stores/        # Store tests
+```
+
+Test coverage requirements:
+- Minimum 90% coverage for all new code
+- All edge cases must be tested
+- Integration tests for component interactions
+- Mocked service responses for API tests
+
+### Atomic Component Design
+
+Components follow atomic design principles and are organized by feature:
+
+```
+components/
+├── AddMarketButton/     # Market selection
+├── BottomNav/           # Navigation component
+├── BottomSheet/         # Modal sheet component
+├── Chart/               # Price chart
+├── DurationOptions/     # Trade duration
+├── TradeButton/         # Trade execution
+├── TradeFields/         # Trade parameters
+└── ui/                  # Shared UI components
     ├── button.tsx
     ├── card.tsx
     ├── switch.tsx
     └── toggle.tsx
 ```
 
-### Layouts
+Each component:
+- Is self-contained with its own tests
+- Uses TailwindCSS for styling
+- Handles its own state management
+- Has clear documentation
+
+## Key Components
+
+### Real-time Data Services
+
+#### SSE Services (`src/services/api/sse/`)
+
+The SSE implementation provides efficient unidirectional streaming for real-time data:
+
 ```
-src/layouts/
-└── MainLayout/          # Main application layout
-    ├── Footer.tsx
-    ├── Header.tsx
-    ├── MainLayout.tsx
-    └── __tests__/
+sse/
+├── base/           # Base SSE functionality
+│   ├── service.ts  # Core SSE service
+│   ├── public.ts   # Public endpoint service
+│   ├── protected.ts # Protected endpoint service
+│   └── types.ts    # Shared types
+├── market/         # Market data streaming
+│   └── service.ts  # Market SSE service
+└── contract/       # Contract price streaming
+    └── service.ts  # Contract SSE service
 ```
 
-### Screens
-```
-src/screens/
-├── MenuPage/           # Menu screen
-├── PositionsPage/      # Trading positions screen
-└── TradePage/         # Main trading screen
+Features:
+- Automatic reconnection handling
+- Type-safe message handling
+- Authentication support
+- Error handling and recovery
+- Connection state management
+
+#### React Hooks (`src/hooks/sse/`)
+
+Custom hooks for SSE integration:
+
+```typescript
+// Market data hook
+const { price, isConnected, error } = useMarketSSE(instrumentId, {
+  onPrice: (price) => void,
+  onError: (error) => void,
+  onConnect: () => void,
+  onDisconnect: () => void
+});
+
+// Contract price hook
+const { price, isConnected, error } = useContractSSE(params, authToken, {
+  onPrice: (price) => void,
+  onError: (error) => void,
+  onConnect: () => void,
+  onDisconnect: () => void
+});
 ```
 
 ### State Management
-```
-src/stores/
-├── tradeStore.ts       # Trading state management
-└── websocketStore.ts   # WebSocket connection state
-```
 
-### Services
-```
-src/services/
-└── api/
-    ├── rest/           # REST API services
-    │   └── instrument/ # Instrument-related endpoints
-    └── websocket/      # WebSocket services
-        ├── base/       # Base WebSocket functionality
-        ├── contract/   # Contract-specific WebSocket
-        └── market/     # Market data WebSocket
-```
+#### Zustand Stores (`src/stores/`)
 
-### Hooks
-```
-src/hooks/
-└── websocket/          # WebSocket integration hooks
-    ├── useContractWebSocket.ts
-    └── useMarketWebSocket.ts
-```
+- `bottomSheetStore.ts`: Manages bottom sheet state and interactions
+- `clientStore.ts`: Handles client configuration and settings
+- `sseStore.ts`: Manages SSE connections and real-time data
+- `tradeStore.ts`: Handles trade-related state
+- `websocketStore.ts`: Legacy WebSocket state (to be deprecated)
 
-### Configuration & Utilities
+Features:
+- TypeScript type safety
+- Atomic updates
+- Middleware support
+- DevTools integration
+
+Features:
+- Centralized state management
+- TypeScript support
+- Minimal boilerplate
+- Automatic state persistence
+- DevTools integration
+
+## Testing
+
+The project uses Jest and React Testing Library for testing:
+
 ```
-src/config/
-└── api.ts             # API configuration
-
-src/lib/
-└── utils.ts           # Utility functions
-
-src/types/
-└── jest.d.ts         # Jest type definitions
+__tests__/
+├── components/     # Component tests
+├── hooks/         # Hook tests
+├── services/      # Service tests
+└── stores/        # Store tests
 ```
 
-## Module Dependencies
+Test coverage includes:
+- Unit tests for services and hooks
+- Integration tests for components
+- State management tests
+- Error handling tests
+- Connection management tests
 
-### Core Dependencies
-- React and ReactDOM for UI
-- TypeScript for type safety
-- TailwindCSS for styling
-- Zustand for state management
-- Axios for HTTP requests
+## API Integration
 
-### Development Dependencies
-- Rsbuild for build tooling
-- Jest and React Testing Library for testing
-- ESLint for code quality
-- PostCSS and Autoprefixer for CSS processing
+### SSE Endpoints
 
-## Key Patterns
+```typescript
+// Configuration (src/config/api.ts)
+interface ApiConfig {
+  sse: {
+    baseUrl: string;
+    publicPath: string;
+    protectedPath: string;
+  };
+  // ... other configs
+}
+```
 
-1. **Component Organization**
-   - Atomic design principles
-   - Each component in its own directory
-   - Co-located tests with components
+### Environment Variables
 
-2. **State Management**
-   - Zustand stores for global state
-   - Component-local state where appropriate
-   - WebSocket state centralization
-
-3. **API Integration**
-   - REST services for static data
-   - WebSocket services for real-time data
-   - Type-safe API interfaces
-
-4. **Testing Structure**
-   - Tests co-located with implementation
-   - Separate test directories for complex modules
-   - Shared test utilities and mocks
-
-## Configuration Files
-
-1. **Build & Development**
-   - `rsbuild.config.ts`: Build configuration
-   - `tsconfig.json`: TypeScript settings
-   - `postcss.config.cjs`: CSS processing
-   - `tailwind.config.cjs`: Styling utilities
-
-2. **Testing**
-   - `jest.config.cjs`: Test runner configuration
-   - `src/setupTests.ts`: Test environment setup
-
-3. **Environment**
-   - `.env.example`: Environment variable template
-   - `src/env.d.ts`: Environment type definitions
+```env
+RSBUILD_REST_URL=https://api.example.com
+RSBUILD_SSE_PUBLIC_PATH=/sse
+RSBUILD_SSE_PROTECTED_PATH=/sse
+```
 
 ## Best Practices
 
-1. **File Organization**
-   - Feature-based directory structure
-   - Clear separation of concerns
-   - Co-located tests and types
+1. **Type Safety**
+   - Use TypeScript for all new code
+   - Define interfaces for all data structures
+   - Use strict type checking
+   - Leverage TypeScript's utility types
 
-2. **Naming Conventions**
-   - PascalCase for components
-   - camelCase for utilities and hooks
-   - kebab-case for CSS classes
+2. **Component Design**
+   - Follow atomic design principles
+   - Use composition over inheritance
+   - Keep components focused and single-responsibility
+   - Document props and side effects
 
-3. **Import Paths**
-   - Alias imports from `@/*`
-   - Relative imports for closely related files
-   - Explicit import ordering
+3. **State Management**
+   - Use local state for UI-only state
+   - Use Zustand for shared state
+   - Keep stores focused and minimal
+   - Document store interfaces
 
-4. **Testing Organization**
-   - `__tests__` directories for test files
-   - `.test.tsx` suffix for test files
-   - Shared test utilities in appropriate directories
+2. **Error Handling**
+   - Implement proper error boundaries
+   - Handle network errors gracefully
+   - Provide user-friendly error messages
+
+3. **Testing**
+   - Write tests for all new features
+   - Maintain high test coverage
+   - Use meaningful test descriptions
+
+4. **Performance**
+   - Implement proper cleanup in hooks
+   - Use memoization where appropriate
+   - Handle reconnection scenarios
+
+5. **Code Organization**
+   - Follow consistent file naming
+   - Group related functionality
+   - Document complex logic
+
+## Migration Notes
+
+The project is transitioning from WebSocket to SSE for real-time data:
+
+1. **Why SSE?**
+   - Simpler protocol
+   - Better load balancing
+   - Automatic reconnection
+   - Lower overhead
+   - Firewall friendly
+
+2. **Migration Strategy**
+   - Implement SSE alongside WebSocket
+   - Gradually migrate components
+   - Test thoroughly
+   - Remove WebSocket once complete
+
+3. **Compatibility**
+   - SSE services maintain similar interface
+   - Hooks provide consistent API
+   - State management remains unchanged
