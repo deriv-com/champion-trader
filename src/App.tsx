@@ -1,10 +1,10 @@
-import { lazy, Suspense, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useMarketWebSocket } from "@/hooks/websocket";
-import { useContractSSE } from "@/hooks/sse";
-import { ContractPriceRequest } from "@/services/api/websocket/types";
 import { useClientStore } from "@/stores/clientStore";
+import { ContractSSEHandler } from "@/components/ContractSSEHandler";
+import { BalanceHandler } from "@/components/BalanceHandler";
 
 const TradePage = lazy(() =>
   import("@/screens/TradePage").then((module) => ({
@@ -20,17 +20,7 @@ const MenuPage = lazy(() =>
   import("@/screens/MenuPage").then((module) => ({ default: module.MenuPage }))
 );
 
-// Initialize contract SSE for default parameters
-const contractParams: ContractPriceRequest = {
-  duration: "1m",
-  instrument: "R_100",
-  trade_type: "CALL",
-  currency: "USD",
-  payout: "100",
-  strike: "1234.56",
-};
-
-export const App = () => {
+const AppContent = () => {
   // Initialize market websocket for default instrument
   const { isConnected } = useMarketWebSocket("R_100", {
     onConnect: () => console.log("Market WebSocket Connected"),
@@ -38,24 +28,7 @@ export const App = () => {
     onPrice: (price) => console.log("Price Update:", price),
   });
 
-  const { token } = useClientStore();
-
-  const { price } = token
-    ? useContractSSE(
-        contractParams,
-        token,
-        {
-          onPrice: (price) => console.log("Contract Price Update:", price),
-          onError: (error) => console.log("Contract SSE Error:", error),
-        }
-      )
-    : { price: null };
-
-  useEffect(() => {
-    if (price) {
-      console.log("Contract Price:", price);
-    }
-  }, [price]);
+  const { token, isLoggedIn } = useClientStore();
 
   // Log connection status changes
   useEffect(() => {
@@ -65,17 +38,63 @@ export const App = () => {
   }, [isConnected]);
 
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<TradePage />} />
-            <Route path="/trade" element={<TradePage />} />
+    <MainLayout>
+      {token && (
+        <>
+          <ContractSSEHandler token={token} />
+          <BalanceHandler token={token} />
+        </>
+      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<TradePage />} />
+          <Route path="/trade" element={<TradePage />} />
+          {isLoggedIn ? (
             <Route path="/positions" element={<PositionsPage />} />
-            <Route path="/menu" element={<MenuPage />} />
-          </Routes>
-        </Suspense>
-      </MainLayout>
+          ) : (
+            <Route path="/positions" element={<Navigate to="/menu" />} />
+          )}
+          <Route path="/menu" element={<MenuPage />} />
+        </Routes>
+      </Suspense>
+    </MainLayout>
+  );
+};
+
+export const App = () => {
+  const [isInitialized, setIsInitialized] = useState(false);
+  const { setToken } = useClientStore();
+
+  // Handle login token
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get('token');
+    const tokenFromStorage = localStorage.getItem('loginToken');
+
+    if (tokenFromUrl) {
+      localStorage.setItem('loginToken', tokenFromUrl);
+      setToken(tokenFromUrl);
+      
+      // Remove token from URL
+      params.delete('token');
+      const newUrl = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    } else if (tokenFromStorage) {
+      setToken(tokenFromStorage);
+    }
+    
+    setIsInitialized(true);
+  }, [setToken]);
+
+  if (!isInitialized) {
+    return <div>Initializing...</div>;
+  }
+
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 };

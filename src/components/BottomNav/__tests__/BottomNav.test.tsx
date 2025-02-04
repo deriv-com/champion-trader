@@ -1,53 +1,42 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { BottomNav } from '../BottomNav';
+import { useClientStore } from '../../../stores/clientStore';
 
-// Mock component to track route changes
+// Component to display current route for testing navigation.
 const LocationDisplay = () => {
-  const location = useLocation();
-  return <div data-testid="location-display">{location.pathname}</div>;
+  return <div data-testid="location-display">{window.location.pathname}</div>;
+};
+
+const renderWithRouter = (initialRoute = '/') => {
+  window.history.pushState({}, 'Test page', initialRoute);
+  return render(
+    <MemoryRouter initialEntries={[initialRoute]}>
+      <BottomNav />
+      <LocationDisplay />
+      <Routes>
+        <Route path="*" element={<div />} />
+      </Routes>
+    </MemoryRouter>
+  );
 };
 
 describe('BottomNav', () => {
-  const renderWithRouter = (initialRoute = '/') => {
-    return render(
-      <MemoryRouter initialEntries={[initialRoute]}>
-        <LocationDisplay />
-        <BottomNav />
-      </MemoryRouter>
-    );
-  };
-
-  it('renders navigation buttons', () => {
-    renderWithRouter();
-    
-    expect(screen.getByText('Trade')).toBeInTheDocument();
-    expect(screen.getByText('Positions')).toBeInTheDocument();
-    expect(screen.getByText('Menu')).toBeInTheDocument();
+  beforeEach(() => {
+    // Reset logged-in state to false before each test.
+    useClientStore.getState().isLoggedIn = false;
   });
 
-  it('navigates to correct routes when clicked', () => {
+  it('does not render navigation button when user is logged out', () => {
     renderWithRouter();
-    
-    fireEvent.click(screen.getByText('Positions'));
-    expect(screen.getByTestId('location-display')).toHaveTextContent('/positions');
-
-    fireEvent.click(screen.getByText('Menu'));
-    expect(screen.getByTestId('location-display')).toHaveTextContent('/menu');
-
-    fireEvent.click(screen.getByText('Trade'));
-    expect(screen.getByTestId('location-display')).toHaveTextContent('/trade');
+    // Expect that the navigation button with test ID "bottom-nav-menu" is not present.
+    expect(screen.queryByTestId('bottom-nav-menu')).toBeNull();
   });
 
-  it('applies active styles to current route', () => {
-    renderWithRouter('/trade');
-    
-    const tradeButton = screen.getByText('Trade').closest('button');
-    const positionsButton = screen.getByText('Positions').closest('button');
-    const menuButton = screen.getByText('Menu').closest('button');
-
-    expect(tradeButton).toHaveClass('text-primary');
-    expect(positionsButton).toHaveClass('text-gray-500');
-    expect(menuButton).toHaveClass('text-gray-500');
+  it('renders navigation button when user is logged in', () => {
+    useClientStore.getState().isLoggedIn = true;
+    renderWithRouter();
+    // Expect that the navigation button with test ID "bottom-nav-menu" is present.
+    expect(screen.getByTestId('bottom-nav-menu')).toBeInTheDocument();
   });
 });

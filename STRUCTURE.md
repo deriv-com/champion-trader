@@ -9,6 +9,9 @@ The Champion Trader application follows a modular architecture with clear separa
 ```
 src/
 ├── components/       # Reusable UI components
+│   ├── BalanceDisplay/       # Displays the user balance.
+│   ├── BalanceHandler/       # Manages balance state.
+│   └── ContractSSEHandler/   # Handles contract SSE streaming.
 ├── hooks/           # Custom React hooks
 │   ├── sse/        # SSE hooks for real-time data
 │   └── websocket/  # Legacy WebSocket hooks
