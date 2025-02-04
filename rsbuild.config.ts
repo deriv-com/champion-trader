@@ -23,7 +23,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 4114,
+    port: 4113,
     host: 'localhost',
     strictPort: true
   },
