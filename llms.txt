@@ -14,6 +14,7 @@ The application is structured around modular, self-contained components and uses
 ## Architecture
 
 - [Component Structure](src/components/README.md): Details on Atomic Component Design implementation and component organization
+- [Bottom Sheet Store](src/stores/bottomSheetStore.ts): Centralized bottom sheet state management
 - [WebSocket Architecture](src/services/api/websocket/README.md): Comprehensive documentation of the WebSocket implementation for real-time market data and contract pricing
 - [State Management](src/stores/README.md): Information about Zustand store implementation and state management patterns
 
