@@ -76,40 +76,40 @@ export const TradePage: React.FC = () => {
         </Suspense>
       </div>
 
-      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[260px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
+      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[260px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px] landscape:border-l landscape:border-gray-300 landscape:border-opacity-20">
         <div className="flex flex-col gap-4 p-4 landscape:pt-4 landscape:pb-2 landscape:px-4" id="trade-fields">
           <div className="flex gap-4 landscape:flex-col landscape:gap-2" id="trade-params">
-            <TradeParam label="Duration" value={duration} className="landscape:w-full" />
-            <TradeParam label="Stake" value={stake} className="landscape:w-full" onClick={handleStakeClick} />
+        <TradeParam label="Duration" value={duration} className="landscape:w-full" />
+        <TradeParam label="Stake" value={stake} className="landscape:w-full" onClick={handleStakeClick} />
           </div>
 
           <div id="trade-toggles" className="landscape:mt-2">
-            <ToggleButton
-              label="Allow equals"
-              value={allowEquals}
-              onChange={toggleAllowEquals}
-            />
+        <ToggleButton
+          label="Allow equals"
+          value={allowEquals}
+          onChange={toggleAllowEquals}
+        />
           </div>
         </div>
 
         <div className="flex landscape:flex-col gap-2 p-4 landscape:py-2" id="trade-buttons">
           <Suspense fallback={<div>Loading...</div>}>
-            <TradeButton
-              className="bg-emerald-500 hover:bg-emerald-600 rounded-full landscape:h-[52px] landscape:py-4 landscape:[&>div]:px-2 landscape:[&_span]:text-sm"
-              title="Rise"
-              label="Payout"
-              value="19.55 USD"
-              title_position="right"
-            />
+        <TradeButton
+          className="bg-emerald-500 hover:bg-emerald-600 rounded-full landscape:h-[52px] landscape:py-4 landscape:[&>div]:px-2 landscape:[&_span]:text-sm"
+          title="Rise"
+          label="Payout"
+          value="19.55 USD"
+          title_position="right"
+        />
           </Suspense>
           <Suspense fallback={<div>Loading...</div>}>
-            <TradeButton
-              className="bg-rose-500 hover:bg-rose-600 rounded-full landscape:h-[52px] landscape:py-4 landscape:[&>div]:px-2 landscape:[&_span]:text-sm"
-              title="Fall"
-              label="Payout"
-              value="19.55 USD"
-              title_position="left"
-            />
+        <TradeButton
+          className="bg-rose-500 hover:bg-rose-600 rounded-full landscape:h-[52px] landscape:py-4 landscape:[&>div]:px-2 landscape:[&_span]:text-sm"
+          title="Fall"
+          label="Payout"
+          value="19.55 USD"
+          title_position="left"
+        />
           </Suspense>
         </div>
       </div>
