@@ -4,7 +4,7 @@ jest.mock("@/config/api", () => ({
     ws: {
       baseUrl: "wss://test.example.com",
       publicPath: "/ws",
-      protectedPath: "/protected/ws",
+      protectedPath: "/ws",
     },
   },
 }));

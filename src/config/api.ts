@@ -12,32 +12,32 @@ interface ApiConfig {
 const config: Record<string, ApiConfig> = {
   development: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api.deriv.ai',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/ws'
+      baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
+      protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api.deriv.ai'
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
     }
   },
   staging: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api.deriv.ai',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+      baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
+      protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api.deriv.ai'
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
     }
   },
   production: {
     ws: {
-      baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api.deriv.ai',
-      publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-      protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+      baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
+      protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
     },
     rest: {
-      baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api.deriv.ai'
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
     }
   }
 };
@@ -47,12 +47,12 @@ const getConfig = () => {
   if (process.env.NODE_ENV === 'test') {
     return {
       ws: {
-        baseUrl: process.env.VITE_WS_URL || 'wss://options-trading-api.deriv.ai/ws',
-        publicPath: process.env.VITE_WS_PUBLIC_PATH || '/ws',
-        protectedPath: process.env.VITE_WS_PROTECTED_PATH || '/protected/ws'
+        baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai/ws',
+        publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
+        protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
       },
       rest: {
-        baseUrl: process.env.VITE_REST_URL || 'https://options-trading-api.deriv.ai'
+        baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
       }
     };
   }

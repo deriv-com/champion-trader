@@ -40,7 +40,7 @@ const config = {
     ws: {
       baseUrl: 'ws://options-trading-api.deriv.ai',
       publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      protectedPath: '/ws'
     },
     rest: {
       baseUrl: 'http://options-trading-api.deriv.ai'
@@ -50,7 +50,7 @@ const config = {
     ws: {
       baseUrl: 'wss://options-trading-api.deriv.ai',
       publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      protectedPath: '/ws'
     },
     rest: {
       baseUrl: 'https://options-trading-api.deriv.ai'
@@ -60,7 +60,7 @@ const config = {
     ws: {
       baseUrl: 'wss://options-trading-api.deriv.ai',
       publicPath: '/ws',
-      protectedPath: '/protected/ws'
+      protectedPath: '/ws'
     },
     rest: {
       baseUrl: 'https://options-trading-api.deriv.ai'
@@ -70,10 +70,10 @@ const config = {
 ```
 
 These configurations can be overridden using environment variables:
-- VITE_WS_URL - WebSocket server URL
-- VITE_WS_PUBLIC_PATH - Public WebSocket endpoint path
-- VITE_WS_PROTECTED_PATH - Protected WebSocket endpoint path
-- VITE_REST_URL - REST API server URL
+- RSBUILD_WS_URL - WebSocket server URL
+- RSBUILD_WS_PUBLIC_PATH - Public WebSocket endpoint path
+- RSBUILD_WS_PROTECTED_PATH - Protected WebSocket endpoint path
+- RSBUILD_REST_URL - REST API server URL
 
 ## State Management
 

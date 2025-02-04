@@ -30,7 +30,7 @@ npm run dev
 ```
 
 After a few seconds, your project should be accessible at the address
-[http://localhost:5173/](http://localhost:5173/)
+[http://localhost:4113/](http://localhost:4113/)
 
 ## Environment Configuration
 
@@ -38,12 +38,12 @@ The application supports different environments (development, staging, productio
 
 ```bash
 # WebSocket Configuration
-VITE_WS_URL=ws://localhost:8080           # WebSocket server URL
-VITE_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
-VITE_WS_PROTECTED_PATH=/protected/ws      # Protected WebSocket endpoint path
+RSBUILD_WS_URL=ws://options-trading-api.deriv.ai          # WebSocket server URL
+RSBUILD_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
+RSBUILD_WS_PROTECTED_PATH=/ws                # Protected WebSocket endpoint path
 
 # REST API Configuration
-VITE_REST_URL=http://localhost:8080       # REST API server URL
+RSBUILD_REST_URL=http://options-trading-api.deriv.ai      # REST API server URL
 ```
 
 Default configurations per environment:

@@ -55,7 +55,7 @@ export interface WebSocketStore {
   subscribeToInstrumentPrice: (instrumentId: string) => void;
   unsubscribeFromInstrumentPrice: (instrumentId: string) => void;
 
-  // Contract actions (from /protected/ws endpoint)
+  // Contract actions (from /ws endpoint)
   initializeContractService: (authToken: string) => void;
   requestContractPrice: (params: ContractPriceRequest) => void;
   cancelContractPrice: (params: ContractPriceRequest) => void;
