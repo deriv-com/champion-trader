@@ -6,7 +6,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ balance }) => {
   return (
-    <header className="flex items-center justify-between p-4">
+    <header className="flex items-center justify-between p-4 landscape:hidden">
       <div className="flex flex-col">
         <span className="text-sm text-gray-700">Real</span>
         <span className="text-2xl font-bold text-teal-500">{balance}</span>
