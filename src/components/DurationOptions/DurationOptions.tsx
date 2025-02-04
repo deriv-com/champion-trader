@@ -1,8 +1,12 @@
 import { BarChart2, Clock, Expand } from 'lucide-react';
 
-export const DurationOptions = () => {
+interface DurationOptionsProps {
+  className?: string;
+}
+
+export const DurationOptions: React.FC<DurationOptionsProps> = ({ className = '' }) => {
   return (
-    <div className="flex items-center justify-between p-4 border-t border-b">
+    <div className={`flex items-center justify-between p-4 border-t border-b ${className}`}>
       <div className="flex items-center gap-4">
         <button className="text-sm font-medium text-primary">1t</button>
         <button className="text-sm font-medium text-gray-500">1m</button>

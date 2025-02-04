@@ -62,8 +62,9 @@ describe('TradePage', () => {
       render(<TradePage />);
     });
     
-    expect(screen.getByText('Vol. 100 (1s) Index')).toBeInTheDocument();
-    expect(screen.getByText('Rise/Fall')).toBeInTheDocument();
+    // Use getAllByText since the text appears in both landscape and portrait views
+    expect(screen.getAllByText('Vol. 100 (1s) Index')).toHaveLength(2);
+    expect(screen.getAllByText('Rise/Fall')).toHaveLength(2);
   });
 
   it('renders trade parameters from store', async () => {
