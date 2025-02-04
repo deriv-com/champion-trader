@@ -4,6 +4,11 @@ interface ApiConfig {
     publicPath: string;
     protectedPath: string;
   };
+  sse: {
+    baseUrl: string;
+    publicPath: string;
+    protectedPath: string;
+  };
   rest: {
     baseUrl: string;
   };
@@ -16,6 +21,11 @@ const config: Record<string, ApiConfig> = {
       publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
       protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
     },
+    sse: {
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_SSE_PUBLIC_PATH || '/sse',
+      protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/sse'
+    },
     rest: {
       baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
     }
@@ -26,6 +36,11 @@ const config: Record<string, ApiConfig> = {
       publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
       protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
     },
+    sse: {
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_SSE_PUBLIC_PATH || '/sse',
+      protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/sse'
+    },
     rest: {
       baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
     }
@@ -35,6 +50,11 @@ const config: Record<string, ApiConfig> = {
       baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai',
       publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
       protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
+    },
+    sse: {
+      baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai',
+      publicPath: process.env.RSBUILD_SSE_PUBLIC_PATH || '/sse',
+      protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/sse'
     },
     rest: {
       baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'
@@ -50,6 +70,11 @@ const getConfig = () => {
         baseUrl: process.env.RSBUILD_WS_URL || 'wss://options-trading-api.deriv.ai/ws',
         publicPath: process.env.RSBUILD_WS_PUBLIC_PATH || '/ws',
         protectedPath: process.env.RSBUILD_WS_PROTECTED_PATH || '/ws'
+      },
+      sse: {
+        baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai',
+        publicPath: process.env.RSBUILD_SSE_PUBLIC_PATH || '/sse',
+        protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/sse'
       },
       rest: {
         baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'

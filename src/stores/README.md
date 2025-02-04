@@ -7,7 +7,8 @@ This directory contains Zustand stores that manage the application's global stat
 ```
 stores/
 ├── tradeStore.ts         # Trading-related state management
-├── websocketStore.ts     # WebSocket connection state management
+├── sseStore.ts          # SSE connection and data management
+├── websocketStore.ts     # Legacy WebSocket connection state management (to be deprecated)
 └── __tests__/           # Store tests
 ```
 
@@ -41,9 +42,38 @@ The stores use Zustand for state management, providing a simple and efficient wa
    }));
    ```
 
-## WebSocket Store
+## SSE Store
 
-The WebSocket store manages real-time connections and data:
+The SSE store manages Server-Sent Events connections and real-time data:
+
+```typescript
+interface SSEState {
+  isMarketConnected: boolean;
+  isContractConnected: boolean;
+  marketPrices: Record<string, Price>;
+  contractPrices: Record<string, ContractPrice>;
+}
+
+interface SSEActions {
+  initializeMarketService: () => void;
+  initializeContractService: (authToken: string) => void;
+  updateMarketPrice: (instrumentId: string, price: Price) => void;
+  updateContractPrice: (contractId: string, price: ContractPrice) => void;
+  // Other actions
+}
+
+const useSSEStore = create<SSEState & SSEActions>((set) => ({
+  isMarketConnected: false,
+  isContractConnected: false,
+  marketPrices: {},
+  contractPrices: {},
+  // Implementation of actions
+}));
+```
+
+## WebSocket Store (Legacy)
+
+The WebSocket store manages legacy real-time connections (to be deprecated):
 
 ```typescript
 interface WebSocketState {

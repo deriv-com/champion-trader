@@ -3,6 +3,22 @@ import { App } from "./App";
 import { useMarketWebSocket } from "@/hooks/websocket";
 import { MainLayout } from "@/layouts/MainLayout";
 
+// Mock EventSource for SSE tests
+class MockEventSource {
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onerror: ((event: Event) => void) | null = null;
+  onopen: (() => void) | null = null;
+  url: string;
+
+  constructor(url: string) {
+    this.url = url;
+  }
+
+  close() {}
+}
+
+global.EventSource = MockEventSource as any;
+
 // Mock the lazy-loaded components
 jest.mock("@/screens/TradePage", () => ({
   TradePage: () => <div data-testid="trade-page">Trade Page</div>,

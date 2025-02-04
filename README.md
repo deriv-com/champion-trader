@@ -1,193 +1,171 @@
-# champion-trader
+# Champion Trader
 
-A React TypeScript trading application built with modern technologies and best practices.
+A React-based trading application for options trading.
 
-## Technologies
+## Features
 
-- React 18
-- TypeScript
-- TailwindCSS for styling
-- Zustand for state management
-- Axios for API communication
-- Jest and React Testing Library for testing
+- Real-time market data streaming
+- Contract price updates
+- Position management
+- Trade execution
+- Responsive design
+- TypeScript support
 
 ## Getting Started
 
-> **Prerequisites:**
-> The following steps require [NodeJS](https://nodejs.org/en/) to be installed on your system, so please
-> install it beforehand if you haven't already.
+### Prerequisites
 
-To get started with your project, you'll first need to install the dependencies with:
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
 
 ```bash
+# Install dependencies
 npm install
-```
 
-Then, you'll be able to run a development version of the project with:
-
-```bash
+# Start development server
 npm run dev
-```
 
-After a few seconds, your project should be accessible at the address
-[http://localhost:4113/](http://localhost:4113/)
+# Build for production
+npm run build
 
-## Environment Configuration
-
-The application supports different environments (development, staging, production) with environment-specific configurations. Create a `.env` file in the project root with the following variables:
-
-```bash
-# WebSocket Configuration
-RSBUILD_WS_URL=ws://options-trading-api.deriv.ai          # WebSocket server URL
-RSBUILD_WS_PUBLIC_PATH=/ws                   # Public WebSocket endpoint path
-RSBUILD_WS_PROTECTED_PATH=/ws                # Protected WebSocket endpoint path
-
-# REST API Configuration
-RSBUILD_REST_URL=http://options-trading-api.deriv.ai      # REST API server URL
-```
-
-Default configurations per environment:
-
-### Development
-```typescript
-{
-  ws: {
-    baseUrl: 'ws://options-trading-api.deriv.ai',
-    publicPath: '/ws',
-    protectedPath: '/ws'
-  },
-  rest: {
-    baseUrl: 'http://options-trading-api.deriv.ai'
-  }
-}
-```
-
-### Staging
-```typescript
-{
-  ws: {
-    baseUrl: 'wss://options-trading-api.deriv.ai',
-    publicPath: '/ws',
-    protectedPath: '/ws'
-  },
-  rest: {
-    baseUrl: 'https://options-trading-api.deriv.ai'
-  }
-}
-```
-
-### Production
-```typescript
-{
-  ws: {
-    baseUrl: 'wss://options-trading-api.deriv.ai',
-    publicPath: '/ws',
-    protectedPath: '/ws'
-  },
-  rest: {
-    baseUrl: 'https://options-trading-api.deriv.ai'
-  }
-}
-```
-
-## Testing
-
-Run all tests with:
-
-```bash
+# Run tests
 npm test
 ```
 
-Run tests in watch mode during development:
+## Architecture
 
-```bash
-npm test -- --watch
+### Real-time Data Streaming
+
+The application uses Server-Sent Events (SSE) for real-time data streaming, providing efficient unidirectional communication for:
+
+- Market price updates
+- Contract price streaming
+- Position updates
+
+#### Why SSE over WebSocket?
+
+1. **Simpler Protocol**: SSE is built on HTTP and is simpler to implement and maintain
+2. **Automatic Reconnection**: Built-in reconnection handling
+3. **Better Load Balancing**: Works well with HTTP/2 and standard load balancers
+4. **Lower Overhead**: No need for ping/pong messages or connection heartbeats
+5. **Firewall Friendly**: Uses standard HTTP port 80/443
+
+### Example Usage
+
+```typescript
+// Market Data Streaming
+import { useMarketSSE } from '@/hooks/sse';
+
+function MarketPrice({ instrumentId }: { instrumentId: string }) {
+  const { price, isConnected } = useMarketSSE(instrumentId, {
+    onPrice: (price) => {
+      console.log('New price:', price);
+    }
+  });
+
+  return (
+    <div>
+      {isConnected ? (
+        <p>Current price: {price?.bid}</p>
+      ) : (
+        <p>Connecting...</p>
+      )}
+    </div>
+  );
+}
+
+// Contract Price Streaming
+import { useContractSSE } from '@/hooks/sse';
+
+function ContractPrice({ params, authToken }: { params: ContractPriceRequest; authToken: string }) {
+  const { price, isConnected } = useContractSSE(params, authToken, {
+    onPrice: (price) => {
+      console.log('Contract price:', price);
+    }
+  });
+
+  return (
+    <div>
+      {isConnected ? (
+        <p>Price: {price?.price}</p>
+      ) : (
+        <p>Connecting...</p>
+      )}
+    </div>
+  );
+}
 ```
-
-### Testing Guidelines
-
-- Follow Test-Driven Development (TDD) methodology
-- Write tests before implementing functionality
-- Maintain at least 90% test coverage
-- Mock external dependencies (Axios, Zustand stores)
-- Test edge cases explicitly
-
-## Development Guidelines
-
-### Component Design
-
-- Follow Atomic Component Design principles
-- Components should be self-contained and independent
-- Use TailwindCSS for styling
-- Implement lazy loading for components
 
 ### State Management
 
-- Use local state for component-specific logic
-- Use Zustand for shared/global state
-- Avoid prop drilling
+The application uses Zustand for state management, providing:
 
-### API Integration
+- Centralized store for application state
+- Simple and predictable state updates
+- TypeScript support
+- Minimal boilerplate
 
-#### REST API
-The application uses Axios for REST API calls. Available endpoints:
+### Project Structure
 
-##### Available Instruments
-Fetches available trading instruments:
-```typescript
-import { getAvailableInstruments } from '@/services/api/rest/service';
-
-const response = await getAvailableInstruments({
-  context: {
-    app_id: 1001,
-    account_type: 'real'
-  }
-});
-// Returns: { instruments: [{ id: string, name: string }] }
+```
+src/
+├── components/       # Reusable UI components
+├── hooks/           # Custom React hooks
+├── layouts/         # Page layouts
+├── screens/         # Page components
+├── services/        # API and service layer
+│   └── api/
+│       ├── rest/    # REST API services
+│       └── sse/     # SSE services
+├── stores/          # Zustand stores
+└── types/           # TypeScript type definitions
 ```
 
-General guidelines:
-- Use Axios for HTTP requests
-- Wrap API calls in service layers
-- Handle errors gracefully
-- Use environment-specific configurations from `src/config/api.ts`
+## Development
 
-### Import Paths
+### Code Style
 
-Use path aliases for better maintainability:
+- Follow TypeScript best practices
+- Use functional components with hooks
+- Implement proper error handling
+- Write comprehensive tests
+- Use TailwindCSS for styling
 
-```typescript
-// Instead of
-import { TradeButton } from "../../components/TradeButton";
+### Testing
 
-// Use
-import { TradeButton } from "@/components/TradeButton";
-```
-
-### Version Control
-
-Commit messages should follow the pattern:
-```
-<type>: concise description
-
-- Detailed bullet points
-- Additional context
-```
-
-Allowed types:
-- feat: New features
-- fix: Bug fixes
-- refactor: Code changes that neither fix bugs nor add features
-- docs: Documentation changes
-- test: Test-related changes
-- chore: Build process or auxiliary tool changes
-
-## Building for Production
-
-Build the project for release with:
+The project uses Jest and React Testing Library for testing:
 
 ```bash
-npm run build
+# Run all tests
+npm test
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- src/components/MyComponent.test.tsx
 ```
 
-This will create an optimized production build in the `dist` directory.
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+RSBUILD_REST_URL=https://api.example.com
+RSBUILD_SSE_PUBLIC_PATH=/sse
+RSBUILD_SSE_PROTECTED_PATH=/sse
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
