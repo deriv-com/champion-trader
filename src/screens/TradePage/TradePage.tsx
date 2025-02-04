@@ -1,16 +1,18 @@
-import React, { Suspense } from "react";
-import { TradeButton } from "@/components/TradeButton";
-import { Chart } from "@/components/Chart";
-import { AddMarketButton } from "@/components/AddMarketButton";
-import { DurationOptions } from "@/components/DurationOptions";
-import { useTradeStore } from "@/stores/tradeStore";
-import { Card, CardContent } from "@/components/ui/card";
-import TradeParam from "@/components/TradeFields/TradeParam";
-import ToggleButton from "@/components/TradeFields/ToggleButton";
+import React, { Suspense } from "react"
+import { TradeButton } from "@/components/TradeButton"
+import { Chart } from "@/components/Chart"
+import { BottomSheet } from "@/components/BottomSheet"
+import { AddMarketButton } from "@/components/AddMarketButton"
+import { DurationOptions } from "@/components/DurationOptions"
+import { useTradeStore } from "@/stores/tradeStore"
+import { useBottomSheetStore } from "@/stores/bottomSheetStore"
+import { Card, CardContent } from "@/components/ui/card"
+import TradeParam from "@/components/TradeFields/TradeParam"
+import ToggleButton from "@/components/TradeFields/ToggleButton"
 
 interface MarketInfoProps {
-  title: string;
-  subtitle: string;
+  title: string
+  subtitle: string
 }
 
 const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
@@ -22,10 +24,11 @@ const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
       </div>
     </CardContent>
   </Card>
-);
+)
 
 export const TradePage: React.FC = () => {
-  const { stake, duration, allowEquals, toggleAllowEquals } = useTradeStore();
+  const { stake, duration, allowEquals, toggleAllowEquals } = useTradeStore()
+  const { setBottomSheet } = useBottomSheetStore()
 
   return (
     <div className="flex flex-col flex-1">
@@ -67,13 +70,18 @@ export const TradePage: React.FC = () => {
 
         <div className="flex gap-2 p-4" id="trade-buttons">
           <Suspense fallback={<div>Loading...</div>}>
-            <TradeButton
-              className="bg-emerald-500 hover:bg-emerald-600 rounded-full"
-              title="Rise"
-              label="Payout"
-              value="19.55 USD"
-              title_position="right"
-            />
+            <div 
+              className="flex-1" 
+              onClick={() => setBottomSheet(true, 'rise-contract')}
+            >
+              <TradeButton
+                className="bg-emerald-500 hover:bg-emerald-600 rounded-full w-full"
+                title="Rise"
+                label="Payout"
+                value="19.55 USD"
+                title_position="right"
+              />
+            </div>
           </Suspense>
           <Suspense fallback={<div>Loading...</div>}>
             <TradeButton
@@ -86,6 +94,8 @@ export const TradePage: React.FC = () => {
           </Suspense>
         </div>
       </div>
+
+      <BottomSheet />
     </div>
-  );
-};
+  )
+}
