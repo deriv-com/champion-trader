@@ -1,6 +1,5 @@
 import { render, act, screen } from "@testing-library/react";
 import { App } from "./App";
-import { useMarketWebSocket } from "@/hooks/websocket";
 import { useContractSSE } from "@/hooks/sse";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
@@ -42,9 +41,6 @@ jest.mock("@/layouts/MainLayout", () => ({
 }));
 
 // Mock the websocket, SSE hooks, and client store
-jest.mock("@/hooks/websocket", () => ({
-  useMarketWebSocket: jest.fn(),
-}));
 
 jest.mock("@/hooks/sse", () => ({
   useContractSSE: jest.fn(),
@@ -62,7 +58,6 @@ jest.mock("@/stores/clientStore", () => ({
 
 describe("App", () => {
   const mockMainLayout = MainLayout as jest.Mock;
-  const mockUseMarketWebSocket = useMarketWebSocket as jest.Mock;
   const mockUseContractSSE = useContractSSE as jest.Mock;
   const mockUseClientStore = useClientStore as unknown as jest.Mock;
 
@@ -79,11 +74,6 @@ describe("App", () => {
       logout: jest.fn(),
     });
 
-    mockUseMarketWebSocket.mockReturnValue({
-      isConnected: true,
-      error: null,
-      price: null,
-    });
 
     mockUseContractSSE.mockReturnValue({
       price: null,
@@ -105,73 +95,9 @@ describe("App", () => {
     expect(await screen.findByTestId("trade-page")).toBeInTheDocument();
   });
 
-  it("initializes market websocket with correct instrument", () => {
-    render(<App />);
 
-    // Verify MainLayout is rendered
-    expect(screen.getByTestId("main-layout")).toBeInTheDocument();
 
-    expect(mockUseMarketWebSocket).toHaveBeenCalledWith(
-      "R_100",
-      expect.objectContaining({
-        onConnect: expect.any(Function),
-        onError: expect.any(Function),
-        onPrice: expect.any(Function),
-      })
-    );
-  });
 
-  it("logs connection status changes", () => {
-    mockUseMarketWebSocket.mockReturnValue({
-      isConnected: false,
-      error: null,
-      price: null,
-    });
-
-    render(<App />);
-
-    expect(console.log).toHaveBeenCalledWith("Market WebSocket Disconnected");
-  });
-
-  it("handles websocket errors", () => {
-    const mockError = new Error("WebSocket error");
-
-    render(<App />);
-
-    // Get the error handler from the mock calls
-    const { onError } = mockUseMarketWebSocket.mock.calls[0][1];
-
-    // Simulate error
-    act(() => {
-      onError(mockError);
-    });
-
-    expect(console.log).toHaveBeenCalledWith(
-      "Market WebSocket Error:",
-      mockError
-    );
-  });
-
-  it("handles price updates", () => {
-    render(<App />);
-
-    const mockPrice = {
-      instrument_id: "R_100",
-      bid: 100,
-      ask: 101,
-      timestamp: "2024-01-30T00:00:00Z",
-    };
-
-    // Get the price handler from the mock calls
-    const { onPrice } = mockUseMarketWebSocket.mock.calls[0][1];
-
-    // Simulate price update
-    act(() => {
-      onPrice(mockPrice);
-    });
-
-    expect(console.log).toHaveBeenCalledWith("Price Update:", mockPrice);
-  });
 
   it("handles contract SSE price updates when logged in", () => {
     mockUseClientStore.mockReturnValue({

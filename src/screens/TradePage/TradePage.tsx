@@ -76,7 +76,7 @@ export const TradePage: React.FC = () => {
         </Suspense>
       </div>
 
-      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[320px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
+      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[260px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
         <div className="flex flex-col gap-4 p-4 landscape:pt-4 landscape:pb-2 landscape:px-4" id="trade-fields">
           <div className="flex gap-4 landscape:flex-col landscape:gap-2" id="trade-params">
             <TradeParam label="Duration" value={duration} className="landscape:w-full" />
