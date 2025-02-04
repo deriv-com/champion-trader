@@ -55,38 +55,8 @@ export class MarketSSEService extends PublicSSEService<MarketSSEMap> {
     }
   }
 
-  private setupEventHandlers(): void {
-    if (!this.eventSource) return;
-
-    this.eventSource.onopen = () => {
-      this.isConnecting = false;
-      this.reconnectCount = 0;
-    };
-
-    this.eventSource.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data) as SSEMessage;
-        this.handleMessage(message);
-      } catch (error) {
-        console.error('Failed to parse SSE message:', error);
-        this.handleError({ error: 'Failed to parse SSE message' });
-      }
-    };
-
-    this.eventSource.onerror = () => {
-      this.isConnecting = false;
-      this.handleError({ error: 'SSE connection error' });
-      this.reconnect();
-    };
-  }
-
-  public override connect(): void {
-    if (this.eventSource || this.isConnecting || this.subscriptions.size === 0) {
-      return;
-    }
-
-    this.isConnecting = true;
-    const url = new URL(this.getEndpoint());
+  protected override getEndpoint(): string {
+    const url = new URL(super.getEndpoint());
     // First append the action parameter
     url.searchParams.append("action", "instrument_price");
 
@@ -95,7 +65,13 @@ export class MarketSSEService extends PublicSSEService<MarketSSEMap> {
       url.searchParams.append('instrument_id', instrumentId);
     });
 
-    this.eventSource = new EventSource(url.toString());
-    this.setupEventHandlers();
+    return url.toString();
+  }
+
+  public override connect(): void {
+    if (this.subscriptions.size === 0) {
+      return;
+    }
+    super.connect();
   }
 }

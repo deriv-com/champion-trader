@@ -1,15 +1,12 @@
-import { ProtectedSSEService } from '../base/protected';
-import {
-  SSEMessage,
-  SSEMessageMap,
-} from '@/services/api/sse/base/types';
+import { ProtectedSSEService } from "../base/protected";
+import { SSEMessage, SSEMessageMap } from "@/services/api/sse/base/types";
 import {
   ContractPriceRequest,
-  ContractPriceResponse
-} from '@/services/api/websocket/types';
+  ContractPriceResponse,
+} from "@/services/api/websocket/types";
 
 interface ContractSSEMap extends SSEMessageMap {
-  'contract_price': {
+  contract_price: {
     request: ContractPriceRequest;
     response: ContractPriceResponse;
   };
@@ -21,17 +18,17 @@ export class ContractSSEService extends ProtectedSSEService<ContractSSEMap> {
   constructor(authToken: string) {
     super(authToken, {
       reconnectAttempts: 5,
-      reconnectInterval: 5000
+      reconnectInterval: 5000,
     });
   }
 
   public requestPrice(params: ContractPriceRequest): void {
     const key = this.getContractKey(params);
     this.activeContracts.set(key, params);
-    
+
     // Close existing connection if any
     this.disconnect();
-    
+
     // Create new connection with contract parameters
     this.connect();
   }
@@ -39,7 +36,7 @@ export class ContractSSEService extends ProtectedSSEService<ContractSSEMap> {
   public cancelPrice(params: ContractPriceRequest): void {
     const key = this.getContractKey(params);
     this.activeContracts.delete(key);
-    
+
     if (this.activeContracts.size === 0) {
       this.disconnect();
     } else {
@@ -50,56 +47,32 @@ export class ContractSSEService extends ProtectedSSEService<ContractSSEMap> {
   }
 
   protected handleMessage(message: SSEMessage): void {
-    if (message.action === 'contract_price') {
-      const handlers = this.messageHandlers.get('contract_price');
-      handlers?.forEach(handler => handler(message.data as ContractPriceResponse));
-    }
+    const handlers = this.messageHandlers.get("contract_price");
+    handlers?.forEach((handler) =>
+      handler(message.data as ContractPriceResponse)
+    );
   }
 
-  private setupEventHandlers(): void {
-    if (!this.eventSource) return;
-
-    this.eventSource.onopen = () => {
-      this.isConnecting = false;
-      this.reconnectCount = 0;
-    };
-
-    this.eventSource.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data) as SSEMessage;
-        this.handleMessage(message);
-      } catch (error) {
-        console.error('Failed to parse SSE message:', error);
-        this.handleError({ error: 'Failed to parse SSE message' });
-      }
-    };
-
-    this.eventSource.onerror = () => {
-      this.isConnecting = false;
-      this.handleError({ error: 'SSE connection error' });
-      this.reconnect();
-    };
-  }
-
-  public override connect(): void {
-    if (this.eventSource || this.isConnecting || this.activeContracts.size === 0) {
-      return;
-    }
-
-    this.isConnecting = true;
-    const url = new URL(this.getEndpoint());
+  protected override getEndpoint(): string {
+    const url = new URL(super.getEndpoint());
     // First append the action parameter
     url.searchParams.append("action", "contract_price");
 
     // Then append all contract parameters
-    this.activeContracts.forEach(contract => {
+    this.activeContracts.forEach((contract) => {
       Object.entries(contract).forEach(([key, value]) => {
         url.searchParams.append(key, value.toString());
       });
     });
 
-    this.eventSource = new EventSource(url.toString());
-    this.setupEventHandlers();
+    return url.toString();
+  }
+
+  public override connect(): void {
+    if (this.activeContracts.size === 0) {
+      return;
+    }
+    super.connect();
   }
 
   private getContractKey(params: ContractPriceRequest): string {
@@ -108,7 +81,7 @@ export class ContractSSEService extends ProtectedSSEService<ContractSSEMap> {
       instrument: params.instrument,
       trade_type: params.trade_type,
       payout: params.payout,
-      strike: params.strike
+      strike: params.strike,
     });
   }
 }

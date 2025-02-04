@@ -24,7 +24,7 @@ const config: Record<string, ApiConfig> = {
     sse: {
       baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai',
       publicPath: process.env.RSBUILD_SSE_PUBLIC_PATH || '/sse',
-      protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/sse'
+      protectedPath: process.env.RSBUILD_SSE_PROTECTED_PATH || '/protected/sse'
     },
     rest: {
       baseUrl: process.env.RSBUILD_REST_URL || 'https://options-trading-api.deriv.ai'

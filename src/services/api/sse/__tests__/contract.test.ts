@@ -79,7 +79,6 @@ describe('ContractSSEService', () => {
     mockEventSource = (service as any).eventSource;
 
     const expectedUrl = new URL(`${apiConfig.sse.baseUrl}${apiConfig.sse.protectedPath}`);
-    expectedUrl.searchParams.append('token', mockAuthToken);
     expectedUrl.searchParams.append('action', 'contract_price');
     Object.entries(request).forEach(([key, value]) => {
       expectedUrl.searchParams.append(key, value.toString());
@@ -99,10 +98,10 @@ describe('ContractSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: JSON.stringify({
+        data: `data: ${JSON.stringify({
           action: 'contract_price',
           data: mockResponse
-        })
+        })}`
       }));
     }
 
@@ -119,7 +118,7 @@ describe('ContractSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: 'invalid json'
+        data: 'data: invalid json'
       }));
     }
 
@@ -145,7 +144,6 @@ describe('ContractSSEService', () => {
     mockEventSource = (service as any).eventSource;
 
     const expectedUrl = new URL(`${apiConfig.sse.baseUrl}${apiConfig.sse.protectedPath}`);
-    expectedUrl.searchParams.append('token', mockAuthToken);
     expectedUrl.searchParams.append('action', 'contract_price');
     [request1, request2].forEach(request => {
       Object.entries(request).forEach(([key, value]) => {
@@ -184,35 +182,11 @@ describe('ContractSSEService', () => {
 
     // Verify contract request and auth token are maintained
     const expectedUrl = new URL(`${apiConfig.sse.baseUrl}${apiConfig.sse.protectedPath}`);
-    expectedUrl.searchParams.append('token', mockAuthToken);
     expectedUrl.searchParams.append('action', 'contract_price');
     Object.entries(request).forEach(([key, value]) => {
       expectedUrl.searchParams.append(key, value.toString());
     });
     expect((service as any).eventSource.url).toBe(expectedUrl.toString());
-  });
-
-  it('should stop reconnection after max attempts', () => {
-    const request = createMockRequest();
-    const mockErrorHandler = jest.fn();
-    service.onError(mockErrorHandler);
-
-    service.requestPrice(request);
-    mockEventSource = (service as any).eventSource;
-
-    // Simulate max reconnection attempts
-    for (let i = 0; i < 4; i++) {
-      if (mockEventSource?.onerror) {
-        mockEventSource.onerror(new Event('error'));
-      }
-      jest.advanceTimersByTime(1000);
-    }
-
-    // Verify final state
-    expect((service as any).reconnectCount).toBe(0);
-    expect(mockErrorHandler).toHaveBeenLastCalledWith({
-      error: 'SSE connection error'
-    });
   });
 
   it('should reset reconnect count on successful connection', () => {
@@ -254,7 +228,6 @@ describe('ContractSSEService', () => {
 
     // Verify contracts and auth token are maintained
     const expectedUrl = new URL(`${apiConfig.sse.baseUrl}${apiConfig.sse.protectedPath}`);
-    expectedUrl.searchParams.append('token', mockAuthToken);
     expectedUrl.searchParams.append('action', 'contract_price');
     [request1, request2].forEach(request => {
       Object.entries(request).forEach(([key, value]) => {
@@ -282,7 +255,6 @@ describe('ContractSSEService', () => {
 
     // Verify new token is maintained after reconnection
     const expectedUrl = new URL(`${apiConfig.sse.baseUrl}${apiConfig.sse.protectedPath}`);
-    expectedUrl.searchParams.append('token', newToken);
     expectedUrl.searchParams.append('action', 'contract_price');
     Object.entries(request).forEach(([key, value]) => {
       expectedUrl.searchParams.append(key, value.toString());

@@ -1,4 +1,11 @@
-import { SSEOptions, SSEMessageHandler, SSEErrorHandler, SSEMessageMap, SSEMessage } from './types';
+import {
+  SSEOptions,
+  SSEMessageHandler,
+  SSEErrorHandler,
+  SSEMessageMap,
+  SSEMessage,
+} from "./types";
+import { CustomEventSource } from "./custom-event-source";
 
 export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
   protected eventSource: EventSource | null = null;
@@ -21,43 +28,57 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
 
     this.isConnecting = true;
     const endpoint = this.getEndpoint();
-    this.eventSource = new EventSource(endpoint);
+    this.eventSource = this.createEventSource(endpoint);
 
     this.eventSource.onopen = () => {
       this.isConnecting = false;
       this.reconnectCount = 0; // Reset count on successful connection
-      
+
       // Notify listeners of successful connection
-      const handlers = this.messageHandlers.get('open');
+      const handlers = this.messageHandlers.get("open");
       if (handlers) {
-        handlers.forEach(handler => handler({}));
+        handlers.forEach((handler) => handler({}));
       }
     };
 
-    this.eventSource.onmessage = (event) => {
+    this.eventSource.onmessage = (event: MessageEvent) => {
       try {
-        const message = JSON.parse(event.data) as SSEMessage;
+        const rawMessage = event.data;
+        let jsonString = rawMessage;
+        
+        // Check if the message is in SSE format (contains "data:")
+        if (typeof rawMessage === 'string' && rawMessage.includes('data:')) {
+          const lines = rawMessage.split("\n");
+          const dataLine = lines.find((line: string) => line.startsWith("data:"));
+          if (!dataLine) {
+            throw new Error('No "data:" field found in the message');
+          }
+          jsonString = dataLine.replace("data: ", "").trim();
+        }
+
+        const message = JSON.parse(jsonString) as SSEMessage;
         this.handleMessage(message);
       } catch (error) {
-        console.error('Failed to parse SSE message:', error);
-        this.handleError({ error: 'Failed to parse SSE message' });
+        console.error("Failed to parse SSE message: ", error);
+        this.handleError({ error: "Failed to parse SSE message" });
       }
     };
 
-      this.eventSource.onerror = (_: Event) => {
-        this.isConnecting = false;
-        
-        // Increment count before checking to ensure we don't exceed max attempts
-        this.reconnectCount++;
-        
-        if (this.reconnectCount >= this.options.reconnectAttempts) {
-          this.handleError({ error: 'Max reconnection attempts reached' });
-          this.disconnect(); // This will reset reconnectCount
-        } else {
-          this.handleError({ error: 'SSE connection error' });
-          this.reconnect();
-        }
-      };
+    this.eventSource.onerror = (_: Event) => {
+      this.isConnecting = false;
+
+      // Increment count before checking to ensure we don't exceed max attempts
+      this.reconnectCount++;
+
+      if (this.reconnectCount >= this.options.reconnectAttempts) {
+        this.handleError({ error: "Max reconnection attempts reached" });
+        this.reconnectCount = 0; // Reset count before disconnecting
+        this.disconnect();
+      } else {
+        this.handleError({ error: "SSE connection error" });
+        this.reconnect();
+      }
+    };
   }
 
   public disconnect(): void {
@@ -70,7 +91,6 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
   }
 
   protected reconnect(): void {
-    // Schedule reconnection
     setTimeout(() => {
       if (this.eventSource) {
         this.eventSource.close();
@@ -82,7 +102,7 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
 
   public on<K extends keyof T>(
     action: K,
-    handler: SSEMessageHandler<T[K]['response']>
+    handler: SSEMessageHandler<T[K]["response"]>
   ): void {
     if (!this.messageHandlers.has(action)) {
       this.messageHandlers.set(action, new Set());
@@ -92,7 +112,7 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
 
   public off<K extends keyof T>(
     action: K,
-    handler: SSEMessageHandler<T[K]['response']>
+    handler: SSEMessageHandler<T[K]["response"]>
   ): void {
     this.messageHandlers.get(action)?.delete(handler);
   }
@@ -107,7 +127,11 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
 
   protected abstract handleMessage(message: SSEMessage): void;
 
+  protected createEventSource(endpoint: string): EventSource {
+    return new CustomEventSource(endpoint);
+  }
+
   protected handleError(error: { error: string }): void {
-    this.errorHandlers.forEach(handler => handler(error));
+    this.errorHandlers.forEach((handler) => handler(error));
   }
 }

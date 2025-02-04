@@ -66,7 +66,7 @@ export const BottomSheet = () => {
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-background/80 z-50 animate-in fade-in-0"
+        className="fixed inset-0 bg-black/80 z-50 animate-in fade-in-0"
       />
 
       {/* Sheet */}

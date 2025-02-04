@@ -6,11 +6,61 @@ This directory contains Zustand stores that manage the application's global stat
 
 ```
 stores/
-├── tradeStore.ts         # Trading-related state management
+├── bottomSheetStore.ts   # Bottom sheet UI state management
+├── clientStore.ts        # Client configuration and settings
 ├── sseStore.ts          # SSE connection and data management
-├── websocketStore.ts     # Legacy WebSocket connection state management (to be deprecated)
-└── __tests__/           # Store tests
+├── tradeStore.ts        # Trading-related state management
+├── websocketStore.ts    # Legacy WebSocket state (to be deprecated)
+└── __tests__/          # Store tests with TDD approach
+    ├── clientStore.test.ts
+    ├── sseStore.test.ts
+    └── tradeStore.test.ts
 ```
+
+## Test-Driven Development
+
+We follow a strict TDD approach for store development:
+
+1. **Write Tests First**
+   ```typescript
+   describe('clientStore', () => {
+     it('should initialize with default state', () => {
+       const { getState } = useClientStore;
+       expect(getState().config).toEqual(defaultConfig);
+     });
+
+     it('should update config', () => {
+       const { getState, updateConfig } = useClientStore;
+       const newConfig = { theme: 'dark' };
+       updateConfig(newConfig);
+       expect(getState().config.theme).toBe('dark');
+     });
+   });
+   ```
+
+2. **Implement Store**
+   ```typescript
+   interface ClientState {
+     config: Config;
+   }
+
+   interface ClientActions {
+     updateConfig: (config: Partial<Config>) => void;
+   }
+
+   const useClientStore = create<ClientState & ClientActions>((set) => ({
+     config: defaultConfig,
+     updateConfig: (newConfig) => 
+       set((state) => ({
+         config: { ...state.config, ...newConfig }
+       }))
+   }));
+   ```
+
+3. **Refactor and Optimize**
+   - Ensure proper type safety
+   - Implement error handling
+   - Add performance optimizations
 
 ## Store Implementation
 
@@ -42,7 +92,71 @@ The stores use Zustand for state management, providing a simple and efficient wa
    }));
    ```
 
-## SSE Store
+## Store Implementations
+
+### Bottom Sheet Store
+
+The bottom sheet store manages the application's modal sheet UI state:
+
+```typescript
+interface BottomSheetState {
+  showBottomSheet: boolean;
+  key: string | null;
+  height: string;
+  onDragDown?: () => void;
+}
+
+interface BottomSheetActions {
+  setBottomSheet: (
+    show: boolean,
+    key?: string,
+    height?: string,
+    onDragDown?: () => void
+  ) => void;
+}
+
+const useBottomSheetStore = create<BottomSheetState & BottomSheetActions>((set) => ({
+  showBottomSheet: false,
+  key: null,
+  height: '50%',
+  setBottomSheet: (show, key, height, onDragDown) =>
+    set({ showBottomSheet: show, key, height, onDragDown })
+}));
+```
+
+### Client Store
+
+The client store manages application-wide settings and configuration:
+
+```typescript
+interface ClientState {
+  config: {
+    theme: 'light' | 'dark';
+    language: string;
+    notifications: boolean;
+  };
+  isInitialized: boolean;
+}
+
+interface ClientActions {
+  updateConfig: (config: Partial<Config>) => void;
+  initialize: () => Promise<void>;
+}
+
+const useClientStore = create<ClientState & ClientActions>((set) => ({
+  config: defaultConfig,
+  isInitialized: false,
+  updateConfig: (newConfig) => 
+    set((state) => ({
+      config: { ...state.config, ...newConfig }
+    })),
+  initialize: async () => {
+    // Implementation
+  }
+}));
+```
+
+### SSE Store
 
 The SSE store manages Server-Sent Events connections and real-time data:
 
@@ -115,6 +229,19 @@ interface TradeActions {
    - Keep stores focused on specific domains
    - Split complex stores into smaller ones
    - Use TypeScript for type safety
+   - Follow single responsibility principle
+
+2. **Test-Driven Development**
+   - Write tests before implementation
+   - Cover edge cases and error scenarios
+   - Test asynchronous operations
+   - Mock external dependencies properly
+
+3. **Performance Optimization**
+   - Use selective subscriptions
+   - Implement proper cleanup
+   - Avoid unnecessary state updates
+   - Memoize selectors
 
 2. **Performance**
    - Use selective subscriptions
@@ -174,7 +301,7 @@ const useTradeStore = create<TradeState & TradeActions>((set) => ({
 function TradeForm() {
   const { selectedInstrument, setInstrument } = useTradeStore();
   return (
-    <select value={selectedInstrument} onChange={(e) => setInstrument(e.target.value)}>
+    <select value={selectedInstrument} onChange={(e) => setInstrument(e.target.value)}}>
       {/* Options */}
     </select>
   );

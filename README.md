@@ -1,15 +1,17 @@
 # Champion Trader
 
-A React-based trading application for options trading.
+A React-based trading application for options trading, built with Test-Driven Development (TDD) and atomic component design principles.
 
 ## Features
 
-- Real-time market data streaming
-- Contract price updates
-- Position management
-- Trade execution
-- Responsive design
-- TypeScript support
+- Real-time market data streaming using SSE
+- Contract price updates with automatic reconnection
+- Position management with TypeScript type safety
+- Trade execution with comprehensive error handling
+- Responsive design using TailwindCSS
+- Atomic component architecture
+- Test-driven development methodology
+- State management with Zustand
 
 ## Getting Started
 
@@ -125,27 +127,135 @@ src/
 
 ## Development
 
+### Development Methodology
+
+#### Test-Driven Development (TDD)
+
+We follow a strict TDD approach:
+
+1. **Red**: Write failing tests first
+   - Define expected behavior through test cases
+   - Consider edge cases and error scenarios
+   - Write clear test descriptions
+
+2. **Green**: Implement minimal code to pass tests
+   - Focus on making tests pass
+   - Avoid premature optimization
+   - Keep implementation simple
+
+3. **Refactor**: Improve code while keeping tests green
+   - Apply SOLID principles
+   - Ensure code readability
+   - Maintain test coverage
+
+#### Atomic Component Design
+
+Components follow atomic design principles:
+
+1. **Self-Contained**
+   - Encapsulate markup, styles, and logic
+   - Use TailwindCSS for styling
+   - Handle their own state management
+
+2. **Independent**
+   - No implicit external dependencies
+   - Clear prop interfaces
+   - Documented side effects
+
+3. **Reusable**
+   - Generic and adaptable
+   - Well-documented props
+   - Consistent API
+
+Example:
+```typescript
+interface ButtonProps {
+  onClick: () => void;
+  label: string;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+}
+
+export const Button = ({ 
+  onClick, 
+  label, 
+  variant = 'primary',
+  disabled = false 
+}: ButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={clsx(
+        'px-4 py-2 rounded',
+        {
+          'bg-blue-600 text-white': variant === 'primary',
+          'bg-gray-200 text-gray-800': variant === 'secondary',
+          'opacity-50 cursor-not-allowed': disabled
+        }
+      )}
+    >
+      {label}
+    </button>
+  );
+};
+```
+
 ### Code Style
 
-- Follow TypeScript best practices
-- Use functional components with hooks
-- Implement proper error handling
-- Write comprehensive tests
-- Use TailwindCSS for styling
+- Follow TypeScript best practices with strict type checking
+- Use functional components with React hooks
+- Implement proper error handling and loading states
+- Write comprehensive tests with meaningful descriptions
+- Use TailwindCSS for consistent styling
 
 ### Testing
 
-The project uses Jest and React Testing Library for testing:
+The project uses Jest and React Testing Library for testing. All new features must follow TDD:
 
 ```bash
 # Run all tests
 npm test
 
-# Run tests with coverage
+# Run tests with coverage (minimum 90% required)
 npm test -- --coverage
 
 # Run specific test file
 npm test -- src/components/MyComponent.test.tsx
+
+# Watch mode for TDD
+npm test -- --watch
+```
+
+Example test structure:
+```typescript
+describe('Component', () => {
+  describe('when initialized', () => {
+    it('should render with default props', () => {
+      // Test initial render
+    });
+
+    it('should handle required props correctly', () => {
+      // Test prop handling
+    });
+  });
+
+  describe('when interacting', () => {
+    it('should handle user interactions', () => {
+      // Test user interactions
+    });
+
+    it('should manage state changes', () => {
+      // Test state management
+    });
+  });
+
+  describe('when handling errors', () => {
+    it('should display error states appropriately', () => {
+      // Test error handling
+    });
+  });
+});
 ```
 
 ### Environment Variables

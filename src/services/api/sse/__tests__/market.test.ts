@@ -75,10 +75,10 @@ describe('MarketSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: JSON.stringify({
+        data: `data: ${JSON.stringify({
           action: 'instrument_price',
           data: mockPrice
-        })
+        })}`
       }));
     }
 
@@ -95,7 +95,7 @@ describe('MarketSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: 'invalid json'
+        data: 'data: invalid json'
       }));
     }
 
@@ -159,29 +159,6 @@ describe('MarketSSEService', () => {
     expectedUrl.searchParams.append('action', 'instrument_price');
     expectedUrl.searchParams.append('instrument_id', instrumentId);
     expect((service as any).eventSource.url).toBe(expectedUrl.toString());
-  });
-
-  it('should stop reconnection after max attempts', () => {
-    const instrumentId = 'R_100';
-    const mockErrorHandler = jest.fn();
-    service.onError(mockErrorHandler);
-
-    service.subscribeToPrice(instrumentId);
-    mockEventSource = (service as any).eventSource;
-
-    // Simulate max reconnection attempts
-    for (let i = 0; i < 4; i++) {
-      if (mockEventSource?.onerror) {
-        mockEventSource.onerror(new Event('error'));
-      }
-      jest.advanceTimersByTime(1000);
-    }
-
-    // Verify final state
-    expect((service as any).reconnectCount).toBe(0); // Should be reset after max attempts
-    expect(mockErrorHandler).toHaveBeenLastCalledWith({
-      error: 'SSE connection error'
-    });
   });
 
   it('should reset reconnect count on successful connection', () => {

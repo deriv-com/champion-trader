@@ -23,6 +23,64 @@ src/
 └── types/          # TypeScript type definitions
 ```
 
+## Development Practices
+
+### Test-Driven Development (TDD)
+
+All components and features follow TDD methodology:
+
+```
+__tests__/
+├── components/     # Component tests
+│   ├── AddMarketButton/
+│   ├── BottomNav/
+│   ├── BottomSheet/
+│   ├── Chart/
+│   ├── DurationOptions/
+│   └── TradeButton/
+├── hooks/         # Hook tests
+│   ├── sse/
+│   └── websocket/
+├── services/      # Service tests
+│   └── api/
+│       ├── rest/
+│       ├── sse/
+│       └── websocket/
+└── stores/        # Store tests
+```
+
+Test coverage requirements:
+- Minimum 90% coverage for all new code
+- All edge cases must be tested
+- Integration tests for component interactions
+- Mocked service responses for API tests
+
+### Atomic Component Design
+
+Components follow atomic design principles and are organized by feature:
+
+```
+components/
+├── AddMarketButton/     # Market selection
+├── BottomNav/           # Navigation component
+├── BottomSheet/         # Modal sheet component
+├── Chart/               # Price chart
+├── DurationOptions/     # Trade duration
+├── TradeButton/         # Trade execution
+├── TradeFields/         # Trade parameters
+└── ui/                  # Shared UI components
+    ├── button.tsx
+    ├── card.tsx
+    ├── switch.tsx
+    └── toggle.tsx
+```
+
+Each component:
+- Is self-contained with its own tests
+- Uses TailwindCSS for styling
+- Handles its own state management
+- Has clear documentation
+
 ## Key Components
 
 ### Real-time Data Services
@@ -77,9 +135,17 @@ const { price, isConnected, error } = useContractSSE(params, authToken, {
 
 #### Zustand Stores (`src/stores/`)
 
+- `bottomSheetStore.ts`: Manages bottom sheet state and interactions
+- `clientStore.ts`: Handles client configuration and settings
 - `sseStore.ts`: Manages SSE connections and real-time data
 - `tradeStore.ts`: Handles trade-related state
 - `websocketStore.ts`: Legacy WebSocket state (to be deprecated)
+
+Features:
+- TypeScript type safety
+- Atomic updates
+- Middleware support
+- DevTools integration
 
 Features:
 - Centralized state management
@@ -137,6 +203,19 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
    - Use TypeScript for all new code
    - Define interfaces for all data structures
    - Use strict type checking
+   - Leverage TypeScript's utility types
+
+2. **Component Design**
+   - Follow atomic design principles
+   - Use composition over inheritance
+   - Keep components focused and single-responsibility
+   - Document props and side effects
+
+3. **State Management**
+   - Use local state for UI-only state
+   - Use Zustand for shared state
+   - Keep stores focused and minimal
+   - Document store interfaces
 
 2. **Error Handling**
    - Implement proper error boundaries

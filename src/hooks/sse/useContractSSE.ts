@@ -27,15 +27,6 @@ export const useContractSSE = (
     contractError,
   } = useSSEStore();
 
-  useEffect(() => {
-    initializeContractService(authToken);
-    requestContractPrice(params);
-
-    return () => {
-      cancelContractPrice(params);
-    };
-  }, [params, authToken]);
-
   // Generate the same key used in the store to look up the price
   const contractKey = JSON.stringify({
     duration: params.duration,
@@ -47,6 +38,15 @@ export const useContractSSE = (
   });
 
   useEffect(() => {
+    initializeContractService(authToken);
+    requestContractPrice(params);
+
+    return () => {
+      cancelContractPrice(params);
+    };
+  }, [params, authToken]);
+
+  useEffect(() => {
     if (contractPrices[contractKey]) {
       options.onPrice?.(contractPrices[contractKey]);
     }
@@ -55,7 +55,7 @@ export const useContractSSE = (
   useEffect(() => {
     if (isContractConnected) {
       options.onConnect?.();
-      requestContractPrice(params);
+      requestContractPrice(params); // Re-request price when connection is established
     } else {
       options.onDisconnect?.();
     }
