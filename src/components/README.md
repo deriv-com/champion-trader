@@ -6,8 +6,9 @@ This directory contains React components following Atomic Component Design princ
 
 ```
 components/
-├── AddMarketButton/     # Market selection functionality
+├── AddMarketButton/    # Market selection functionality
 ├── BottomNav/          # Bottom navigation bar
+├── BottomSheet/        # Bottom sheet
 ├── Chart/              # Trading chart visualization
 ├── DurationOptions/    # Trade duration selection
 ├── TradeButton/        # Trade execution controls
