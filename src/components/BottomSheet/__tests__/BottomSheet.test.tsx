@@ -86,7 +86,7 @@ describe("BottomSheet", () => {
     expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
   });
 
-  it("does not close when clicking overlay", () => {
+  it("should close when clicking overlay", () => {
     mockUseBottomSheetStore.mockReturnValue({
       showBottomSheet: true,
       key: 'test-key',
@@ -100,6 +100,6 @@ describe("BottomSheet", () => {
     expect(overlay).toBeInTheDocument();
     fireEvent.click(overlay!);
 
-    expect(mockSetBottomSheet).not.toHaveBeenCalled();
+    expect(mockSetBottomSheet).toHaveBeenCalled();
   });
 });
