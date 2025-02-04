@@ -59,7 +59,7 @@ export abstract class SSEService<T extends SSEMessageMap = SSEMessageMap> {
         const message = JSON.parse(jsonString) as SSEMessage;
         this.handleMessage(message);
       } catch (error) {
-        console.error("Failed to parse SSE message: ", error);
+        console.error("Failed to parse SSE message:", error);
         this.handleError({ error: "Failed to parse SSE message" });
       }
     };

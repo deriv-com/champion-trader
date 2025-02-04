@@ -127,6 +127,9 @@ src/
 
 ## Development
 
+### Conditional Rendering & Testing
+Components such as Footer and BottomNav render differently based on the user's login status. Tests now use clientStore to simulate logged-in and logged-out views.
+
 ### Development Methodology
 
 #### Test-Driven Development (TDD)

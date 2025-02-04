@@ -18,6 +18,7 @@ The application is structured around modular, self-contained components and uses
 - [WebSocket Architecture](src/services/api/websocket/README.md): Documentation of the legacy WebSocket implementation (to be deprecated)
 - [SSE Services](src/services/api/sse/README.md): Documentation of the Server-Sent Events (SSE) implementation for real-time market and contract price updates
 - [State Management](src/stores/README.md): Detailed guide on Zustand store implementation, TDD approach, and state management patterns
+- [Balance Management](#balance-management): Overview of balance management including [Balance Service](src/services/api/rest/balance/README.md) and components such as [BalanceDisplay](src/components/BalanceDisplay/README.md), [BalanceHandler](src/components/BalanceHandler/README.md), and [ContractSSEHandler](src/components/ContractSSEHandler/README.md)
 
 ## Development Methodology
 
@@ -30,18 +31,23 @@ The application is structured around modular, self-contained components and uses
 - [REST API Documentation](src/services/api/rest/README.md): Available endpoints and usage examples for REST API integration
 - [WebSocket Hooks](src/hooks/websocket/README.md): Legacy WebSocket hooks (to be deprecated)
 - [SSE Services](src/services/api/sse/README.md): Real-time data streaming services leveraging SSE for improved reliability and performance
+- [Balance Service](src/services/api/rest/balance/README.md): Documentation for balance-related REST endpoints.
 
 ## State Management
 
 - [Store Organization](src/stores/README.md#store-organization): Detailed store structure and implementation
 - [TDD for Stores](src/stores/README.md#test-driven-development): Test-first approach for store development
 - [Store Guidelines](src/stores/README.md#store-guidelines): Best practices and patterns for state management
+- [Client Store](src/stores/clientStore.ts): Manages client configuration including balance integration.
 
 ## Component Development
 
 - [Component Guidelines](src/components/README.md#component-guidelines): Detailed component development process
 - [Testing Patterns](src/components/README.md#test-first-implementation): Comprehensive testing examples and patterns
 - [Best Practices](src/components/README.md#best-practices): Component design, testing, performance, and accessibility guidelines
+- [BalanceDisplay Component](src/components/BalanceDisplay/README.md)
+- [BalanceHandler Component](src/components/BalanceHandler/README.md)
+- [ContractSSEHandler Component](src/components/ContractSSEHandler/README.md)
 
 ## Optional
 

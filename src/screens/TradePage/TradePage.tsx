@@ -1,6 +1,7 @@
 import React, { Suspense } from "react"
 import { TradeButton } from "@/components/TradeButton"
 import { Chart } from "@/components/Chart"
+import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { AddMarketButton } from "@/components/AddMarketButton"
 import { DurationOptions } from "@/components/DurationOptions"
@@ -37,24 +38,18 @@ export const TradePage: React.FC = () => {
   return (
     <div className="flex flex-col flex-1 landscape:flex-row landscape:h-[100dvh] landscape:relative">
       <div
-        className="hidden landscape:block landscape:absolute landscape:top-0 landscape:left-0 landscape:right-0 landscape:bg-white landscape:z-10"
+        className="hidden landscape:block landscape:absolute landscape:top-0 landscape:left-0 landscape:right-0 landscape:bg-white landscape:z-10 border-b border-opacity-10"
         id="instrument-tab-bar"
       >
-        <div className="flex items-center w-full gap-2 p-4 justify-between">
+        <div className="flex items-center w-full gap-2 px-4 py-2 justify-between">
           <div className="flex items-center gap-2">
             <Suspense fallback={<div>Loading...</div>}>
               <AddMarketButton />
             </Suspense>
             <MarketInfo title="Vol. 100 (1s) Index" subtitle="Rise/Fall" />
           </div>
-          <div className="hidden landscape:flex items-center gap-4">
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-700">Real</span>
-              <span className="text-xl font-bold text-teal-500">10,000 USD</span>
-            </div>
-            <button className="px-4 py-2 font-bold border border-gray-700 rounded-3xl">
-              Deposit
-            </button>
+          <div className="hidden landscape:block">
+            <BalanceDisplay />
           </div>
         </div>
 
@@ -81,7 +76,7 @@ export const TradePage: React.FC = () => {
         </Suspense>
       </div>
 
-      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[320px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
+      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[320px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
         <div className="flex flex-col gap-4 p-4 landscape:pt-4 landscape:pb-2 landscape:px-4" id="trade-fields">
           <div className="flex gap-4 landscape:flex-col landscape:gap-2" id="trade-params">
             <TradeParam label="Duration" value={duration} className="landscape:w-full" />

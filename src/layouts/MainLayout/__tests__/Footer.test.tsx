@@ -1,45 +1,46 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { Footer } from '../Footer';
+import { useClientStore } from '../../../stores/clientStore';
+
+// Inline renderWithRouter helper for Footer tests
+const renderWithRouter = (initialRoute = '/') => {
+  window.history.pushState({}, 'Test page', initialRoute);
+  return render(
+    <MemoryRouter initialEntries={[initialRoute]}>
+      <Footer />
+      <Routes>
+        <Route path="*" element={<div data-testid="location-display">{window.location.pathname}</div>} />
+      </Routes>
+    </MemoryRouter>
+  );
+};
 
 describe('Footer', () => {
-  const renderWithRouter = (route = '/') => {
-    return render(
-      <MemoryRouter initialEntries={[route]}>
-        <Footer />
-      </MemoryRouter>
-    );
-  };
-
-  it('renders navigation items', () => {
-    renderWithRouter();
-    
-    expect(screen.getByRole('button', { name: /trade/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /positions/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /menu/i })).toBeInTheDocument();
+  beforeEach(() => {
+    // Reset logged-in state before each test.
+    useClientStore.getState().isLoggedIn = false;
   });
 
-  it('shows correct active states based on route', () => {
-    renderWithRouter('/positions');
-    
-    const tradeButton = screen.getByRole('button', { name: /trade/i });
-    const positionsButton = screen.getByRole('button', { name: /positions/i });
-    const menuButton = screen.getByRole('button', { name: /menu/i });
-
-    expect(tradeButton).toHaveClass('text-gray-500');
-    expect(positionsButton).toHaveClass('text-primary');
-    expect(menuButton).toHaveClass('text-gray-500');
+  it('does not render when user is logged out', () => {
+    renderWithRouter();
+    // In logout view, Footer should not render, so "Menu" should not be present.
+    expect(screen.queryByText('Menu')).toBeNull();
   });
 
-  it('renders navigation icons', () => {
+  it('renders navigation items when user is logged in', () => {
+    useClientStore.getState().isLoggedIn = true;
     renderWithRouter();
-    
-    const tradeButton = screen.getByRole('button', { name: /trade/i });
-    const positionsButton = screen.getByRole('button', { name: /positions/i });
-    const menuButton = screen.getByRole('button', { name: /menu/i });
+    // Expect the Footer to render "Trade" and "Positions" buttons.
+    expect(screen.getByText('Trade')).toBeInTheDocument();
+    expect(screen.getByText('Positions')).toBeInTheDocument();
+  });
 
-    expect(tradeButton.querySelector('svg')).toBeInTheDocument();
-    expect(positionsButton.querySelector('svg')).toBeInTheDocument();
-    expect(menuButton.querySelector('svg')).toBeInTheDocument();
+  it('shows correct active style when route is active and user is logged in', () => {
+    useClientStore.getState().isLoggedIn = true;
+    // Assume that the active route for the "Trade" button is "/trade".
+    renderWithRouter('/trade');
+    const tradeButton = screen.getByText('Trade').closest('button');
+    expect(tradeButton).toHaveClass('text-primary');
   });
 });

@@ -26,18 +26,22 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
       variant="default"
     >
       <div className="flex flex-col portrait:gap-1 landscape:gap-0 w-full px-3">
-        <div className={cn(
-          "flex items-center justify-between w-full",
-          "portrait:flex-row",
-          title_position === "right" ? "portrait:flex-row-reverse" : ""
-        )}>
+        <div
+          className={cn(
+            "flex items-center justify-between w-full",
+            "portrait:flex-row",
+            title_position === "right" ? "portrait:flex-row-reverse" : ""
+          )}
+        >
           <span className="text-lg font-bold">{title}</span>
         </div>
-        <div className={cn(
-          "flex items-center justify-between w-full",
-          title_position === "right" && "flex-row-reverse",
-          "portrait:flex-row landscape:flex-row-reverse"
-        )}>
+        <div
+          className={cn(
+            "flex items-center justify-between w-full",
+            title_position === "right" && "flex-row-reverse",
+            "landscape:flex-row-reverse"
+          )}
+        >
           <span className="text-sm">{value}</span>
           <span className="text-sm opacity-80">{label}</span>
         </div>
