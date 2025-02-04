@@ -50,7 +50,7 @@ export const TradePage: React.FC = () => {
           <div className="hidden landscape:flex items-center gap-4">
             <div className="flex flex-col">
               <span className="text-sm text-gray-700">Real</span>
-              <span className="text-2xl font-bold text-teal-500">10,000 USD</span>
+              <span className="text-xl font-bold text-teal-500">10,000 USD</span>
             </div>
             <button className="px-4 py-2 font-bold border border-gray-700 rounded-3xl">
               Deposit
@@ -81,7 +81,7 @@ export const TradePage: React.FC = () => {
         </Suspense>
       </div>
 
-      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[320px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[84px]">
+      <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[320px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px]">
         <div className="flex flex-col gap-4 p-4 landscape:pt-4 landscape:pb-2 landscape:px-4" id="trade-fields">
           <div className="flex gap-4 landscape:flex-col landscape:gap-2" id="trade-params">
             <TradeParam label="Duration" value={duration} className="landscape:w-full" />

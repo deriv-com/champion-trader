@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/BottomNav";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="border-t">
+    <footer className="border-t landscape:hidden">
       <BottomNav />
     </footer>
   );
