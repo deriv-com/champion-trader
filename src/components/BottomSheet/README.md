@@ -1,167 +1,122 @@
 # BottomSheet Component
 
 ## Overview
-A bottom sheet component that slides up from the bottom of the screen with drag-to-dismiss functionality. Uses Zustand for state management and a configuration-based approach for content.
+A reusable bottom sheet component with drag-to-dismiss functionality and drag callback support.
 
-## Internal Working
+## Features
+- Single instance pattern using Zustand store
+- Dynamic height support (%, px, vh)
+- Theme-aware using Tailwind CSS variables
+- Drag gesture support with callback
+- Content management through configuration
 
-### 1. State Management
+## Usage
+
+### Basic Usage
+```tsx
+const { setBottomSheet } = useBottomSheetStore();
+
+// Show bottom sheet
+setBottomSheet(true, 'content-key', '50%');
+
+// Hide bottom sheet
+setBottomSheet(false);
+```
+
+### With Drag Callback
+```tsx
+const handleDragDown = () => {
+  console.log('Bottom sheet is being dragged down');
+  // Your drag down logic here
+};
+
+setBottomSheet(true, 'content-key', '50%', handleDragDown);
+```
+
+## State Management
+
 ```typescript
-// bottomSheetStore.ts
 interface BottomSheetState {
   showBottomSheet: boolean;  // Controls visibility
   key: string | null;        // Content identifier
   height: string;           // Sheet height
-  setBottomSheet: (show: boolean, key?: string, height?: string) => void;
+  onDragDown?: () => void;  // Optional drag callback
+  setBottomSheet: (
+    show: boolean, 
+    key?: string, 
+    height?: string,
+    onDragDown?: () => void
+  ) => void;
 }
 ```
 
-The component uses Zustand to maintain a single source of truth for:
-- Visibility state
-- Current content key
-- Sheet height
+## Height Support
+- Percentage: '50%' (converted to vh)
+- Pixels: '380px'
+- Viewport height: '75vh'
 
-### 2. Content Configuration
-```typescript
-// bottomSheetConfig.tsx
-interface BottomSheetConfig {
-  [key: string]: {
-    body: ReactNode;
-  }
-}
+## Gesture Handling
+
+### Drag to Dismiss
+- Drag down on handle bar to dismiss
+- Threshold: 100px vertical distance
+- Smooth animation on release
+- Optional callback during drag
+
+### Event Cleanup
+- Event listeners added only when sheet is shown
+- Proper cleanup on sheet close and unmount
+
+## Styling
+Uses Tailwind CSS variables for theme support:
+```tsx
+className="bg-background"    // Theme background
+className="bg-muted"         // Theme muted color
 ```
 
-Content is configured through a central config file, allowing for:
-- Reusable content definitions
-- Type-safe content management
-- Easy content updates
+## Implementation Details
 
-### 3. Gesture Handling
-
-#### Touch Start
-```typescript
-const handleTouchStart = (e: React.TouchEvent) => {
-  dragStartY.current = e.touches[0].clientY;
-  currentY.current = 0;
-  isDragging.current = true;
-}
-```
-- Captures initial touch position
-- Sets up dragging state
-
-#### Touch Move
+### Touch Event Handling
 ```typescript
 const handleTouchMove = (e: TouchEvent) => {
   if (!isDragging.current) return;
-  
+
   const deltaY = e.touches[0].clientY - dragStartY.current;
   if (deltaY > 0) {
+    // Update sheet position
     sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+    // Call drag callback if provided
+    onDragDown?.();
   }
-}
+};
 ```
-- Calculates drag distance
-- Updates sheet position
-- Only allows downward dragging
 
-#### Touch End
-```typescript
-const handleTouchEnd = () => {
-  if (currentY.current > 100) {
-    setBottomSheet(false);
-  }
-  // Reset position and state
-}
-```
-- Checks if drag distance exceeds threshold
-- Closes sheet if threshold met
-- Resets position and state
-
-### 4. Event Cleanup
-```typescript
-useEffect(() => {
-  if (showBottomSheet) {
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-    };
-  }
-}, [showBottomSheet, handleTouchMove, handleTouchEnd]);
-```
-- Adds event listeners when sheet is shown
-- Removes listeners when sheet is closed
-- Prevents memory leaks
-
-### 5. Height Management
+### Height Processing
 ```typescript
 const processedHeight = height.endsWith('%') 
   ? `${parseFloat(height)}vh` 
   : height;
 ```
-Supports multiple height formats:
-- Percentage (converted to vh)
-- Pixels
-- Viewport height
 
-### 6. Styling
-Uses Tailwind CSS variables for theme-aware styling:
-```tsx
-<div className="bg-background"> // Theme background
-<div className="bg-muted">      // Theme muted color
-```
-
-## Usage Example
+## Example
 
 ```tsx
-// 1. Configure content
-// bottomSheetConfig.tsx
-export const bottomSheetConfig = {
-  'trade-options': {
-    body: <TradeOptionsContent />
-  }
-};
+import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 
-// 2. Place component
-// App.tsx
-<BottomSheet />
+function MyComponent() {
+  const { setBottomSheet } = useBottomSheetStore();
 
-// 3. Control sheet
-// AnyComponent.tsx
-const { setBottomSheet } = useBottomSheetStore();
+  const handleDragDown = () => {
+    // Handle drag down event
+  };
 
-// Open with 50% height
-setBottomSheet(true, 'trade-options', '50%');
+  const showSheet = () => {
+    setBottomSheet(true, 'my-content', '50%', handleDragDown);
+  };
 
-// Close
-setBottomSheet(false);
-```
-
-## Key Features
-
-1. **Single Instance**
-   - One bottom sheet instance for entire app
-   - Content switched through configuration
-   - Prevents multiple sheets
-
-2. **Gesture Support**
-   - Drag to dismiss
-   - Smooth animations
-   - Touch event cleanup
-
-3. **Theme Integration**
-   - Uses Tailwind CSS variables
-   - Dark mode support
-   - Consistent styling
-
-4. **Dynamic Height**
-   - Percentage values
-   - Pixel values
-   - Viewport height
-
-5. **Performance**
-   - Event listener cleanup
-   - Optimized re-renders
-   - Efficient state updates
+  return (
+    <button onClick={showSheet}>
+      Show Bottom Sheet
+    </button>
+  );
+}

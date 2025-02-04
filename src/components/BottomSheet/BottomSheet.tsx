@@ -3,7 +3,7 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
 
 export const BottomSheet = () => {
-  const { showBottomSheet, key, height, setBottomSheet } = useBottomSheetStore();
+  const { showBottomSheet, key, height, onDragDown, setBottomSheet } = useBottomSheetStore();
   
   const sheetRef = useRef<HTMLDivElement>(null);
   const dragStartY = useRef<number>(0);
@@ -26,8 +26,9 @@ export const BottomSheet = () => {
 
     if (deltaY > 0) {
       sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+      onDragDown?.();
     }
-  }, []);
+  }, [onDragDown]);
 
   const handleTouchEnd = useCallback(() => {
     if (!sheetRef.current) return;
