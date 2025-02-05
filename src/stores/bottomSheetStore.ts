@@ -5,7 +5,7 @@ interface BottomSheetState {
   key: string | null;
   height: string;
   onDragDown?: () => void;
-  setBottomSheet: (show: boolean, key?: string, height?: string, onDragDown?: (value:any) => void) => void;
+  setBottomSheet: (show: boolean, key?: string, height?: string, onDragDown?: () => void) => void;
   setKey: (key: string) => void;
   stakeValue: number;
   setStakeValue: (newValue: number) => void;

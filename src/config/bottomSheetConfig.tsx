@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import Numpad from "@/components/Numpad/Numpad";
 
 export interface BottomSheetConfig {
   [key: string]: {

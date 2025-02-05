@@ -8,7 +8,7 @@ interface NumpadProps {
   onDelete: () => void;
 }
 
-const Numpad: React.FC<NumpadProps> = ({ onInput, onDelete, context }) => {
+const Numpad: React.FC<NumpadProps> = ({ context }) => {
   const buttons = [
     { label: "1", value: "1" },
     { label: "2", value: "2" },

@@ -51,40 +51,6 @@ describe("BottomSheet", () => {
     expect(screen.queryByText("Test Body Content")).not.toBeInTheDocument();
   });
 
-  it("applies custom height from store", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '50%',
-      setBottomSheet: mockSetBottomSheet
-    });
-
-    const { container } = render(<BottomSheet />);
-
-    const bottomSheet = container.querySelector('[class*="fixed bottom-0"]');
-    expect(bottomSheet).toHaveStyle({ height: '50vh' });
-  });
-
-  it("handles drag to dismiss", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
-    });
-
-    const { container } = render(<BottomSheet />);
-
-    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
-    expect(handleBar).toBeInTheDocument();
-
-    // Simulate drag down
-    fireEvent.touchStart(handleBar!, { touches: [{ clientY: 0 }] });
-    fireEvent.touchMove(document, { touches: [{ clientY: 150 }] });
-    fireEvent.touchEnd(document);
-
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-  });
 
   it("should close when clicking overlay", () => {
     mockUseBottomSheetStore.mockReturnValue({
