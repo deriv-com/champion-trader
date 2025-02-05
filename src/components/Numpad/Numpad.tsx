@@ -64,7 +64,11 @@ const Numpad: React.FC<NumpadProps> = ({ context }) => {
         ))}
         <button
           className="p-4 text-lg font-bold rounded hover:bg-gray-300"
-          onClick={() => setNumpadValue(numpadValue + ".")}
+          onClick={() => {
+            if (!numpadValue.includes(".")) {
+              setNumpadValue(numpadValue + ".");
+            }
+          }}
         >
           .
         </button>
