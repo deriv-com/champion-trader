@@ -32,11 +32,17 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
     onPrice: (price) => {
       if (price?.ask) {
         const timestamp = new Date(price.timestamp);
+        const newTime = Math.floor(timestamp.getTime() / 1000) as UTCTimestamp;
         const newPrice: ChartData = {
-          time: Math.floor(timestamp.getTime() / 1000) as UTCTimestamp,
+          time: newTime,
           value: price.ask,
         };
-        setPriceHistory((prev) => [...prev, newPrice]);
+        setPriceHistory((prev) => {
+          // Filter out any existing data point with the same timestamp
+          const filtered = prev.filter(point => point.time !== newTime);
+          // Add new price and sort by timestamp
+          return [...filtered, newPrice].sort((a, b) => a.time - b.time);
+        });
         setCurrentPrice(price.ask);
         setCurrentTime(timestamp.toLocaleString());
 
@@ -129,7 +135,13 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
   // Update data when price history changes
   useEffect(() => {
     if (seriesRef.current && priceHistory.length > 0) {
-      seriesRef.current.setData(priceHistory);
+      // Ensure data is sorted and has unique timestamps before setting
+      const uniqueSortedData = priceHistory
+        .filter((value, index, self) => 
+          self.findIndex(v => v.time === value.time) === index
+        )
+        .sort((a, b) => a.time - b.time);
+      seriesRef.current.setData(uniqueSortedData);
       chartRef.current?.timeScale().fitContent();
     }
   }, [priceHistory]);

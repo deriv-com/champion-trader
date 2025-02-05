@@ -11,7 +11,7 @@ src/
 ├── components/       # Reusable UI components
 │   ├── BalanceDisplay/       # Displays the user balance.
 │   ├── BalanceHandler/       # Manages balance state.
-│   ├── Chart/               # Displays market data using WebSocket integration.
+│   ├── Chart/               # Displays market data with error handling and data integrity.
 │   └── ContractSSEHandler/   # Handles contract SSE streaming.
 ├── hooks/           # Custom React hooks
 │   ├── sse/        # SSE hooks for real-time data
@@ -223,8 +223,10 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
 
 2. **Error Handling**
    - Implement proper error boundaries
+     - Chart component uses ChartErrorBoundary for graceful error recovery
+     - Provides user-friendly error messages with retry options
    - Handle network errors gracefully
-   - Provide user-friendly error messages
+   - Handle data integrity issues (e.g., timestamp ordering)
 
 3. **Testing**
    - Write tests for all new features
@@ -235,6 +237,8 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
    - Implement proper cleanup in hooks
    - Use memoization where appropriate
    - Handle reconnection scenarios
+   - Ensure data integrity through sorting and deduplication
+   - Optimize real-time data updates
 
 5. **Code Organization**
    - Follow consistent file naming
