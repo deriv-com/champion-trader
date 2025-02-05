@@ -3,7 +3,7 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
 export const BottomSheet = () => {
-  const { showBottomSheet, key, onDragDown, setBottomSheet } =
+  const { showBottomSheet, key, onDragDown, setBottomSheet, height } =
     useBottomSheetStore();
 
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -56,6 +56,11 @@ export const BottomSheet = () => {
 
   }, [setBottomSheet, numpadValue]);
 
+  // Convert percentage to vh for height if needed
+  const processedHeight = height.endsWith("%")
+    ? `${parseFloat(height)}vh`
+    : height;
+
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => handleMove(e);
     const handleMouseMove = (e: MouseEvent) => handleMove(e);
@@ -94,14 +99,15 @@ export const BottomSheet = () => {
 
       <div
         ref={sheetRef}
+        style={{ height: processedHeight }}
         id="bottom-sheet"
         className="fixed bottom-0 left-0 right-0 flex flex-col max-w-[800px] w-full mx-auto bg-background rounded-t-[16px] animate-in fade-in-0 slide-in-from-bottom duration-300 z-50 transition-transform overflow-hidden"
       >
         {/* Handle Bar */}
         <div
           className="flex flex-col items-center justify-center px-0 py-2 w-full"
-        onTouchStart={handleStart}
-        onMouseDown={handleStart}
+          onTouchStart={handleStart}
+          onMouseDown={handleStart}
         >
           <div className="w-32 h-1 bg-muted hover:bg-muted-foreground transition-colors cursor-grab active:cursor-grabbing" />
         </div>
