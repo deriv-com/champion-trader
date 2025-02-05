@@ -14,12 +14,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="flex min-h-screen">
       <SideNav />
-      <div className="flex flex-col flex-1">
-        <Header />
-        <main className="flex-1 flex flex-col">
+      <div className="flex flex-col flex-1 relative">
+        <Header className="sticky top-0 z-50" />
+        <main className="flex-1 flex flex-col overflow-y-auto">
           {children}
         </main>
-        {isLoggedIn && <Footer />}
+        {isLoggedIn && <Footer className="sticky bottom-0 z-50" />}
       </div>
     </div>
   );

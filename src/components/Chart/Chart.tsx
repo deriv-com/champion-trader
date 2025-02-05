@@ -136,7 +136,7 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
 
   return (
     <div className={cn("flex flex-col flex-1", className)}>
-      <div className="flex-1 bg-white w-full rounded-lg relative min-h-[400px]">
+      <div className="flex-1 bg-white w-full rounded-lg relative h-full">
         {currentPrice && currentTime && (
           <div className="absolute top-4 left-4 bg-gray-100 p-2 rounded shadow-sm z-10">
             <div className="text-sm font-medium">VOLATILITY 100 (1S) INDEX</div>
