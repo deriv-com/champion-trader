@@ -14,6 +14,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-presence": "^1.1.2",
+    "@deriv/deriv-charts": "^2.8.0",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-toggle": "^1.0.3",
