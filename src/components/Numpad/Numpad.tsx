@@ -45,7 +45,7 @@ const Numpad: React.FC<NumpadProps> = ({ context }) => {
             value={chip}
             onClick={(e) => {
               const chip_value = Number(e.currentTarget.value);
-              setNumpadValue(!numpadValue ? chip_value.toString() : (parseInt(numpadValue) + chip_value).toString());
+              setNumpadValue(!numpadValue ? chip_value.toString() : (parseFloat(numpadValue) + chip_value).toString());
             }}
           >
             {chip}
