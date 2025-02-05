@@ -33,12 +33,12 @@ export const TradePage: React.FC = () => {
 
   const handleStakeClick = () => {
     setNumpadValue(stake)
-    setBottomSheet(true, 'stake');
+    setBottomSheet(true, 'stake', '500px');
   };
 
   const handleDurationClick = () => {
     setNumpadValue(duration)
-    setBottomSheet(true, 'duration');
+    setBottomSheet(true, 'duration', '500px');
   }
   return (
     <div className="flex flex-col flex-1 landscape:flex-row landscape:h-[100dvh] h-[100dvh] landscape:relative">
