@@ -3,7 +3,7 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
 export const BottomSheet = () => {
-  const { showBottomSheet, key, height, onDragDown, setBottomSheet } =
+  const { showBottomSheet, key, onDragDown, setBottomSheet } =
     useBottomSheetStore();
 
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -11,18 +11,23 @@ export const BottomSheet = () => {
   const currentY = useRef<number>(0);
   const isDragging = useRef<boolean>(false);
 
-  const handleStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    dragStartY.current = touch.clientY;
+  const handleStart = useCallback((e: React.TouchEvent | React.MouseEvent) => {
+    let clientY: number;
+    if ("touches" in e) {
+      clientY = e.touches[0].clientY;
+    } else {
+      clientY = e.clientY;
+    }
+    dragStartY.current = clientY;
     currentY.current = 0;
     isDragging.current = true;
   }, []);
 
   const handleMove = useCallback(
-    (e: TouchEvent) => {
+    (e: TouchEvent | MouseEvent) => {
       if (!sheetRef.current || !isDragging.current) return;
 
-      const touch = e.touches[0];
+      const touch = (e as TouchEvent).touches[0];
       const deltaY = touch.clientY - dragStartY.current;
       currentY.current = deltaY;
 
@@ -52,8 +57,8 @@ export const BottomSheet = () => {
   }, [setBottomSheet, numpadValue]);
 
   useEffect(() => {
-    const handleTouchMove = (e: TouchEvent) => handleMove(e.touches[0].clientY);
-    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientY);
+    const handleTouchMove = (e: TouchEvent) => handleMove(e);
+    const handleMouseMove = (e: MouseEvent) => handleMove(e);
     const handleMouseUp = () => handleEnd();
 
     if (showBottomSheet) {
@@ -75,11 +80,6 @@ export const BottomSheet = () => {
 
   if (!showBottomSheet || !body) return null;
 
-  // Convert percentage to vh for height if needed
-  const processedHeight = height.endsWith("%")
-    ? `${parseFloat(height)}vh`
-    : height;
-
   return (
     <>
       {/* Overlay */}
@@ -100,8 +100,8 @@ export const BottomSheet = () => {
         {/* Handle Bar */}
         <div
           className="flex flex-col items-center justify-center px-0 py-2 w-full"
-          onTouchStart={(e) => handleStart(e.touches[0].clientY)}
-          onMouseDown={(e) => handleStart(e.clientY)}
+        onTouchStart={handleStart}
+        onMouseDown={handleStart}
         >
           <div className="w-32 h-1 bg-muted hover:bg-muted-foreground transition-colors cursor-grab active:cursor-grabbing" />
         </div>

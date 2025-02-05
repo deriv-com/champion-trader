@@ -53,7 +53,9 @@ describe('TradePage', () => {
       allowEquals: false,
       setStake: jest.fn(),
       setDuration: jest.fn(),
-      toggleAllowEquals: jest.fn()
+      toggleAllowEquals: jest.fn(),
+      numpadValue: "",
+      setNumpadValue: jest.fn()
     }));
   });
 
@@ -93,7 +95,9 @@ describe('TradePage', () => {
       allowEquals: false,
       setStake: jest.fn(),
       setDuration: jest.fn(),
-      toggleAllowEquals: toggleMock
+      toggleAllowEquals: toggleMock,
+      numpadValue: "",
+      setNumpadValue: jest.fn()
     }));
 
     await act(async () => {
