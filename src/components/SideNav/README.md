@@ -43,17 +43,25 @@ const routes = [
 ];
 ```
 
+## Dependencies
+```typescript
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { useOrientationStore } from "@/stores/orientationStore";
+```
+
 ## Responsive Behavior
-- Hidden by default on portrait mode: `hidden`
-- Visible in landscape mode: `landscape:flex`
+Uses hooks for orientation-based display:
+- `useDeviceDetection`: Detects if the device is mobile
+- `useOrientationStore`: Manages orientation state
+- Conditionally rendered based on device type and orientation
 - Fixed width: `w-16`
-- Full height: `h-full`
+- Full height: `h-[100dvh]`
 
 ## Styling
-Uses Tailwind CSS for styling:
+Uses Tailwind CSS with conditional classes:
 ```tsx
 // Container
-className="hidden landscape:flex flex-col h-full w-16 border-r bg-white"
+className={`${isMobile && isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
 
 // Navigation buttons
 className="flex flex-col items-center gap-1"
@@ -65,10 +73,12 @@ className="text-gray-500" // Inactive route
 
 ## Implementation Details
 
-### Route Handling
+### Route and State Handling
 ```typescript
 const navigate = useNavigate();
 const location = useLocation();
+const { isMobile } = useDeviceDetection();
+const { isLandscape } = useOrientationStore();
 
 // Active route check
 const isActive = location.pathname === '/route';
