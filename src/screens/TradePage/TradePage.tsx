@@ -65,9 +65,9 @@ export const TradePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 landscape:mt-[72px]">
+        <div className="flex flex-col flex-1 landscape:mt-[72px] h-[calc(100vh-200px)] landscape:h-[calc(100vh-72px)]">
           <Suspense fallback={<div>Loading...</div>}>
-            <Chart className="flex-1 min-h-0" />
+            <Chart className="flex-1" />
           </Suspense>
         </div>
 

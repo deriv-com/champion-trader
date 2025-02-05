@@ -3,7 +3,11 @@ import { Menu } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  className?: string;
+}
+
+export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,7 +16,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="flex items-center gap-4 px-4 py-2 landscape:hidden border-b border-opacity-10" id="header">
+    <header className={`flex items-center gap-4 px-4 py-2 landscape:hidden border-b border-opacity-10 bg-white ${className}`} id="header">
       <button 
         onClick={handleMenuClick}
         className={`flex flex-col items-center ${
