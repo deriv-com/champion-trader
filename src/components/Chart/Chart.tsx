@@ -152,7 +152,7 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
         {currentPrice && currentTime && (
           <div className="absolute top-4 left-4 bg-gray-100 p-2 rounded shadow-sm z-10">
             <div className="text-sm font-medium">VOLATILITY 100 (1S) INDEX</div>
-            <div className="text-lg font-bold">{currentPrice.toFixed(2)}</div>
+            <div className="text-sm font-bold">{currentPrice.toFixed(2)}</div>
             <div className="text-xs text-gray-600">{currentTime}</div>
           </div>
         )}
