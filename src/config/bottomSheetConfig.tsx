@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import Numpad from "@/components/Numpad/Numpad";
 
 export interface BottomSheetConfig {
   [key: string]: {
@@ -6,14 +7,14 @@ export interface BottomSheetConfig {
   };
 }
 
+import StakeBody from "@/components/BottomSheet/StakeBody";
+import DurationBody from "@/components/BottomSheet/DurationBody";
+
 export const bottomSheetConfig: BottomSheetConfig = {
   'stake': {
-    body: (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center text-center">
-          <h2 className="text-lg font-semibold mx-auto">Stake</h2>
-        </div>
-      </div>
-    )
-  }
+    body: <StakeBody />,
+  },
+  'duration': {
+    body: <DurationBody />,
+  },
 };

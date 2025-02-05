@@ -7,13 +7,17 @@ export interface TradeState {
   setStake: (stake: string) => void;
   setDuration: (duration: string) => void;
   toggleAllowEquals: () => void;
+  numpadValue: string;
+  setNumpadValue: (value: string) => void;
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
-  stake: '10 USD',
-  duration: '10 tick',
+  stake: '0',
+  duration: '0',
   allowEquals: false,
   setStake: (stake) => set({ stake }),
   setDuration: (duration) => set({ duration }),
   toggleAllowEquals: () => set((state) => ({ allowEquals: !state.allowEquals })),
+  numpadValue: "",
+  setNumpadValue: (value) => set({ numpadValue: value }),
 }));

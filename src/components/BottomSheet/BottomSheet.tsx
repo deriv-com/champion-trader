@@ -1,7 +1,7 @@
 import { useRef, useCallback, useEffect } from "react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
+import { useTradeStore } from "@/stores/tradeStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
-
 export const BottomSheet = () => {
   const { showBottomSheet, key, height, onDragDown, setBottomSheet } =
     useBottomSheetStore();
@@ -11,14 +11,14 @@ export const BottomSheet = () => {
   const currentY = useRef<number>(0);
   const isDragging = useRef<boolean>(false);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  const handleStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
     dragStartY.current = touch.clientY;
     currentY.current = 0;
     isDragging.current = true;
   }, []);
 
-  const handleTouchMove = useCallback(
+  const handleMove = useCallback(
     (e: TouchEvent) => {
       if (!sheetRef.current || !isDragging.current) return;
 
@@ -34,28 +34,42 @@ export const BottomSheet = () => {
     [onDragDown]
   );
 
-  const handleTouchEnd = useCallback(() => {
+  const { setStake, setDuration, numpadValue } = useTradeStore();
+
+  const handleEnd = useCallback(() => {
     if (!sheetRef.current) return;
-
+    if (key === "stake") setStake(numpadValue);
+    if (key === "duration") setDuration(numpadValue);
     isDragging.current = false;
-    sheetRef.current.style.transform = "";
-
+    sheetRef.current.style.transition = "transform 0.3s ease-out";
     if (currentY.current > 100) {
-      setBottomSheet(false);
+      sheetRef.current.style.transform = "translateY(100%)";
+      setTimeout(() => setBottomSheet(false), 300);
+    } else {
+      sheetRef.current.style.transform = "translateY(0)";
     }
-  }, [setBottomSheet]);
+
+  }, [setBottomSheet, numpadValue]);
 
   useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => handleMove(e.touches[0].clientY);
+    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientY);
+    const handleMouseUp = () => handleEnd();
+
     if (showBottomSheet) {
       document.addEventListener("touchmove", handleTouchMove);
-      document.addEventListener("touchend", handleTouchEnd);
-
-      return () => {
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-      };
+      document.addEventListener("touchend", handleEnd);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
-  }, [showBottomSheet, handleTouchMove, handleTouchEnd]);
+
+    return () => {
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleEnd);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [showBottomSheet, handleMove, handleEnd]);
 
   const body = key ? bottomSheetConfig[key]?.body : null;
 
@@ -78,29 +92,16 @@ export const BottomSheet = () => {
         }}
       />
 
-      {/* Sheet */}
       <div
         ref={sheetRef}
-        style={{ height: processedHeight }}
-        className={`
-          fixed bottom-0 left-0 right-0
-          flex flex-col
-          max-w-[800px]
-          w-full
-          mx-auto
-          bg-background
-          rounded-t-[16px]
-          animate-in fade-in-0 slide-in-from-bottom
-          duration-300
-          z-50
-          transition-transform
-          overflow-hidden
-        `}
+        id="bottom-sheet"
+        className="fixed bottom-0 left-0 right-0 flex flex-col max-w-[800px] w-full mx-auto bg-background rounded-t-[16px] animate-in fade-in-0 slide-in-from-bottom duration-300 z-50 transition-transform overflow-hidden"
       >
         {/* Handle Bar */}
         <div
           className="flex flex-col items-center justify-center px-0 py-2 w-full"
-          onTouchStart={handleTouchStart}
+          onTouchStart={(e) => handleStart(e.touches[0].clientY)}
+          onMouseDown={(e) => handleStart(e.clientY)}
         >
           <div className="w-32 h-1 bg-muted hover:bg-muted-foreground transition-colors cursor-grab active:cursor-grabbing" />
         </div>

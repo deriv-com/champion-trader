@@ -5,7 +5,10 @@ interface BottomSheetState {
   key: string | null;
   height: string;
   onDragDown?: () => void;
-  setBottomSheet: (show: boolean, key?: string, height?: string, onDragDown?: () => void) => void;
+  setBottomSheet: (show: boolean, key?: string, height?: string, onDragDown?: (value:any) => void) => void;
+  setKey: (key: string) => void;
+  stakeValue: number;
+  setStakeValue: (newValue: number) => void;
 }
 
 export const useBottomSheetStore = create<BottomSheetState>((set) => ({
@@ -19,4 +22,7 @@ export const useBottomSheetStore = create<BottomSheetState>((set) => ({
     height: height || '380px',
     onDragDown: onDragDown
   }),
+  setKey: (key: string) => set({ key }),
+  stakeValue: 0,
+  setStakeValue: (newValue: number) => set({ stakeValue: newValue }),
 }));
