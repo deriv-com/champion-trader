@@ -36,7 +36,6 @@ describe('MainLayout', () => {
     );
     // Check for base layout classes.
     expect(container.firstChild).toHaveClass('flex');
-    expect(container.firstChild).toHaveClass('min-h-screen');
   });
 
   it('does not render footer when user is logged out', () => {

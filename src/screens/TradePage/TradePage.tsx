@@ -36,7 +36,7 @@ export const TradePage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 landscape:flex-row landscape:h-[100dvh] landscape:relative">
+    <div className="flex flex-col flex-1 landscape:flex-row landscape:h-[100dvh] h-[100dvh] landscape:relative">
       <div
         className="hidden landscape:block landscape:absolute landscape:top-0 landscape:left-0 landscape:right-0 landscape:bg-white landscape:z-10 border-b border-opacity-10"
         id="instrument-tab-bar"
@@ -65,7 +65,7 @@ export const TradePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 landscape:mt-[72px] h-[calc(100vh-200px)] landscape:h-[calc(100vh-72px)]">
+        <div className="flex flex-col flex-1 landscape:mt-[72px] h-[calc(100dvh-200px)] landscape:h-[calc(100dvh-72px)]">
           <Suspense fallback={<div>Loading...</div>}>
             <Chart className="flex-1" />
           </Suspense>
