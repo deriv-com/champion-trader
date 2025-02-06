@@ -18,10 +18,6 @@ export const bottomSheetConfig: BottomSheetConfig = {
     )
   },
   'duration': {
-    body: (
-      <div className="flex flex-col h-full">
-        <DurationController />
-      </div>
-    )
+    body: <DurationController />
   }
 };

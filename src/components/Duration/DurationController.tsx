@@ -3,40 +3,28 @@ import { DurationTabList } from "./components/DurationTabList";
 import { DurationValueList } from "./components/DurationValueList";
 import { HoursDurationValue } from "./components/HoursDurationValue";
 import { useTradeStore } from "@/stores/tradeStore";
-import { useBottomSheetStore } from "@/stores/bottomSheetStore";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { getDurationValues } from "./utils";
+import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 
-const getDurationValues = (type: string): number[] => {
-  switch (type) {
-    case "tick":
-      return [1, 2, 3, 4, 5];
-    case "second":
-      return [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
-        57, 58, 59, 60,
-      ];
-    case "minute":
-      return [1, 2, 3, 5, 10, 15, 30];
-    case "hour":
-      return [1, 2, 3, 4, 6, 8, 12, 24];
-    case "day":
-      return [1];
-    default:
-      return [];
-  }
-};
+interface DurationControllerProps {
+  onClose?: () => void;
+}
 
-export const DurationController: React.FC = () => {
+export const DurationController: React.FC<DurationControllerProps> = ({
+  onClose,
+}) => {
   const { duration, setDuration } = useTradeStore();
+  const { isDesktop } = useDeviceDetection();
   const { setBottomSheet } = useBottomSheetStore();
-  
+
   // Initialize local state with store value
   const [localDuration, setLocalDuration] = React.useState(duration);
   const [value, type] = localDuration.split(" ");
   const selectedType = type;
-  const selectedValue: string | number = type === "hour" ? value : parseInt(value, 10);
+  const selectedValue: string | number =
+    type === "hour" ? value : parseInt(value, 10);
 
   const handleTypeSelect = (type: string) => {
     if (type === "hour") {
@@ -53,12 +41,16 @@ export const DurationController: React.FC = () => {
   };
 
   const handleSave = () => {
-    setDuration(localDuration); // Update store with local state
-    setBottomSheet(false);
+    setDuration(localDuration);
+    if (isDesktop) {
+      onClose?.();
+    } else {
+      setBottomSheet(false);
+    }
   };
 
-  return (
-    <div className="flex flex-col h-full" id="DurationController">
+  const content = (
+    <>
       <div>
         <h5 className="font-ubuntu text-[16px] font-bold leading-[24px] text-center underline decoration-transparent py-4 px-2">
           Duration
@@ -91,6 +83,14 @@ export const DurationController: React.FC = () => {
       <div className="w-full p-3">
         <PrimaryButton onClick={handleSave}>Save</PrimaryButton>
       </div>
-    </div>
+    </>
   );
+
+  if (isDesktop) {
+    return (
+      <div className="bg-white rounded-lg shadow-lg w-[480px]">{content}</div>
+    );
+  }
+
+  return <div className="flex flex-col h-full">{content}</div>;
 };

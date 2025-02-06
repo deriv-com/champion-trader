@@ -6,10 +6,11 @@ import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { AddMarketButton } from "@/components/AddMarketButton"
 import { DurationOptions } from "@/components/DurationOptions"
+import { DurationField } from "@/components/Duration"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { Card, CardContent } from "@/components/ui/card"
-import TradeParam from "@/components/TradeFields/TradeParam"
+import { TradeParam, TradeFieldCard } from "@/components/TradeFields"
 import ToggleButton from "@/components/TradeFields/ToggleButton"
 
 interface MarketInfoProps {
@@ -29,7 +30,7 @@ const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
 )
 
 export const TradePage: React.FC = () => {
-  const { stake, duration, allowEquals, toggleAllowEquals } = useTradeStore()
+  const { stake, allowEquals, toggleAllowEquals } = useTradeStore()
   const { setBottomSheet } = useBottomSheetStore()
   const { isLandscape } = useOrientationStore()
 
@@ -37,10 +38,6 @@ export const TradePage: React.FC = () => {
     setBottomSheet(true, 'stake');
   };
   
-  const handleDurationClick = () => {
-    setBottomSheet(true, 'duration', '470px');
-  };
-
   return (
     <div className={`flex ${isLandscape ? 'flex-row relative' : 'flex-col'} flex-1 h-[100dvh]`}>
       {isLandscape && (
@@ -87,29 +84,51 @@ export const TradePage: React.FC = () => {
         id="trade-section" 
         className={`${isLandscape ? 'w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-center mt-[78px] border-l border-gray-300 border-opacity-20' : ''}`}
       >
-        <div className={`flex flex-col gap-4 p-4 ${isLandscape ? 'pt-4 pb-2 px-4' : ''}`} id="trade-fields">
-          <div className={`flex ${isLandscape ? 'flex-col gap-2' : 'gap-4'}`} id="trade-params">
-            <TradeParam 
-              label="Duration" 
-              value={duration} 
-              className={isLandscape ? 'w-full' : ''} 
-              onClick={handleDurationClick}
-            />
-            <TradeParam 
-              label="Stake" 
-              value={stake} 
-              className={isLandscape ? 'w-full' : ''} 
-              onClick={handleStakeClick} 
-            />
-          </div>
-
-          <div id="trade-toggles" className={isLandscape ? 'mt-2' : ''}>
-            <ToggleButton
-              label="Allow equals"
-              value={allowEquals}
-              onChange={toggleAllowEquals}
-            />
-          </div>
+        <div id="trade-fields">
+          {isLandscape ? (
+            // Desktop layout
+            <div className="flex flex-col gap-4 pt-4 pb-2 px-4">
+              <div className="flex flex-col gap-2">
+                <DurationField className="w-full" />
+                <TradeParam 
+                  label="Stake" 
+                  value={stake} 
+                  className="w-full"
+                  onClick={handleStakeClick} 
+                />
+              </div>
+              <div className="mt-2">
+                <ToggleButton
+                  label="Allow equals"
+                  value={allowEquals}
+                  onChange={toggleAllowEquals}
+                />
+              </div>
+            </div>
+          ) : (
+            // Mobile layout
+            <div className="p-4">
+              <div className="flex flex-wrap gap-4">
+                <TradeFieldCard>
+                  <DurationField />
+                </TradeFieldCard>
+                <TradeFieldCard>
+                  <TradeParam 
+                    label="Stake" 
+                    value={stake}
+                    onClick={handleStakeClick} 
+                  />
+                </TradeFieldCard>
+              </div>
+              <div className="mt-4">
+                <ToggleButton
+                  label="Allow equals"
+                  value={allowEquals}
+                  onChange={toggleAllowEquals}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className={`flex ${isLandscape ? 'flex-col py-2' : ''} gap-2 p-4`} id="trade-buttons">
