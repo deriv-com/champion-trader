@@ -6,6 +6,7 @@ interface TradeButtonProps {
   label: string;
   value: string;
   title_position: "left" | "right";
+  onClick?: () => void;
 }
 
 export const TradeButton: React.FC<TradeButtonProps> = ({
@@ -14,13 +15,23 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
   label,
   value,
   title_position,
+  onClick,
 }) => {
   const isLeft = title_position === "left";
 
   return (
     <button
-      className={`flex items-center justify-between w-full px-6 py-4 rounded-full ${className}`}
-    >
+      type="button"
+  onClick={onClick}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick && onClick();
+    }
+  }}
+  className={`flex items-center justify-between w-full px-6 py-4 rounded-full ${className}`}
+  aria-label={`${title} - ${label}: ${value}`}
+>
       {isLeft ? (
         <>
           <div className="flex flex-col items-start">

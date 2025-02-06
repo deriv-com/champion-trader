@@ -16,6 +16,15 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        'ibm-plex': ['IBM Plex Sans', 'sans-serif'],
+      },
+      fontSize: {
+        'body': ['14px', {
+          lineHeight: '22px',
+          fontWeight: '400',
+        }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

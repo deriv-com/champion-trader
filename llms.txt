@@ -11,6 +11,36 @@ The application is structured around modular, self-contained components and uses
 - [Configuration Files](STRUCTURE.md#configuration-files): Build, development, and testing configurations
 - [Module Dependencies](STRUCTURE.md#module-dependencies): Core and development dependencies
 
+## Typography System
+
+The application uses a consistent typography system based on IBM Plex Sans:
+
+### Text Styles
+
+#### Caption Regular (Small Text)
+```css
+font-family: IBM Plex Sans;
+font-size: 12px;
+font-weight: 400;
+line-height: 18px;
+text-align: left;
+```
+
+#### Body Regular (Default Text)
+```css
+font-family: IBM Plex Sans;
+font-size: 16px;
+font-weight: 400;
+line-height: 24px;
+text-align: left;
+```
+
+### Layout Principles
+- Components should take full available width where appropriate
+- Text content should be consistently left-aligned
+- Maintain proper spacing and padding for readability
+- Use responsive design patterns for different screen sizes
+
 ## Architecture
 
 - [Component Structure](src/components/README.md): Comprehensive guide on TDD implementation, Atomic Component Design, and component organization

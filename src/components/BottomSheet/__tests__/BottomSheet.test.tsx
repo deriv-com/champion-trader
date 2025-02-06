@@ -65,11 +65,13 @@ describe("BottomSheet", () => {
     expect(bottomSheet).toHaveStyle({ height: '50vh' });
   });
 
-  it("handles drag to dismiss", () => {
+  it("handles drag to dismiss and calls onDragDown", () => {
+    const mockOnDragDown = jest.fn();
     mockUseBottomSheetStore.mockReturnValue({
       showBottomSheet: true,
       key: 'test-key',
       height: '380px',
+      onDragDown: mockOnDragDown,
       setBottomSheet: mockSetBottomSheet
     });
 
@@ -83,6 +85,45 @@ describe("BottomSheet", () => {
     fireEvent.touchMove(document, { touches: [{ clientY: 150 }] });
     fireEvent.touchEnd(document);
 
+    expect(mockOnDragDown).toHaveBeenCalled();
+    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
+  });
+
+  it("applies animation classes when shown", () => {
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '380px',
+      setBottomSheet: mockSetBottomSheet
+    });
+
+    const { container } = render(<BottomSheet />);
+
+    const overlay = container.querySelector('[class*="fixed inset-0"]');
+    const sheet = container.querySelector('[class*="fixed bottom-0"]');
+
+    expect(overlay?.className).toContain('animate-in fade-in-0');
+    expect(sheet?.className).toContain('animate-in fade-in-0 slide-in-from-bottom');
+    expect(sheet?.className).toContain('duration-300');
+  });
+
+  it("calls onDragDown when clicking overlay", () => {
+    const mockOnDragDown = jest.fn();
+    mockUseBottomSheetStore.mockReturnValue({
+      showBottomSheet: true,
+      key: 'test-key',
+      height: '380px',
+      onDragDown: mockOnDragDown,
+      setBottomSheet: mockSetBottomSheet
+    });
+
+    const { container } = render(<BottomSheet />);
+
+    const overlay = container.querySelector('[class*="fixed inset-0"]');
+    expect(overlay).toBeInTheDocument();
+    fireEvent.click(overlay!);
+
+    expect(mockOnDragDown).toHaveBeenCalled();
     expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
   });
 

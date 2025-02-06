@@ -49,7 +49,7 @@ export class ContractSSEService extends ProtectedSSEService<ContractSSEMap> {
   protected handleMessage(message: SSEMessage): void {
     const handlers = this.messageHandlers.get("contract_price");
     handlers?.forEach((handler) =>
-      handler(message.data as ContractPriceResponse)
+      handler(message as unknown as ContractPriceResponse)
     );
   }
 

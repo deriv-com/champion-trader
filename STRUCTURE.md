@@ -69,12 +69,21 @@ components/
 ├── BottomNav/           # Navigation component
 ├── BottomSheet/         # Modal sheet component
 ├── Chart/               # Price chart
-├── DurationOptions/     # Trade duration
+├── Duration/           # Trade duration selection
+│   ├── components/     # Duration subcomponents
+│   │   ├── DurationTab.tsx
+│   │   ├── DurationTabList.tsx
+│   │   ├── DurationValueList.tsx
+│   │   └── HoursDurationValue.tsx
+│   └── DurationController.tsx
+├── DurationOptions/     # Legacy trade duration (to be deprecated)
 ├── TradeButton/         # Trade execution
 ├── TradeFields/         # Trade parameters
 └── ui/                  # Shared UI components
     ├── button.tsx
     ├── card.tsx
+    ├── chip.tsx        # Selection chip component
+    ├── primary-button.tsx # Primary action button
     ├── switch.tsx
     └── toggle.tsx
 ```
@@ -214,6 +223,9 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
    - Use composition over inheritance
    - Keep components focused and single-responsibility
    - Document props and side effects
+   - Implement reusable UI components in ui/ directory
+   - Use TailwindCSS for consistent styling
+   - Support theme customization through design tokens
 
 3. **State Management**
    - Use local state for UI-only state

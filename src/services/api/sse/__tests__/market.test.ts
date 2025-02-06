@@ -75,14 +75,17 @@ describe('MarketSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: `data: ${JSON.stringify({
+        data: JSON.stringify({
           action: 'instrument_price',
           data: mockPrice
-        })}`
+        })
       }));
     }
 
-    expect(mockHandler).toHaveBeenCalledWith(mockPrice);
+    expect(mockHandler).toHaveBeenCalledWith({
+      action: 'instrument_price',
+      data: mockPrice
+    });
   });
 
   it('should handle parse errors', () => {
@@ -95,7 +98,7 @@ describe('MarketSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: 'data: invalid json'
+        data: 'invalid json'
       }));
     }
 

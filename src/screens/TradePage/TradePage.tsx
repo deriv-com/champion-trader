@@ -36,6 +36,10 @@ export const TradePage: React.FC = () => {
   const handleStakeClick = () => {
     setBottomSheet(true, 'stake');
   };
+  
+  const handleDurationClick = () => {
+    setBottomSheet(true, 'duration', '470px');
+  };
 
   return (
     <div className={`flex ${isLandscape ? 'flex-row relative' : 'flex-col'} flex-1 h-[100dvh]`}>
@@ -89,6 +93,7 @@ export const TradePage: React.FC = () => {
               label="Duration" 
               value={duration} 
               className={isLandscape ? 'w-full' : ''} 
+              onClick={handleDurationClick}
             />
             <TradeParam 
               label="Stake" 
