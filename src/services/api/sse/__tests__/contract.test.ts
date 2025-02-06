@@ -44,8 +44,8 @@ describe('ContractSSEService', () => {
   });
 
   const createMockResponse = (request: ContractPriceRequest): ContractPriceResponse => ({
-    date_start: Date.now(),
-    date_expiry: Date.now() + 60000,
+    date_start: 1738841771212,
+    date_expiry: 1738841831212,
     spot: '1234.56',
     strike: request.strike || '1234.56',
     price: '5.67',
@@ -98,14 +98,17 @@ describe('ContractSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: `data: ${JSON.stringify({
+        data: JSON.stringify({
           action: 'contract_price',
           data: mockResponse
-        })}`
+        })
       }));
     }
 
-    expect(mockHandler).toHaveBeenCalledWith(mockResponse);
+    expect(mockHandler).toHaveBeenCalledWith({
+      action: 'contract_price',
+      data: mockResponse
+    });
   });
 
   it('should handle parse errors', () => {
@@ -118,7 +121,7 @@ describe('ContractSSEService', () => {
 
     if (mockEventSource?.onmessage) {
       mockEventSource.onmessage(new MessageEvent('message', {
-        data: 'data: invalid json'
+        data: 'invalid json'
       }));
     }
 

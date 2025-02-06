@@ -34,6 +34,10 @@ export const TradePage: React.FC = () => {
   const handleStakeClick = () => {
     setBottomSheet(true, 'stake');
   };
+  
+  const handleDurationClick = () => {
+    setBottomSheet(true, 'duration', '470px');
+  };
 
   return (
     <div className="flex flex-col flex-1 landscape:flex-row landscape:h-[100dvh] h-[100dvh] landscape:relative">
@@ -65,7 +69,7 @@ export const TradePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 landscape:mt-[72px] h-[calc(100dvh-200px)] landscape:h-[calc(100dvh-72px)]">
+        <div className="flex flex-col flex-1 landscape:mt-[48px] h-[calc(100dvh-200px)] landscape:h-[calc(100dvh-72px)]">
           <Suspense fallback={<div>Loading...</div>}>
             <Chart className="flex-1" />
           </Suspense>
@@ -79,7 +83,7 @@ export const TradePage: React.FC = () => {
       <div id="trade-section" className="landscape:w-[40%] landscape:min-w-[260px] landscape:max-w-[360px] landscape:flex landscape:flex-col landscape:justify-center landscape:mt-[78px] landscape:border-l landscape:border-gray-300 landscape:border-opacity-20">
         <div className="flex flex-col gap-4 p-4 landscape:pt-4 landscape:pb-2 landscape:px-4" id="trade-fields">
           <div className="flex gap-4 landscape:flex-col landscape:gap-2" id="trade-params">
-        <TradeParam label="Duration" value={duration} className="landscape:w-full" />
+        <TradeParam label="Duration" value={duration} className="landscape:w-full" onClick={handleDurationClick} />
         <TradeParam label="Stake" value={stake} className="landscape:w-full" onClick={handleStakeClick} />
           </div>
 
