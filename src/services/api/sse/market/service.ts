@@ -51,7 +51,7 @@ export class MarketSSEService extends PublicSSEService<MarketSSEMap> {
   protected handleMessage(message: SSEMessage): void {
     if (message.action === 'instrument_price') {
       const handlers = this.messageHandlers.get('instrument_price');
-      handlers?.forEach(handler => handler(message.data as InstrumentPriceResponse));
+      handlers?.forEach(handler => handler(message as unknown as InstrumentPriceResponse));
     }
   }
 

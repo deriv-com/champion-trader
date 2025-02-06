@@ -61,9 +61,10 @@ describe('TradePage', () => {
   it('renders all trade components', () => {
     render(<TradePage />);
 
-    expect(screen.getByTestId('balance-display')).toBeInTheDocument();
+    // Balance display is only visible in landscape mode
+    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
-    expect(screen.getAllByTestId('add-market-button')).toHaveLength(2); // One for landscape, one for portrait
+    expect(screen.getAllByTestId('add-market-button')).toHaveLength(1); // Only portrait mode by default
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
   });
 
@@ -84,8 +85,8 @@ describe('TradePage', () => {
     const marketSubtitles = screen.getAllByText('Rise/Fall');
 
     // Verify both landscape and portrait instances
-    expect(marketTitles).toHaveLength(2);
-    expect(marketSubtitles).toHaveLength(2);
+    expect(marketTitles).toHaveLength(1); // Only portrait mode by default
+    expect(marketSubtitles).toHaveLength(1);
   });
 
   it('opens duration bottom sheet when duration is clicked', () => {

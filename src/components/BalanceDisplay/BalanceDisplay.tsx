@@ -1,5 +1,6 @@
 import React from 'react';
 import { useClientStore } from '@/stores/clientStore';
+import { useOrientationStore } from '@/stores/orientationStore';
 
 interface BalanceDisplayProps {
   onDeposit?: () => void;
@@ -15,6 +16,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   loginUrl = 'https://options-trading.deriv.ai/',
 }) => {
   const { isLoggedIn, balance, currency } = useClientStore();
+  const { isLandscape } = useOrientationStore();
 
   if (!isLoggedIn) {
     return (
@@ -30,10 +32,10 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   }
 
   return (
-    <div className={`flex items-center justify-between landscape:gap-4 ${className}`}>
+    <div className={`flex items-center justify-between ${isLandscape ? 'gap-4' : ''} ${className}`}>
       <div className="flex flex-col">
         <span className="text-sm text-gray-700">Real</span>
-        <span className="text-xl font-bold text-teal-500">{balance} {currency}</span>
+        <span className="text-sm font-bold text-teal-500">{balance} {currency}</span>
       </div>
       <button 
         className="px-4 py-2 font-bold border border-gray-700 rounded-3xl"
