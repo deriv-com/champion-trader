@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface DeviceInfo {
   isMobile: boolean;
@@ -13,23 +13,18 @@ export const useDeviceDetection = (): DeviceInfo => {
 
   useEffect(() => {
     const checkDevice = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      const mobileKeywords = ['android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
-      
-      const isMobileDevice = mobileKeywords.some(keyword => userAgent.includes(keyword));
-      
+      const width = window.innerWidth;
+
       setDeviceInfo({
-        isMobile: isMobileDevice,
-        isDesktop: !isMobileDevice,
+        isMobile: width <= 600,
+        isDesktop: width > 1280,
       });
     };
 
     checkDevice();
-    window.addEventListener('resize', checkDevice);
+    window.addEventListener("resize", checkDevice);
 
-    return () => {
-      window.removeEventListener('resize', checkDevice);
-    };
+    return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
   return deviceInfo;

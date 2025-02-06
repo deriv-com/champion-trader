@@ -17,7 +17,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (!isMobile) return;
       const isLandscapeMode = window.matchMedia(
         "(orientation: landscape)"
       ).matches;
@@ -37,10 +36,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="flex min-h-[100dvh] h-[100dvh]">
       <SideNav />
-
       <div className="flex flex-col flex-1 relative overflow-hidden">
         <Header className="sticky top-0 z-50" />
-        <main className={`flex-1 ${isMobile && isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
+        <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>
         {isLoggedIn && !isLandscape && <Footer className="sticky bottom-0 z-50" />}

@@ -2,14 +2,12 @@ import React from "react";
 import { BarChart2, Clock, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
 
 export const SideNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
-  const { isMobile } = useDeviceDetection();
   const { isLandscape } = useOrientationStore();
 
   const handleMenuClick = () => {
@@ -17,7 +15,7 @@ export const SideNav: React.FC = () => {
   };
 
   return (
-    <nav className={`${isMobile && isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         {isLoggedIn && (
           <>

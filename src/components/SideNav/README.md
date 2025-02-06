@@ -61,7 +61,7 @@ Uses hooks for orientation-based display:
 Uses Tailwind CSS with conditional classes:
 ```tsx
 // Container
-className={`${isMobile && isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
+className={`${isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
 
 // Navigation buttons
 className="flex flex-col items-center gap-1"
