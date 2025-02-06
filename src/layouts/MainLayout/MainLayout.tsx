@@ -17,9 +17,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      const isLandscapeMode = window.matchMedia(
-        "(orientation: landscape)"
-      ).matches;
+      const isLandscapeMode = window.matchMedia 
+      ? window.matchMedia("(orientation: landscape)").matches 
+      : window.innerWidth > window.innerHeight;
       setIsLandscape(isLandscapeMode);
     };
 
