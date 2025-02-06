@@ -1,5 +1,4 @@
 import React from "react";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,6 +19,8 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
   className,
 }) => {
   const { isLandscape } = useOrientationStore();
+  const isRiseButton = title_position === "left";
+
   return (
     <Button
       className={cn(
@@ -31,18 +32,22 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
     >
       <div className={cn(
         "flex items-center w-full px-3",
-        !isLandscape ? (title_position === "right" && "justify-end") : "justify-start"
+        isLandscape ? "justify-start" : isRiseButton ? "justify-start" : "justify-end"
       )}>
         <span className={cn("font-bold", isLandscape ? "text-base" : "text-lg")}>{title}</span>
       </div>
-      <div className={cn(
-        "flex items-center w-full px-3",
-        !isLandscape ? (
-          title_position === "right" ? "flex-row-reverse" : "justify-between"
-        ) : "justify-between"
-      )}>
-        <span className={cn("opacity-80", isLandscape ? "text-xs" : "text-sm")}>{label}</span>
-        <span className={isLandscape ? "text-xs" : "text-sm"}>{value}</span>
+      <div className="flex items-center justify-between w-full px-3">
+        {isRiseButton && !isLandscape ? (
+          <>
+            <span className="text-xs">{value}</span>
+            <span className="text-xs opacity-80">{label}</span>
+          </>
+        ) : (
+          <>
+            <span className="text-xs opacity-80">{label}</span>
+            <span className="text-xs">{value}</span>
+          </>
+        )}
       </div>
     </Button>
   );
