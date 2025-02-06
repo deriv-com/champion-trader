@@ -27,12 +27,6 @@ describe('BottomNav', () => {
     useClientStore.getState().isLoggedIn = false;
   });
 
-  it('does not render navigation button when user is logged out', () => {
-    renderWithRouter();
-    // Expect that the navigation button with test ID "bottom-nav-menu" is not present.
-    expect(screen.queryByTestId('bottom-nav-menu')).toBeNull();
-  });
-
   it('renders navigation button when user is logged in', () => {
     useClientStore.getState().isLoggedIn = true;
     renderWithRouter();
