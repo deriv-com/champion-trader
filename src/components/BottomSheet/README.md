@@ -11,6 +11,8 @@ A reusable bottom sheet component that provides a mobile-friendly interface with
 - Drag gesture support with callback
 - Content management through configuration
 - Responsive overlay with fade effect
+- Text selection prevention during drag
+- Performance-optimized animations
 
 ## Usage
 
@@ -65,9 +67,35 @@ interface BottomSheetState {
 - Smooth animation on release
 - Optional callback during drag
 
+### Text Selection Prevention
+- Prevents text selection during drag operations
+- Automatically re-enables text selection when:
+  - Drag ends
+  - Bottom sheet closes
+  - Component unmounts
+- Ensures smooth user experience during interactions
+
+### Performance Optimizations
+- Uses requestAnimationFrame for smooth drag animations
+- Proper cleanup of styles and event listeners
+- Handles edge cases like pointer leaving window
+- Efficient event handling and state management
+- Smooth transitions and transforms
+
 ### Event Cleanup
 - Event listeners added only when sheet is shown
 - Proper cleanup on sheet close and unmount
+- Style cleanup (transform, userSelect) on all exit paths
+
+## Testing
+The component includes comprehensive test coverage for:
+- Touch and mouse drag behaviors
+- Text selection prevention
+- Animation and style cleanup
+- Desktop vs mobile interactions
+- Edge cases and error states
+- Event listener cleanup
+- Performance optimization verification
 
 ## Styling
 Uses Tailwind CSS for theme-aware styling and animations:
@@ -104,6 +132,23 @@ const handleTouchMove = useCallback((e: TouchEvent) => {
     sheetRef.current.style.transform = `translateY(${deltaY}px)`;
     onDragDown?.();
   }
+}, [onDragDown]);
+```
+
+### Mouse Event Handling
+```typescript
+const handleMouseMove = useCallback((e: MouseEvent) => {
+  if (!sheetRef.current || !isDragging.current) return;
+
+  requestAnimationFrame(() => {
+    const deltaY = e.clientY - dragStartY.current;
+    currentY.current = deltaY;
+
+    if (deltaY > 0) {
+      sheetRef.current!.style.transform = `translateY(${deltaY}px)`;
+      onDragDown?.();
+    }
+  });
 }, [onDragDown]);
 ```
 

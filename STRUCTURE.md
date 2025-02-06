@@ -9,11 +9,21 @@ The Champion Trader application follows a modular architecture with clear separa
 ```
 src/
 ├── components/       # Reusable UI components
-│   ├── BalanceDisplay/       # Displays the user balance.
-│   ├── BalanceHandler/       # Manages balance state.
-│   ├── Chart/               # Displays market data with error handling and data integrity.
-│   └── ContractSSEHandler/   # Handles contract SSE streaming.
+│   ├── AddMarketButton/     # Market selection
+│   ├── BalanceDisplay/      # Displays user balance
+│   ├── BalanceHandler/      # Manages balance state
+│   ├── BottomNav/          # Navigation component
+│   ├── BottomSheet/        # Modal sheet component with drag support
+│   ├── Chart/              # Price chart with error handling
+│   ├── ContractSSEHandler/ # Contract SSE management
+│   ├── Duration/          # Trade duration selection
+│   ├── DurationOptions/    # Legacy duration component
+│   ├── SideNav/           # Side navigation
+│   ├── TradeButton/       # Trade execution
+│   ├── TradeFields/       # Trade parameters
+│   └── ui/               # Shared UI components
 ├── hooks/           # Custom React hooks
+│   ├── useDeviceDetection.ts # Device type detection
 │   ├── sse/        # SSE hooks for real-time data
 │   └── websocket/  # Legacy WebSocket hooks
 ├── layouts/         # Page layouts
@@ -24,6 +34,12 @@ src/
 │       ├── sse/     # SSE services
 │       └── websocket/ # Legacy WebSocket services
 ├── stores/          # Zustand stores
+│   ├── bottomSheetStore.ts   # Bottom sheet state
+│   ├── clientStore.ts       # Client configuration
+│   ├── orientationStore.ts  # Device orientation
+│   ├── sseStore.ts         # SSE connection state
+│   ├── tradeStore.ts       # Trade state
+│   └── websocketStore.ts   # Legacy WebSocket state
 └── types/          # TypeScript type definitions
 ```
 
@@ -37,11 +53,16 @@ All components and features follow TDD methodology:
 __tests__/
 ├── components/     # Component tests
 │   ├── AddMarketButton/
+│   ├── BalanceDisplay/
+│   ├── BalanceHandler/
 │   ├── BottomNav/
 │   ├── BottomSheet/
 │   ├── Chart/
+│   ├── Duration/
 │   ├── DurationOptions/
-│   └── TradeButton/
+│   ├── SideNav/
+│   ├── TradeButton/
+│   └── TradeFields/
 ├── hooks/         # Hook tests
 │   ├── sse/
 │   └── websocket/
@@ -58,6 +79,8 @@ Test coverage requirements:
 - All edge cases must be tested
 - Integration tests for component interactions
 - Mocked service responses for API tests
+- Performance and animation tests
+- Device-specific behavior tests
 
 ### Atomic Component Design
 
@@ -66,24 +89,32 @@ Components follow atomic design principles and are organized by feature:
 ```
 components/
 ├── AddMarketButton/     # Market selection
-├── BottomNav/           # Navigation component
-├── BottomSheet/         # Modal sheet component
-├── Chart/               # Price chart
-├── Duration/           # Trade duration selection
+├── BalanceDisplay/      # Displays user balance
+├── BalanceHandler/      # Manages balance state
+├── BottomNav/          # Navigation component
+├── BottomSheet/        # Modal sheet component
+│   ├── BottomSheet.tsx        # Main component
+│   ├── BottomSheet.example.tsx # Usage examples
+│   ├── README.md             # Documentation
+│   └── __tests__/           # Test suite
+├── Chart/              # Price chart
+├── ContractSSEHandler/ # Contract SSE management
+├── Duration/          # Trade duration selection
 │   ├── components/     # Duration subcomponents
 │   │   ├── DurationTab.tsx
 │   │   ├── DurationTabList.tsx
 │   │   ├── DurationValueList.tsx
 │   │   └── HoursDurationValue.tsx
 │   └── DurationController.tsx
-├── DurationOptions/     # Legacy trade duration (to be deprecated)
-├── TradeButton/         # Trade execution
-├── TradeFields/         # Trade parameters
-└── ui/                  # Shared UI components
+├── DurationOptions/    # Legacy trade duration
+├── SideNav/           # Side navigation
+├── TradeButton/       # Trade execution
+├── TradeFields/       # Trade parameters
+└── ui/               # Shared UI components
     ├── button.tsx
     ├── card.tsx
-    ├── chip.tsx        # Selection chip component
-    ├── primary-button.tsx # Primary action button
+    ├── chip.tsx        # Selection chip
+    ├── primary-button.tsx # Primary action
     ├── switch.tsx
     └── toggle.tsx
 ```
@@ -93,8 +124,22 @@ Each component:
 - Uses TailwindCSS for styling
 - Handles its own state management
 - Has clear documentation
+- Implements proper cleanup
 
 ## Key Components
+
+### Bottom Sheet Component (`src/components/BottomSheet/`)
+
+The BottomSheet provides a mobile-optimized modal interface:
+
+Features:
+- Performance-optimized drag animations using requestAnimationFrame
+- Text selection prevention during drag
+- Comprehensive event cleanup
+- Mobile-first design with desktop fallback
+- Theme-aware styling with TailwindCSS
+- Zustand-based state management
+- Edge case handling (pointer events, window blur)
 
 ### Real-time Data Services
 
@@ -150,6 +195,7 @@ const { price, isConnected, error } = useContractSSE(params, authToken, {
 
 - `bottomSheetStore.ts`: Manages bottom sheet state and interactions
 - `clientStore.ts`: Handles client configuration and settings
+- `orientationStore.ts`: Manages device orientation state
 - `sseStore.ts`: Manages SSE connections and real-time data
 - `tradeStore.ts`: Handles trade-related state
 - `websocketStore.ts`: Legacy WebSocket state (to be deprecated)
@@ -159,13 +205,54 @@ Features:
 - Atomic updates
 - Middleware support
 - DevTools integration
+- State persistence where needed
+
+## Device Detection and Responsive Design
+
+The application uses device detection for optimized experiences:
+
+```typescript
+// hooks/useDeviceDetection.ts
+const { isDesktop, isMobile, isTablet } = useDeviceDetection();
+```
 
 Features:
-- Centralized state management
-- TypeScript support
-- Minimal boilerplate
-- Automatic state persistence
-- DevTools integration
+- Device-specific interactions
+- Responsive layouts
+- Touch vs mouse optimizations
+- Orientation handling
+
+## Animation and Interaction Patterns
+
+The project implements consistent animation patterns:
+
+1. **Performance Optimizations**
+   - Use requestAnimationFrame for smooth animations
+   - Implement proper style cleanup
+   - Handle edge cases (text selection, pointer events)
+   - Device-specific optimizations
+   - Efficient event handling
+
+2. **Interaction Guidelines**
+   - Touch-friendly targets
+   - Smooth transitions
+   - Responsive feedback
+   - Error state animations
+
+## Style Management
+
+1. **TailwindCSS Usage**
+   - Utility-first approach
+   - Theme consistency
+   - Dark mode support
+   - Responsive design
+   - Animation classes
+
+2. **Style Cleanup**
+   - Proper cleanup of dynamic styles
+   - State-based style management
+   - Animation cleanup
+   - Transform resets
 
 ## Testing
 
@@ -184,7 +271,9 @@ Test coverage includes:
 - Integration tests for components
 - State management tests
 - Error handling tests
-- Connection management tests
+- Animation and interaction tests
+- Device-specific behavior tests
+- Performance optimization tests
 
 ## API Integration
 
@@ -223,39 +312,35 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
    - Use composition over inheritance
    - Keep components focused and single-responsibility
    - Document props and side effects
-   - Implement reusable UI components in ui/ directory
-   - Use TailwindCSS for consistent styling
-   - Support theme customization through design tokens
+   - Implement proper cleanup
+   - Handle edge cases
 
 3. **State Management**
    - Use local state for UI-only state
    - Use Zustand for shared state
    - Keep stores focused and minimal
    - Document store interfaces
+   - Implement proper cleanup
 
-2. **Error Handling**
+4. **Error Handling**
    - Implement proper error boundaries
-     - Chart component uses ChartErrorBoundary for graceful error recovery
-     - Provides user-friendly error messages with retry options
    - Handle network errors gracefully
-   - Handle data integrity issues (e.g., timestamp ordering)
+   - Handle data integrity issues
+   - Provide user-friendly error states
+   - Implement recovery mechanisms
 
-3. **Testing**
-   - Write tests for all new features
-   - Maintain high test coverage
-   - Use meaningful test descriptions
+5. **Performance**
+   - Use requestAnimationFrame for animations
+   - Implement proper cleanup
+   - Handle edge cases
+   - Optimize real-time updates
+   - Device-specific optimizations
 
-4. **Performance**
-   - Implement proper cleanup in hooks
-   - Use memoization where appropriate
-   - Handle reconnection scenarios
-   - Ensure data integrity through sorting and deduplication
-   - Optimize real-time data updates
-
-5. **Code Organization**
+6. **Code Organization**
    - Follow consistent file naming
    - Group related functionality
    - Document complex logic
+   - Maintain clear separation of concerns
 
 ## Migration Notes
 
