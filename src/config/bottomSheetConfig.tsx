@@ -1,13 +1,18 @@
 import { ReactNode } from 'react';
 import { DurationController } from '@/components/Duration';
+import { MarketSelectorList } from '@/components/MarketSelector/MarketSelectorList';
 
 export interface BottomSheetConfig {
   [key: string]: {
     body: ReactNode;
+    height?: string;
   };
 }
 
 export const bottomSheetConfig: BottomSheetConfig = {
+  'market-info': {
+    body: <MarketSelectorList />,
+  },
   'stake': {
     body: (
       <div className="flex flex-col gap-4">

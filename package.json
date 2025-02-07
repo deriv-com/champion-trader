@@ -12,6 +12,7 @@
     "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
+    "@deriv/deriv-charts": "^2.8.0",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-presence": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.1",

@@ -2,16 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { TradePage } from '../TradePage';
 import { useTradeStore } from '@/stores/tradeStore';
 import { useBottomSheetStore } from '@/stores/bottomSheetStore';
+import { useOrientationStore } from '@/stores/orientationStore';
 
 // Mock the stores
 jest.mock('@/stores/tradeStore');
 jest.mock('@/stores/bottomSheetStore');
+jest.mock('@/stores/orientationStore');
 
 // Mock the components that are loaded with Suspense
-jest.mock('@/components/AddMarketButton', () => ({
-  AddMarketButton: () => <div data-testid="add-market-button">Add Market Button</div>
-}));
-
 jest.mock('@/components/Chart', () => ({
   Chart: () => <div data-testid="chart">Chart</div>
 }));
@@ -24,8 +22,20 @@ jest.mock('@/components/DurationOptions', () => ({
   DurationOptions: () => <div data-testid="duration-options">Duration Options</div>
 }));
 
+jest.mock('@/components/MarketSelector', () => ({
+  MarketSelectorButton: ({ symbol, price }: { symbol: string; price: string }) => (
+    <div data-testid="market-selector-button" data-symbol={symbol} data-price={price}>
+      Market Selector Button
+    </div>
+  )
+}));
+
 jest.mock('@/components/TradeButton', () => ({
-  TradeButton: () => <div data-testid="trade-button">Trade Button</div>
+  TradeButton: ({ className, title }: { className: string; title: string }) => (
+    <button className={className}>
+      {title}
+    </button>
+  )
 }));
 
 jest.mock('@/components/BottomSheet', () => ({
@@ -35,8 +45,10 @@ jest.mock('@/components/BottomSheet', () => ({
 // Type the mocked modules
 const mockedUseTradeStore = useTradeStore as jest.MockedFunction<typeof useTradeStore>;
 const mockedUseBottomSheetStore = useBottomSheetStore as jest.MockedFunction<typeof useBottomSheetStore>;
+const mockedUseOrientationStore = useOrientationStore as jest.MockedFunction<typeof useOrientationStore>;
 
 describe('TradePage', () => {
+  const defaultSymbol = 'R_100';
   const mockToggleAllowEquals = jest.fn();
   const mockSetBottomSheet = jest.fn();
 
@@ -46,11 +58,16 @@ describe('TradePage', () => {
       stake: '10.00',
       duration: '1 minute',
       allowEquals: false,
-      toggleAllowEquals: mockToggleAllowEquals
+      toggleAllowEquals: mockToggleAllowEquals,
+      symbol: defaultSymbol
     } as any);
 
     mockedUseBottomSheetStore.mockReturnValue({
       setBottomSheet: mockSetBottomSheet
+    } as any);
+
+    mockedUseOrientationStore.mockReturnValue({
+      isLandscape: false
     } as any);
 
     // Clear mocks
@@ -58,14 +75,21 @@ describe('TradePage', () => {
     mockSetBottomSheet.mockClear();
   });
 
-  it('renders all trade components', () => {
+  it('renders all trade components in portrait mode', () => {
+    render(<TradePage />);
+    screen.debug();
+    expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
+    expect(screen.getByTestId('duration-options')).toBeInTheDocument();
+  });
+
+  it('renders balance display in landscape mode', () => {
+    mockedUseOrientationStore.mockReturnValue({
+      isLandscape: true
+    } as any);
+
     render(<TradePage />);
 
-    // Balance display is only visible in landscape mode
-    expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
-    expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
-    expect(screen.getAllByTestId('add-market-button')).toHaveLength(1); // Only portrait mode by default
-    expect(screen.getByTestId('duration-options')).toBeInTheDocument();
+    expect(screen.getByTestId('balance-display')).toBeInTheDocument();
   });
 
   it('toggles allow equals', () => {
@@ -77,16 +101,12 @@ describe('TradePage', () => {
     expect(mockToggleAllowEquals).toHaveBeenCalled();
   });
 
-  it('renders market info', () => {
+  it('renders market selector with correct props', () => {
     render(<TradePage />);
 
-    // Get all instances of market info
-    const marketTitles = screen.getAllByText('Vol. 100 (1s) Index');
-    const marketSubtitles = screen.getAllByText('Rise/Fall');
-
-    // Verify both landscape and portrait instances
-    expect(marketTitles).toHaveLength(1); // Only portrait mode by default
-    expect(marketSubtitles).toHaveLength(1);
+    const marketSelector = screen.getAllByTestId('market-selector-button')[0];
+    expect(marketSelector).toHaveAttribute('data-symbol', defaultSymbol);
+    expect(marketSelector).toHaveAttribute('data-price', '968.16');
   });
 
   it('opens duration bottom sheet when duration is clicked', () => {
@@ -107,10 +127,13 @@ describe('TradePage', () => {
     expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'stake');
   });
 
-  it('renders trade buttons', () => {
+  it('renders rise and fall trade buttons with correct styles', () => {
     render(<TradePage />);
 
-    const tradeButtons = screen.getAllByTestId('trade-button');
-    expect(tradeButtons).toHaveLength(2); // Rise and Fall buttons
+    const riseButton = screen.getByText('Rise').closest('button');
+    const fallButton = screen.getByText('Fall').closest('button');
+
+    expect(riseButton).toHaveClass('bg-emerald-500');
+    expect(fallButton).toHaveClass('bg-rose-500');
   });
 });
