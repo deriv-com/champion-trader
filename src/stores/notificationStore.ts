@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
 
-type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
 
-interface NotificationConfig {
+export interface NotificationConfig {
   position?: ToastPosition;
   duration?: number;
   closeButton?: boolean;
   className?: string;
 }
 
-interface NotificationStore {
+export interface NotificationStore {
   config: NotificationConfig;
   setConfig: (config: Partial<NotificationConfig>) => void;
   success: (message: string, description?: string) => void;
