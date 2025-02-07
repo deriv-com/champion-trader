@@ -1,14 +1,16 @@
 # BottomSheet Component
 
 ## Overview
-A reusable bottom sheet component with drag-to-dismiss functionality and drag callback support.
+A reusable bottom sheet component that provides a mobile-friendly interface with smooth animations, drag-to-dismiss functionality, and theme-aware styling.
 
 ## Features
 - Single instance pattern using Zustand store
 - Dynamic height support (%, px, vh)
 - Theme-aware using Tailwind CSS variables
+- Smooth animations for enter/exit transitions
 - Drag gesture support with callback
 - Content management through configuration
+- Responsive overlay with fade effect
 
 ## Usage
 
@@ -68,27 +70,52 @@ interface BottomSheetState {
 - Proper cleanup on sheet close and unmount
 
 ## Styling
-Uses Tailwind CSS variables for theme support:
+Uses Tailwind CSS for theme-aware styling and animations:
 ```tsx
+// Theme colors
 className="bg-background"    // Theme background
 className="bg-muted"         // Theme muted color
+className="bg-black/80"      // Semi-transparent overlay
+
+// Animations
+className="animate-in fade-in-0"           // Fade in animation
+className="slide-in-from-bottom"           // Slide up animation
+className="duration-300"                   // Animation duration
+className="transition-transform"           // Smooth transform transitions
+
+// Layout
+className="rounded-t-[16px]"              // Rounded top corners
+className="max-w-[800px]"                 // Maximum width
+className="overflow-hidden"               // Content overflow handling
 ```
 
 ## Implementation Details
 
 ### Touch Event Handling
 ```typescript
-const handleTouchMove = (e: TouchEvent) => {
-  if (!isDragging.current) return;
+const handleTouchMove = useCallback((e: TouchEvent) => {
+  if (!sheetRef.current || !isDragging.current) return;
 
-  const deltaY = e.touches[0].clientY - dragStartY.current;
+  const touch = e.touches[0];
+  const deltaY = touch.clientY - dragStartY.current;
+  currentY.current = deltaY;
+
   if (deltaY > 0) {
-    // Update sheet position
     sheetRef.current.style.transform = `translateY(${deltaY}px)`;
-    // Call drag callback if provided
     onDragDown?.();
   }
-};
+}, [onDragDown]);
+```
+
+### Overlay Handling
+```tsx
+<div
+  className="fixed inset-0 bg-black/80 z-[60] animate-in fade-in-0"
+  onClick={() => {
+    onDragDown?.();
+    setBottomSheet(false);
+  }}
+/>
 ```
 
 ### Height Processing

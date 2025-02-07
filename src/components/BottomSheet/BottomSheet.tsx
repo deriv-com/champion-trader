@@ -70,7 +70,7 @@ export const BottomSheet = () => {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/80 z-50 animate-in fade-in-0"
+        className="fixed inset-0 bg-black/80 z-[60] animate-in fade-in-0"
         onClick={() => {
           // Only close if clicking the overlay itself, not its children
           onDragDown?.();
@@ -92,7 +92,7 @@ export const BottomSheet = () => {
           rounded-t-[16px]
           animate-in fade-in-0 slide-in-from-bottom
           duration-300
-          z-50
+          z-[60]
           transition-transform
           overflow-hidden
         `}
@@ -106,7 +106,7 @@ export const BottomSheet = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">{body}</div>
+        <div className="flex-1 overflow-y-auto">{body}</div>
       </div>
     </>
   );
