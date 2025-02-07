@@ -4,6 +4,7 @@ import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
 import { ContractSSEHandler } from "@/components/ContractSSEHandler";
 import { BalanceHandler } from "@/components/BalanceHandler";
+import { NotificationProvider } from "@/components/NotificationProvider";
 
 const TradePage = lazy(() =>
   import("@/screens/TradePage").then((module) => ({
@@ -20,9 +21,7 @@ const MenuPage = lazy(() =>
 );
 
 const AppContent = () => {
-
   const { token, isLoggedIn } = useClientStore();
-
 
   return (
     <MainLayout>
@@ -80,8 +79,10 @@ export const App = () => {
   }
 
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <NotificationProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </NotificationProvider>
   );
 };
