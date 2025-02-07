@@ -39,7 +39,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>
-        {!isLandscape && <Footer />}
+        {!isLandscape && <Footer className="sticky bottom-0 z-50" />}
       </div>
     </div>
   );

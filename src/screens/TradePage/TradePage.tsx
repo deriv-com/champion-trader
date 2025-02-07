@@ -1,20 +1,19 @@
-import React, { Suspense } from "react"
-import { useOrientationStore } from "@/stores/orientationStore"
-import { TradeButton } from "@/components/TradeButton"
-import { Chart } from "@/components/Chart"
-import { BalanceDisplay } from "@/components/BalanceDisplay"
-import { BottomSheet } from "@/components/BottomSheet"
-import { AddMarketButton } from "@/components/AddMarketButton"
-import { DurationOptions } from "@/components/DurationOptions"
-import { useTradeStore } from "@/stores/tradeStore"
-import { useBottomSheetStore } from "@/stores/bottomSheetStore"
-import { Card, CardContent } from "@/components/ui/card"
-import TradeParam from "@/components/TradeFields/TradeParam"
-import ToggleButton from "@/components/TradeFields/ToggleButton"
+import React, { Suspense } from "react";
+import { useOrientationStore } from "@/stores/orientationStore";
+import { TradeButton } from "@/components/TradeButton";
+import { Chart } from "@/components/Chart";
+import { BalanceDisplay } from "@/components/BalanceDisplay";
+import { BottomSheet } from "@/components/BottomSheet";
+import { DurationOptions } from "@/components/DurationOptions";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useBottomSheetStore } from "@/stores/bottomSheetStore";
+import { Card, CardContent } from "@/components/ui/card";
+import TradeParam from "@/components/TradeFields/TradeParam";
+import HowToTrade from "@/components/HowToTrade";
 
 interface MarketInfoProps {
-  title: string
-  subtitle: string
+  title: string;
+  subtitle: string;
 }
 
 const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
@@ -26,23 +25,27 @@ const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
       </div>
     </CardContent>
   </Card>
-)
+);
 
 export const TradePage: React.FC = () => {
-  const { stake, duration, allowEquals, toggleAllowEquals } = useTradeStore()
-  const { setBottomSheet } = useBottomSheetStore()
-  const { isLandscape } = useOrientationStore()
+  const { stake, duration, allowEquals, toggleAllowEquals } = useTradeStore();
+  const { setBottomSheet } = useBottomSheetStore();
+  const { isLandscape } = useOrientationStore();
 
   const handleStakeClick = () => {
-    setBottomSheet(true, 'stake');
+    setBottomSheet(true, "stake");
   };
-  
+
   const handleDurationClick = () => {
-    setBottomSheet(true, 'duration', '470px');
+    setBottomSheet(true, "duration", "470px");
   };
 
   return (
-    <div className={`flex ${isLandscape ? 'flex-row relative' : 'flex-col'} flex-1 h-[100dvh]`}>
+    <div
+      className={`flex ${
+        isLandscape ? "flex-row relative" : "flex-col"
+      } flex-1 h-[100dvh]`}
+    >
       {isLandscape && (
         <div
           className="absolute top-0 left-0 right-0 bg-white z-10 border-b border-opacity-10"
@@ -50,9 +53,9 @@ export const TradePage: React.FC = () => {
         >
           <div className="flex items-center w-full gap-2 px-4 py-2 justify-between">
             <div className="flex items-center gap-2">
-              <Suspense fallback={<div>Loading...</div>}>
+              {/* <Suspense fallback={<div>Loading...</div>}>
                 <AddMarketButton />
-              </Suspense>
+              </Suspense> */}
               <MarketInfo title="Vol. 100 (1s) Index" subtitle="Rise/Fall" />
             </div>
             <BalanceDisplay />
@@ -60,19 +63,29 @@ export const TradePage: React.FC = () => {
         </div>
       )}
 
-      <div className={`flex flex-col flex-1 ${isLandscape ? 'w-[70%] min-w-0' : ''}`}>
+      <div
+        className={`flex flex-col flex-1 ${
+          isLandscape ? "w-[70%] min-w-0" : ""
+        }`}
+      >
         {!isLandscape && (
           <div className="flex items-center w-full gap-2 p-4 justify-between">
             <div className="flex items-center gap-2">
-              <Suspense fallback={<div>Loading...</div>}>
+              {/* <Suspense fallback={<div>Loading...</div>}>
                 <AddMarketButton />
-              </Suspense>
+              </Suspense> */}
               <MarketInfo title="Vol. 100 (1s) Index" subtitle="Rise/Fall" />
             </div>
           </div>
         )}
 
-        <div className={`flex flex-col flex-1 ${isLandscape ? 'mt-[72px] h-[calc(100dvh-72px)]' : 'h-[calc(100dvh-200px)]'}`}>
+        <div
+          className={`flex flex-col flex-1 ${
+            isLandscape
+              ? "mt-[72px] h-[calc(100dvh-72px)]"
+              : "h-[calc(100dvh-200px)]"
+          }`}
+        >
           <Suspense fallback={<div>Loading...</div>}>
             <Chart className="flex-1" />
           </Suspense>
@@ -83,40 +96,58 @@ export const TradePage: React.FC = () => {
         </Suspense>
       </div>
 
-      <div 
-        id="trade-section" 
-        className={`${isLandscape ? 'w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-center mt-[78px] border-l border-gray-300 border-opacity-20' : ''}`}
+      <div
+        id="trade-section"
+        className={`${
+          isLandscape
+            ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col mt-[78px] border-l border-gray-300 border-opacity-20"
+            : ""
+        }`}
       >
-        <div className={`flex flex-col gap-4 p-4 ${isLandscape ? 'pt-4 pb-2 px-4' : ''}`} id="trade-fields">
-          <div className={`flex ${isLandscape ? 'flex-col gap-2' : 'gap-4'}`} id="trade-params">
-            <TradeParam 
-              label="Duration" 
-              value={duration} 
-              className={isLandscape ? 'w-full' : ''} 
+        <div
+          className={`flex flex-col gap-4 p-4 ${
+            isLandscape ? "pt-4 pb-2 px-4" : ""
+          }`}
+          id="trade-fields"
+        >
+          <div id="how-to-trade">
+            <HowToTrade />
+          </div>
+          <div
+            className={`flex ${isLandscape ? "flex-col gap-2" : "gap-4"}`}
+            id="trade-params"
+          >
+            <TradeParam
+              label="Duration"
+              value={duration}
+              className={isLandscape ? "w-full" : ""}
               onClick={handleDurationClick}
             />
-            <TradeParam 
-              label="Stake" 
-              value={stake} 
-              className={isLandscape ? 'w-full' : ''} 
-              onClick={handleStakeClick} 
+            <TradeParam
+              label="Stake"
+              value={stake}
+              className={isLandscape ? "w-full" : ""}
+              onClick={handleStakeClick}
             />
           </div>
 
-          <div id="trade-toggles" className={isLandscape ? 'mt-2' : ''}>
+          {/* <div id="trade-toggles">
             <ToggleButton
               label="Allow equals"
               value={allowEquals}
               onChange={toggleAllowEquals}
             />
-          </div>
+          </div> */}
         </div>
 
-        <div className={`flex ${isLandscape ? 'flex-col py-2' : ''} gap-2 p-4`} id="trade-buttons">
+        <div
+          className={`flex ${isLandscape ? "flex-col py-2" : ""} gap-2 p-4`}
+          id="trade-buttons"
+        >
           <Suspense fallback={<div>Loading...</div>}>
             <TradeButton
               className={`bg-emerald-500 hover:bg-emerald-600 rounded-full ${
-                isLandscape ? 'h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm' : ''
+                isLandscape ? "h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm" : ""
               }`}
               title="Rise"
               label="Payout"
@@ -127,7 +158,7 @@ export const TradePage: React.FC = () => {
           <Suspense fallback={<div>Loading...</div>}>
             <TradeButton
               className={`bg-rose-500 hover:bg-rose-600 rounded-full ${
-                isLandscape ? 'h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm' : ''
+                isLandscape ? "h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm" : ""
               }`}
               title="Fall"
               label="Payout"
@@ -140,5 +171,5 @@ export const TradePage: React.FC = () => {
 
       <BottomSheet />
     </div>
-  )
-}
+  );
+};

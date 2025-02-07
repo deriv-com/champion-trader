@@ -37,7 +37,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
         <span className={cn("font-bold", isLandscape ? "text-base" : "text-lg")}>{title}</span>
       </div>
       <div className="flex items-center justify-between w-full px-3">
-        {isRiseButton && !isLandscape ? (
+        {(isLandscape || isRiseButton) ? (
           <>
             <span className="text-xs">{value}</span>
             <span className="text-xs opacity-80">{label}</span>
