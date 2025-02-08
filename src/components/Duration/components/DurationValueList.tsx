@@ -1,14 +1,18 @@
 import React from "react";
 import { ScrollSelect } from "@/components/ui/scroll-select";
+import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
 
 interface DurationValueListProps {
   selectedValue: number;
-  durationType: string;
+  durationType: keyof DurationRangesResponse;
   onValueSelect: (value: number) => void;
-  getDurationValues: (type: string) => number[];
+  onValueClick?: (value: number) => void;
+  getDurationValues: (type: keyof DurationRangesResponse) => number[];
+  isDesktop?: boolean;
+  onClose?: () => void;
 }
 
-const getUnitLabel = (type: string, value: number): string => {
+const getUnitLabel = (type: keyof DurationRangesResponse, value: number): string => {
   switch (type) {
     case "tick":
       return value === 1 ? "tick" : "ticks";
@@ -29,7 +33,10 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
   selectedValue,
   durationType,
   onValueSelect,
-  getDurationValues
+  onValueClick,
+  getDurationValues,
+  isDesktop,
+  onClose
 }) => {
   const values = getDurationValues(durationType);
   const options = values.map(value => ({
@@ -42,6 +49,9 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
       options={options}
       selectedValue={selectedValue}
       onValueSelect={onValueSelect}
+      onValueClick={onValueClick}
+      isDesktop={isDesktop}
+      onClose={onClose}
     />
   );
 };

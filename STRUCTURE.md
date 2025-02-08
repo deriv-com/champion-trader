@@ -1,5 +1,43 @@
 # Project Structure
 
+## Trade Configuration System
+
+The application uses a configuration-driven approach for handling different trade types:
+
+### Key Components
+
+1. **Trade Type Configuration** (`src/config/tradeTypes.ts`)
+   - Defines available trade types
+   - Configures fields and buttons per trade type
+   - Controls lazy loading behavior
+   - See [Trade Types Configuration](src/config/README.md#trade-types-configuration)
+
+2. **Trade Form Controller** (`src/screens/TradePage/components/TradeFormController.tsx`)
+   - Renders trade form based on configuration
+   - Handles responsive layouts
+   - Implements lazy loading
+   - See [Trade Form Controller](src/screens/TradePage/components/README.md#tradeformcontroller)
+
+3. **Trade Actions** (`src/hooks/useTradeActions.ts`)
+   - Provides action handlers for trade buttons
+   - Integrates with trade store
+   - Handles API interactions
+
+### Data Flow
+
+```
+Trade Type Config → Trade Form Controller → Trade Actions → API
+     ↑                      ↓                    ↓
+     └──────────── Trade Store Integration ──────┘
+```
+
+### Lazy Loading Strategy
+
+- Components are loaded on demand
+- Preloading based on metadata
+- Suspense boundaries for loading states
+
+
 ## Overview
 
 The Champion Trader application follows a modular architecture with clear separation of concerns. This document outlines the project structure and key architectural decisions.
@@ -103,10 +141,13 @@ components/
 │   ├── components/     # Duration subcomponents
 │   │   ├── DurationTab.tsx
 │   │   ├── DurationTabList.tsx
-│   │   ├── DurationValueList.tsx
-│   │   └── HoursDurationValue.tsx
+│   │   ├── DurationValueList.tsx    # Future enhancement
+│   │   └── HoursDurationValue.tsx   # Future enhancement
 │   └── DurationController.tsx
 ├── DurationOptions/    # Legacy trade duration
+├── EqualTrade/        # Equal trade functionality
+│   ├── EqualTradeController.tsx
+│   └── index.ts
 ├── SideNav/           # Side navigation
 ├── TradeButton/       # Trade execution
 ├── TradeFields/       # Trade parameters
@@ -149,44 +190,46 @@ The SSE implementation provides efficient unidirectional streaming for real-time
 
 ```
 sse/
-├── base/           # Base SSE functionality
-│   ├── service.ts  # Core SSE service
-│   ├── public.ts   # Public endpoint service
-│   ├── protected.ts # Protected endpoint service
-│   └── types.ts    # Shared types
-├── market/         # Market data streaming
-│   └── service.ts  # Market SSE service
-└── contract/       # Contract price streaming
-    └── service.ts  # Contract SSE service
+├── createSSEConnection.ts  # Main SSE service
+├── custom-event-source.ts  # Custom EventSource implementation
+├── types.ts               # Contract request/response types
+├── README.md             # Documentation
+└── __tests__/           # Test suite
+    └── createSSEConnection.test.ts
 ```
 
 Features:
+- Simple, function-based API
+- Automatic endpoint selection (protected/public)
 - Automatic reconnection handling
 - Type-safe message handling
-- Authentication support
+- Authentication support via headers
 - Error handling and recovery
-- Connection state management
+- Clean connection teardown
 
-#### React Hooks (`src/hooks/sse/`)
-
-Custom hooks for SSE integration:
-
+Example usage:
 ```typescript
-// Market data hook
-const { price, isConnected, error } = useMarketSSE(instrumentId, {
-  onPrice: (price) => void,
-  onError: (error) => void,
-  onConnect: () => void,
-  onDisconnect: () => void
-});
+useEffect(() => {
+  const cleanup = createSSEConnection({
+    params: {
+      action: 'contract_price',
+      duration: '5m',
+      trade_type: 'CALL',
+      instrument: 'R_100',
+      currency: 'USD',
+      payout: '10'
+    },
+    headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+    onMessage: (data) => {
+      console.log('Price update:', data);
+    },
+    onError: (error) => {
+      console.error('SSE error:', error);
+    }
+  });
 
-// Contract price hook
-const { price, isConnected, error } = useContractSSE(params, authToken, {
-  onPrice: (price) => void,
-  onError: (error) => void,
-  onConnect: () => void,
-  onDisconnect: () => void
-});
+  return cleanup;
+}, [/* dependencies */]);
 ```
 
 ### State Management

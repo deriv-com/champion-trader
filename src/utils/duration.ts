@@ -1,3 +1,8 @@
+export function convertHourToMinutes(hourValue: string): number {
+  const [hours, minutes] = hourValue.split(":").map(Number);
+  return (hours * 60) + (minutes || 0);
+}
+
 export const formatDurationDisplay = (duration: string): string => {
   const [value, type] = duration.split(" ");
   

@@ -9,9 +9,12 @@ export interface ScrollSelectProps<T> {
   options: ScrollSelectOption<T>[];
   selectedValue: T;
   onValueSelect: (value: T) => void;
+  onValueClick?: (value: T) => void;
   itemHeight?: number;
   containerHeight?: number;
   renderOption?: (option: ScrollSelectOption<T>, isSelected: boolean) => React.ReactNode;
+  isDesktop?: boolean;
+  onClose?: () => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -22,16 +25,22 @@ export const ScrollSelect = <T extends React.Key>({
   options,
   selectedValue,
   onValueSelect,
+  onValueClick,
   itemHeight = ITEM_HEIGHT,
   containerHeight = CONTAINER_HEIGHT,
   renderOption,
+  isDesktop,
+  onClose,
 }: ScrollSelectProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const intersectionObserverRef = useRef<IntersectionObserver>();
-  const timeoutRef = useRef<NodeJS.Timeout>();
 
   const handleClick = (value: T) => {
-    onValueSelect(value);
+    if (onValueClick) {
+      onValueClick(value);
+    } else {
+      onValueSelect(value);
+    }
     
     const clickedItem = containerRef.current?.querySelector(`[data-value="${value}"]`);
     if (clickedItem) {

@@ -1,5 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TradeButton } from '../Button';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TradeButton } from '../TradeButton';
+import { WebSocketError } from '@/services/api/websocket/types';
 
 describe('TradeButton', () => {
   const defaultProps = {
@@ -91,5 +93,56 @@ describe('TradeButton', () => {
 
     const button = container.firstChild as HTMLElement;
     expect(button).toHaveClass('flex items-center justify-between w-full px-6 py-4 rounded-full');
+  });
+
+  it('shows tooltip on hover when there is an Event error', async () => {
+    const error = new Event('error');
+    render(<TradeButton {...defaultProps} error={error} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Failed to get price')).toBeInTheDocument();
+    });
+
+    await userEvent.unhover(button);
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Failed to get price')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows tooltip on hover with WebSocketError message', async () => {
+    const error: WebSocketError = { 
+      error: 'Connection failed',
+      code: 'WEBSOCKET_ERROR'
+    };
+    render(<TradeButton {...defaultProps} error={error} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Connection failed')).toBeInTheDocument();
+    });
+
+    await userEvent.unhover(button);
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Connection failed')).not.toBeInTheDocument();
+    });
+  });
+
+  it('does not show tooltip when there is no error', async () => {
+    render(<TradeButton {...defaultProps} error={null} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Failed to get price')).not.toBeInTheDocument();
+      expect(screen.queryByText('Connection failed')).not.toBeInTheDocument();
+    });
   });
 });

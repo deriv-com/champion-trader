@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
-import { ContractSSEHandler } from "@/components/ContractSSEHandler";
 import { BalanceHandler } from "@/components/BalanceHandler";
 
 const TradePage = lazy(() =>
@@ -28,7 +27,6 @@ const AppContent = () => {
     <MainLayout>
       {token && (
         <>
-          <ContractSSEHandler token={token} />
           <BalanceHandler token={token} />
         </>
       )}

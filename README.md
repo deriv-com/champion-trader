@@ -46,6 +46,18 @@ The application uses Server-Sent Events (SSE) for real-time data streaming, prov
 - Contract price streaming
 - Position updates
 
+#### Future Components
+
+The following components are implemented but reserved for future use:
+
+- `DurationValueList`: Enhanced duration selection interface
+- `HoursDurationValue`: Specialized hours duration input
+- `desktop-number-input-field`: Desktop-optimized number input
+- `desktop-trade-field-card`: Desktop-optimized trade field
+- WebSocket implementation (legacy, planned for deprecation)
+
+These components are part of our roadmap for enhanced desktop support and alternative streaming implementations.
+
 #### Why SSE over WebSocket?
 
 1. **Simpler Protocol**: SSE is built on HTTP and is simpler to implement and maintain

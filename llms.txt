@@ -1,8 +1,8 @@
 # Champion Trader
 
-> Champion Trader is a modern React TypeScript trading application that provides real-time market data and contract pricing through efficient streaming technologies. Originally built with WebSocket connections, the application has evolved to primarily use Server-Sent Events (SSE) for improved performance, automatic reconnection, and easier integration with modern load balancers. Built with React 18, TypeScript, TailwindCSS, Zustand for state management, and Axios for API communication, the project strictly follows Test-Driven Development (TDD) methodology and Atomic Component Design principles.
+> Champion Trader is a modern React TypeScript trading application that provides real-time market data and contract pricing through efficient streaming technologies. The application uses Server-Sent Events (SSE) for improved performance, automatic reconnection, and easier integration with modern load balancers. Built with React 18, TypeScript, TailwindCSS, Zustand for state management, and Axios for API communication, the project strictly follows Test-Driven Development (TDD) methodology and Atomic Component Design principles.
 
-The application is structured around modular, self-contained components and uses robust real-time data handling architectures. It supports multiple environments (development, staging, production) with environment-specific configurations and maintains a minimum of 90% test coverage across all components.
+The application is structured around modular, self-contained components and uses a simple, function-based approach to real-time data handling. It supports multiple environments (development, staging, production) with environment-specific configurations and maintains a minimum of 90% test coverage across all components.
 
 ## Project Structure
 
@@ -10,6 +10,19 @@ The application is structured around modular, self-contained components and uses
 - [Directory Layout](STRUCTURE.md#source-code-src): Detailed source code organization
 - [Configuration Files](STRUCTURE.md#configuration-files): Build, development, and testing configurations
 - [Module Dependencies](STRUCTURE.md#module-dependencies): Core and development dependencies
+
+## Future Enhancements
+
+The following components are implemented but reserved for future use:
+
+### Desktop Support
+- `desktop-number-input-field`: Enhanced number input optimized for desktop
+- `desktop-trade-field-card`: Desktop-optimized trade parameter card
+- `orientationStore`: Device orientation handling for responsive layouts
+
+### Duration Components
+- `DurationValueList`: Enhanced duration selection interface
+- `HoursDurationValue`: Specialized hours duration input component
 
 ## Typography System
 
@@ -44,11 +57,33 @@ text-align: left;
 ## Architecture
 
 - [Component Structure](src/components/README.md): Comprehensive guide on TDD implementation, Atomic Component Design, and component organization
+- [Trade Configuration System](#trade-configuration-system): Configuration-driven trade form system with lazy loading
+
+## Trade Configuration System
+
+The application implements a flexible, configuration-driven trade form system that supports multiple trade types:
+
+### Trade Type Configuration
+- Located in `src/config/tradeTypes.ts`
+- Defines available fields, buttons, and actions per trade type
+- Supports lazy loading through metadata configuration
+- See [Trade Types Configuration](src/config/README.md)
+
+### Form Controller
+- Dynamic form rendering based on trade type
+- Lazy-loaded components with Suspense boundaries
+- Responsive layouts for desktop/mobile
+- See [Trade Form Controller](src/screens/TradePage/components/README.md)
+
+### Action Handlers
+- Centralized trade actions in useTradeActions hook
+- Integration with trade store
+- Type-safe action definitions
+- Extensible for new trade types
 - [Bottom Sheet Store](src/stores/bottomSheetStore.ts): Centralized bottom sheet state management with TDD examples
-- [WebSocket Architecture](src/services/api/websocket/README.md): Documentation of the legacy WebSocket implementation (to be deprecated)
-- [SSE Services](src/services/api/sse/README.md): Documentation of the Server-Sent Events (SSE) implementation for real-time market and contract price updates
+- [SSE Services](src/services/api/sse/README.md): Simple, function-based SSE implementation for real-time market and contract price updates
 - [State Management](src/stores/README.md): Detailed guide on Zustand store implementation, TDD approach, and state management patterns
-- [Balance Management](#balance-management): Overview of balance management including [Balance Service](src/services/api/rest/balance/README.md) and components such as [BalanceDisplay](src/components/BalanceDisplay/README.md), [BalanceHandler](src/components/BalanceHandler/README.md), and [ContractSSEHandler](src/components/ContractSSEHandler/README.md)
+- [Balance Management](#balance-management): Overview of balance management including [Balance Service](src/services/api/rest/balance/README.md) and components such as [BalanceDisplay](src/components/BalanceDisplay/README.md) and [BalanceHandler](src/components/BalanceHandler/README.md)
 
 ## Development Methodology
 
@@ -59,13 +94,12 @@ text-align: left;
 ## API Integration
 
 - [REST API Documentation](src/services/api/rest/README.md): Available endpoints and usage examples for REST API integration
-- [WebSocket Hooks](src/hooks/websocket/README.md): Legacy WebSocket hooks (to be deprecated)
-- [SSE Services](src/services/api/sse/README.md): Real-time data streaming services leveraging SSE for improved reliability and performance
-- [Balance Service](src/services/api/rest/balance/README.md): Documentation for balance-related REST endpoints.
+- [SSE Services](src/services/api/sse/README.md): Simple, function-based real-time data streaming service with automatic endpoint selection and reconnection handling
 
 ## State Management
 
 - [Store Organization](src/stores/README.md#store-organization): Detailed store structure and implementation
+- [Trade Store](src/stores/tradeStore.ts): Configuration-driven trade type management with field and button state handling
 - [TDD for Stores](src/stores/README.md#test-driven-development): Test-first approach for store development
 - [Store Guidelines](src/stores/README.md#store-guidelines): Best practices and patterns for state management
 - [Client Store](src/stores/clientStore.ts): Manages client configuration including balance integration.
@@ -77,7 +111,6 @@ text-align: left;
 - [Best Practices](src/components/README.md#best-practices): Component design, testing, performance, and accessibility guidelines
 - [BalanceDisplay Component](src/components/BalanceDisplay/README.md)
 - [BalanceHandler Component](src/components/BalanceHandler/README.md)
-- [ContractSSEHandler Component](src/components/ContractSSEHandler/README.md)
 
 ## Optional
 
