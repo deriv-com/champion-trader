@@ -1,23 +1,25 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-
-import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 import { useClientStore } from "@/stores/clientStore";
-
-interface PayoutItem {
-  value: string;
-  hasError: boolean;
-}
+import { useTradeStore } from "@/stores/tradeStore";
 
 interface PayoutDisplayProps {
   hasError: boolean;
+  loading?: boolean;
+  loadingStates?: Record<string, boolean>;
+  maxPayout: number;
+  payoutValues: Record<string, number>;
 }
 
 export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
-  hasError
+  hasError,
+  loading = false,
+  loadingStates = {},
+  maxPayout,
+  payoutValues
 }) => {
-  const { trade_type, payouts } = useTradeStore();
+  const { trade_type } = useTradeStore();
   const { currency } = useClientStore();
   const config = tradeTypeConfigs[trade_type];
 
@@ -30,9 +32,9 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
           </span>
           <span className={cn(
             "font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]",
-            hasError ? "text-red-500" : "text-black/72"
+            hasError ? "text-red-500" : loading ? "text-black/48" : "text-black/72"
           )}>
-            {`${payouts.max} ${currency}`}
+            {loading ? "Loading..." : `${maxPayout} ${currency}`}
           </span>
         </div>
       )}
@@ -43,9 +45,9 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
           </span>
           <span className={cn(
             "font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]",
-            hasError ? "text-red-500" : "text-black/72"
+            hasError ? "text-red-500" : loadingStates[button.actionName] ? "text-black/48" : "text-black/72"
           )}>
-            {`${payouts.values[button.actionName]} ${currency}`}
+            {loadingStates[button.actionName] ? "Loading..." : `${payoutValues[button.actionName]} ${currency}`}
           </span>
         </div>
       ))}

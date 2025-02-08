@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
-import { StakeField } from "./components/StakeField";
+import { StakeInputLayout } from "./components/StakeInputLayout";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
+import { useStakeSSE } from "./hooks/useStakeSSE";
+import { validateStake } from "./utils/validation";
+import { parseDuration } from "@/utils/duration";
 
 interface StakeControllerProps {
   onClose?: () => void;
@@ -17,112 +20,145 @@ interface StakeControllerProps {
 export const StakeController: React.FC<StakeControllerProps> = ({
   onClose,
 }) => {
-  const { stake, setStake, payouts } = useTradeStore();
-  const { currency } = useClientStore();
+  const { stake, setStake, trade_type, duration } = useTradeStore();
+  const { currency, token } = useClientStore();
   const { isDesktop } = useDeviceDetection();
   const { setBottomSheet } = useBottomSheetStore();
 
-  // Initialize local state for both mobile and desktop
   const [localStake, setLocalStake] = React.useState(stake);
+  const [debouncedStake, setDebouncedStake] = React.useState(stake);
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string>();
 
-  // Use debounced updates for desktop
-  useDebounce(
-    localStake,
-    (value) => {
-      if (isDesktop) {
-        const amount = value ? parseStakeAmount(value) : 0;
-        
-        // Check minimum stake first
-        if (amount < STAKE_CONFIG.min) {
-          setError(true);
-          setErrorMessage(
-            `Minimum stake is ${STAKE_CONFIG.min} ${currency}`
-          );
-          return;
-        }
+  // Debounce stake updates for SSE connections
+  useDebounce(localStake, setDebouncedStake, 500);
 
-        // Then check maximum payout
-        if (amount > payouts.max) {
-          setError(true);
-          setErrorMessage(
-            `Minimum stake of ${STAKE_CONFIG.min} ${currency} and maximum payout of ${payouts.max} ${currency}. Current payout is ${amount} ${currency}.`
-          );
-          return;
-        }
+  // Parse duration for API call
+  const { value: apiDurationValue, type: apiDurationType } = parseDuration(duration);
 
-        // If all validations pass, update store
-        setError(false);
-        setErrorMessage(undefined);
-        setStake(value);
-      }
-    },
-    500
-  );
+  // Use SSE hook for payout info
+  const { loading, loadingStates, payouts: localPayouts } = useStakeSSE({
+    duration: apiDurationValue,
+    durationType: apiDurationType,
+    trade_type,
+    currency,
+    stake: debouncedStake,
+    token
+  });
 
-  const handleStakeChange = (value: string) => {
-    setLocalStake(value);
-    const amount = value ? parseStakeAmount(value) : 0;
-
-    // Only check max payout during typing
-    if (amount > payouts.max) {
+  const validateAndUpdateStake = (value: string) => {
+    // Always validate empty field as error
+    if (!value) {
       setError(true);
-      setErrorMessage(
-        `Minimum stake of ${STAKE_CONFIG.min} and maximum payout of ${payouts.max}. Current payout is ${amount}.`
-      );
-    } else {
-      setError(false);
-      setErrorMessage(undefined);
+      setErrorMessage('Please enter an amount');
+      return { error: true };
     }
+
+    const amount = parseStakeAmount(value);
+    const validation = validateStake({
+      amount,
+      minStake: STAKE_CONFIG.min,
+      maxPayout: localPayouts.max,
+      currency
+    });
+
+    setError(validation.error);
+    setErrorMessage(validation.message);
+    
+    return validation;
   };
 
-  const handleSave = () => {
-    const amount = localStake ? parseStakeAmount(localStake) : 0;
-
-    // Check minimum stake first
-    if (amount < STAKE_CONFIG.min) {
+  // Desktop only - validate without updating store
+  const validateStakeOnly = (value: string) => {
+    if (!value) {
       setError(true);
-      setErrorMessage(
-        `Minimum stake is ${STAKE_CONFIG.min} ${currency}`
-      );
-      return; // Don't close if there's an error
+      setErrorMessage('Please enter an amount');
+      return { error: true };
     }
 
-    // Then check maximum payout
-    if (amount > payouts.max) {
-      setError(true);
-      setErrorMessage(
-        `Minimum stake of ${STAKE_CONFIG.min} ${currency} and maximum payout of ${payouts.max} ${currency}. Current payout is ${amount} ${currency}.`
-      );
-      return; // Don't close if there's an error
-    }
+    const amount = parseStakeAmount(value);
+    const validation = validateStake({
+      amount,
+      minStake: STAKE_CONFIG.min,
+      maxPayout: localPayouts.max,
+      currency
+    });
 
-    setError(false);
-    setErrorMessage(undefined);
-    setStake(localStake);
+    setError(validation.error);
+    setErrorMessage(validation.message);
+    return validation;
+  };
+
+  const preventExceedingMax = (value: string) => {
+    if (error && errorMessage?.includes('maximum')) {
+      const newAmount = value ? parseStakeAmount(value) : 0;
+      const maxAmount = parseStakeAmount(localPayouts.max.toString());
+      return newAmount > maxAmount;
+    }
+    return false;
+  };
+
+  const handleStakeChange = (value: string) => {
+    // Shared logic - prevent exceeding max
+    if (preventExceedingMax(value)) return;
+
     if (isDesktop) {
-      onClose?.();
-    } else {
-      setBottomSheet(false);
+      // Desktop specific - validate only
+      setLocalStake(value);
+      validateStakeOnly(value);
+      return;
     }
+
+    // Mobile stays exactly as is
+    setLocalStake(value);
+    validateAndUpdateStake(value);
+  };
+
+  // Watch for conditions and update store in desktop mode
+  useEffect(() => {
+    if (!isDesktop) return;
+    
+    if (debouncedStake !== stake) {
+      const validation = validateStakeOnly(debouncedStake);
+      if (!validation.error && !loading) {
+        setStake(debouncedStake);
+      }
+    }
+  }, [isDesktop, debouncedStake, loading, stake]);
+
+  const handleSave = () => {
+    if (isDesktop) return; // Early return for desktop
+
+    const validation = validateAndUpdateStake(localStake);
+    if (validation.error) return;
+
+    setStake(localStake);
+    setBottomSheet(false);
   };
 
   const content = (
     <>
       {!isDesktop && <BottomSheetHeader title="Stake" />}
       <div className="flex flex-col justify-between flex-grow px-6">
-        <StakeField
-          value={localStake}
-          onChange={handleStakeChange}
-          error={error}
-          errorMessage={errorMessage}
-          maxPayout={payouts.max}
-          isDesktop={isDesktop}
-        />
+      <StakeInputLayout
+        value={localStake}
+        onChange={handleStakeChange}
+        error={error}
+        errorMessage={errorMessage}
+        maxPayout={localPayouts.max}
+        payoutValues={localPayouts.values}
+        isDesktop={isDesktop}
+        loading={loading}
+        loadingStates={loadingStates}
+      />
         {!isDesktop && (
           <div className="w-full p-6">
-            <PrimaryButton onClick={handleSave}>Save</PrimaryButton>
+            <PrimaryButton 
+              onClick={handleSave}
+              disabled={loading || error || debouncedStake === stake}
+            >
+              Save
+            </PrimaryButton>
           </div>
         )}
       </div>

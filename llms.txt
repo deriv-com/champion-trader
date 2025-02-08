@@ -20,9 +20,15 @@ The following components are implemented but reserved for future use:
 - `desktop-trade-field-card`: Desktop-optimized trade parameter card
 - `orientationStore`: Device orientation handling for responsive layouts
 
-### Duration Components
-- `DurationValueList`: Enhanced duration selection interface
-- `HoursDurationValue`: Specialized hours duration input component
+### Component Documentation
+- [Components Overview](src/components/README.md)
+- [UI Components](src/components/ui/README.md)
+- [Balance Management](src/components/BalanceHandler/README.md)
+- [Bottom Sheet](src/components/BottomSheet/README.md)
+- [Chart](src/components/Chart/README.md)
+- [Stake Component](src/components/Stake/README.md)
+  - [SSE Integration](src/components/Stake/hooks/useStakeSSE.ts)
+  - [Validation](src/components/Stake/utils/validation.ts)
 
 ## Typography System
 
@@ -59,15 +65,21 @@ text-align: left;
 - [Component Structure](src/components/README.md): Comprehensive guide on TDD implementation, Atomic Component Design, and component organization
 - [Trade Configuration System](#trade-configuration-system): Configuration-driven trade form system with lazy loading
 
-## Trade Configuration System
+## Configuration System
 
-The application implements a flexible, configuration-driven trade form system that supports multiple trade types:
+The application implements a flexible, configuration-driven system that supports multiple trade types and real-time updates:
 
-### Trade Type Configuration
-- Located in `src/config/tradeTypes.ts`
-- Defines available fields, buttons, and actions per trade type
-- Supports lazy loading through metadata configuration
-- See [Trade Types Configuration](src/config/README.md)
+### Configuration Files
+- [Trade Types](src/config/tradeTypes.ts): Defines available fields, buttons, and actions
+- [Stake Config](src/config/stake.ts): Stake limits and SSE settings
+- See [Configuration Guide](src/config/README.md)
+
+### Utilities
+- [Duration Utils](src/utils/duration.ts): Centralized duration handling for:
+  - Duration formatting and parsing
+  - Range validation and generation
+  - Special case handling (e.g., hours with minutes)
+  - Type-safe operations with DurationRangesResponse
 
 ### Form Controller
 - Dynamic form rendering based on trade type
@@ -94,7 +106,11 @@ The application implements a flexible, configuration-driven trade form system th
 ## API Integration
 
 - [REST API Documentation](src/services/api/rest/README.md): Available endpoints and usage examples for REST API integration
-- [SSE Services](src/services/api/sse/README.md): Simple, function-based real-time data streaming service with automatic endpoint selection and reconnection handling
+- [SSE Services](src/services/api/sse/README.md): Real-time data streaming service with:
+  - Automatic endpoint selection and reconnection
+  - Type-safe message handling
+  - Integration with stake and duration components
+  - Debounced updates and error handling
 
 ## State Management
 

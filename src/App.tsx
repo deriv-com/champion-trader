@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
 import { BalanceHandler } from "@/components/BalanceHandler";
+import { ToastProvider } from "@/stores/toastStore";
 
 const TradePage = lazy(() =>
   import("@/screens/TradePage").then((module) => ({
@@ -79,6 +80,7 @@ export const App = () => {
 
   return (
     <BrowserRouter>
+      <ToastProvider />
       <AppContent />
     </BrowserRouter>
   );

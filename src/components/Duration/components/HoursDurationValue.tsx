@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, MutableRefObject } from "react";
 import { DurationValueList } from "./DurationValueList";
-import { generateDurationValues, getSpecialCaseKey } from "@/config/duration";
+import { generateDurationValues, getSpecialCaseKey } from "@/utils/duration";
 
 interface HoursDurationValueProps {
   selectedValue: string; // "2:12" format

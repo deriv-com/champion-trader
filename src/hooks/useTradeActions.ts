@@ -1,12 +1,17 @@
 import { useTradeStore } from '@/stores/tradeStore';
 import { useClientStore } from '@/stores/clientStore';
+import { useToastStore } from '@/stores/toastStore';
 import { tradeTypeConfigs } from '@/config/tradeTypes';
+import { buyContract } from '@/services/api/rest/buy/buyService';
+import { parseDuration, formatDuration } from '@/utils/duration';
+import { DurationRangesResponse } from '@/services/api/rest/duration/types';
 
 export type TradeAction = 'buy_rise' | 'buy_fall' | 'buy_higher' | 'buy_lower' | 'buy_touch' | 'buy_no_touch' | 'buy_multiplier';
 
 export const useTradeActions = () => {
-  const { stake, duration, allowEquals, trade_type } = useTradeStore();
-  const { balance } = useClientStore();
+  const { stake, duration, allowEquals, trade_type, instrument } = useTradeStore();
+  const { balance, currency } = useClientStore();
+  const { showToast } = useToastStore();
 
   // Create a map of action names to their contract types
   const actionContractMap = Object.values(tradeTypeConfigs).reduce((map, config) => {
@@ -18,76 +23,130 @@ export const useTradeActions = () => {
 
   const actions: Record<TradeAction, () => Promise<void>> = {
     buy_rise: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        allowEquals, 
-        balance,
-        contractType: actionContractMap.buy_rise,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_rise,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_fall: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        allowEquals, 
-        balance,
-        contractType: actionContractMap.buy_fall,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_fall,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_higher: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        balance,
-        contractType: actionContractMap.buy_higher,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_higher,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_lower: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        balance,
-        contractType: actionContractMap.buy_lower,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_lower,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_touch: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        balance,
-        contractType: actionContractMap.buy_touch,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_touch,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_no_touch: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        balance,
-        contractType: actionContractMap.buy_no_touch,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_no_touch,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     },
     buy_multiplier: async () => {
-      console.log('Buying with:', { 
-        stake, 
-        duration, 
-        balance,
-        contractType: actionContractMap.buy_multiplier,
-        trade_type
-      });
-      // TODO: Implement actual API call with contractType
+      try {
+        const response = await buyContract({
+          duration: (() => {
+            const { value, type } = parseDuration(duration);
+            return formatDuration(Number(value), type);
+          })(),
+          instrument: instrument,
+          trade_type: actionContractMap.buy_multiplier,
+          currency,
+          payout: stake.toString(), // TODO: update after BE fix
+          strike: stake.toString(),
+        });
+        showToast(`Successfully bought ${response.trade_type} contract`, 'success');
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Failed to buy contract', 'error');
+      }
     }
   };
 

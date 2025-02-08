@@ -37,7 +37,6 @@ Trade Type Config → Trade Form Controller → Trade Actions → API
 - Preloading based on metadata
 - Suspense boundaries for loading states
 
-
 ## Overview
 
 The Champion Trader application follows a modular architecture with clear separation of concerns. This document outlines the project structure and key architectural decisions.
@@ -51,16 +50,21 @@ src/
 │   ├── BalanceDisplay/      # Displays user balance
 │   ├── BalanceHandler/      # Manages balance state
 │   ├── BottomNav/          # Navigation component
-│   ├── BottomSheet/        # Modal sheet component with drag support
-│   ├── Chart/              # Price chart with error handling
+│   ├── BottomSheet/        # Modal sheet component
+│   ├── Chart/              # Price chart
 │   ├── ContractSSEHandler/ # Contract SSE management
 │   ├── Duration/          # Trade duration selection
 │   ├── DurationOptions/    # Legacy duration component
 │   ├── SideNav/           # Side navigation
+│   ├── Stake/            # Trade stake selection
+│   │   ├── components/   # Stake subcomponents
+│   │   ├── hooks/       # SSE integration
+│   │   └── utils/       # Validation utils
 │   ├── TradeButton/       # Trade execution
 │   ├── TradeFields/       # Trade parameters
 │   └── ui/               # Shared UI components
 ├── hooks/           # Custom React hooks
+│   ├── useDebounce.ts     # Input debouncing
 │   ├── useDeviceDetection.ts # Device type detection
 │   ├── sse/        # SSE hooks for real-time data
 │   └── websocket/  # Legacy WebSocket hooks
@@ -78,7 +82,10 @@ src/
 │   ├── sseStore.ts         # SSE connection state
 │   ├── tradeStore.ts       # Trade state
 │   └── websocketStore.ts   # Legacy WebSocket state
-└── types/          # TypeScript type definitions
+├── types/          # TypeScript type definitions
+└── utils/          # Shared utilities
+    ├── debounce.ts # Debounce utility functions
+    └── duration.ts # Centralized duration utilities for formatting, parsing, and validation
 ```
 
 ## Development Practices
@@ -90,25 +97,8 @@ All components and features follow TDD methodology:
 ```
 __tests__/
 ├── components/     # Component tests
-│   ├── AddMarketButton/
-│   ├── BalanceDisplay/
-│   ├── BalanceHandler/
-│   ├── BottomNav/
-│   ├── BottomSheet/
-│   ├── Chart/
-│   ├── Duration/
-│   ├── DurationOptions/
-│   ├── SideNav/
-│   ├── TradeButton/
-│   └── TradeFields/
 ├── hooks/         # Hook tests
-│   ├── sse/
-│   └── websocket/
 ├── services/      # Service tests
-│   └── api/
-│       ├── rest/
-│       ├── sse/
-│       └── websocket/
 └── stores/        # Store tests
 ```
 
@@ -122,69 +112,16 @@ Test coverage requirements:
 
 ### Atomic Component Design
 
-Components follow atomic design principles and are organized by feature:
-
-```
-components/
-├── AddMarketButton/     # Market selection
-├── BalanceDisplay/      # Displays user balance
-├── BalanceHandler/      # Manages balance state
-├── BottomNav/          # Navigation component
-├── BottomSheet/        # Modal sheet component
-│   ├── BottomSheet.tsx        # Main component
-│   ├── BottomSheet.example.tsx # Usage examples
-│   ├── README.md             # Documentation
-│   └── __tests__/           # Test suite
-├── Chart/              # Price chart
-├── ContractSSEHandler/ # Contract SSE management
-├── Duration/          # Trade duration selection
-│   ├── components/     # Duration subcomponents
-│   │   ├── DurationTab.tsx
-│   │   ├── DurationTabList.tsx
-│   │   ├── DurationValueList.tsx    # Future enhancement
-│   │   └── HoursDurationValue.tsx   # Future enhancement
-│   └── DurationController.tsx
-├── DurationOptions/    # Legacy trade duration
-├── EqualTrade/        # Equal trade functionality
-│   ├── EqualTradeController.tsx
-│   └── index.ts
-├── SideNav/           # Side navigation
-├── TradeButton/       # Trade execution
-├── TradeFields/       # Trade parameters
-└── ui/               # Shared UI components
-    ├── button.tsx
-    ├── card.tsx
-    ├── chip.tsx        # Selection chip
-    ├── primary-button.tsx # Primary action
-    ├── switch.tsx
-    └── toggle.tsx
-```
-
-Each component:
+Components follow atomic design principles and are organized by feature. Each component:
 - Is self-contained with its own tests
 - Uses TailwindCSS for styling
 - Handles its own state management
 - Has clear documentation
 - Implements proper cleanup
 
-## Key Components
-
-### Bottom Sheet Component (`src/components/BottomSheet/`)
-
-The BottomSheet provides a mobile-optimized modal interface:
-
-Features:
-- Performance-optimized drag animations using requestAnimationFrame
-- Text selection prevention during drag
-- Comprehensive event cleanup
-- Mobile-first design with desktop fallback
-- Theme-aware styling with TailwindCSS
-- Zustand-based state management
-- Edge case handling (pointer events, window blur)
+## Key Architecture Patterns
 
 ### Real-time Data Services
-
-#### SSE Services (`src/services/api/sse/`)
 
 The SSE implementation provides efficient unidirectional streaming for real-time data:
 
@@ -195,7 +132,16 @@ sse/
 ├── types.ts               # Contract request/response types
 ├── README.md             # Documentation
 └── __tests__/           # Test suite
-    └── createSSEConnection.test.ts
+```
+
+The Stake component integrates with SSE for real-time updates:
+
+```
+Stake/
+├── hooks/
+│   └── useStakeSSE.ts  # SSE integration for stake updates
+└── utils/
+    └── validation.ts  # Input validation
 ```
 
 Features:
@@ -207,43 +153,9 @@ Features:
 - Error handling and recovery
 - Clean connection teardown
 
-Example usage:
-```typescript
-useEffect(() => {
-  const cleanup = createSSEConnection({
-    params: {
-      action: 'contract_price',
-      duration: '5m',
-      trade_type: 'CALL',
-      instrument: 'R_100',
-      currency: 'USD',
-      payout: '10'
-    },
-    headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
-    onMessage: (data) => {
-      console.log('Price update:', data);
-    },
-    onError: (error) => {
-      console.error('SSE error:', error);
-    }
-  });
-
-  return cleanup;
-}, [/* dependencies */]);
-```
-
 ### State Management
 
-#### Zustand Stores (`src/stores/`)
-
-- `bottomSheetStore.ts`: Manages bottom sheet state and interactions
-- `clientStore.ts`: Handles client configuration and settings
-- `orientationStore.ts`: Manages device orientation state
-- `sseStore.ts`: Manages SSE connections and real-time data
-- `tradeStore.ts`: Handles trade-related state
-- `websocketStore.ts`: Legacy WebSocket state (to be deprecated)
-
-Features:
+Zustand stores provide centralized state management with:
 - TypeScript type safety
 - Atomic updates
 - Middleware support
@@ -253,13 +165,6 @@ Features:
 ## Device Detection and Responsive Design
 
 The application uses device detection for optimized experiences:
-
-```typescript
-// hooks/useDeviceDetection.ts
-const { isDesktop, isMobile, isTablet } = useDeviceDetection();
-```
-
-Features:
 - Device-specific interactions
 - Responsive layouts
 - Touch vs mouse optimizations
@@ -267,14 +172,11 @@ Features:
 
 ## Animation and Interaction Patterns
 
-The project implements consistent animation patterns:
-
 1. **Performance Optimizations**
    - Use requestAnimationFrame for smooth animations
    - Implement proper style cleanup
-   - Handle edge cases (text selection, pointer events)
+   - Handle edge cases
    - Device-specific optimizations
-   - Efficient event handling
 
 2. **Interaction Guidelines**
    - Touch-friendly targets
@@ -296,51 +198,6 @@ The project implements consistent animation patterns:
    - State-based style management
    - Animation cleanup
    - Transform resets
-
-## Testing
-
-The project uses Jest and React Testing Library for testing:
-
-```
-__tests__/
-├── components/     # Component tests
-├── hooks/         # Hook tests
-├── services/      # Service tests
-└── stores/        # Store tests
-```
-
-Test coverage includes:
-- Unit tests for services and hooks
-- Integration tests for components
-- State management tests
-- Error handling tests
-- Animation and interaction tests
-- Device-specific behavior tests
-- Performance optimization tests
-
-## API Integration
-
-### SSE Endpoints
-
-```typescript
-// Configuration (src/config/api.ts)
-interface ApiConfig {
-  sse: {
-    baseUrl: string;
-    publicPath: string;
-    protectedPath: string;
-  };
-  // ... other configs
-}
-```
-
-### Environment Variables
-
-```env
-RSBUILD_REST_URL=https://api.example.com
-RSBUILD_SSE_PUBLIC_PATH=/sse
-RSBUILD_SSE_PROTECTED_PATH=/sse
-```
 
 ## Best Practices
 
@@ -384,6 +241,7 @@ RSBUILD_SSE_PROTECTED_PATH=/sse
    - Group related functionality
    - Document complex logic
    - Maintain clear separation of concerns
+   - Centralize shared utilities (e.g., duration handling in utils/duration.ts)
 
 ## Migration Notes
 

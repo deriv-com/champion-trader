@@ -6,8 +6,7 @@ import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card"
 import { useTradeStore } from "@/stores/tradeStore"
 import { tradeTypeConfigs } from "@/config/tradeTypes"
 import { useTradeActions } from "@/hooks/useTradeActions"
-import { formatDuration } from "@/config/duration"
-import { convertHourToMinutes } from "@/utils/duration"
+import { parseDuration, formatDuration } from "@/utils/duration"
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection"
 import { useClientStore } from "@/stores/clientStore"
 import { WebSocketError } from "@/services/api/websocket/types"
@@ -40,6 +39,7 @@ interface ButtonState {
   loading: boolean;
   error: Event | WebSocketError | null;
   payout: number;
+  reconnecting?: boolean;
 }
 
 type ButtonStates = Record<string, ButtonState>;
@@ -57,26 +57,15 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
       initialStates[button.actionName] = {
         loading: true,
         error: null,
-        payout: 0
+        payout: 0,
+        reconnecting: false
       };
     });
     return initialStates;
   });
 
-  // Parse duration string to get value and type (e.g. "1 tick" -> { value: 1, type: "tick" } or "1:30 hour" -> { value: "1:30", type: "hour" })
-  const [value, type] = duration.split(" ");
-  
-  // Handle duration value and type for API call
-  let apiDurationValue = value;
-  let apiDurationType = type as keyof DurationRangesResponse;
-
-  // Convert hours with minutes to total minutes for API call
-  if (type === "hour" && value.includes(":")) {
-    apiDurationValue = convertHourToMinutes(value).toString();
-    apiDurationType = "minute";
-  } else if (type === "hour") {
-    apiDurationValue = value.split(":")[0];
-  }
+  // Parse duration for API call
+  const { value: apiDurationValue, type: apiDurationType } = parseDuration(duration);
 
   useEffect(() => {
     // Create SSE connections for each button's contract type
@@ -99,7 +88,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             [button.actionName]: {
               loading: false,
               error: null,
-              payout: Number(priceData.price)
+              payout: Number(priceData.price),
+              reconnecting: false
             }
           }));
 
@@ -124,7 +114,19 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             [button.actionName]: {
               ...prev[button.actionName],
               loading: false,
-              error
+              error,
+              reconnecting: true
+            }
+          }));
+        },
+        onOpen: () => {
+          // Reset error and reconnecting state on successful connection
+          setButtonStates(prev => ({
+            ...prev,
+            [button.actionName]: {
+              ...prev[button.actionName],
+              error: null,
+              reconnecting: false
             }
           }));
         }
@@ -144,11 +146,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
       initialStates[button.actionName] = {
         loading: true,
         error: null,
-        payout: buttonStates[button.actionName]?.payout || 0
+        payout: buttonStates[button.actionName]?.payout || 0,
+        reconnecting: false
       };
     });
     setButtonStates(initialStates);
-  }, [duration, trade_type]);
+  }, [duration, trade_type, stake]);
 
   // Preload components based on metadata
   useEffect(() => {
@@ -256,7 +259,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 ? 'Loading...' 
                 : `${buttonStates[button.actionName]?.payout || 0} ${currency}`}
               title_position={button.position}
-              disabled={buttonStates[button.actionName]?.loading}
+              disabled={buttonStates[button.actionName]?.loading || buttonStates[button.actionName]?.error !== null}
+              loading={buttonStates[button.actionName]?.loading || buttonStates[button.actionName]?.reconnecting}
               error={buttonStates[button.actionName]?.error}
               onClick={() => {
                 const action = tradeActions[button.actionName];

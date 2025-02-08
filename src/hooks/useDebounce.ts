@@ -1,21 +1,28 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
+/**
+ * A hook that debounces a value and calls a callback after the specified delay.
+ * Uses a ref for the callback to prevent unnecessary effect runs.
+ * 
+ * @param value The value to debounce
+ * @param callback The function to call with the debounced value
+ * @param delay The delay in milliseconds (default: 500ms)
+ */
 export function useDebounce<T>(
   value: T,
   callback: (value: T) => void,
   delay: number = 500
-) {
-  const timeoutRef = useRef<NodeJS.Timeout>();
+): void {
+  // Keep reference to latest callback
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
 
   useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      callback(value);
+    const timeoutId = setTimeout(() => {
+      callbackRef.current(value);
     }, delay);
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [value, callback, delay]);
+    // Clear timeout if value changes or component unmounts
+    return () => clearTimeout(timeoutId);
+  }, [value, delay]); // callback not needed in deps as we use ref
 }

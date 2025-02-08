@@ -1,29 +1,32 @@
 import React from "react";
 import { StakeInput } from "./StakeInput";
 import { PayoutDisplay } from "./PayoutDisplay";
-import { STAKE_CONFIG } from "@/config/stake";
-import { useClientStore } from "@/stores/clientStore";
 
-interface StakeFieldProps {
+interface StakeInputLayoutProps {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
   error?: boolean;
   errorMessage?: string;
   maxPayout: number;
+  payoutValues: Record<string, number>;
   isDesktop?: boolean;
+  loading?: boolean;
+  loadingStates?: Record<string, boolean>;
 }
 
-export const StakeField: React.FC<StakeFieldProps> = ({
+export const StakeInputLayout: React.FC<StakeInputLayoutProps> = ({
   value,
   onChange,
   onBlur,
   error,
   errorMessage,
   maxPayout,
+  payoutValues,
   isDesktop,
+  loading = false,
+  loadingStates = {},
 }) => {
-  const { currency } = useClientStore();
   const amount = value ? parseFloat(value.split(" ")[0]) : 0;
   const hasError = Boolean(error && amount > maxPayout);
 
@@ -39,7 +42,13 @@ export const StakeField: React.FC<StakeFieldProps> = ({
         maxPayout={maxPayout}
       />
       <div className="mt-4">
-        <PayoutDisplay hasError={hasError} />
+        <PayoutDisplay 
+          hasError={hasError} 
+          loading={loading}
+          loadingStates={loadingStates}
+          maxPayout={maxPayout}
+          payoutValues={payoutValues}
+        />
       </div>
     </div>
   );

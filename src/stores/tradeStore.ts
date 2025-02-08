@@ -37,6 +37,8 @@ export interface TradeState {
   allowEquals: boolean;
   /** Current trade type (from trade type configuration) */
   trade_type: TradeType;
+  /** Current trading instrument */
+  instrument: string;
   /** Payout values for each button */
   payouts: Payouts;
   
@@ -63,6 +65,7 @@ export const useTradeStore = create<TradeState>((set) => ({
   duration: '5 minute',
   allowEquals: false,
   trade_type: 'rise_fall', // Default to rise_fall trade type
+  instrument: 'R_100', // Default to R_100
   payouts: {
     max: 50000,
     values: {
@@ -74,6 +77,7 @@ export const useTradeStore = create<TradeState>((set) => ({
   setDuration: (duration) => set({ duration }),
   toggleAllowEquals: () => set((state) => ({ allowEquals: !state.allowEquals })),
   setPayouts: (payouts) => set({ payouts }),
+  setInstrument: (instrument: string) => set({ instrument }),
   setTradeType: (trade_type: TradeType) => set((state) => ({ 
     trade_type,
     // Reset payouts for the new trade type with default values

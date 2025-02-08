@@ -4,14 +4,32 @@ A component for managing trade stake amounts with real-time payout calculations 
 
 ## Structure
 
+The Stake component follows a clean architecture pattern with clear separation of concerns, mirroring the Duration component pattern:
+
 ```
 src/components/Stake/
-├── StakeController.tsx       # Main controller component
+├── StakeController.tsx      # Business logic and state management
 ├── components/
-│   ├── StakeInput.tsx       # Input with +/- buttons
-│   └── PayoutDisplay.tsx    # Dynamic payout information display
-└── index.ts                 # Exports
+│   ├── StakeInputLayout.tsx # Layout for stake input and payout
+│   ├── StakeInput.tsx      # Input with +/- buttons
+│   └── PayoutDisplay.tsx   # Dynamic payout information display
+├── hooks/
+│   └── useStakeSSE.ts      # SSE integration for real-time updates
+├── utils/
+│   ├── duration.ts         # Duration-related utilities
+│   └── validation.ts       # Input validation utilities
+└── index.ts                # Exports
 ```
+
+### Component Responsibilities
+
+- **StakeController**: Business logic, state management, and validation
+- **StakeInputLayout**: Layout component that composes StakeInput and PayoutDisplay
+- **StakeInput**: Input field component with increment/decrement buttons
+- **PayoutDisplay**: Payout information display component
+- **useStakeSSE**: Hook for real-time stake and payout updates via SSE
+- **duration.ts**: Utilities for duration-related calculations and validations
+- **validation.ts**: Input validation and error handling utilities
 
 ## Usage
 
@@ -19,7 +37,13 @@ src/components/Stake/
 import { StakeController } from "@/components/Stake";
 
 // In your component:
-<StakeController onClose={() => {/* handle close */}} />
+<StakeController />
+
+// StakeController internally manages:
+// - Real-time updates via SSE
+// - Input validation and error states
+// - Duration calculations
+// - Mobile/desktop layouts
 ```
 
 ## Features
@@ -30,9 +54,15 @@ import { StakeController } from "@/components/Stake";
   - Configurable payout labels per button
   - Optional max payout display
   - Support for multiple payout values
+- Real-time updates via SSE:
+  - Automatic payout recalculation
+  - Debounced stake updates
+  - Error handling and retry logic
+- Comprehensive validation:
+  - Min/max stake amounts
+  - Duration-based restrictions
+  - Input format validation
 - Responsive design (mobile/desktop layouts)
-- Input validation
-- Debounced updates
 - Integration with trade store
 
 ## PayoutDisplay Component
@@ -94,14 +124,26 @@ Payout display is configured through the trade type configuration:
 
 ## State Management
 
-Uses the global trade store for stake and payout management:
+Uses the global trade store and SSE integration for stake and payout management:
 
 ```typescript
+// Trade store integration
 const { 
   stake, 
   setStake,
   payouts: { max, values }
 } = useTradeStore();
+
+// SSE integration
+const { 
+  payouts,
+  isLoading,
+  error 
+} = useStakeSSE({
+  stake,
+  duration,
+  contractType
+});
 ```
 
 ## Mobile vs Desktop
@@ -127,3 +169,22 @@ const {
    - Show validation errors clearly
    - Handle API errors gracefully
    - Maintain consistent error states
+   - Implement retry logic for SSE failures
+
+4. **Real-time Updates**
+   - Debounce stake input changes
+   - Handle SSE connection issues
+   - Show loading states during updates
+   - Validate incoming data
+
+5. **Duration Integration**
+   - Validate duration constraints
+   - Update payouts on duration changes
+   - Handle special duration cases
+   - Consider timezone effects
+
+6. **Input Validation**
+   - Use validation utilities consistently
+   - Show clear error messages
+   - Prevent invalid submissions
+   - Handle edge cases

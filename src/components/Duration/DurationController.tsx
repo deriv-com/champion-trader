@@ -6,7 +6,7 @@ import { HoursDurationValue } from "./components/HoursDurationValue";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { getDurationValues } from "./utils";
+import { generateDurationValues as getDurationValues } from "@/utils/duration";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
@@ -57,7 +57,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
         setDuration(value);
       }
     },
-    500
+    300
   );
 
   const handleTypeSelect = (type: DurationType) => {
