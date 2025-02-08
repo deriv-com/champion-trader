@@ -46,17 +46,14 @@ The application uses Server-Sent Events (SSE) for real-time data streaming, prov
 - Contract price streaming
 - Position updates
 
-#### Future Components
+#### Desktop Components
 
-The following components are implemented but reserved for future use:
+The following components are implemented for desktop support:
 
-- `DurationValueList`: Enhanced duration selection interface
-- `HoursDurationValue`: Specialized hours duration input
 - `desktop-number-input-field`: Desktop-optimized number input
 - `desktop-trade-field-card`: Desktop-optimized trade field
-- WebSocket implementation (legacy, planned for deprecation)
 
-These components are part of our roadmap for enhanced desktop support and alternative streaming implementations.
+These components are part of our enhanced desktop support implementation.
 
 #### Why SSE over WebSocket?
 
@@ -132,7 +129,7 @@ src/
 ├── services/        # API and service layer
 │   └── api/
 │       ├── rest/    # REST API services
-│       └── sse/     # SSE services
+│       └── sse/     # SSE services for real-time data
 ├── stores/          # Zustand stores
 └── types/           # TypeScript type definitions
 ```

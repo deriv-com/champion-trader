@@ -20,9 +20,9 @@ export const Toast = ({ message, type, onClose, duration = 3000 }: ToastProps) =
   return (
     <div
       className={cn(
-        'fixed bottom-4 left-1/2 -translate-x-1/2 z-50',
+        'fixed top-4 left-1/2 -translate-x-1/2 z-[999]',
         'px-6 py-3 rounded-lg shadow-lg',
-        'animate-in fade-in slide-in-from-bottom-4',
+        'animate-in fade-in slide-in-from-top-4',
         type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'
       )}
       role="alert"

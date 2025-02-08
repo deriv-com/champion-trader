@@ -52,9 +52,7 @@ src/
 │   ├── BottomNav/          # Navigation component
 │   ├── BottomSheet/        # Modal sheet component
 │   ├── Chart/              # Price chart
-│   ├── ContractSSEHandler/ # Contract SSE management
 │   ├── Duration/          # Trade duration selection
-│   ├── DurationOptions/    # Legacy duration component
 │   ├── SideNav/           # Side navigation
 │   ├── Stake/            # Trade stake selection
 │   │   ├── components/   # Stake subcomponents
@@ -66,22 +64,19 @@ src/
 ├── hooks/           # Custom React hooks
 │   ├── useDebounce.ts     # Input debouncing
 │   ├── useDeviceDetection.ts # Device type detection
-│   ├── sse/        # SSE hooks for real-time data
-│   └── websocket/  # Legacy WebSocket hooks
+│   └── sse/        # SSE hooks for real-time data
 ├── layouts/         # Page layouts
 ├── screens/         # Page components
 ├── services/        # API and service layer
 │   └── api/
 │       ├── rest/    # REST API services
-│       ├── sse/     # SSE services
-│       └── websocket/ # Legacy WebSocket services
+│       └── sse/     # SSE services
 ├── stores/          # Zustand stores
 │   ├── bottomSheetStore.ts   # Bottom sheet state
 │   ├── clientStore.ts       # Client configuration
 │   ├── orientationStore.ts  # Device orientation
 │   ├── sseStore.ts         # SSE connection state
-│   ├── tradeStore.ts       # Trade state
-│   └── websocketStore.ts   # Legacy WebSocket state
+│   └── tradeStore.ts       # Trade state
 ├── types/          # TypeScript type definitions
 └── utils/          # Shared utilities
     ├── debounce.ts # Debounce utility functions
