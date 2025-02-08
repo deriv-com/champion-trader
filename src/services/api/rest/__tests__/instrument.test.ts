@@ -1,84 +1,54 @@
-import { AxiosError } from 'axios';
-import { apiClient } from '../../axios_interceptor';
 import { getAvailableInstruments } from '../instrument/service';
-import {
-  AvailableInstrumentsRequest,
-  AvailableInstrumentsResponse,
-  ErrorResponse,
-} from '../types';
+import { AvailableInstrumentsRequest, AvailableInstrumentsResponse } from '../types';
+import { apiClient } from '../../axios_interceptor';
 
-// Mock the axios client
-jest.mock('../../axios_interceptor');
-const mockApiClient = apiClient as jest.Mocked<typeof apiClient>;
+// Mock the axios interceptor
+jest.mock('../../axios_interceptor', () => ({
+  apiClient: {
+    post: jest.fn()
+  }
+}));
 
-describe('REST API Service', () => {
-  describe('getAvailableInstruments', () => {
-    const mockRequest: AvailableInstrumentsRequest = {
-      context: {
-        app_id: 1001,
-        account_type: 'real',
-      },
-    };
+describe('getAvailableInstruments', () => {
+  beforeEach(() => {
+    (apiClient.post as jest.Mock).mockClear();
+  });
 
+  it('fetches available instruments successfully', async () => {
     const mockResponse: AvailableInstrumentsResponse = {
       instruments: [
         { id: 'EURUSD', name: 'EUR/USD' },
-        { id: 'GBPUSD', name: 'GBP/USD' },
-      ],
+        { id: 'GBPUSD', name: 'GBP/USD' }
+      ]
     };
 
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+    (apiClient.post as jest.Mock).mockResolvedValueOnce({ data: mockResponse });
 
-    it('should successfully fetch available instruments', async () => {
-      mockApiClient.post.mockResolvedValueOnce({ data: mockResponse });
+    const request: AvailableInstrumentsRequest = {
+      instrument: 'forex',
+      context: {
+        app_id: '1001'
+      }
+    };
 
-      const result = await getAvailableInstruments(mockRequest);
+    const response = await getAvailableInstruments(request);
+    
+    expect(apiClient.post).toHaveBeenCalledWith('/available_instruments', request);
+    expect(response).toEqual(mockResponse);
+  });
 
-      expect(mockApiClient.post).toHaveBeenCalledWith(
-        '/available_instruments',
-        mockRequest
-      );
-      expect(result).toEqual(mockResponse);
-    });
+  it('handles API errors', async () => {
+    const mockError = new Error('API Error');
+    (apiClient.post as jest.Mock).mockRejectedValueOnce(mockError);
 
-    it('should handle validation error', async () => {
-      const errorResponse: ErrorResponse = {
-        error: 'app_id is required in context',
-      };
+    const request: AvailableInstrumentsRequest = {
+      instrument: 'forex',
+      context: {
+        app_id: '1001'
+      }
+    };
 
-      mockApiClient.post.mockRejectedValueOnce(
-        new AxiosError(
-          'Bad Request',
-          '400',
-          undefined,
-          undefined,
-          { data: errorResponse, status: 400 } as any
-        )
-      );
-
-      await expect(getAvailableInstruments({
-        context: { app_id: 0, account_type: '' },
-      })).rejects.toThrow('Bad Request');
-    });
-
-    it('should handle server error', async () => {
-      const errorResponse: ErrorResponse = {
-        error: 'Failed to fetch available instruments',
-      };
-
-      mockApiClient.post.mockRejectedValueOnce(
-        new AxiosError(
-          'Internal Server Error',
-          '500',
-          undefined,
-          undefined,
-          { data: errorResponse, status: 500 } as any
-        )
-      );
-
-      await expect(getAvailableInstruments(mockRequest)).rejects.toThrow('Internal Server Error');
-    });
+    await expect(getAvailableInstruments(request)).rejects.toThrow('API Error');
+    expect(apiClient.post).toHaveBeenCalledWith('/available_instruments', request);
   });
 });

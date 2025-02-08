@@ -58,7 +58,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
             marginRight: '16px'
           }}
         >
-          <StakeController onClose={handleClose} />
+          <StakeController />
         </Popover>
       )}
     </div>

@@ -34,7 +34,7 @@ export const TradePage: React.FC = () => {
   const { isLandscape } = useOrientationStore()
   
   return (
-    <div className={`flex ${isLandscape ? 'flex-row relative' : 'flex-col'} flex-1 h-[100dvh]`} data-id="trade-page">
+    <div className={`flex ${isLandscape ? 'flex-row relative' : 'flex-col'} flex-1 h-[100dvh]`} data-testid="trade-page">
       {isLandscape && (
         <div
           className="absolute top-0 left-0 right-0 bg-white z-10 border-b border-opacity-10"

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
@@ -13,13 +13,9 @@ import { useStakeSSE } from "./hooks/useStakeSSE";
 import { validateStake } from "./utils/validation";
 import { parseDuration } from "@/utils/duration";
 
-interface StakeControllerProps {
-  onClose?: () => void;
-}
+interface StakeControllerProps {}
 
-export const StakeController: React.FC<StakeControllerProps> = ({
-  onClose,
-}) => {
+export const StakeController: React.FC<StakeControllerProps> = () => {
   const { stake, setStake, trade_type, duration } = useTradeStore();
   const { currency, token } = useClientStore();
   const { isDesktop } = useDeviceDetection();

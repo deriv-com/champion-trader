@@ -13,8 +13,6 @@ export interface ScrollSelectProps<T> {
   itemHeight?: number;
   containerHeight?: number;
   renderOption?: (option: ScrollSelectOption<T>, isSelected: boolean) => React.ReactNode;
-  isDesktop?: boolean;
-  onClose?: () => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -28,9 +26,7 @@ export const ScrollSelect = <T extends React.Key>({
   onValueClick,
   itemHeight = ITEM_HEIGHT,
   containerHeight = CONTAINER_HEIGHT,
-  renderOption,
-  isDesktop,
-  onClose,
+  renderOption
 }: ScrollSelectProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const intersectionObserverRef = useRef<IntersectionObserver>();

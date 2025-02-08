@@ -60,7 +60,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
               {title}
             </span>
             {loading && (
-              <div className="animate-spin w-4 h-4">
+              <div data-testid="loading-spinner" className="animate-spin w-4 h-4">
                 <svg className="w-full h-full" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"

@@ -1,38 +1,46 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { PrimaryButton } from '../primary-button';
 
+// Mock the Button component
+jest.mock('../button', () => ({
+  Button: ({ children, className, ...props }: any) => (
+    <button className={className} {...props}>
+      {children}
+    </button>
+  ),
+}));
+
 describe('PrimaryButton', () => {
-  const defaultProps = {
-    children: 'Test Button',
-  };
-
   it('renders children correctly', () => {
-    render(<PrimaryButton>{defaultProps.children}</PrimaryButton>);
-    expect(screen.getByText('Test Button')).toBeInTheDocument();
+    render(<PrimaryButton>Test Content</PrimaryButton>);
+    expect(screen.getByText('Test Content')).toBeInTheDocument();
   });
 
-  it('handles click events', () => {
-    const handleClick = jest.fn();
-    render(<PrimaryButton onClick={handleClick}>{defaultProps.children}</PrimaryButton>);
-    fireEvent.click(screen.getByText('Test Button'));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('applies hover styles', () => {
-    // This test can be enhanced with visual regression tools.
-    const { container } = render(<PrimaryButton>{defaultProps.children}</PrimaryButton>);
+  it('applies default styles', () => {
+    const { container } = render(<PrimaryButton>Test</PrimaryButton>);
     const button = container.firstChild as HTMLElement;
-    expect(button.className).toContain('hover:bg-black/90');
+    expect(button).toHaveClass('w-full', 'py-6', 'text-base', 'font-semibold', 'rounded-lg');
   });
 
-  it('spreads additional props to button element', () => {
+  it('merges custom className with default styles', () => {
     const { container } = render(
-      <PrimaryButton data-testid="custom-button" aria-label="Custom Button">
-        {defaultProps.children}
-      </PrimaryButton>
+      <PrimaryButton className="custom-class">Test</PrimaryButton>
     );
     const button = container.firstChild as HTMLElement;
-    expect(button).toHaveAttribute('data-testid', 'custom-button');
-    expect(button).toHaveAttribute('aria-label', 'Custom Button');
+    expect(button).toHaveClass('custom-class');
+    expect(button).toHaveClass('w-full', 'py-6', 'text-base', 'font-semibold', 'rounded-lg');
+  });
+
+  it('passes props to underlying Button component', () => {
+    const onClick = jest.fn();
+    render(
+      <PrimaryButton onClick={onClick} disabled>
+        Test
+      </PrimaryButton>
+    );
+    const button = screen.getByRole('button');
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
   });
 });

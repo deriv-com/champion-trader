@@ -1,6 +1,9 @@
 import { DurationRangesResponse } from '@/services/api/rest/duration/types';
 
-// Current static config (will be replaced by API response later)
+/**
+ * Duration ranges for different duration types.
+ * Will be replaced by API response later.
+ */
 export const DURATION_RANGES: DurationRangesResponse = {
   tick: { min: 1, max: 10 },
   second: { min: 15, max: 59 },
@@ -32,7 +35,7 @@ export const SPECIAL_HOUR_CASES: Record<number, SpecialHourCase> = {
 };
 
 // Pre-computed minutes values for better performance
-const ALL_MINUTES = Array.from({ length: 60 }, (_, i) => i);
+const ALL_MINUTES: number[] = Array.from({ length: 60 }, (_, i) => i);
 
 // Map duration types to their SSE format
 export const DURATION_FORMAT_MAP: Record<keyof DurationRangesResponse, string> = {
@@ -43,12 +46,23 @@ export const DURATION_FORMAT_MAP: Record<keyof DurationRangesResponse, string> =
   day: 'd'
 };
 
-// Format duration for contract SSE
+/**
+ * Formats duration value and type for contract SSE.
+ * @param value - The duration value
+ * @param type - The duration type (tick, second, minute, hour, day)
+ * @returns Formatted duration string (e.g., '5m', '1h', '10t')
+ */
 export function formatDuration(value: number, type: keyof DurationRangesResponse): string {
   return `${value}${DURATION_FORMAT_MAP[type]}`;
 }
 
-// Use pre-computed values instead of generating them
+/**
+ * Generates duration values for a given duration type.
+ * Uses pre-computed values for better performance.
+ * @param type - The duration type
+ * @param hour - Optional hour value for minute type
+ * @returns Array of valid duration values
+ */
 export function generateDurationValues(type: keyof DurationRangesResponse, hour?: number): number[] {
   if (type === 'minute' && hour !== undefined) {
     return SPECIAL_HOUR_CASES[hour]?.minutes || ALL_MINUTES;
@@ -56,41 +70,62 @@ export function generateDurationValues(type: keyof DurationRangesResponse, hour?
   return DURATION_VALUES_MAP[type] || [];
 }
 
-// Helper to get key suffix for special cases
+/**
+ * Gets key suffix for special hour cases.
+ * @param hour - The hour value
+ * @returns Special case key (e.g., '24h') or empty string
+ */
 export function getSpecialCaseKey(hour?: number): string {
   if (hour === undefined) return '';
   return SPECIAL_HOUR_CASES[hour]?.key || '';
 }
 
-// Validation helper (useful when API integration comes)
+/**
+ * Validates if a duration value is within allowed range for its type.
+ * @param type - The duration type
+ * @param value - The duration value to validate
+ * @returns True if duration is valid, false otherwise
+ */
 export function isValidDuration(type: keyof DurationRangesResponse, value: number): boolean {
   const range = DURATION_RANGES[type];
   if (!range) return false;
   return value >= range.min && value <= range.max;
 }
 
-// Helper to get the default value for a duration type
+/**
+ * Gets the default duration value for a given type.
+ * @param type - The duration type
+ * @returns Default duration value for the type
+ */
 export function getDefaultDuration(type: keyof DurationRangesResponse): number {
   const range = DURATION_RANGES[type];
   if (!range) return 0;
   return type === "minute" ? 1 : range.min;
 }
 
-// Parse duration string into value and type
+/**
+ * Interface for parsed duration result.
+ */
 export interface ParsedDuration {
   value: string;
   type: keyof DurationRangesResponse;
 }
 
+/**
+ * Parses a duration string into value and type.
+ * Handles special cases like hours with minutes.
+ * @param duration - Duration string (e.g., '5 minute', '1:30 hour')
+ * @returns Parsed duration with value and type
+ */
 export function parseDuration(duration: string): ParsedDuration {
-  const [value, type] = duration.split(" ");
+  const [value, type] = duration.split(' ');
   let apiDurationValue = value;
   let apiDurationType = type as keyof DurationRangesResponse;
 
-  if (type === "hour" && value.includes(":")) {
+  if (type === 'hour' && value.includes(':')) {
     apiDurationValue = convertHourToMinutes(value).toString();
     apiDurationType = "minute";
-  } else if (type === "hour") {
+  } else if (type === 'hour') {
     apiDurationValue = value.split(":")[0];
   }
 
@@ -100,30 +135,35 @@ export function parseDuration(duration: string): ParsedDuration {
   };
 }
 
+/**
+ * Converts hour:minute format to total minutes.
+ * @param hourValue - Hour value in format 'HH:mm'
+ * @returns Total minutes
+ */
 export function convertHourToMinutes(hourValue: string): number {
-  const [hours, minutes] = hourValue.split(":").map(Number);
+  const [hours, minutes] = hourValue.split(':').map(Number);
   return (hours * 60) + (minutes || 0);
 }
 
 export const formatDurationDisplay = (duration: string): string => {
   const [value, type] = duration.split(" ");
   
-  if (type === "hour") {
-    const [hours, minutes] = value.split(":").map(Number);
-    const hourText = hours === 1 ? "hour" : "hours";
-    const minuteText = minutes === 1 ? "minute" : "minutes";
+  if (type === 'hour') {
+    const [hours, minutes] = value.split(':').map(Number);
+    const hourText = hours === 1 ? 'hour' : 'hours';
+    const minuteText = minutes === 1 ? 'minute' : 'minutes';
     return minutes > 0 ? `${hours} ${hourText} ${minutes} ${minuteText}` : `${hours} ${hourText}`;
   }
 
   const numValue = parseInt(value, 10);
   switch (type) {
-    case "tick":
-      return `${numValue} ${numValue === 1 ? "tick" : "ticks"}`;
-    case "second":
-      return `${numValue} ${numValue === 1 ? "second" : "seconds"}`;
-    case "minute":
-      return `${numValue} ${numValue === 1 ? "minute" : "minutes"}`;
-    case "day":
+    case 'tick':
+      return `${numValue} ${numValue === 1 ? 'tick' : 'ticks'}`;
+    case 'second':
+      return `${numValue} ${numValue === 1 ? 'second' : 'seconds'}`;
+    case 'minute':
+      return `${numValue} ${numValue === 1 ? 'minute' : 'minutes'}`;
+    case 'day':
       return `${numValue} day`;
     default:
       return duration;

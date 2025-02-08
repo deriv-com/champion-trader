@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, MutableRefObject } from "react";
+import React, { useRef, MutableRefObject } from "react";
 import { DurationValueList } from "./DurationValueList";
 import { generateDurationValues, getSpecialCaseKey } from "@/utils/duration";
 
@@ -6,20 +6,15 @@ interface HoursDurationValueProps {
   selectedValue: string; // "2:12" format
   onValueSelect: (value: string) => void;
   onValueClick?: (value: string) => void;
-  isDesktop?: boolean;
-  onClose?: () => void;
   isInitialRender: MutableRefObject<boolean>;
 }
 
 const getHoursValues = (): number[] => generateDurationValues("hour");
-const getMinutesValues = (): number[] => generateDurationValues("minute");
 
 export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
   selectedValue,
   onValueSelect,
   onValueClick,
-  isDesktop,
-  onClose,
   isInitialRender,
 }) => {
   // Use refs to store last valid values
@@ -96,8 +91,6 @@ export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
           onValueSelect={handleHoursSelect}
           onValueClick={handleHoursClick}
           getDurationValues={getHoursValues}
-          isDesktop={isDesktop}
-          onClose={onClose}
         />
       </div>
       <div ref={minutesRef} className="flex-1" aria-label="Minutes">
@@ -108,8 +101,6 @@ export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
             onValueSelect={handleMinutesSelect}
             onValueClick={handleMinutesClick}
             getDurationValues={() => generateDurationValues('minute', lastValidHours.current)}
-            isDesktop={isDesktop}
-            onClose={onClose}
           />
       </div>
     </div>

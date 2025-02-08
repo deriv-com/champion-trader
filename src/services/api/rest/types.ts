@@ -1,39 +1,41 @@
-export interface BuyRequest {
-  duration: string;
+export interface Context {
+  app_id: string;
+  account_type?: string;
+}
+
+export interface AvailableInstrumentsRequest {
   instrument: string;
+  context: Context;
+}
+
+export interface Instrument {
+  id: string;
+  name: string;
+}
+
+export interface AvailableInstrumentsResponse {
+  instruments: Instrument[];
+}
+
+export interface ErrorResponse {
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface BuyRequest {
+  price: number;
+  instrument: string;
+  duration: string;
   trade_type: string;
   currency: string;
-  payout: string;
+  payout: number;
   strike: string;
 }
 
 export interface BuyResponse {
-  date_start: number;
-  date_expiry: number;
-  spot: string;
-  strike: string;
-  price: string;
+  contract_id: string;
+  price: number;
   trade_type: string;
-  instrument: string;
-  currency: string;
-  payout: string;
-  pricing_parameters: {
-    commission_percent: string;
-    commission_amount: string;
-    volatility: string;
-    spot_price: string;
-    duration_in_years: string;
-  };
-  account: {
-    id: string;
-    balance: string;
-    currency: string;
-  };
-  transaction: {
-    id: string;
-    user_id: string;
-    type: string;
-    amount: string;
-    timestamp: string;
-  };
 }

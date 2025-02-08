@@ -107,8 +107,6 @@ export const DurationController: React.FC<DurationControllerProps> = ({
                 handleValueSelect(value);
               }}
               onValueClick={handleValueClick}
-              isDesktop={isDesktop}
-              onClose={onClose}
               isInitialRender={isInitialRender}
             />
           ) : (
@@ -119,8 +117,6 @@ export const DurationController: React.FC<DurationControllerProps> = ({
               onValueSelect={handleValueSelect}
               onValueClick={handleValueClick}
               getDurationValues={getDurationValues}
-              isDesktop={isDesktop}
-              onClose={onClose}
             />
           )}
         </div>

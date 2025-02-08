@@ -8,8 +8,6 @@ interface DurationValueListProps {
   onValueSelect: (value: number) => void;
   onValueClick?: (value: number) => void;
   getDurationValues: (type: keyof DurationRangesResponse) => number[];
-  isDesktop?: boolean;
-  onClose?: () => void;
 }
 
 const getUnitLabel = (type: keyof DurationRangesResponse, value: number): string => {
@@ -34,9 +32,7 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
   durationType,
   onValueSelect,
   onValueClick,
-  getDurationValues,
-  isDesktop,
-  onClose
+  getDurationValues
 }) => {
   const values = getDurationValues(durationType);
   const options = values.map(value => ({
@@ -50,8 +46,6 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
       selectedValue={selectedValue}
       onValueSelect={onValueSelect}
       onValueClick={onValueClick}
-      isDesktop={isDesktop}
-      onClose={onClose}
     />
   );
 };
