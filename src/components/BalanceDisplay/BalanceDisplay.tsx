@@ -13,7 +13,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   onDeposit,
   depositLabel = 'Deposit',
   className = '',
-  loginUrl = 'https://options-trading.deriv.ai/',
+  loginUrl = '/login',
 }) => {
   const { isLoggedIn, balance, currency } = useClientStore();
   const { isLandscape } = useOrientationStore();

@@ -19,6 +19,10 @@ const MenuPage = lazy(() =>
   import("@/screens/MenuPage").then((module) => ({ default: module.MenuPage }))
 );
 
+const LoginPage = lazy(() =>
+  import("@/screens/LoginPage").then((module) => ({ default: module.LoginPage }))
+);
+
 const AppContent = () => {
 
   const { token, isLoggedIn } = useClientStore();
@@ -41,6 +45,7 @@ const AppContent = () => {
             <Route path="/positions" element={<Navigate to="/menu" />} />
           )}
           <Route path="/menu" element={<MenuPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Suspense>
     </MainLayout>
