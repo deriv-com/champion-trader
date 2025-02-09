@@ -1,4 +1,3 @@
-import React from 'react';
 import { BottomSheet } from './BottomSheet';
 import { useBottomSheetStore } from '@/stores/bottomSheetStore';
 

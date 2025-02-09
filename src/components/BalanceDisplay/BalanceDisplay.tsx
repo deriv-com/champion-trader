@@ -13,7 +13,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   onDeposit,
   depositLabel = 'Deposit',
   className = '',
-  loginUrl = 'https://options-trading.deriv.ai/',
+  loginUrl = '/login',
 }) => {
   const { isLoggedIn, balance, currency } = useClientStore();
   const { isLandscape } = useOrientationStore();
@@ -23,7 +23,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
       <div className={`w-full flex items-center justify-end ${className}`}>
         <a 
           href={loginUrl}
-          className="px-4 py-2 font-bold text-white bg-teal-500 rounded-3xl hover:bg-teal-600"
+          className="px-4 py-2 font-bold text-white bg-color-solid-glacier-700 rounded-3xl hover:bg-color-solid-glacier-600"
         >
           Log in
         </a>

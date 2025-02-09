@@ -1,0 +1,20 @@
+import React from "react";
+import { cn } from "@/lib/utils";
+
+interface DesktopTradeFieldCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const DesktopTradeFieldCard = ({ children, className }: DesktopTradeFieldCardProps) => {
+  return (
+    <div 
+      className={cn(
+        "bg-[rgba(246,247,248,1)] rounded-lg p-2",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};

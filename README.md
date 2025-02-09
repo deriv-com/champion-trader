@@ -46,6 +46,15 @@ The application uses Server-Sent Events (SSE) for real-time data streaming, prov
 - Contract price streaming
 - Position updates
 
+#### Desktop Components
+
+The following components are implemented for desktop support:
+
+- `desktop-number-input-field`: Desktop-optimized number input
+- `desktop-trade-field-card`: Desktop-optimized trade field
+
+These components are part of our enhanced desktop support implementation.
+
 #### Why SSE over WebSocket?
 
 1. **Simpler Protocol**: SSE is built on HTTP and is simpler to implement and maintain
@@ -120,7 +129,7 @@ src/
 ├── services/        # API and service layer
 │   └── api/
 │       ├── rest/    # REST API services
-│       └── sse/     # SSE services
+│       └── sse/     # SSE services for real-time data
 ├── stores/          # Zustand stores
 └── types/           # TypeScript type definitions
 ```

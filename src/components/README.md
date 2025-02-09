@@ -7,10 +7,17 @@ This directory contains React components following Test-Driven Development (TDD)
 ```
 components/
 ├── AddMarketButton/    # Market selection functionality
+├── BalanceDisplay/     # Displays user balance
+├── BalanceHandler/     # Manages balance state
 ├── BottomNav/          # Bottom navigation bar
 ├── BottomSheet/        # Bottom sheet
 ├── Chart/              # Trading chart visualization
-├── DurationOptions/    # Trade duration selection
+├── Duration/          # Trade duration selection
+├── SideNav/           # Side navigation
+├── Stake/            # Trade stake selection
+│   ├── components/   # Stake subcomponents
+│   ├── hooks/       # SSE integration
+│   └── utils/       # Validation utils
 ├── TradeButton/        # Trade execution controls
 ├── TradeFields/        # Trade parameter inputs
 └── ui/                 # Shared UI components

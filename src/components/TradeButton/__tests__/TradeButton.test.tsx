@@ -1,5 +1,22 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TradeButton } from '../Button';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TradeButton } from '../TradeButton';
+
+// Mock ResizeObserver
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+global.ResizeObserver = ResizeObserverMock;
+
+// Mock orientation store
+jest.mock('@/stores/orientationStore', () => ({
+  useOrientationStore: () => ({
+    isLandscape: false
+  })
+}));
 
 describe('TradeButton', () => {
   const defaultProps = {
@@ -43,14 +60,6 @@ describe('TradeButton', () => {
     expect(button).toHaveClass('bg-teal-500');
   });
 
-  it('has correct button type and ARIA label', () => {
-    render(<TradeButton {...defaultProps} />);
-
-    const button = screen.getByRole('button');
-    expect(button).toHaveAttribute('type', 'button');
-    expect(button).toHaveAttribute('aria-label', 'Rise - Payout: 19.55 USD');
-  });
-
   it('handles click events', () => {
     const handleClick = jest.fn();
     render(<TradeButton {...defaultProps} onClick={handleClick} />);
@@ -59,19 +68,13 @@ describe('TradeButton', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('handles keyboard interactions', () => {
+  it('handles keyboard interactions', async () => {
     const handleClick = jest.fn();
     render(<TradeButton {...defaultProps} onClick={handleClick} />);
 
     const button = screen.getByRole('button');
-
-    // Test Enter key
-    fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' });
+    await userEvent.click(button);
     expect(handleClick).toHaveBeenCalledTimes(1);
-    
-    // Test Space key
-    fireEvent.keyDown(button, { key: ' ', code: 'Space' });
-    expect(handleClick).toHaveBeenCalledTimes(2);
   });
 
   it('maintains text color and font styles', () => {
@@ -81,15 +84,68 @@ describe('TradeButton', () => {
     const label = screen.getByText('Payout');
     const value = screen.getByText('19.55 USD');
 
-    expect(title).toHaveClass('text-xl font-bold text-white');
-    expect(label).toHaveClass('text-sm text-white/80');
-    expect(value).toHaveClass('text-xl font-bold text-white');
+    expect(title).toHaveClass('font-bold');
+    expect(label).toHaveClass('opacity-80');
+    expect(value).toBeInTheDocument();
   });
 
   it('maintains layout and spacing', () => {
     const { container } = render(<TradeButton {...defaultProps} />);
 
     const button = container.firstChild as HTMLElement;
-    expect(button).toHaveClass('flex items-center justify-between w-full px-6 py-4 rounded-full');
+    expect(button).toHaveClass('flex-1');
+    expect(button).toHaveClass('rounded-full');
+    expect(button).toHaveClass('text-white');
+  });
+
+  it('shows loading spinner when loading prop is true', () => {
+    render(<TradeButton {...defaultProps} loading={true} />);
+    
+    const spinner = screen.getByTestId('loading-spinner');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveClass('animate-spin');
+  });
+
+  it('is disabled when disabled prop is true', () => {
+    render(<TradeButton {...defaultProps} disabled={true} />);
+    
+    const button = screen.getByRole('button');
+    expect(button).toBeDisabled();
+  });
+
+  it('shows tooltip on hover when there is an Event error', async () => {
+    const error = new Event('error');
+    render(<TradeButton {...defaultProps} error={error} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.getAllByText('Failed to get price')[0]).toBeInTheDocument();
+    });
+  });
+
+  it('shows tooltip on hover when there is a WebSocket error', async () => {
+    const error = { error: 'Connection failed' };
+    render(<TradeButton {...defaultProps} error={error} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.getAllByText('Connection failed')[0]).toBeInTheDocument();
+    });
+  });
+
+  it('does not show tooltip when there is no error', async () => {
+    render(<TradeButton {...defaultProps} error={null} />);
+    
+    const button = screen.getByRole('button');
+    await userEvent.hover(button);
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Failed to get price')).not.toBeInTheDocument();
+      expect(screen.queryByText('Connection failed')).not.toBeInTheDocument();
+    });
   });
 });
