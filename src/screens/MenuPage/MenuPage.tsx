@@ -1,14 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
-import { useOrientationStore } from "@/stores/orientationStore";
 import ToggleButton from "@/components/TradeFields/ToggleButton";
 import { Home, MoonStar, LogOut, ExternalLink } from "lucide-react";
 
 export const MenuPage: React.FC = () => {
   const navigate = useNavigate();
   const { logout, isLoggedIn } = useClientStore();
-  const { isLandscape } = useOrientationStore();
 
   const handleLogout = () => {
     localStorage.removeItem("loginToken");
