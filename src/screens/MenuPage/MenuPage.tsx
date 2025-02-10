@@ -33,8 +33,8 @@ export const MenuPage: React.FC = () => {
           <span className="text-sm">Theme</span>
           <ToggleButton
             label=""
-            // value={false}
-            // onChange={() => {}}
+            value={false}
+            onChange={() => {}}
           />
         </div>
         {isLoggedIn && (
