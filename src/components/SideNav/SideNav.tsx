@@ -21,6 +21,15 @@ export const SideNav: React.FC = () => {
       } flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
     >
       <div className="flex flex-col items-center gap-6 py-6">
+        {!isLoggedIn && (
+          <a href="/" className="pb-4">
+            <img
+              src="/logo.png"
+              alt="Champion Trader Logo"
+              className="w-8 h-8 rounded-full"
+            />
+          </a>
+        )}
         <button
           onClick={() => navigate("/trade")}
           className={`flex flex-col items-center gap-1 ${
