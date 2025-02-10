@@ -1,37 +1,52 @@
 # Duration Component
 
 ## Overview
-The Duration component is a comprehensive solution for handling trade duration selection in the Champion Trader application. It provides an intuitive interface for users to select trade durations across different time units (ticks, seconds, minutes, hours, and days).
+The Duration component is a comprehensive solution for handling trade duration selection in the Champion Trader application. It provides an intuitive interface for users to select trade durations across different time units with configurable ranges and API integration support.
 
 ## Architecture
 
 ### Main Components
 - `DurationController`: The main controller component that orchestrates duration selection
-- `DurationTabList`: Handles the selection of duration types (tick, second, minute, hour, day)
 - `DurationValueList`: Displays and manages the selection of specific duration values
 - `HoursDurationValue`: Special component for handling hour-based durations with minute precision
+
+### Configuration
+Duration ranges are centrally configured in `src/config/duration.ts`:
+```typescript
+export const DURATION_RANGES = {
+  tick: { min: 1, max: 10 },
+  second: { min: 15, max: 59 },
+  minute: { min: 1, max: 59 },
+  hour: { min: 1, max: 23, step: 1 },
+  day: { min: 1, max: 30 }
+};
+```
 
 ### State Management
 - Uses Zustand via `useTradeStore` for managing duration state
 - Integrates with `useBottomSheetStore` for modal behavior
+- Implements debounced updates for desktop to prevent excessive API calls
 
 ## Features
+- Configurable duration ranges with min/max values
+- Type-safe implementation using TypeScript
 - Supports multiple duration types:
-  - Ticks (1-5)
-  - Seconds (1-60)
-  - Minutes (1, 2, 3, 5, 10, 15, 30)
-  - Hours (1, 2, 3, 4, 6, 8, 12, 24)
-  - Days (1)
-- Real-time duration updates
+  - Ticks (1-10)
+  - Seconds (15-59)
+  - Minutes (1-59, with preset steps: 1, 2, 3, 5, 10, 15, 30, 45, 59)
+  - Hours (1-23)
+  - Days (1-30)
+- Real-time duration updates with debouncing
 - Responsive and accessible UI
-- Integration with bottom sheet for mobile-friendly interaction
+- Different behaviors for desktop and mobile:
+  - Desktop: Direct updates with debouncing
+  - Mobile: Save button for explicit confirmation
 
 ## Usage
 
 ```tsx
 import { DurationController } from '@/components/Duration';
 
-// Inside your component
 const YourComponent = () => {
   return (
     <DurationController />
@@ -49,23 +64,23 @@ The duration state follows the format: `"<value> <type>"`, for example:
 
 For hours, the format supports minute precision: "1:30 hour"
 
-## Test Coverage
-The component is thoroughly tested with Jest and React Testing Library, covering:
-- Component rendering
-- Duration type selection
-- Duration value selection
-- State management integration
-- UI interactions
+## API Integration
+The component is designed for future API integration:
+- Duration ranges will be fetched from the API
+- Configuration structure matches expected API response
+- Validation helpers ensure values stay within allowed ranges
+- Type-safe interfaces for API responses
 
 ## Dependencies
 - React
 - Zustand (for state management)
 - TailwindCSS (for styling)
-- Primary Button component
+- TypeScript (for type safety)
 
 ## Styling
-The component uses TailwindCSS for styling with a focus on:
+The component uses TailwindCSS for styling with:
 - Mobile-first design
+- Different layouts for desktop/mobile
 - Consistent spacing and typography
 - Clear visual hierarchy
 - Accessible color contrast
@@ -74,3 +89,4 @@ The component uses TailwindCSS for styling with a focus on:
 - Integrates with the Trade Page for duration selection
 - Works within the Bottom Sheet component for mobile interactions
 - Connects with the global trade store for state management
+- Prepared for future API integration

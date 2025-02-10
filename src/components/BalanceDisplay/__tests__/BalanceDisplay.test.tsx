@@ -90,7 +90,7 @@ describe('BalanceDisplay', () => {
       render(<BalanceDisplay />);
       
       const loginLink = screen.getByText('Log in');
-      expect(loginLink).toHaveAttribute('href', 'https://options-trading.deriv.ai/');
+      expect(loginLink).toHaveAttribute('href', '/login');
     });
 
     it('renders login button with custom login URL when provided', () => {

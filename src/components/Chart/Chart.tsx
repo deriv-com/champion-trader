@@ -88,12 +88,12 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
 
     const baselineSeries = chart.addSeries(BaselineSeries, {
       // baseValue: { type: "price", price: undefined },
-      topLineColor: "rgba( 38, 166, 154, 1)",
-      topFillColor1: "rgba( 38, 166, 154, 0.28)",
-      topFillColor2: "rgba( 38, 166, 154, 0.05)",
-      bottomLineColor: "rgba( 239, 83, 80, 1)",
-      bottomFillColor1: "rgba( 239, 83, 80, 0.05)",
-      bottomFillColor2: "rgba( 239, 83, 80, 0.28)",
+      topLineColor: "rgba(0, 195, 144, 1)", // emerald-700
+      topFillColor1: "rgba(0, 195, 144, 0.28)",
+      topFillColor2: "rgba(0, 195, 144, 0.05)",
+      bottomLineColor: "rgba(222, 0, 64, 1)", // cherry-700
+      bottomFillColor1: "rgba(222, 0, 64, 0.05)",
+      bottomFillColor2: "rgba(222, 0, 64, 0.28)",
     });
 
     chartRef.current = chart;
@@ -111,7 +111,7 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
       }
     });
 
-    // Handle window resize
+    // Handle resize
     const handleResize = () => {
       if (chartContainerRef.current && chartRef.current) {
         chartRef.current.applyOptions({
@@ -121,11 +121,23 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
       }
     };
 
+    // Initial resize after a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(handleResize, 100);
+
+    // Set up ResizeObserver for container size changes
+    const resizeObserver = new ResizeObserver(handleResize);
+    if (chartContainerRef.current) {
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    // Handle window resize as well
     window.addEventListener("resize", handleResize);
 
     // Cleanup
     return () => {
+      clearTimeout(timeoutId);
       window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       if (chartRef.current) {
         chartRef.current.remove();
       }
@@ -147,8 +159,8 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
   }, [priceHistory]);
 
   return (
-    <div className={cn("flex flex-col flex-1", className)}>
-      <div className="flex-1 bg-white w-full rounded-lg relative h-full">
+    <div className={cn("flex flex-col flex-1 h-full", className)}>
+      <div className="flex-1 bg-white w-full rounded-lg relative h-full overflow-hidden">
         {currentPrice && currentTime && (
           <div className="absolute top-4 left-4 bg-gray-100 p-2 rounded shadow-sm z-10">
             <div className="text-sm font-medium">VOLATILITY 100 (1S) INDEX</div>

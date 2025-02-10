@@ -41,10 +41,9 @@ export const MenuPage: React.FC = () => {
         </div>
         {isLoggedIn && (
           <>
-            <div className="flex-1" />
             <button
               onClick={handleLogout}
-              className="text-left p-4 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 flex items-center gap-3"
+              className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
             >
               <LogOut className="w-5 h-5" />
               Log out

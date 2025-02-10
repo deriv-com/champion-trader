@@ -14,7 +14,7 @@ export const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonPr
         ref={ref}
         variant="default"
         className={cn(
-          "w-full py-6 text-base font-semibold bg-black hover:bg-black/90 rounded-lg",
+          "w-full py-6 text-base font-semibold rounded-lg",
           className
         )}
         {...props}

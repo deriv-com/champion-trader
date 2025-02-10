@@ -10,7 +10,7 @@ const ToggleButton: React.FC<ToggleProps> = ({ label, value, onChange }) => {
   const id = `toggle-${label.toLowerCase().replace(/\s+/g, '-')}`;
   
   return (
-    <div className="flex items-center justify-between px-4">
+    <div className="flex items-center justify-between">
       <span id={id} className="text-sm text-gray-700">
         {label}
       </span>

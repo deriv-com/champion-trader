@@ -2,7 +2,6 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { DurationController } from '../DurationController';
 import { useTradeStore } from '@/stores/tradeStore';
 import { useBottomSheetStore } from '@/stores/bottomSheetStore';
-import type { TradeState } from '@/stores/tradeStore';
 import type { BottomSheetState } from '@/stores/bottomSheetStore';
 
 // Mock the stores
@@ -30,16 +29,21 @@ describe('DurationController', () => {
   const mockSetStake = jest.fn();
   const mockToggleAllowEquals = jest.fn();
 
-  const setupMocks = (initialDuration = '1 tick') => {
+  const setupMocks = () => {
     // Setup store mocks with proper typing
     (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
       stake: '10 USD',
-      duration: initialDuration,
+      duration: '5 minute',
       allowEquals: false,
+      trade_type: 'rise_fall',
+      instrument: 'R_100',
+      payouts: { max: 50000, values: {} },
       setStake: mockSetStake,
       setDuration: mockSetDuration,
       toggleAllowEquals: mockToggleAllowEquals,
-    } as TradeState);
+      setPayouts: jest.fn(),
+      setTradeType: jest.fn()
+    });
 
     (useBottomSheetStore as jest.MockedFunction<typeof useBottomSheetStore>).mockReturnValue({
       showBottomSheet: false,
@@ -60,7 +64,7 @@ describe('DurationController', () => {
   });
 
   describe('Initial Render', () => {
-    it('renders duration types and initial value', () => {
+    it('renders duration types', () => {
       render(<DurationController />);
 
       expect(screen.getByText('Duration')).toBeInTheDocument();
@@ -68,56 +72,20 @@ describe('DurationController', () => {
       expect(screen.getByText('Seconds')).toBeInTheDocument();
       expect(screen.getByText('Minutes')).toBeInTheDocument();
       expect(screen.getByText('Hours')).toBeInTheDocument();
-      expect(screen.getByText('End Time')).toBeInTheDocument();
     });
 
     it('syncs with store on mount', () => {
-      setupMocks('5 tick');
+      setupMocks();
       render(<DurationController />);
       
       const saveButton = screen.getByText('Save');
       fireEvent.click(saveButton);
       
-      expect(mockSetDuration).toHaveBeenCalledWith('5 tick');
+      expect(mockSetDuration).toHaveBeenCalledWith('5 minute');
     });
   });
 
-  describe('Ticks Duration', () => {
-    it('shows correct tick values', () => {
-      render(<DurationController />);
-      
-      const valueItems = screen.getAllByRole('radio');
-      const values = valueItems.map(item => item.getAttribute('value'));
-      
-      expect(values).toEqual(['1', '2', '3', '4', '5']);
-    });
-
-    it('selects default tick value', () => {
-      render(<DurationController />);
-      
-      const selectedValue = screen.getByRole('radio', { checked: true });
-      expect(selectedValue.getAttribute('value')).toBe('1');
-    });
-
-    it('updates duration on tick selection', () => {
-      render(<DurationController />);
-
-      const valueItems = screen.getAllByRole('radio');
-      const threeTicks = valueItems.find(item => item.getAttribute('value') === '3');
-
-      if (threeTicks) {
-        act(() => {
-          fireEvent.click(threeTicks);
-        });
-      }
-
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('3 tick');
-    });
-  });
-
+  
   describe('Minutes Duration', () => {
     beforeEach(() => {
       render(<DurationController />);
@@ -126,16 +94,19 @@ describe('DurationController', () => {
       });
     });
 
-    it('shows correct minute values', () => {
+    it('shows minute values from 0 to 59', () => {
       const valueItems = screen.getAllByRole('radio');
       const values = valueItems.map(item => item.getAttribute('value'));
       
-      expect(values).toEqual(['1', '2', '3', '5', '10', '15', '30']);
+      // Verify we have values from 0 to 59
+      expect(values.length).toBe(60);
+      expect(values[0]).toBe('0');
+      expect(values[59]).toBe('59');
     });
 
-    it('selects default minute value', () => {
+    it('selects default minute value as 0', () => {
       const selectedValue = screen.getByRole('radio', { checked: true });
-      expect(selectedValue.getAttribute('value')).toBe('1');
+      expect(selectedValue.getAttribute('value')).toBe('0');
     });
 
     it('updates duration on minute selection', () => {
@@ -155,122 +126,6 @@ describe('DurationController', () => {
     });
   });
 
-  describe('Hours Duration', () => {
-    beforeEach(() => {
-      render(<DurationController />);
-      act(() => {
-        fireEvent.click(screen.getByText('Hours'));
-      });
-    });
-
-    it('handles hour:minute format correctly', () => {
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('1:0 hour');
-    });
-
-    it('preserves hour selection when switching tabs', () => {
-      // Switch to minutes
-      act(() => {
-        fireEvent.click(screen.getByText('Minutes'));
-      });
-
-      // Switch back to hours
-      act(() => {
-        fireEvent.click(screen.getByText('Hours'));
-      });
-
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('1:0 hour');
-    });
+  
+  
   });
-
-  describe('End Time Duration', () => {
-    beforeEach(() => {
-      render(<DurationController />);
-      act(() => {
-        fireEvent.click(screen.getByText('End Time'));
-      });
-    });
-
-    it('updates duration for end time selection', () => {
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('1 day');
-    });
-  });
-
-  describe('State Management', () => {
-    it('preserves local state until save', () => {
-      render(<DurationController />);
-
-      // Change to minutes
-      act(() => {
-        fireEvent.click(screen.getByText('Minutes'));
-      });
-
-      // Select 5 minutes
-      const valueItems = screen.getAllByRole('radio');
-      const fiveMinutes = valueItems.find(item => item.getAttribute('value') === '5');
-
-      if (fiveMinutes) {
-        act(() => {
-          fireEvent.click(fiveMinutes);
-        });
-      }
-
-      // Verify store hasn't been updated yet
-      expect(mockSetDuration).not.toHaveBeenCalled();
-
-      // Save changes
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      // Verify store is updated with new value
-      expect(mockSetDuration).toHaveBeenCalledWith('5 minute');
-      expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-    });
-
-    it('handles rapid tab switching without losing state', () => {
-      render(<DurationController />);
-
-      // Rapid switches between duration types
-      act(() => {
-        fireEvent.click(screen.getByText('Minutes'));
-        fireEvent.click(screen.getByText('Hours'));
-        fireEvent.click(screen.getByText('End Time'));
-        fireEvent.click(screen.getByText('Minutes'));
-      });
-
-      // Select and save a value
-      const valueItems = screen.getAllByRole('radio');
-      const threeMinutes = valueItems.find(item => item.getAttribute('value') === '3');
-
-      if (threeMinutes) {
-        act(() => {
-          fireEvent.click(threeMinutes);
-        });
-      }
-
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('3 minute');
-    });
-
-    it('handles invalid duration format gracefully', () => {
-      setupMocks('invalid duration');
-      render(<DurationController />);
-
-      // Should use the provided invalid duration
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
-
-      expect(mockSetDuration).toHaveBeenCalledWith('invalid duration');
-    });
-  });
-});

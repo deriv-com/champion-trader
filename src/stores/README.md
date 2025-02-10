@@ -206,22 +206,51 @@ interface WebSocketActions {
 
 ## Trade Store
 
-The trade store manages trading-related state:
+The trade store manages trading-related state, including dynamic payouts based on trade type:
 
 ```typescript
 interface TradeState {
-  selectedInstrument: string | null;
-  tradeAmount: number;
-  duration: number;
-  // Other trade parameters
+  // Trade parameters
+  stake: string;
+  duration: string;
+  allowEquals: boolean;
+  trade_type: TradeType;
+
+  // Dynamic payout structure
+  payouts: {
+    max: number;
+    values: Record<string, number>;  // Maps button action names to payout values
+  };
+
+  // Actions
+  setStake: (stake: string) => void;
+  setDuration: (duration: string) => void;
+  toggleAllowEquals: () => void;
+  setPayouts: (payouts: Payouts) => void;
+  setTradeType: (trade_type: TradeType) => void;
 }
 
-interface TradeActions {
-  setInstrument: (id: string) => void;
-  setAmount: (amount: number) => void;
-  // Other actions
-}
+// Example usage:
+const store = useTradeStore();
+
+// Update payouts for multiple buttons
+store.setPayouts({
+  max: 50000,
+  values: {
+    buy_rise: 19.50,
+    buy_fall: 19.50
+  }
+});
+
+// Get payout for a specific button
+const payout = store.payouts.values['buy_rise'];
 ```
+
+Key features:
+- Dynamic payout structure based on trade type
+- Support for multiple button payouts
+- Automatic payout reset on trade type change
+- Type-safe payout management
 
 ## Best Practices
 
@@ -230,37 +259,60 @@ interface TradeActions {
    - Split complex stores into smaller ones
    - Use TypeScript for type safety
    - Follow single responsibility principle
+   - Use configuration-driven state structures
 
 2. **Test-Driven Development**
    - Write tests before implementation
    - Cover edge cases and error scenarios
    - Test asynchronous operations
    - Mock external dependencies properly
+   - Test different trade type configurations
 
 3. **Performance Optimization**
    - Use selective subscriptions
    - Implement proper cleanup
    - Avoid unnecessary state updates
    - Memoize selectors
+   - Optimize payout updates
 
 2. **Performance**
    - Use selective subscriptions
    - Implement proper cleanup
    - Avoid unnecessary state updates
+   - Batch payout updates when possible
+   - Consider memoization for derived values
 
 3. **Testing**
    - Test store creation
    - Test state updates
    - Test action handlers
    - Mock external dependencies
+   - Test trade type transitions
 
 4. **Usage in Components**
    ```typescript
    import { useTradeStore } from '@/stores/tradeStore';
 
    function TradeComponent() {
-     const { positions, addPosition } = useTradeStore();
-     // Component implementation
+     const { 
+       trade_type,
+       payouts: { max, values },
+       setPayouts 
+     } = useTradeStore();
+
+     // Access payout for specific button
+     const buttonPayout = values[buttonActionName];
+
+     // Update payouts
+     const handlePriceUpdate = (price: number) => {
+       setPayouts({
+         max: 50000,
+         values: {
+           ...values,
+           [buttonActionName]: price
+         }
+       });
+     };
    }
    ```
 
