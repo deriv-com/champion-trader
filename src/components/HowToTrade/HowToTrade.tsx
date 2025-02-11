@@ -1,11 +1,11 @@
-import React from 'react';
-import { useBottomSheetStore } from '@/stores/bottomSheetStore';
+import React from "react";
+import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 
 export const HowToTrade: React.FC = () => {
   const { setBottomSheet } = useBottomSheetStore();
 
   const handleClick = () => {
-    setBottomSheet(true, 'how-to-trade', '470px');
+    setBottomSheet(true, "how-to-trade", '800px');
   };
 
   return (

@@ -18,23 +18,22 @@ export const bottomSheetConfig: BottomSheetConfig = {
   'how-to-trade': {
     body: (
       <div className="p-4">
-    <h2 className="text-lg font-semibold mb-4">How to trade Rise/Fall</h2>
+    <h2 className="text-lg font-bold mb-4">Rise/Fall</h2>
     <div className="space-y-4">
       <div>
-        <h3 className="font-medium mb-2">1. Select Duration</h3>
-        <p className="text-gray-600">Choose how long you want to trade for - from 1 minute up to 15 minutes.</p>
+        <h3 className="font-semibold mb-2">Rise</h3>
+        <p className="text-gray-600 mb-2">If you select Rise, you win the payout if the exit spot is strictly higher than the entry spot.</p>
+        <img src="/rise.png" alt="rise" />
       </div>
       <div>
-        <h3 className="font-medium mb-2">2. Set your Stake</h3>
-        <p className="text-gray-600">Enter the amount you want to trade with.</p>
+        <h3 className="font-semibold mb-2">Fall</h3>
+        <p className="text-gray-600 mb-2">If you select Fall, you win the payout if the exit spot is strictly lower than the entry spot.</p>
+        <img src="/fall.png" alt="fall" />
+
       </div>
       <div>
-        <h3 className="font-medium mb-2">3. Make your Prediction</h3>
-        <p className="text-gray-600">Click "Rise" if you think the market will go up, or "Fall" if you think it will go down.</p>
-      </div>
-      <div>
-        <h3 className="font-medium mb-2">4. Track your Trade</h3>
-        <p className="text-gray-600">Watch the chart to see how the market moves during your selected duration.</p>
+        <h3 className="font-semibold mb-2">Additional Information</h3>
+        <p className="text-gray-600">If you select “Allow equals”, you win the payout if exit spot is higher than or equal to entry spot for Rise. Similarly, you win the payout if exit spot is lower than or equal to entry spot for Fall.</p>
       </div>
     </div>
   </div>
