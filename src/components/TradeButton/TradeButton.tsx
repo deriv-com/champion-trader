@@ -29,75 +29,78 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
   error,
 }) => {
   const { isLandscape } = useOrientationStore();
+
   return (
     <Tooltip.Provider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <Button
-        className={cn(
-          "flex-1 flex flex-col gap-1 text-white rounded-full",
-          isLandscape ? "py-4 h-12" : "py-6 h-16",
-          className
-        )}
-        variant="default"
-        onClick={onClick}
-        disabled={disabled || loading}
-      >
-        <div
-          className={cn(
-            "flex items-center w-full px-3",
-            !isLandscape
-              ? title_position === "right"
-                ? "justify-end"
-                : "justify-between"
-              : "justify-between"
-          )}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={cn("font-bold", isLandscape ? "text-base" : "text-lg")}
-            >
-              {title}
-            </span>
-            {loading && (
-              <div data-testid="loading-spinner" className="animate-spin w-4 h-4">
-                <svg className="w-full h-full" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              </div>
+            className={cn(
+              "flex-1 flex flex-col gap-1 text-white rounded-full",
+              isLandscape ? "py-4 h-12" : "py-6 h-16",
+              className
             )}
-          </div>
-        </div>
-        <div
-          className={cn(
-            "flex items-center w-full px-3",
-            !isLandscape
-              ? title_position === "right"
-                ? "justify-between"
-                : "justify-between flex-row-reverse"
-              : "justify-between"
-          )}
-        >
-          <span
-            className={cn("opacity-80", isLandscape ? "text-xs" : "text-sm")}
+            variant="default"
+            onClick={onClick}
+            disabled={disabled || loading}
           >
-            {label}
-          </span>
-          <span className={isLandscape ? "text-xs" : "text-sm"}>{value}</span>
-        </div>
+            <div
+              className={cn(
+                "flex items-center w-full px-3",
+                !isLandscape
+                  ? title_position === "right"
+                    ? "justify-end"
+                    : "justify-between"
+                  : "justify-between"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "font-bold",
+                    isLandscape ? "text-base" : "text-lg"
+                  )}
+                >
+                  {title}
+                </span>
+                {loading && (
+                  <div
+                    data-testid="loading-spinner"
+                    className="animate-spin w-4 h-4"
+                  >
+                    <svg className="w-full h-full" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div
+              className={cn(
+                "flex items-center w-full px-3",
+                !isLandscape
+                  ? title_position === "right"
+                    ? "justify-between"
+                    : "justify-between flex-row-reverse"
+                  : "justify-between"
+              )}
+            >
+              <span className="text- opacity-80">{label}</span>
+              <span className="text-xs">{value}</span>
+            </div>
           </Button>
         </Tooltip.Trigger>
         {error && (
@@ -108,7 +111,9 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
               sideOffset={8}
               align="center"
             >
-              {error instanceof Event ? "Failed to get price" : error?.error || "Failed to get price"}
+              {error instanceof Event
+                ? "Failed to get price"
+                : error?.error || "Failed to get price"}
               <Tooltip.Arrow className="fill-black/90" />
             </Tooltip.Content>
           </Tooltip.Portal>

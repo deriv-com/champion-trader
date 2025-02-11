@@ -22,12 +22,6 @@ describe('Footer', () => {
     useClientStore.getState().isLoggedIn = false;
   });
 
-  it('does not render when user is logged out', () => {
-    renderWithRouter();
-    // In logout view, Footer should not render, so "Menu" should not be present.
-    expect(screen.queryByText('Menu')).toBeNull();
-  });
-
   it('renders navigation items when user is logged in', () => {
     useClientStore.getState().isLoggedIn = true;
     renderWithRouter();

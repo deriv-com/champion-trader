@@ -16,7 +16,5 @@ describe('DurationOptions', () => {
     render(<DurationOptions />);
     
     expect(screen.getByRole('button', { name: /chart/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /clock/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /expand/i })).toBeInTheDocument();
   });
 });

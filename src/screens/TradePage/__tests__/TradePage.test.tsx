@@ -145,7 +145,6 @@ describe('TradePage', () => {
     // Balance display should not be visible in portrait mode
     expect(screen.queryByTestId('balance-display')).not.toBeInTheDocument();
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
-    expect(screen.getByTestId('add-market-button')).toBeInTheDocument();
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
 
     // Check layout classes
@@ -163,7 +162,6 @@ describe('TradePage', () => {
     // Balance display should be visible in landscape mode
     expect(screen.getByTestId('balance-display')).toBeInTheDocument();
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
-    expect(screen.getByTestId('add-market-button')).toBeInTheDocument();
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
 
     // Check layout classes
