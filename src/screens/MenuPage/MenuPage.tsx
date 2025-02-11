@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import ToggleButton from "@/components/TradeFields/ToggleButton";
-import { Home, MoonStar, LogOut, ExternalLink } from "lucide-react";
+import { Home, Moon, LogOut, ExternalLink } from "lucide-react";
 
 export const MenuPage: React.FC = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export const MenuPage: React.FC = () => {
           </div>
         </button>
         <div className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3">
-          <MoonStar className="w-5 h-5" />
+          <Moon className="w-5 h-5" />
           <span className="text-sm">Theme</span>
           <ToggleButton
             label=""

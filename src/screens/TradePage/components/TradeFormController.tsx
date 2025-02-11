@@ -188,7 +188,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
           : ""
       }`}
     >
-      <div className="pt-2 px-2" id="how-to-trade">
+      <div className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"} id="how-to-trade">
         <HowToTrade />
       </div>
       <div id="trade-fields">
