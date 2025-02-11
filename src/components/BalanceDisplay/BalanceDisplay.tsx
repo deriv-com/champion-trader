@@ -35,7 +35,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
         >
           <a
             href={loginUrl}
-            className="px-4 py-2 font-bold text-white bg-color-solid-glacier-700 rounded-3xl hover:bg-color-solid-glacier-600"
+            className="px-5 py-2 font-semibold bg-color-solid-glacier-700 rounded-3xl hover:bg-color-solid-glacier-600"
           >
             Log in
           </a>
