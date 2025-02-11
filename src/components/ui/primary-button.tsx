@@ -12,7 +12,7 @@ export const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonPr
     return (
       <Button
         ref={ref}
-        variant="default"
+        variant="primary"
         className={cn(
           "w-full py-6 text-base font-semibold rounded-lg",
           className
