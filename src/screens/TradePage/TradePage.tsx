@@ -3,43 +3,18 @@ import { useOrientationStore } from "@/stores/orientationStore"
 import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { DurationOptions } from "@/components/DurationOptions"
-import { Card, CardContent } from "@/components/ui/card"
 import { TradeFormController } from "./components/TradeFormController"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { MarketSelector } from "@/components/MarketSelector"
 import { useDeviceDetection } from "@/hooks/useDeviceDetection"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { useMarketStore } from "@/stores/marketStore"
+import { MarketInfo } from "@/components/MarketInfo"
 
 const Chart = lazy(() =>
   import("@/components/Chart").then((module) => ({
     default: module.Chart,
   }))
-)
-
-interface MarketInfoProps {
-  title: string
-  subtitle: string
-  onClick?: () => void
-}
-
-const MarketInfo: React.FC<MarketInfoProps> = ({
-  title,
-  subtitle,
-  onClick,
-}) => (
-  <Card
-    className="flex-1 min-w-[180px]"
-    data-id="market-info"
-    onClick={onClick}
-  >
-    <CardContent className="flex items-center gap-3 p-3">
-      <div className="min-w-0">
-        <div className="text-sm font-bold text-gray-700">{title}</div>
-        <div className="text-xs text-gray-500">{subtitle}</div>
-      </div>
-    </CardContent>
-  </Card>
 )
 
 export const TradePage: React.FC = () => {
@@ -65,20 +40,12 @@ export const TradePage: React.FC = () => {
       data-testid="trade-page"
     >
       {isLandscape && (
-        <div
-          className="absolute top-0 left-0 right-0 bg-white z-10 border-b border-opacity-10"
-          id="instrument-tab-bar"
-        >
-          <div className="flex items-center w-full gap-2 px-4 py-2 justify-between">
-            <div className="flex items-center gap-2">
-              <MarketInfo
-                title={selectedMarket?.displayName || "Select Market"}
-                subtitle="Rise/Fall"
-                onClick={handleMarketSelect}
-              />
-            </div>
-            <BalanceDisplay />
-          </div>
+        <div className="absolute top-4 left-4 z-10">
+          <MarketInfo
+            title={selectedMarket?.displayName || "Select Market"}
+            subtitle="Rise/Fall"
+            onClick={handleMarketSelect}
+          />
         </div>
       )}
 
@@ -88,19 +55,19 @@ export const TradePage: React.FC = () => {
         } overflow-hidden`}
       >
         {!isLandscape && (
-          <div className="flex items-center w-full gap-2 p-4 justify-between">
-            <div className="flex items-center gap-2">
-              <MarketInfo
-                title={selectedMarket?.displayName || "Select Market"}
-                subtitle="Rise/Fall"
-                onClick={handleMarketSelect}
-              />
-            </div>
+          <div className="w-full">
+            <MarketInfo
+              title={selectedMarket?.displayName || "Select Market"}
+              subtitle="Rise/Fall"
+              price="786.07"
+              onClick={handleMarketSelect}
+              isMobile={true}
+            />
           </div>
         )}
 
         <div className="flex flex-col flex-1 min-h-0">
-          <div className={`flex-1 relative ${isLandscape ? "mt-[78px]" : ""}`}>
+          <div className="flex-1 relative">
             <Suspense fallback={<div>Loading...</div>}>
               <Chart className="flex-1 absolute inset-0" />
             </Suspense>

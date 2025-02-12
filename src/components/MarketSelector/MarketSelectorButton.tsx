@@ -1,6 +1,7 @@
 import React from "react"
-import { ChevronDown, CandlestickChart } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
+import { MarketIcon } from "./MarketIcon"
 
 interface MarketSelectorButtonProps {
   symbol: string
@@ -13,29 +14,40 @@ interface FormattedSymbol {
   displayName: string
   isForex: boolean
   isClosed: boolean
+  iconSymbol: string
 }
 
 export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
   symbol,
   price,
 }) => {
+  console.log('dsasd')
   const formatSymbol = (symbol: string): FormattedSymbol => {
     const isOneSecond = symbol.startsWith("1HZ")
     const isForex = !symbol.includes("HZ") && !symbol.includes("R_")
 
     let number: string
     let displayName: string
+    let iconSymbol: string
 
     if (isForex) {
       const base = symbol.slice(0, 3)
       const quote = symbol.slice(3)
       number = base
       displayName = `${base}/${quote}`
+      iconSymbol = `frx${base}${quote}`
     } else {
       number = isOneSecond
         ? symbol.replace("1HZ", "").replace("V", "")
         : symbol.replace("R_", "")
       displayName = `Volatility ${number}${isOneSecond ? " (1s)" : ""} Index`
+      // For volatility indices, we need to ensure the format matches marketIcons
+      // If it's already in R_ format, keep it, otherwise format it
+      iconSymbol = symbol.includes("R_")
+        ? symbol
+        : symbol.startsWith("1HZ")
+        ? symbol
+        : `R_${number}`
     }
 
     return {
@@ -43,16 +55,17 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
       isOneSecond,
       displayName,
       isForex,
-      // Dummy closed state for demo
-      isClosed: symbol === 'USDJPY'
+      iconSymbol,
+      isClosed: symbol === "USDJPY",
     }
   }
+  const { number, isOneSecond, displayName, isClosed, iconSymbol } =
+    formatSymbol(symbol)
 
-  const { number, isOneSecond, displayName, isForex, isClosed } = formatSymbol(symbol)
   const { setBottomSheet } = useBottomSheetStore()
 
   const handleClick = () => {
-    setBottomSheet(true, "market-info", "87%")
+    setBottomSheet(true, "market-info", "90%")
   }
 
   return (
@@ -60,17 +73,12 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
       onClick={handleClick}
       className="flex items-center gap-3 px-4 py-3 bg-muted/50 hover:bg-muted/70 rounded-lg transition-colors"
     >
-      <div className="relative">
-        <div className="w-[52px] h-[52px] bg-[#EAF1FF] rounded-lg flex items-center justify-center gap-1">
-          <CandlestickChart className="w-4 h-4" />
-          <span className={`font-semibold ${isForex ? 'text-sm' : 'text-lg'}`}>{number}</span>
-        </div>
-        {isOneSecond && (
-          <div className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] px-1 py-0.5 rounded">
-            1s
-          </div>
-        )}
-      </div>
+      <MarketIcon
+        symbol={iconSymbol}
+        shortName={number}
+        isOneSecond={isOneSecond}
+        size="large"
+      />
       <div className="flex flex-col items-start">
         <div className="flex items-center gap-2">
           <span className="text-base font-medium">{displayName}</span>

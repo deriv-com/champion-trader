@@ -1,7 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, act } from "@testing-library/react"
 import { MarketSelectorList } from "../MarketSelectorList"
 import * as bottomSheetStore from "@/stores/bottomSheetStore"
 import * as tradeStore from "@/stores/tradeStore"
+import * as marketStore from "@/stores/marketStore"
+import * as leftSidebarStore from "@/stores/leftSidebarStore"
 import { useInstruments } from "@/hooks/useInstruments"
 
 // Mock the stores and hooks
@@ -11,6 +13,14 @@ jest.mock("@/stores/bottomSheetStore", () => ({
 
 jest.mock("@/stores/tradeStore", () => ({
   useTradeStore: jest.fn(),
+}))
+
+jest.mock("@/stores/marketStore", () => ({
+  useMarketStore: jest.fn(),
+}))
+
+jest.mock("@/stores/leftSidebarStore", () => ({
+  useLeftSidebarStore: jest.fn(),
 }))
 
 jest.mock("@/hooks/useInstruments", () => ({
@@ -37,7 +47,9 @@ Object.defineProperty(window, "localStorage", {
 describe("MarketSelectorList", () => {
   const mockSetBottomSheet = jest.fn()
   const mockSetSymbol = jest.fn()
-
+  const mockSetInstrument = jest.fn()
+  const mockSetSelectedMarket = jest.fn()
+  const mockSetLeftSidebar = jest.fn()
   const mockMarketGroups = [
     {
       market_name: "synthetic_index",
@@ -58,9 +70,26 @@ describe("MarketSelectorList", () => {
     ).mockReturnValue({
       setBottomSheet: mockSetBottomSheet,
     })
-
-    ;(tradeStore.useTradeStore as unknown as jest.Mock).mockReturnValue({
-      setSymbol: mockSetSymbol,
+    ;(tradeStore.useTradeStore as unknown as jest.Mock).mockImplementation((selector) => {
+      const store = {
+        setSymbol: mockSetSymbol,
+        setInstrument: mockSetInstrument,
+      }
+      return selector ? selector(store) : store
+    })
+    ;(marketStore.useMarketStore as unknown as jest.Mock).mockReturnValue({
+      selectedMarket: {
+        symbol: "1HZ100V",
+        displayName: "Volatility 100 (1s) Index",
+        shortName: "100",
+        market_name: "synthetic_index",
+        isOneSecond: true,
+        type: "volatility"
+      },
+      setSelectedMarket: mockSetSelectedMarket,
+    })
+    ;(leftSidebarStore.useLeftSidebarStore as unknown as jest.Mock).mockReturnValue({
+      setLeftSidebar: mockSetLeftSidebar,
     })
 
     // Setup useInstruments mock with default successful state
@@ -208,7 +237,6 @@ describe("MarketSelectorList", () => {
     })
 
     describe("Market Selection", () => {
-
       it("prevents selection of closed markets", () => {
         render(<MarketSelectorList />)
 
@@ -217,6 +245,26 @@ describe("MarketSelectorList", () => {
 
         expect(mockSetSymbol).not.toHaveBeenCalled()
         expect(mockSetBottomSheet).not.toHaveBeenCalled()
+      })
+
+      it("handles market selection correctly", () => {
+        render(<MarketSelectorList />)
+
+        const market = screen.getByText("EUR/USD").closest("div")
+        fireEvent.click(market!)
+
+        expect(mockSetInstrument).toHaveBeenCalledWith("EURUSD")
+        expect(mockSetSelectedMarket).toHaveBeenCalled()
+        expect(mockSetBottomSheet).toHaveBeenCalledWith(false)
+        expect(mockSetLeftSidebar).toHaveBeenCalledWith(false)
+      })
+
+      it("sets initial instrument based on default market", async () => {
+        await act(async () => {
+          render(<MarketSelectorList />)
+        })
+        
+        expect(mockSetInstrument).toHaveBeenCalledWith("1HZ100V")
       })
     })
   })

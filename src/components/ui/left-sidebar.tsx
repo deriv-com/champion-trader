@@ -12,7 +12,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   className,
   ...props
 }) => {
-  const { isOpen, title, setLeftSidebar } = useLeftSidebarStore()
+  const { isOpen, setLeftSidebar } = useLeftSidebarStore()
   const sidebarRef = React.useRef<HTMLDivElement>(null)
 
   // Handle escape key press
@@ -59,7 +59,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         )}
         aria-hidden="true"
       />
-      
+
       {/* Sidebar */}
       <div
         ref={sidebarRef}
@@ -85,9 +85,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </div>
 
         {/* Content */}
-        <div className="h-[calc(100%-65px)] overflow-y-auto">
-          {children}
-        </div>
+        <div className="h-[calc(100%-65px)] overflow-y-auto">{children}</div>
       </div>
     </>
   )

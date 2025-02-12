@@ -17,11 +17,11 @@ interface MarketState {
 
 // Default market (Volatility 100 (1s))
 const defaultMarket: ProcessedInstrument = {
-  symbol: "1HZ100V",
-  displayName: "Volatility 100 (1s) Index",
+  symbol: "R_100", // Using the format that matches marketIcons mapping
+  displayName: "Volatility 100 Index",
   shortName: "100",
   market_name: "synthetic_index",
-  isOneSecond: true,
+  isOneSecond: false,
   type: "volatility"
 }
 

@@ -3,6 +3,7 @@ import { Search, X, Loader2, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useMarketStore } from "@/stores/marketStore"
+import { useToastStore } from "@/stores/toastStore"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { tabs, stubMarketGroups } from "./data"
 import { MarketGroup } from "@/services/api/rest/types"
@@ -29,7 +30,6 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   const { marketGroups, isLoading, error } = useInstruments()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-  const [hasSetInitialMarket, setHasSetInitialMarket] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const savedFavorites = localStorage.getItem("market-favorites")
     return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set()
@@ -43,14 +43,38 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     )
   }, [favorites])
 
+  const { toast } = useToastStore((state) => ({ toast: state.toast }))
+
   const toggleFavorite = (symbol: string) => (e: React.MouseEvent) => {
     e.stopPropagation()
     setFavorites((prev) => {
       const newFavorites = new Set(prev)
-      if (newFavorites.has(symbol)) {
-        newFavorites.delete(symbol)
-      } else {
+      const isAdding = !newFavorites.has(symbol)
+      
+      if (isAdding) {
         newFavorites.add(symbol)
+        toast({
+          content: (
+            <div className="flex items-center gap-3">
+              <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+              <span className="text-base">Added to favourites</span>
+            </div>
+          ),
+          variant: "black",
+          duration: 2000
+        })
+      } else {
+        newFavorites.delete(symbol)
+        toast({
+          content: (
+            <div className="flex items-center gap-3">
+              <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+              <span className="text-base">Removed from favourites</span>
+            </div>
+          ),
+          variant: "black",
+          duration: 2000
+        })
       }
       return newFavorites
     })
@@ -79,8 +103,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
       ? symbol.replace("1HZ", "").replace("V", "")
       : symbol.replace("R_", "")
 
+    // Convert to format used in marketIcons
+    const iconSymbol = symbol.startsWith("1HZ") ? symbol : `R_${number}`
+
     return {
-      symbol,
+      symbol: iconSymbol,
       displayName: `Volatility ${number}${
         symbol.startsWith("1HZ") ? " (1s)" : ""
       } Index`,
@@ -96,8 +123,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     const type = symbol.startsWith("BOOM") ? "boom" : "crash"
     const number = symbol.replace(type.toUpperCase(), "").replace("N", "")
     
+    // Convert to format used in marketIcons
+    const iconSymbol = `${type.toUpperCase()}${number}${symbol.includes("N") ? "N" : ""}`
+
     return {
-      symbol,
+      symbol: iconSymbol,
       displayName: `${type.charAt(0).toUpperCase() + type.slice(1)} ${number} Index`,
       shortName: number,
       market_name: "crash_boom",
@@ -110,8 +140,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   const formatForexSymbol = (symbol: string): ProcessedInstrument => {
     const base = symbol.slice(0, 3)
     const quote = symbol.slice(3)
+
+    // Convert to format used in marketIcons
+    const iconSymbol = `frx${base}${quote}`
+
     return {
-      symbol,
+      symbol: iconSymbol,
       displayName: `${base}/${quote}`,
       shortName: base,
       market_name: "forex",
@@ -229,12 +263,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                       index > 0 ? "border-t border-border pt-8" : ""
                     } mb-8`}
                   >
-                    <h2 className="text-[15px] font-medium mb-4">
+                    <h2 className="text-lg font-medium mb-4">
                       {marketTitles[marketName]}
                     </h2>
                     <div className="space-y-4">
                       {marketName === "synthetic_index" && (
-                        <h3 className="text-sm text-muted-foreground">
+                        <h3 className="text-base text-muted-foreground">
                           Continuous Indices
                         </h3>
                       )}
@@ -244,7 +278,9 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                           className={`flex items-center justify-between py-2 px-2 -mx-2 rounded-lg transition-colors ${
                             market.isClosed
                               ? "opacity-50 cursor-not-allowed"
-                              : "hover:bg-muted/50 cursor-pointer"
+                              : selectedMarket?.symbol === market.symbol
+                              ? "bg-gray-900 text-white hover:bg-gray-900"
+                              : "hover:bg-gray-900 hover:text-white cursor-pointer"
                           }`}
                           onClick={() =>
                             !market.isClosed && handleMarketSelect(market)
@@ -252,12 +288,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                         >
                           <div className="flex items-center gap-3">
                             <MarketIcon
-                              type={market.type}
-                              value={market.shortName}
+                              symbol={market.symbol}
+                              shortName={market.shortName}
                               isOneSecond={market.isOneSecond}
                             />
                             <div className="flex items-center gap-2">
-                              <span className="text-[15px]">
+                              <span className="text-lg">
                                 {market.displayName}
                               </span>
                               {market.isClosed && (
@@ -271,14 +307,14 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                             onClick={toggleFavorite(market.symbol)}
                             className={
                               favorites.has(market.symbol)
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-foreground"
+                                ? "text-yellow-400"
+                                : "text-muted-foreground hover:text-yellow-400"
                             }
                           >
                             <Star
                               className={`w-5 h-5 ${
                                 favorites.has(market.symbol)
-                                  ? "fill-current"
+                                  ? "fill-yellow-400"
                                   : ""
                               }`}
                             />
