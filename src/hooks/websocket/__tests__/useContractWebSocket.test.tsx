@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { useContractWebSocket } from '../useContractWebSocket';
 import { useWebSocketStore } from '@/stores/websocketStore';
 import { ContractPriceRequest, ContractPriceResponse, WebSocketError } from '@/services/api/websocket/types';

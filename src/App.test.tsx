@@ -40,6 +40,9 @@ jest.mock("@/layouts/MainLayout", () => ({
   )),
 }));
 
+// Mock CSS imports
+jest.mock('@deriv/deriv-charts/dist/smartcharts.css', () => ({}), { virtual: true });
+
 // Mock the websocket, SSE hooks, and client store
 
 jest.mock("@/hooks/sse", () => ({
