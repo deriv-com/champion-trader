@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,700");
+@import "@deriv/deriv-charts/dist/smartcharts.css";
 
 @tailwind base;
 @tailwind components;

@@ -2,6 +2,7 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginBasicSsl } from '@rsbuild/plugin-basic-ssl';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -28,5 +29,23 @@ export default defineConfig({
     port: 4113,
     host: 'localhost',
     strictPort: true
+  },
+  output: {
+    copy: [
+      {
+        from: path.resolve(
+          __dirname,
+          "./node_modules/@deriv/deriv-charts/dist"
+        ),
+        to: "js/smartcharts/",
+      },
+      {
+        from: path.resolve(
+          __dirname,
+          "./node_modules/@deriv/deriv-charts/dist/chart/assets"
+        ),
+        to: "assets",
+      },
+    ],
   },
 });

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
 import { TradeButton } from "@/components/TradeButton"
-import { Chart } from "@/components/Chart"
+import { TradeChart } from "@/components/Chart/Chart1"
 import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { AddMarketButton } from "@/components/AddMarketButton"
@@ -67,7 +67,7 @@ export const TradePage: React.FC = () => {
 
         <div className="flex flex-col flex-1 landscape:mt-[72px] h-[calc(100vh-200px)] landscape:h-[calc(100vh-72px)]">
           <Suspense fallback={<div>Loading...</div>}>
-            <Chart className="flex-1" />
+            <TradeChart />
           </Suspense>
         </div>
 

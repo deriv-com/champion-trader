@@ -20,9 +20,7 @@ const MenuPage = lazy(() =>
 );
 
 const AppContent = () => {
-
   const { token, isLoggedIn } = useClientStore();
-
 
   return (
     <MainLayout>
@@ -55,23 +53,28 @@ export const App = () => {
   // Handle login token
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const tokenFromUrl = params.get('token');
-    const tokenFromStorage = localStorage.getItem('loginToken');
+    const tokenFromUrl = params.get("token");
+    const tokenFromStorage = localStorage.getItem("loginToken");
 
     if (tokenFromUrl) {
-      localStorage.setItem('loginToken', tokenFromUrl);
+      localStorage.setItem("loginToken", tokenFromUrl);
       setToken(tokenFromUrl);
-      
+
       // Remove token from URL
-      params.delete('token');
-      const newUrl = params.toString() 
+      params.delete("token");
+      const newUrl = params.toString()
         ? `${window.location.pathname}?${params.toString()}`
         : window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
+      window.history.replaceState({}, "", newUrl);
     } else if (tokenFromStorage) {
       setToken(tokenFromStorage);
     }
-    
+
+    const loadSmartchartsStyles = () => {
+      // @ts-expect-error type seems ok
+      import("@deriv/deriv-charts/dist/smartcharts.css");
+    };
+    loadSmartchartsStyles();
     setIsInitialized(true);
   }, [setToken]);
 
