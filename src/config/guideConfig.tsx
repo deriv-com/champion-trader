@@ -1,3 +1,4 @@
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { ReactNode } from "react";
 
 export interface GuideConfig {
@@ -18,9 +19,7 @@ export const guideConfig: GuideConfig = {
               If you select Rise, you win the payout if the exit spot is
               strictly higher than the entry spot.
             </p>
-            <div className="flex justify-center">
-              <img src="/rise.png" alt="rise" />
-            </div>
+            <DotLottieReact autoplay src="/videos/rise.lottie" loop />
           </div>
           <div>
             <h3 className="font-semibold mb-2">Fall</h3>
@@ -28,9 +27,7 @@ export const guideConfig: GuideConfig = {
               If you select Fall, you win the payout if the exit spot is
               strictly lower than the entry spot.
             </p>
-            <div className="flex justify-center">
-              <img src="/fall.png" alt="fall" />
-            </div>
+            <DotLottieReact autoplay src="/videos/fall.lottie" loop />
           </div>
           <div>
             <h3 className="font-semibold mb-2">Additional Information</h3>
@@ -40,6 +37,14 @@ export const guideConfig: GuideConfig = {
               the payout if exit spot is lower than or equal to entry spot for
               Fall.
             </p>
+          </div>
+          <div>
+            <iframe
+              allowFullScreen={true}
+              width="100%"
+              height="100%"
+              src='https://iframe.cloudflarestream.com/7719c7e5436f58e59ab47510445108ba'
+            />
           </div>
         </div>
       </div>
