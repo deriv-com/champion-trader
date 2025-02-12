@@ -11,11 +11,21 @@ interface ProcessedInstrument {
 }
 
 interface MarketState {
-  selectedMarket: ProcessedInstrument | null
+  selectedMarket: ProcessedInstrument
   setSelectedMarket: (market: ProcessedInstrument) => void
 }
 
+// Default market (Volatility 100 (1s))
+const defaultMarket: ProcessedInstrument = {
+  symbol: "1HZ100V",
+  displayName: "Volatility 100 (1s) Index",
+  shortName: "100",
+  market_name: "synthetic_index",
+  isOneSecond: true,
+  type: "volatility"
+}
+
 export const useMarketStore = create<MarketState>((set) => ({
-  selectedMarket: null,
+  selectedMarket: defaultMarket,
   setSelectedMarket: (market) => set({ selectedMarket: market }),
 }))

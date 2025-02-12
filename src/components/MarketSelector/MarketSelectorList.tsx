@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Search, X, Loader2, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useMarketStore } from "@/stores/marketStore"
+import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { tabs, stubMarketGroups } from "./data"
 import { MarketGroup } from "@/services/api/rest/types"
 import { useInstruments } from "@/hooks/useInstruments"
 import { MarketIcon } from "./MarketIcon"
+import { ScrollableTabs } from "@/components/ui/scrollable-tabs"
 
 interface MarketSelectorListProps {
   onDragDown?: () => void
@@ -27,13 +29,14 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   const { marketGroups, isLoading, error } = useInstruments()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [hasSetInitialMarket, setHasSetInitialMarket] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const savedFavorites = localStorage.getItem("market-favorites")
     return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set()
   })
 
   // Update localStorage when favorites change
-  useEffect(() => {
+  React.useEffect(() => {
     localStorage.setItem(
       "market-favorites",
       JSON.stringify(Array.from(favorites))
@@ -54,12 +57,21 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   }
 
   const setInstrument = useTradeStore((state) => state.setInstrument)
-  const setSelectedMarket = useMarketStore((state) => state.setSelectedMarket)
+  const { selectedMarket, setSelectedMarket } = useMarketStore()
+  const { setLeftSidebar } = useLeftSidebarStore()
+
+  // Set initial instrument based on default market
+  React.useEffect(() => {
+    if (selectedMarket) {
+      setInstrument(selectedMarket.symbol)
+    }
+  }, [])
 
   const handleMarketSelect = (market: ProcessedInstrument) => {
     setInstrument(market.symbol)
     setSelectedMarket(market)
     setBottomSheet(false)
+    setLeftSidebar(false)
   }
 
   const formatSyntheticSymbol = (symbol: string): ProcessedInstrument => {
@@ -111,6 +123,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   // Use stub data if marketGroups is null or empty
   const effectiveMarketGroups = (!marketGroups || marketGroups.length === 0) ? stubMarketGroups : marketGroups;
+
 
   // Process instruments from marketGroups to match our display needs
   const processedInstruments = effectiveMarketGroups.flatMap((group: MarketGroup) =>
@@ -167,7 +180,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Search Bar */}
-      <div className="p-4">
+      <div className="px-6 pt-4 pb-2">
         <div className="flex items-center gap-3 bg-muted/50 rounded-lg px-4 py-3">
           <Search className="w-5 h-5 text-muted-foreground" />
           <input
@@ -189,33 +202,15 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
       </div>
 
       {/* Market Categories */}
-      <div
-        className="flex overflow-x-auto scrollbar-none scroll-smooth"
-        style={{
-          msOverflowStyle: "none",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        <div className="flex min-w-max px-4 pb-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-3 text-lg font-medium whitespace-nowrap transition-colors relative ${
-                activeTab === tab.id
-                  ? "text-foreground after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ScrollableTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        className="mb-4"
+      />
 
       {/* Market List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto px-6">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
@@ -225,7 +220,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         ) : (
           <>
             {/* Market Groups */}
-            <div className="px-4">
+            <div>
               {Object.entries(groupedInstruments).map(
                 ([marketName, markets], index) => (
                   <div

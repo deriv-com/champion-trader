@@ -1,6 +1,7 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { X } from "lucide-react"
 
 interface LeftSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
@@ -72,32 +73,21 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         {...props}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <h2 className="text-lg font-semibold">{title}</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <h2 className="text-xl font-semibold">Markets</h2>
           <button
             onClick={() => setLeftSidebar(false)}
             className="rounded-full p-2 hover:bg-accent hover:text-accent-foreground"
             aria-label="Close sidebar"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="h-[calc(100%-65px)] overflow-y-auto p-4">{children}</div>
+        <div className="h-[calc(100%-65px)] overflow-y-auto">
+          {children}
+        </div>
       </div>
     </>
   )
