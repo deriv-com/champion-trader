@@ -44,7 +44,7 @@ export const Modal = ({
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
-          "relative bg-white rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto p-2",
+          "relative bg-white rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col",
           className
         )}
       >
@@ -58,7 +58,7 @@ export const Modal = ({
             <X />
           </button>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="overflow-y-auto flex-1 p-4">{children}</div>
       </div>
     </div>
   );
