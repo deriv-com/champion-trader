@@ -10,6 +10,9 @@ describe('DurationOptions', () => {
     expect(screen.getByText('2m')).toBeInTheDocument();
     expect(screen.getByText('3m')).toBeInTheDocument();
     expect(screen.getByText('5m')).toBeInTheDocument();
+    expect(screen.getByText('10m')).toBeInTheDocument();
+    expect(screen.getByText('15m')).toBeInTheDocument();
+    expect(screen.getByText('30m')).toBeInTheDocument();
   });
 
   it('renders chart control buttons', () => {

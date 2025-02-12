@@ -5,7 +5,7 @@ export const HowToTrade: React.FC = () => {
   const { setBottomSheet } = useBottomSheetStore();
 
   const handleClick = () => {
-    setBottomSheet(true, "how-to-trade", '800px');
+    setBottomSheet(true, "how-to-trade", '90%');
   };
 
   return (

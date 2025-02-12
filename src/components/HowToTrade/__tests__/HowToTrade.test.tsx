@@ -23,6 +23,6 @@ describe('HowToTrade', () => {
   it('opens bottom sheet when clicked', () => {
     render(<HowToTrade />);
     fireEvent.click(screen.getByText('How to trade Rise/Fall?'));
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'how-to-trade', '800px');
+    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'how-to-trade', '90%');
   });
 });

@@ -28,7 +28,7 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
       {config.payouts.max && (
         <div className="flex justify-between">
           <span className="font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem] text-black/48">
-            Max. payout
+            Max payout
           </span>
           <span className={cn(
             "font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]",

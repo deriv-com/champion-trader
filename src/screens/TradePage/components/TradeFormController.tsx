@@ -188,7 +188,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
           : ""
       }`}
     >
-      <div className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"} id="how-to-trade">
+      <div
+        className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"}
+        id="how-to-trade"
+      >
         <HowToTrade />
       </div>
       <div id="trade-fields">
@@ -272,7 +275,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       </div>
 
       <div
-        className={`flex ${isLandscape ? "flex-col py-2" : ""} gap-2 p-4`}
+        className={`flex ${isLandscape ? "flex-col py-2" : "pt-0"} gap-2 p-4`}
         id="trade-buttons"
       >
         {config.buttons.map((button) => (
