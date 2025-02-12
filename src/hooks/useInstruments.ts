@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
-import { getAvailableInstruments } from '@/services/api/rest/instrument/service';
-import { MarketGroup } from '@/services/api/rest/types';
-import { appConfig } from '@/config/app';
+import { useState, useEffect } from "react"
+import { getAvailableInstruments } from "@/services/api/rest/instrument/service"
+import { MarketGroup } from "@/services/api/rest/types"
+import { appConfig } from "@/config/app"
 
 interface UseInstrumentsResult {
-  marketGroups: MarketGroup[];
-  isLoading: boolean;
-  error: string | null;
+  marketGroups: MarketGroup[]
+  isLoading: boolean
+  error: string | null
 }
 
 export const useInstruments = (): UseInstrumentsResult => {
-  const [marketGroups, setMarketGroups] = useState<MarketGroup[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [marketGroups, setMarketGroups] = useState<MarketGroup[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchInstruments = async () => {
@@ -20,24 +20,26 @@ export const useInstruments = (): UseInstrumentsResult => {
         const response = await getAvailableInstruments({
           context: {
             app_id: appConfig.app_id,
-            account_type: appConfig.account_type
-          }
-        });
-        setMarketGroups(response.result);
-        setError(null);
+            account_type: appConfig.account_type,
+          },
+        })
+        setMarketGroups(response.result)
+        setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch instruments');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch instruments"
+        )
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchInstruments();
-  }, []);
+    fetchInstruments()
+  }, [])
 
   return {
     marketGroups,
     isLoading,
-    error
-  };
-};
+    error,
+  }
+}

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from "react"
+import React, { Suspense, lazy } from "react"
 import { useOrientationStore } from "@/stores/orientationStore"
 import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
@@ -7,9 +7,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { TradeFormController } from "./components/TradeFormController"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { MarketSelector } from "@/components/MarketSelector"
-import { useTradeStore } from "@/stores/tradeStore"
 import { useDeviceDetection } from "@/hooks/useDeviceDetection"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { useMarketStore } from "@/stores/marketStore"
 
 const Chart = lazy(() =>
   import("@/components/Chart").then((module) => ({
@@ -46,7 +46,7 @@ export const TradePage: React.FC = () => {
   const { isLandscape } = useOrientationStore()
   const { setBottomSheet } = useBottomSheetStore()
   const { isMobile } = useDeviceDetection()
-  const selectedInstrument = useTradeStore((state) => state.instrument)
+  const selectedMarket = useMarketStore((state) => state.selectedMarket)
   const { setLeftSidebar } = useLeftSidebarStore()
   
   const handleMarketSelect = React.useCallback(() => {
@@ -56,19 +56,6 @@ export const TradePage: React.FC = () => {
       setLeftSidebar(true, "Select Market")
     }
   }, [isMobile, setBottomSheet, setLeftSidebar])
-
-  // Get display name for the selected instrument
-  const getDisplayName = (symbol: string) => {
-    if (symbol.startsWith("1HZ")) {
-      const number = symbol.replace("1HZ", "").replace("V", "")
-      return `Vol. ${number} (1s) Index`
-    }
-    if (symbol.startsWith("R_")) {
-      const number = symbol.replace("R_", "")
-      return `Vol. ${number} Index`
-    }
-    return symbol
-  }
 
   return (
     <div
@@ -85,7 +72,7 @@ export const TradePage: React.FC = () => {
           <div className="flex items-center w-full gap-2 px-4 py-2 justify-between">
             <div className="flex items-center gap-2">
               <MarketInfo
-                title={getDisplayName(selectedInstrument)}
+                title={selectedMarket?.displayName || "Select Market"}
                 subtitle="Rise/Fall"
                 onClick={handleMarketSelect}
               />
@@ -104,7 +91,7 @@ export const TradePage: React.FC = () => {
           <div className="flex items-center w-full gap-2 p-4 justify-between">
             <div className="flex items-center gap-2">
               <MarketInfo
-                title={getDisplayName(selectedInstrument)}
+                title={selectedMarket?.displayName || "Select Market"}
                 subtitle="Rise/Fall"
                 onClick={handleMarketSelect}
               />

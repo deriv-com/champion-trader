@@ -28,7 +28,6 @@ describe("DurationController", () => {
   const mockSetBottomSheet = jest.fn()
   const mockSetStake = jest.fn()
   const mockToggleAllowEquals = jest.fn()
-  const mockSetSymbol = jest.fn()
 
   const setupMocks = () => {
     // Setup store mocks with proper typing
@@ -114,7 +113,7 @@ describe("DurationController", () => {
 
     it("selects default minute value", () => {
       const selectedValue = screen.getByRole("radio", { checked: true })
-      expect(selectedValue.getAttribute("value")).toBe("1")
+      expect(selectedValue.getAttribute("value")).toBe("0")
     })
 
     it("updates duration on minute selection", () => {

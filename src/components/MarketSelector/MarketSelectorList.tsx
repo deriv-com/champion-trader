@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Search, X, Loader2, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
+import { useMarketStore } from "@/stores/marketStore"
 import { tabs, stubMarketGroups } from "./data"
 import { MarketGroup } from "@/services/api/rest/types"
 import { useInstruments } from "@/hooks/useInstruments"
@@ -53,9 +54,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   }
 
   const setInstrument = useTradeStore((state) => state.setInstrument)
+  const setSelectedMarket = useMarketStore((state) => state.setSelectedMarket)
 
   const handleMarketSelect = (market: ProcessedInstrument) => {
     setInstrument(market.symbol)
+    setSelectedMarket(market)
     setBottomSheet(false)
   }
 
