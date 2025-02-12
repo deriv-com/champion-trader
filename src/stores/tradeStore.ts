@@ -51,6 +51,8 @@ export interface TradeState {
   toggleAllowEquals: () => void
   /** Update all payout values */
   setPayouts: (payouts: Payouts) => void
+  /** Set the current trading instrument */
+  setInstrument: (instrument: string) => void
   /**
    * Set the current trade type
    * This will update the form fields and buttons based on the trade type configuration
@@ -75,7 +77,6 @@ export const useTradeStore = create<TradeState>((set) => ({
   },
   setStake: (stake) => set({ stake }),
   setDuration: (duration) => set({ duration }),
-  setSymbol: (symbol: string) => set({ symbol }),
   toggleAllowEquals: () =>
     set((state) => ({ allowEquals: !state.allowEquals })),
   setPayouts: (payouts) => set({ payouts }),

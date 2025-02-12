@@ -1,25 +1,38 @@
-import React, { Suspense, lazy } from "react";
-import { useOrientationStore } from "@/stores/orientationStore";
-import { BalanceDisplay } from "@/components/BalanceDisplay";
-import { BottomSheet } from "@/components/BottomSheet";
-// import { AddMarketButton } from "@/components/AddMarketButton";
-import { DurationOptions } from "@/components/DurationOptions";
-import { Card, CardContent } from "@/components/ui/card";
-import { TradeFormController } from "./components/TradeFormController";
+import React, { Suspense, lazy, useState } from "react"
+import { useOrientationStore } from "@/stores/orientationStore"
+import { BalanceDisplay } from "@/components/BalanceDisplay"
+import { BottomSheet } from "@/components/BottomSheet"
+import { DurationOptions } from "@/components/DurationOptions"
+import { Card, CardContent } from "@/components/ui/card"
+import { TradeFormController } from "./components/TradeFormController"
+import { useBottomSheetStore } from "@/stores/bottomSheetStore"
+import { MarketSelector } from "@/components/MarketSelector"
+import { useTradeStore } from "@/stores/tradeStore"
+import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 
 const Chart = lazy(() =>
   import("@/components/Chart").then((module) => ({
     default: module.Chart,
   }))
-);
+)
 
 interface MarketInfoProps {
-  title: string;
-  subtitle: string;
+  title: string
+  subtitle: string
+  onClick?: () => void
 }
 
-const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
-  <Card className="flex-1 min-w-[180px]" data-id="market-info">
+const MarketInfo: React.FC<MarketInfoProps> = ({
+  title,
+  subtitle,
+  onClick,
+}) => (
+  <Card
+    className="flex-1 min-w-[180px]"
+    data-id="market-info"
+    onClick={onClick}
+  >
     <CardContent className="flex items-center gap-3 p-3">
       <div className="min-w-0">
         <div className="text-sm font-bold text-gray-700">{title}</div>
@@ -27,10 +40,35 @@ const MarketInfo: React.FC<MarketInfoProps> = ({ title, subtitle }) => (
       </div>
     </CardContent>
   </Card>
-);
+)
 
 export const TradePage: React.FC = () => {
-  const { isLandscape } = useOrientationStore();
+  const { isLandscape } = useOrientationStore()
+  const { setBottomSheet } = useBottomSheetStore()
+  const { isMobile } = useDeviceDetection()
+  const selectedInstrument = useTradeStore((state) => state.instrument)
+  const { setLeftSidebar } = useLeftSidebarStore()
+  
+  const handleMarketSelect = React.useCallback(() => {
+    if (isMobile) {
+      setBottomSheet(true, "market-info", "90%")
+    } else {
+      setLeftSidebar(true, "Select Market")
+    }
+  }, [isMobile, setBottomSheet, setLeftSidebar])
+
+  // Get display name for the selected instrument
+  const getDisplayName = (symbol: string) => {
+    if (symbol.startsWith("1HZ")) {
+      const number = symbol.replace("1HZ", "").replace("V", "")
+      return `Vol. ${number} (1s) Index`
+    }
+    if (symbol.startsWith("R_")) {
+      const number = symbol.replace("R_", "")
+      return `Vol. ${number} Index`
+    }
+    return symbol
+  }
 
   return (
     <div
@@ -46,10 +84,11 @@ export const TradePage: React.FC = () => {
         >
           <div className="flex items-center w-full gap-2 px-4 py-2 justify-between">
             <div className="flex items-center gap-2">
-              {/* <Suspense fallback={<div>Loading...</div>}>
-                <AddMarketButton />
-              </Suspense> */}
-              <MarketInfo title="Vol. 100 (1s) Index" subtitle="Rise/Fall" />
+              <MarketInfo
+                title={getDisplayName(selectedInstrument)}
+                subtitle="Rise/Fall"
+                onClick={handleMarketSelect}
+              />
             </div>
             <BalanceDisplay />
           </div>
@@ -64,10 +103,11 @@ export const TradePage: React.FC = () => {
         {!isLandscape && (
           <div className="flex items-center w-full gap-2 p-4 justify-between">
             <div className="flex items-center gap-2">
-              {/* <Suspense fallback={<div>Loading...</div>}>
-                <AddMarketButton />
-              </Suspense> */}
-              <MarketInfo title="Vol. 100 (1s) Index" subtitle="Rise/Fall" />
+              <MarketInfo
+                title={getDisplayName(selectedInstrument)}
+                subtitle="Rise/Fall"
+                onClick={handleMarketSelect}
+              />
             </div>
           </div>
         )}
@@ -87,7 +127,9 @@ export const TradePage: React.FC = () => {
 
       <TradeFormController isLandscape={isLandscape} />
 
+      {!isMobile && <MarketSelector />}
+
       <BottomSheet />
     </div>
-  );
-};
+  )
+}

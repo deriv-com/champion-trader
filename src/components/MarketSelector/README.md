@@ -1,11 +1,11 @@
 # Market Selector Component
 
-A comprehensive market selection interface that allows users to browse, search, and favorite different trading markets.
+A responsive market selection interface that adapts between desktop and mobile views.
 
 ## Components
 
-### 1. MarketSelector
-The main controller component that manages the bottom sheet display.
+### MarketSelector
+The main controller component that manages the market selection interface.
 
 ```typescript
 import { MarketSelector } from '@/components/MarketSelector';
@@ -16,37 +16,38 @@ import { MarketSelector } from '@/components/MarketSelector';
 />
 ```
 
-Props:
+#### Props
 - `isOpen`: boolean - Controls the visibility of the market selector
 - `onClose`: () => void - Callback function when the selector is closed
 
-### 2. MarketSelectorList
+#### Responsive Behavior
+- **Desktop**: Renders as a LeftSidebar component
+- **Mobile**: Uses BottomSheet component via bottomSheetStore
+
+### MarketSelectorList
 The main content component that displays the list of markets with search and filtering capabilities.
 
-Features:
-- Search functionality
-- Category filtering
-- Favorites management
-- Market grouping
-- Loading states
-- Error handling
-
-### 3. MarketSelectorButton
-A button component that triggers the market selector.
+### MarketIcon
+Custom SVG icons for different market types:
+- Volatility indices with candlestick pattern
+- Boom indices with upward trend
+- Crash indices with downward trend
+- Support for 1s badge on applicable markets
 
 ## Features
 
 ### Market Categories
 - All markets
-- Favorites
+- Favorites (persistent storage)
 - Derived (Synthetic indices)
 - Forex
+- Crash/Boom indices
 - Stocks & indices
 - Commodities
 
 ### Market Display
-- Market symbol
-- Display name
+- Custom icons per market type
+- Market symbol and name
 - Market status (open/closed)
 - Favorite status
 - Market grouping by type
@@ -57,13 +58,7 @@ A button component that triggers the market selector.
 - Show/hide closed markets
 - Favorites filtering
 
-### Favorites Management
-- Add/remove markets from favorites
-- Persistent storage in localStorage
-- Dedicated favorites tab
-
-## Usage
-
+### Responsive Design
 ```typescript
 import { MarketSelector } from '@/components/MarketSelector';
 import { useState } from 'react';
@@ -91,28 +86,19 @@ const TradingPage = () => {
 ```typescript
 interface ProcessedInstrument {
   symbol: string;        // Market symbol (e.g., "R_100", "EURUSD")
-  displayName: string;   // Formatted name (e.g., "Volatility 100 Index", "EUR/USD")
+  displayName: string;   // Formatted name (e.g., "Volatility 100 Index")
   shortName: string;     // Short identifier (e.g., "100", "EUR")
-  market_name: string;   // Market category (e.g., "synthetic_index", "forex")
+  market_name: string;   // Market category
   isOneSecond: boolean;  // Whether it's a 1-second market
   isClosed?: boolean;    // Market availability status
+  type: "volatility" | "boom" | "crash"; // Icon type
 }
 ```
-
-## Styling
-
-The component uses Tailwind CSS for styling with the following features:
-- Responsive design
-- Smooth scrolling
-- Custom scrollbar hiding
-- Hover effects
-- Active state indicators
-- Loading animations
 
 ## State Management
 
 The component integrates with several stores:
-- `bottomSheetStore`: Manages the bottom sheet display
+- `bottomSheetStore`: Manages mobile bottom sheet display
 - `tradeStore`: Handles market selection
 - Local state for:
   - Active tab
@@ -133,15 +119,21 @@ The component integrates with several stores:
    - "No results" feedback
 
 3. **Favorites Management**:
-   - Persistent storage
+   - Persistent storage in localStorage
    - Immediate UI updates
    - Clear favorite/unfavorite feedback
 
 4. **Performance**:
    - Efficient filtering
-   - Smooth scrolling
+   - Smooth transitions
    - Optimized re-renders
    - Lazy loading where applicable
+
+5. **Responsive Behavior**:
+   - Use useDeviceDetection for viewport detection
+   - Smooth transitions between views
+   - Consistent behavior across devices
+   - Proper touch interaction on mobile
 
 ## Error Handling
 
@@ -151,11 +143,21 @@ The component handles various states:
 - Empty search results
 - Network errors
 - Invalid market data
+- Fallback to stub data when API fails
 
 ## Accessibility
 
 - Keyboard navigation support
 - ARIA labels
 - Focus management
-- Clear visual indicators
 - Screen reader friendly structure
+- Touch targets for mobile
+
+## Styling
+
+The component uses Tailwind CSS for styling with:
+- Responsive design
+- Smooth transitions
+- Custom market icons
+- Consistent theming
+- Mobile-first approach

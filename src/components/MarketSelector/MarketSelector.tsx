@@ -1,19 +1,17 @@
-import React from 'react';
-import { useBottomSheetStore } from '@/stores/bottomSheetStore';
+import React from "react"
+import { LeftSidebar } from "@/components/ui/left-sidebar.tsx"
+import { MarketSelectorList } from "./MarketSelectorList"
+import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 
-interface MarketSelectorProps {
-  isOpen: boolean;
-  onClose: () => void;
+export const MarketSelector: React.FC = () => {
+  const { isOpen } = useLeftSidebarStore()
+
+  // Only render when open to save memory
+  if (!isOpen) return null
+
+  return (
+    <LeftSidebar className="border-r border-border">
+      <MarketSelectorList />
+    </LeftSidebar>
+  )
 }
-
-export const MarketSelector: React.FC<MarketSelectorProps> = ({ isOpen, onClose }) => {
-  const { setBottomSheet } = useBottomSheetStore();
-
-  React.useEffect(() => {
-    if (isOpen) {
-      setBottomSheet(true, 'market-info', undefined, onClose);
-    }
-  }, [isOpen, onClose, setBottomSheet]);
-
-  return null;
-};

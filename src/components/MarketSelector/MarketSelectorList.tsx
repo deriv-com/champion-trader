@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react"
 import { Search, X, Loader2, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
-import { tabs } from "./data"
+import { tabs, stubMarketGroups } from "./data"
 import { MarketGroup } from "@/services/api/rest/types"
 import { useInstruments } from "@/hooks/useInstruments"
+import { MarketIcon } from "./MarketIcon"
 
 interface MarketSelectorListProps {
   onDragDown?: () => void
@@ -17,6 +18,7 @@ interface ProcessedInstrument {
   market_name: string
   isOneSecond: boolean
   isClosed?: boolean
+  type: "volatility" | "boom" | "crash"
 }
 
 export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
@@ -50,10 +52,10 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     })
   }
 
-  const setSymbol = useTradeStore((state) => state.setSymbol)
+  const setInstrument = useTradeStore((state) => state.setInstrument)
 
   const handleMarketSelect = (market: ProcessedInstrument) => {
-    setSymbol(market.symbol)
+    setInstrument(market.symbol)
     setBottomSheet(false)
   }
 
@@ -70,8 +72,23 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
       shortName: number,
       market_name: "synthetic_index",
       isOneSecond: symbol.startsWith("1HZ"),
-      // Dummy closed state for demo
+      type: "volatility",
       isClosed: symbol === "USDJPY",
+    }
+  }
+
+  const formatCrashBoomSymbol = (symbol: string): ProcessedInstrument => {
+    const type = symbol.startsWith("BOOM") ? "boom" : "crash"
+    const number = symbol.replace(type.toUpperCase(), "").replace("N", "")
+    
+    return {
+      symbol,
+      displayName: `${type.charAt(0).toUpperCase() + type.slice(1)} ${number} Index`,
+      shortName: number,
+      market_name: "crash_boom",
+      isOneSecond: false,
+      type,
+      isClosed: false,
     }
   }
 
@@ -84,17 +101,22 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
       shortName: base,
       market_name: "forex",
       isOneSecond: false,
-      // Dummy closed state for demo
+      type: "volatility", // Using volatility icon for forex
       isClosed: symbol === "USDJPY",
     }
   }
 
+  // Use stub data if marketGroups is null or empty
+  const effectiveMarketGroups = (!marketGroups || marketGroups.length === 0) ? stubMarketGroups : marketGroups;
+
   // Process instruments from marketGroups to match our display needs
-  const processedInstruments = marketGroups.flatMap((group: MarketGroup) =>
+  const processedInstruments = effectiveMarketGroups.flatMap((group: MarketGroup) =>
     group.instruments
       .map((symbol) => {
         if (group.market_name === "synthetic_index") {
           return formatSyntheticSymbol(symbol)
+        } else if (group.market_name === "crash_boom") {
+          return formatCrashBoomSymbol(symbol)
         } else if (group.market_name === "forex") {
           return formatForexSymbol(symbol)
         }
@@ -111,6 +133,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     const marketTypeMap = {
       derived: "synthetic_index",
       forex: "forex",
+      crash_boom: "crash_boom",
     }
 
     if (activeTab === "all") return matchesSearch
@@ -134,6 +157,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   const marketTitles: Record<string, string> = {
     synthetic_index: "Synthetics",
+    crash_boom: "Crash/Boom",
     forex: "Forex",
   }
 
@@ -229,11 +253,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                           }
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#EAF1FF] rounded flex items-center justify-center">
-                              <span className="text-sm font-medium">
-                                {market.shortName}
-                              </span>
-                            </div>
+                            <MarketIcon
+                              type={market.type}
+                              value={market.shortName}
+                              isOneSecond={market.isOneSecond}
+                            />
                             <div className="flex items-center gap-2">
                               <span className="text-[15px]">
                                 {market.displayName}
