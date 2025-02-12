@@ -3,6 +3,57 @@
 ## Overview
 This directory contains reusable UI components built with React, TypeScript, and TailwindCSS. Each component follows atomic design principles and maintains consistent styling across the application.
 
+### Toast Component
+
+A reusable toast notification component for displaying success and error messages.
+
+#### Features
+- Fixed positioning at the top of the viewport
+- Auto-dismissal with configurable duration
+- Success and error variants with appropriate styling
+- Smooth fade and slide animations
+- High z-index (999) to ensure visibility
+- Icon indicators for success/error states
+
+#### Props
+```typescript
+interface ToastProps {
+  message: string;          // Message to display
+  type: 'success' | 'error'; // Toast variant
+  onClose: () => void;      // Callback when toast closes
+  duration?: number;        // Optional display duration in ms (default: 3000)
+}
+```
+
+#### Usage
+```tsx
+import { Toast } from '@/components/ui/toast';
+
+// Success toast
+<Toast
+  message="Operation successful!"
+  type="success"
+  onClose={() => setShowToast(false)}
+/>
+
+// Error toast with custom duration
+<Toast
+  message="An error occurred"
+  type="error"
+  onClose={() => setShowToast(false)}
+  duration={5000}
+/>
+```
+
+#### Styling
+The component uses TailwindCSS with:
+- Fixed positioning at top center
+- High z-index (999) for overlay visibility
+- Success (emerald) and error (red) color variants
+- Smooth fade and slide animations
+- Rounded corners and shadow for depth
+- Consistent padding and text styling
+
 ## Components
 
 ### Chip Component

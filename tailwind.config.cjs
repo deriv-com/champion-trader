@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -12,13 +12,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        'ibm-plex': ['IBM Plex Sans', 'sans-serif'],
-      },
-      fontSize: {
-        'body': ['14px', {
-          lineHeight: '22px',
-          fontWeight: '400',
-        }],
+        'ibm': ['IBM Plex Sans', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -32,6 +26,22 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+        },
+        color: {
+          solid: {
+            emerald: {
+              700: 'rgba(0, 195, 144, 1)',
+              600: 'rgba(0, 195, 144, 0.8)',
+            },
+            cherry: {
+              700: 'rgba(222, 0, 64, 1)',
+              600: 'rgba(222, 0, 64, 0.8)',
+            },
+            glacier: {
+              700: 'rgba(0, 208, 255, 1)',
+              600: 'rgba(0, 208, 255, 0.8)',
+            }
+          }
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

@@ -4,7 +4,6 @@ import { useOrientationStore } from "@/stores/orientationStore";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { SideNav } from "@/components/SideNav";
-import { useClientStore } from "@/stores/clientStore";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,7 +12,6 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile } = useDeviceDetection();
   const { isLandscape, setIsLandscape } = useOrientationStore();
-  const { isLoggedIn } = useClientStore();
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -41,7 +39,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>
-        {isLoggedIn && !isLandscape && <Footer className="sticky bottom-0 z-50" />}
+        {!isLandscape && <Footer className="sticky bottom-0 z-50" />}
       </div>
     </div>
   );

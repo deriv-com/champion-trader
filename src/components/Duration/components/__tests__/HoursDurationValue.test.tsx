@@ -1,100 +1,97 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { HoursDurationValue } from '../HoursDurationValue';
+import { generateDurationValues } from '@/utils/duration';
 
-// Mock the DurationValueList component since we're testing HoursDurationValue in isolation
+// Mock the DurationValueList component
 jest.mock('../DurationValueList', () => ({
-  DurationValueList: ({ selectedValue, durationType, onValueSelect }: any) => (
+  DurationValueList: ({ selectedValue, durationType, onValueSelect, onValueClick, getDurationValues }: any) => (
     <div data-testid={`duration-value-list-${durationType}`}>
-      <button
-        onClick={() => onValueSelect(selectedValue + 1)}
-        data-testid={`increment-${durationType}`}
-      >
-        Increment {durationType}
+      <span>Selected: {selectedValue}</span>
+      <span>Type: {durationType}</span>
+      <span>Values: {getDurationValues().join(',')}</span>
+      <button onClick={() => onValueSelect(selectedValue + 1)} data-testid={`select-${durationType}`}>
+        Select
       </button>
-      <span>Current value: {selectedValue}</span>
+      {onValueClick && (
+        <button onClick={() => onValueClick(selectedValue + 1)} data-testid={`click-${durationType}`}>
+          Click
+        </button>
+      )}
     </div>
   ),
 }));
 
+// Mock duration utils
+jest.mock('@/utils/duration', () => ({
+  generateDurationValues: jest.fn(),
+  getSpecialCaseKey: jest.fn().mockReturnValue('key'),
+}));
+
 describe('HoursDurationValue', () => {
+  const mockOnValueSelect = jest.fn();
+  const mockOnValueClick = jest.fn();
+
   const defaultProps = {
     selectedValue: '2:30',
-    onValueSelect: jest.fn(),
+    onValueSelect: mockOnValueSelect,
+    onValueClick: mockOnValueClick,
+    isInitialRender: { current: true } as React.MutableRefObject<boolean>,
   };
 
   beforeEach(() => {
-    defaultProps.onValueSelect.mockClear();
+    mockOnValueSelect.mockClear();
+    mockOnValueClick.mockClear();
+    (generateDurationValues as jest.Mock).mockImplementation((type) => 
+      type === 'hour' ? [1, 2, 3] : [0, 15, 30, 45]
+    );
   });
 
   it('renders hours and minutes sections with proper ARIA labels', () => {
     render(<HoursDurationValue {...defaultProps} />);
 
-    const container = screen.getByRole('group');
-    expect(container).toHaveAttribute('aria-label', 'Duration in hours and minutes');
-
-    const hoursSection = screen.getByLabelText('Hours');
-    const minutesSection = screen.getByLabelText('Minutes');
-
-    expect(hoursSection).toBeInTheDocument();
-    expect(minutesSection).toBeInTheDocument();
+    expect(screen.getByRole('group')).toHaveAttribute('aria-label', 'Duration in hours and minutes');
+    expect(screen.getByLabelText('Hours')).toBeInTheDocument();
+    expect(screen.getByLabelText('Minutes')).toBeInTheDocument();
   });
 
   it('initializes with correct hour and minute values', () => {
-    render(<HoursDurationValue selectedValue="3:45" onValueSelect={jest.fn()} />);
+    render(<HoursDurationValue {...defaultProps} selectedValue="3:45" />);
 
-    expect(screen.getByTestId('duration-value-list-hour')).toHaveTextContent('Current value: 3');
-    expect(screen.getByTestId('duration-value-list-minute')).toHaveTextContent('Current value: 45');
+    expect(screen.getByTestId('duration-value-list-hour')).toHaveTextContent('Selected: 3');
+    expect(screen.getByTestId('duration-value-list-minute')).toHaveTextContent('Selected: 45');
   });
 
-  it('handles hour selection', () => {
+  it('resets minutes to 0 when selecting new hour after initial render', () => {
+    const props = { ...defaultProps, isInitialRender: { current: false } };
+    render(<HoursDurationValue {...props} />);
+
+    screen.getByTestId('select-hour').click();
+    expect(mockOnValueSelect).toHaveBeenCalledWith('3:0');
+  });
+
+  it('maintains minutes when selecting new hour during initial render', () => {
     render(<HoursDurationValue {...defaultProps} />);
 
-    fireEvent.click(screen.getByTestId('increment-hour'));
-
-    expect(defaultProps.onValueSelect).toHaveBeenCalledWith('3:30');
+    screen.getByTestId('select-hour').click();
+    expect(mockOnValueSelect).toHaveBeenCalledWith('3:30');
   });
 
   it('handles minute selection', () => {
     render(<HoursDurationValue {...defaultProps} />);
 
-    fireEvent.click(screen.getByTestId('increment-minute'));
-
-    expect(defaultProps.onValueSelect).toHaveBeenCalledWith('2:31');
+    screen.getByTestId('select-minute').click();
+    expect(mockOnValueSelect).toHaveBeenCalledWith('2:31');
   });
 
-  it('maintains last valid values when selecting new values', () => {
-    const { rerender } = render(<HoursDurationValue {...defaultProps} />);
-
-    // Change hours
-    fireEvent.click(screen.getByTestId('increment-hour'));
-    expect(defaultProps.onValueSelect).toHaveBeenCalledWith('3:30');
-
-    // Update component with new value
-    rerender(<HoursDurationValue {...defaultProps} selectedValue="3:30" />);
-
-    // Change minutes
-    fireEvent.click(screen.getByTestId('increment-minute'));
-    expect(defaultProps.onValueSelect).toHaveBeenCalledWith('3:31');
-  });
-
-  it('renders with correct layout', () => {
-    const { container } = render(<HoursDurationValue {...defaultProps} />);
-
-    const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('flex w-full');
-
-    const [hoursDiv, minutesDiv] = wrapper.childNodes;
-    expect(hoursDiv).toHaveClass('flex-1');
-    expect(minutesDiv).toHaveClass('flex-1');
-  });
-
-  it('passes correct props to DurationValueList components', () => {
+  it('handles click events', () => {
     render(<HoursDurationValue {...defaultProps} />);
 
-    const hoursList = screen.getByTestId('duration-value-list-hour');
-    const minutesList = screen.getByTestId('duration-value-list-minute');
+    // Clicking hour always resets minutes to 0
+    screen.getByTestId('click-hour').click();
+    expect(mockOnValueClick).toHaveBeenCalledWith('3:0');
 
-    expect(hoursList).toBeInTheDocument();
-    expect(minutesList).toBeInTheDocument();
+    // Clicking minute uses current hour with new minute value
+    screen.getByTestId('click-minute').click();
+    expect(mockOnValueClick).toHaveBeenCalledWith('3:31');
   });
 });

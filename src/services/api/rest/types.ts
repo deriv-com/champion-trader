@@ -1,9 +1,11 @@
+export interface Context {
+  app_id: string;
+  account_type?: string;
+}
+
 export interface AvailableInstrumentsRequest {
-  context: {
-    app_id: number;
-    account_type: string;
-  };
-  trace?: boolean;
+  instrument: string;
+  context: Context;
 }
 
 export interface MarketGroup {
@@ -17,5 +19,24 @@ export interface AvailableInstrumentsResponse {
 }
 
 export interface ErrorResponse {
-  error: string;
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface BuyRequest {
+  price: number;
+  instrument: string;
+  duration: string;
+  trade_type: string;
+  currency: string;
+  payout: number;
+  strike: string;
+}
+
+export interface BuyResponse {
+  contract_id: string;
+  price: number;
+  trade_type: string;
 }

@@ -3,15 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-
-@layer utilities {
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-}
-
+ 
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -81,18 +73,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-ibm-plex text-body;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-  }
-}
-
-@layer utilities {
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+    @apply bg-background text-foreground;
   }
 }

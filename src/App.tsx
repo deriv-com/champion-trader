@@ -2,9 +2,8 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
-import { ContractSSEHandler } from "@/components/ContractSSEHandler";
 import { BalanceHandler } from "@/components/BalanceHandler";
-import { NotificationProvider } from "@/components/NotificationProvider";
+import { ToastProvider } from "@/stores/toastStore";
 
 const TradePage = lazy(() =>
   import("@/screens/TradePage").then((module) => ({
@@ -20,6 +19,10 @@ const MenuPage = lazy(() =>
   import("@/screens/MenuPage").then((module) => ({ default: module.MenuPage }))
 );
 
+const LoginPage = lazy(() =>
+  import("@/screens/LoginPage").then((module) => ({ default: module.LoginPage }))
+);
+
 const AppContent = () => {
   const { token, isLoggedIn } = useClientStore();
 
@@ -27,7 +30,6 @@ const AppContent = () => {
     <MainLayout>
       {token && (
         <>
-          <ContractSSEHandler token={token} />
           <BalanceHandler token={token} />
         </>
       )}
@@ -41,6 +43,7 @@ const AppContent = () => {
             <Route path="/positions" element={<Navigate to="/menu" />} />
           )}
           <Route path="/menu" element={<MenuPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Suspense>
     </MainLayout>
@@ -79,10 +82,9 @@ export const App = () => {
   }
 
   return (
-    <NotificationProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </NotificationProvider>
+    <BrowserRouter>
+      <ToastProvider />
+      <AppContent />
+    </BrowserRouter>
   );
 };

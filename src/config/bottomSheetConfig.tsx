@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 import { DurationController } from '@/components/Duration';
 import { MarketSelectorList } from '@/components/MarketSelector/MarketSelectorList';
+import { StakeController } from '@/components/Stake';
+import { guideConfig } from './guideConfig';
 
 export interface BottomSheetConfig {
   [key: string]: {
@@ -14,19 +16,12 @@ export const bottomSheetConfig: BottomSheetConfig = {
     body: <MarketSelectorList />,
   },
   'stake': {
-    body: (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center text-center">
-          <h2 className="text-lg font-semibold mx-auto">Stake</h2>
-        </div>
-      </div>
-    )
+    body: <StakeController />
   },
   'duration': {
-    body: (
-      <div className="flex flex-col h-full">
-        <DurationController />
-      </div>
-    )
+    body: <DurationController />
+  },
+  'how-to-trade': {
+    body: guideConfig["rise-fall"].body
   }
 };
