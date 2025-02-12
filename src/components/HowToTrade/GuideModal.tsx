@@ -1,6 +1,7 @@
 import { Modal } from "@/components/ui/modal";
 import { guideConfig } from "@/config/guideConfig";
 import { TabList } from "../ui/tab-list";
+import { PrimaryButton } from "../ui/primary-button";
 
 interface GuideProps {
   isOpen: boolean;
@@ -8,11 +9,13 @@ interface GuideProps {
   type?: string;
 }
 
-const Guides = [
-  { label: "Rise/Fall", value: "rise-fall" },
-];
+const Guides = [{ label: "Rise/Fall", value: "rise-fall" }];
 
-export const GuideModal = ({ isOpen, onClose, type = "rise-fall" }: GuideProps) => {
+export const GuideModal = ({
+  isOpen,
+  onClose,
+  type = "rise-fall",
+}: GuideProps) => {
   const content = guideConfig[type]?.body;
 
   if (!content) {
@@ -28,6 +31,11 @@ export const GuideModal = ({ isOpen, onClose, type = "rise-fall" }: GuideProps) 
         onSelect={(value) => value}
       />
       {content}
+      <div className="w-full py-2 px-4">
+        <PrimaryButton className="rounded-3xl" onClick={onClose}>
+          Got it
+        </PrimaryButton>
+      </div>
     </Modal>
   );
 };
