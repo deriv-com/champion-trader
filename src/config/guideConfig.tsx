@@ -1,5 +1,5 @@
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { ReactNode } from "react";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export interface GuideConfig {
   [key: string]: {

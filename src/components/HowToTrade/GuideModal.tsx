@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal } from "@/components/ui/modal";
 import { guideConfig } from "@/config/guideConfig";
 import { TabList } from "../ui/tab-list";
