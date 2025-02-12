@@ -1,12 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -16,6 +11,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        'ibm': ['IBM Plex Sans', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -25,6 +23,22 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+        },
+        color: {
+          solid: {
+            emerald: {
+              700: 'rgba(0, 195, 144, 1)',
+              600: 'rgba(0, 195, 144, 0.8)',
+            },
+            cherry: {
+              700: 'rgba(222, 0, 64, 1)',
+              600: 'rgba(222, 0, 64, 0.8)',
+            },
+            glacier: {
+              700: 'rgba(0, 208, 255, 1)',
+              600: 'rgba(0, 208, 255, 0.8)',
+            }
+          }
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -73,4 +87,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

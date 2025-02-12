@@ -14,9 +14,8 @@ describe('MenuPage', () => {
   it('renders menu items', () => {
     renderWithRouter();
     
-    expect(screen.getByText('Settings')).toBeInTheDocument();
-    expect(screen.getByText('Help Center')).toBeInTheDocument();
-    expect(screen.getByText('About')).toBeInTheDocument();
+    expect(screen.getByText('Go to Home')).toBeInTheDocument();
+    expect(screen.getByText('Theme')).toBeInTheDocument();
   });
 
   it('renders page title', () => {

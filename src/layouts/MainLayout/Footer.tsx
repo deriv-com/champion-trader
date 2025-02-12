@@ -6,8 +6,9 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
+
   return (
-    <footer className={`border-t landscape:hidden ${className}`}>
+    <footer className={`border-t ${className}`}>
       <BottomNav />
     </footer>
   );

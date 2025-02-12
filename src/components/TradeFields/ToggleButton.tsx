@@ -6,15 +6,22 @@ interface ToggleProps {
   onChange: () => void;
 }
 
-const ToggleButton: React.FC<ToggleProps> = ({ label, value, onChange }) => (
-  <div className="flex items-center justify-between px-4">
-    <span className="text-sm text-gray-700">{label}</span>
-    <Switch
-      checked={value}
-      onCheckedChange={onChange}
-      className="data-[state=checked]:bg-primary"
-    />
-  </div>
-);
+const ToggleButton: React.FC<ToggleProps> = ({ label, value, onChange }) => {
+  const id = `toggle-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  
+  return (
+    <div className="flex items-center justify-between">
+      <span id={id} className="text-sm text-gray-700">
+        {label}
+      </span>
+      <Switch
+        checked={value}
+        onCheckedChange={onChange}
+        className="data-[state=checked]:bg-primary"
+        aria-labelledby={id}
+      />
+    </div>
+  );
+};
 
 export default ToggleButton;

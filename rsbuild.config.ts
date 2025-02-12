@@ -11,6 +11,11 @@ export default defineConfig({
     pluginReact(),
     pluginBasicSsl()
   ],
+  html: {
+    template: './index.html',
+    title: 'Champion Trader',
+    favicon: 'public/favicon.ico'
+  },
   source: {
     define: {
       'process.env.RSBUILD_WS_URL': JSON.stringify(process.env.RSBUILD_WS_URL),

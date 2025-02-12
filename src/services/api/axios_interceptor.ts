@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { apiConfig } from '@/config/api';
+import { useClientStore } from '@/stores/clientStore';
 
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
@@ -12,7 +13,13 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = useClientStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error: AxiosError) => Promise.reject(error)
 );
 
