@@ -10,7 +10,7 @@ import { parseDuration, formatDuration } from "@/utils/duration";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
 import { useClientStore } from "@/stores/clientStore";
 import { WebSocketError } from "@/services/api/websocket/types";
-import HowToTrade from "@/components/HowToTrade";
+import { HowToTrade } from "@/components/HowToTrade";
 
 // Lazy load components
 const DurationField = lazy(() =>
