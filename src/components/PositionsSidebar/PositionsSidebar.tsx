@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface PositionsSidebarProps {
@@ -12,12 +12,41 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
 
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const [selectedTradeType, setSelectedTradeType] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   return (
     <div
       className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[99999]`}
-    >
+    ref={sidebarRef}
+    > 
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-lg font-bold">Positions</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
@@ -38,7 +67,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
           </button>
         </div>
         <div className="mt-4">
-          <div className="relative w-[50%]">
+          <div className="relative w-[50%]" ref={dropdownRef}>
             <button 
               className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
               onClick={() => setDropdownOpen(!dropdownOpen)}
