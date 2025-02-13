@@ -1,7 +1,6 @@
 import { Modal } from "@/components/ui/modal";
 import { guideConfig } from "@/config/guideConfig";
 import { TabList } from "../ui/tab-list";
-import { PrimaryButton } from "../ui/primary-button";
 
 interface GuideProps {
   isOpen: boolean;
@@ -23,19 +22,25 @@ export const GuideModal = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Trade types">
-      <TabList
-        variant={"chip"}
-        tabs={Guides}
-        selectedValue={"rise-fall"}
-        onSelect={(value) => value}
-      />
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      title="Trade types"
+      headerContent={
+        <TabList
+          variant={"chip"}
+          tabs={Guides}
+          selectedValue={"rise-fall"}
+          onSelect={(value) => value}
+        />
+      }
+      actionButton={{
+        show: true,
+        label: "Got it",
+        onClick: onClose
+      }}
+    >
       {content}
-      <div className="w-full py-2 px-4">
-        <PrimaryButton className="rounded-3xl" onClick={onClose}>
-          Got it
-        </PrimaryButton>
-      </div>
     </Modal>
   );
 };

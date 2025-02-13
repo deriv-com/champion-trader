@@ -10,7 +10,7 @@ export interface GuideConfig {
 export const guideConfig: GuideConfig = {
   "rise-fall": {
     body: (
-      <div className="p-4">
+      <div className="p-2">
         <h2 className="text-lg font-bold mb-4">Rise/Fall</h2>
         <div className="space-y-4">
           <div>
@@ -38,7 +38,7 @@ export const guideConfig: GuideConfig = {
               Fall.
             </p>
           </div>
-          <div className="py-4 border-t">
+          <div className="py-4 border-t h-[252px]">
             <iframe
               className="rounded-3xl"
               allowFullScreen={true}
