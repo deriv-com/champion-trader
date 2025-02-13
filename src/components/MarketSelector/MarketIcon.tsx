@@ -4,7 +4,6 @@ import type { IconTypes } from '@deriv/quill-icons'
 
 interface MarketIconProps {
   symbol: string
-  shortName: string
   isOneSecond?: boolean
   size?: "default" | "large" | "xlarge"
   showBadge?: boolean
@@ -12,10 +11,7 @@ interface MarketIconProps {
 
 export const MarketIcon: React.FC<MarketIconProps> = ({ 
   symbol, 
-  shortName, 
-  isOneSecond,
   size = "default",
-  showBadge = true
 }) => {
   const Icon = marketIcons[symbol] as IconTypes
 
@@ -37,11 +33,6 @@ export const MarketIcon: React.FC<MarketIconProps> = ({
           "w-6 h-6"
         } />
       </div>
-      {showBadge && isOneSecond && (
-        <div className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
-          1s
-        </div>
-      )}
     </div>
   )
 }

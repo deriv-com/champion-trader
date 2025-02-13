@@ -72,18 +72,6 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         )}
         {...props}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h2 className="text-xl font-semibold">Markets</h2>
-          <button
-            onClick={() => setLeftSidebar(false)}
-            className="rounded-full p-2 hover:bg-accent hover:text-accent-foreground"
-            aria-label="Close sidebar"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
         {/* Content */}
         <div className="h-[calc(100%-65px)] overflow-y-auto">{children}</div>
       </div>

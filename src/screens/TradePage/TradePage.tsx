@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from "react"
 import { useOrientationStore } from "@/stores/orientationStore"
-import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { DurationOptions } from "@/components/DurationOptions"
 import { TradeFormController } from "./components/TradeFormController"
@@ -39,34 +38,26 @@ export const TradePage: React.FC = () => {
       } flex-1 h-[100dvh]`}
       data-testid="trade-page"
     >
-      {isLandscape && (
-        <div className="absolute top-4 left-4 z-10">
-          <MarketInfo
-            title={selectedMarket?.displayName || "Select Market"}
-            subtitle="Rise/Fall"
-            onClick={handleMarketSelect}
-          />
-        </div>
-      )}
-
-      <div
-        className={`flex flex-col flex-1 ${
-          isLandscape ? "w-[70%] min-w-0" : ""
-        } overflow-hidden`}
-      >
-        {!isLandscape && (
-          <div className="w-full">
+      <div className={`flex flex-col flex-1 ${isLandscape ? "w-[70%] min-w-0" : ""} overflow-hidden`}>
+        <div className="flex flex-col flex-1 min-h-0 relative">
+          {isLandscape && (
+            <div className="absolute top-3 left-4 z-10">
+              <MarketInfo
+                title={selectedMarket?.displayName || "Select Market"}
+                subtitle="Rise/Fall"
+                onClick={handleMarketSelect}
+                isMobile={false}
+              />
+            </div>
+          )}
+          {!isLandscape && (
             <MarketInfo
               title={selectedMarket?.displayName || "Select Market"}
               subtitle="Rise/Fall"
-              price="786.07"
               onClick={handleMarketSelect}
               isMobile={true}
             />
-          </div>
-        )}
-
-        <div className="flex flex-col flex-1 min-h-0">
+          )}
           <div className="flex-1 relative">
             <Suspense fallback={<div>Loading...</div>}>
               <Chart className="flex-1 absolute inset-0" />

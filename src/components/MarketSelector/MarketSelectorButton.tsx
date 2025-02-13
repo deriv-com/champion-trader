@@ -75,7 +75,6 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
     >
       <MarketIcon
         symbol={iconSymbol}
-        shortName={number}
         isOneSecond={isOneSecond}
         size="large"
       />

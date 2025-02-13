@@ -47,6 +47,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   const toggleFavorite = (symbol: string) => (e: React.MouseEvent) => {
     e.stopPropagation()
+    e.preventDefault();
     setFavorites((prev) => {
       const newFavorites = new Set(prev)
       const isAdding = !newFavorites.has(symbol)
@@ -91,12 +92,20 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     }
   }, [])
 
+  const isBottomSheetOpenRef = React.useRef(true)
+
   const handleMarketSelect = (market: ProcessedInstrument) => {
+    isBottomSheetOpenRef.current = false
     setInstrument(market.symbol)
     setSelectedMarket(market)
     setBottomSheet(false)
     setLeftSidebar(false)
   }
+
+  // Reset isBottomSheetOpenRef when component mounts
+  React.useEffect(() => {
+    isBottomSheetOpenRef.current = true
+  }, [])
 
   const formatSyntheticSymbol = (symbol: string): ProcessedInstrument => {
     const number = symbol.startsWith("1HZ")
@@ -158,7 +167,6 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   // Use stub data if marketGroups is null or empty
   const effectiveMarketGroups = (!marketGroups || marketGroups.length === 0) ? stubMarketGroups : marketGroups;
 
-
   // Process instruments from marketGroups to match our display needs
   const processedInstruments = effectiveMarketGroups.flatMap((group: MarketGroup) =>
     group.instruments
@@ -213,21 +221,35 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   return (
     <div className="flex flex-col h-full bg-background">
+      {/* Header with centered title and close button */}
+      <div className="flex items-center justify-between px-6 py-8">
+        <div className="flex-1" />
+        <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">Markets</h1>
+        <div className="flex-1 flex justify-end">
+          <button onClick={() => {
+            setBottomSheet(false);
+            setLeftSidebar(false);
+          }} className="text-text-primary">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
       {/* Search Bar */}
-      <div className="px-6 pt-4 pb-2">
-        <div className="flex items-center gap-3 bg-muted/50 rounded-lg px-4 py-3">
-          <Search className="w-5 h-5 text-muted-foreground" />
+      <div className="px-6 pb-2">
+        <div className="flex items-center h-8 px-2 gap-2 bg-black/[0.04] rounded-lg">
+          <Search className="w-5 h-5 text-black/[0.24]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search markets on Rise/Fall"
-            className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-black/[0.72] placeholder:text-black/[0.24] overflow-hidden text-ellipsis"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-black/[0.72] hover:text-black"
             >
               <X className="w-5 h-5" />
             </button>
@@ -256,65 +278,71 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             {/* Market Groups */}
             <div>
               {Object.entries(groupedInstruments).map(
-                ([marketName, markets], index) => (
+                ([marketName, markets]) => (
                   <div
                     key={marketName}
-                    className={`${
-                      index > 0 ? "border-t border-border pt-8" : ""
-                    } mb-8`}
+                    className="mb-6"
                   >
-                    <h2 className="text-lg font-medium mb-4">
+                    <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
                       {marketTitles[marketName]}
                     </h2>
-                    <div className="space-y-4">
+                    <div>
                       {marketName === "synthetic_index" && (
-                        <h3 className="text-base text-muted-foreground">
+                        <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
                           Continuous Indices
                         </h3>
                       )}
                       {markets.map((market) => (
                         <div
                           key={market.symbol}
-                          className={`flex items-center justify-between py-2 px-2 -mx-2 rounded-lg transition-colors ${
+                          className={`flex items-center justify-between py-2 px-4 -mx-2 rounded-lg transition-all ${
                             market.isClosed
-                              ? "opacity-50 cursor-not-allowed"
+                              ? "cursor-not-allowed"
                               : selectedMarket?.symbol === market.symbol
-                              ? "bg-gray-900 text-white hover:bg-gray-900"
-                              : "hover:bg-gray-900 hover:text-white cursor-pointer"
+                              ? "bg-black text-white"
+                              : "cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
                           }`}
                           onClick={() =>
                             !market.isClosed && handleMarketSelect(market)
                           }
                         >
-                          <div className="flex items-center gap-3">
-                            <MarketIcon
-                              symbol={market.symbol}
-                              shortName={market.shortName}
-                              isOneSecond={market.isOneSecond}
-                            />
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="w-8 h-8 flex items-center justify-center">
+                              <MarketIcon
+                                symbol={market.symbol}
+                              />
+                            </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-lg">
+                              <span className="font-ibm-plex-sans text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
                                 {market.displayName}
                               </span>
                               {market.isClosed && (
-                                <span className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 rounded-full text-rose-500">
-                                  Closed
+                                <span className="flex h-6 min-h-6 max-h-6 px-2 justify-center items-center gap-2 bg-[rgba(230,25,14,0.08)] rounded text-rose-500 text-xs font-normal leading-[18px] uppercase">
+                                  CLOSED
                                 </span>
                               )}
                             </div>
                           </div>
                           <button
-                            onClick={toggleFavorite(market.symbol)}
-                            className={
-                              favorites.has(market.symbol)
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleFavorite(market.symbol)(e);
+                            }}
+                            className={`
+                              ${favorites.has(market.symbol)
                                 ? "text-yellow-400"
-                                : "text-muted-foreground hover:text-yellow-400"
-                            }
+                                : selectedMarket?.symbol === market.symbol
+                                ? "text-white"
+                                : "text-text-tertiary"
+                              }
+                            `}
                           >
                             <Star
                               className={`w-5 h-5 ${
                                 favorites.has(market.symbol)
                                   ? "fill-yellow-400"
+                                  : selectedMarket?.symbol === market.symbol
+                                  ? "stroke-white"
                                   : ""
                               }`}
                             />
@@ -328,7 +356,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             </div>
 
             {searchQuery && filteredInstruments.length === 0 && (
-              <div className="p-4 text-center text-muted-foreground">
+              <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
                 No markets found matching "{searchQuery}"
               </div>
             )}

@@ -253,7 +253,7 @@ describe("MarketSelectorList", () => {
         const market = screen.getByText("EUR/USD").closest("div")
         fireEvent.click(market!)
 
-        expect(mockSetInstrument).toHaveBeenCalledWith("EURUSD")
+        expect(mockSetInstrument).toHaveBeenCalledWith("frxEURUSD")
         expect(mockSetSelectedMarket).toHaveBeenCalled()
         expect(mockSetBottomSheet).toHaveBeenCalledWith(false)
         expect(mockSetLeftSidebar).toHaveBeenCalledWith(false)

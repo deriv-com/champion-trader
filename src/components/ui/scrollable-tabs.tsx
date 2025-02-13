@@ -52,10 +52,10 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showLeftArrow && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-background shadow-md hover:bg-accent"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
           aria-label="Scroll left"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-5 h-5 text-text-primary" />
         </button>
       )}
       
@@ -75,10 +75,10 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "px-4 py-3 text-lg font-medium whitespace-nowrap transition-colors relative",
+                "px-4 py-3 font-ibm text-base font-normal leading-6 whitespace-nowrap transition-colors relative",
                 activeTab === tab.id
-                  ? "text-foreground after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-black after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
+                  : "text-black/72 hover:text-black"
               )}
             >
               {tab.label}
@@ -90,10 +90,10 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showRightArrow && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-background shadow-md hover:bg-accent"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
           aria-label="Scroll right"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5 text-text-primary" />
         </button>
       )}
     </div>
