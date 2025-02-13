@@ -1,114 +1,28 @@
-# SideNav Component
+# Side Navigation and Menu Sidebar
 
 ## Overview
-A responsive navigation sidebar component that appears in landscape mode, providing easy access to main application routes.
+This directory contains components related to the application's side navigation, including:
+- `SideNav.tsx`: The main navigation bar.
+- `MenuSidebar.tsx`: A collapsible sidebar for menu options.
 
-## Features
-- Landscape-mode specific display
-- Active route highlighting
-- Icon and label navigation
-- React Router integration
-- Responsive design with Tailwind CSS
+## Menu Sidebar
+The `MenuSidebar` component provides additional navigation options and settings, including:
+- A **theme toggle** switch.
+- Navigation links for **Home** and **Logout**.
+- Automatic closing when clicking outside.
+
+## Behavior
+- The sidebar is **only visible on desktop**.
+- When opened, it **shrinks the main content area** to prevent overlap.
+- Clicking outside the sidebar **automatically closes it**.
 
 ## Usage
-
-### Basic Usage
+Ensure `MenuSidebar` is included in `MainLayout.tsx` and controlled via `isMenuOpen`:
 ```tsx
-import { SideNav } from "@/components/SideNav";
-
-function MainLayout() {
-  return (
-    <div className="flex">
-      <SideNav />
-      {/* Other content */}
-    </div>
-  );
-}
+<MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
 ```
 
-## Navigation Structure
-
-```typescript
-interface NavigationItem {
-  path: string;        // Route path
-  icon: LucideIcon;    // Lucide icon component
-  label: string;       // Navigation label
-}
-
-// Available routes
-const routes = [
-  { path: '/trade', icon: BarChart2, label: 'Trade' },
-  { path: '/positions', icon: Clock, label: 'Positions' },
-  { path: '/menu', icon: Menu, label: 'Menu' }
-];
-```
-
-## Dependencies
-```typescript
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
-import { useOrientationStore } from "@/stores/orientationStore";
-```
-
-## Responsive Behavior
-Uses hooks for orientation-based display:
-- `useDeviceDetection`: Detects if the device is mobile
-- `useOrientationStore`: Manages orientation state
-- Conditionally rendered based on device type and orientation
-- Fixed width: `w-16`
-- Full height: `h-[100dvh]`
-
-## Styling
-Uses Tailwind CSS with conditional classes:
-```tsx
-// Container
-className={`${isLandscape ? 'flex' : 'hidden'} flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
-
-// Navigation buttons
-className="flex flex-col items-center gap-1"
-
-// Active route highlighting
-className="text-primary"  // Active route
-className="text-gray-500" // Inactive route
-```
-
-## Implementation Details
-
-### Route and State Handling
-```typescript
-const navigate = useNavigate();
-const location = useLocation();
-const { isMobile } = useDeviceDetection();
-const { isLandscape } = useOrientationStore();
-
-// Active route check
-const isActive = location.pathname === '/route';
-```
-
-### Button Structure
-```tsx
-<button 
-  onClick={() => navigate('/route')}
-  className={`flex flex-col items-center gap-1 ${
-    isActive ? 'text-primary' : 'text-gray-500'
-  }`}
->
-  <Icon className="w-5 h-5" />
-  <span className="text-xs">Label</span>
-</button>
-```
-
-## Example
-
-```tsx
-import { SideNav } from "@/components/SideNav";
-
-function App() {
-  return (
-    <div className="flex min-h-screen">
-      <SideNav />
-      <main className="flex-1">
-        {/* Main content */}
-      </main>
-    </div>
-  );
-}
+## Testing
+- Ensure the sidebar **opens and closes correctly**.
+- Verify the **theme toggle switch updates state**.
+- Check that **clicking outside closes the sidebar**.

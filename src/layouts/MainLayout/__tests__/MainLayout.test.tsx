@@ -20,7 +20,10 @@ const renderWithRouter = (ui: React.ReactElement, initialRoute = '/') => {
 describe('MainLayout', () => {
   beforeEach(() => {
     // Reset the logged-in state before each test.
-    useClientStore.setState({ isLoggedIn: false });
+    useClientStore.setState({
+      isLoggedIn: false
+    });
+
   });
 
   it('renders children content', () => {
@@ -50,3 +53,4 @@ describe('MainLayout', () => {
     expect(footer).toBeNull();
   });
 });
+

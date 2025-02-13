@@ -9,6 +9,8 @@ const renderWithRouter = (initialRoute = '/') => {
     <MemoryRouter initialEntries={[initialRoute]}>
       <SideNav 
         setSidebarOpen={jest.fn()} 
+        setMenuOpen={jest.fn()} 
+        isMenuOpen={false} 
       />
       <Routes>
         <Route path="*" element={<div data-testid="location-display">{window.location.pathname}</div>} />

@@ -10,13 +10,6 @@ export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void; setMen
   const { isLoggedIn } = useClientStore();
   const { isLandscape } = useOrientationStore();
 
-  const handleMenuClick = () => {
-    if (window.innerWidth >= 1024) {
-      setSidebarOpen(false);
-    }
-    navigate(location.pathname === "/menu" ? "/trade" : "/menu");
-  };
-
   return (
     <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
