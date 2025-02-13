@@ -32,14 +32,16 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, [isMobile, isLandscape]);
 
   return (
-    <div className="flex min-h-[100dvh] h-[100dvh]">
-      <SideNav />
-      <div className="flex flex-col flex-1 relative overflow-hidden">
-        <Header className="sticky top-0 z-50" />
-        <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-          {children}
-        </main>
-        {!isLandscape && <Footer className="sticky bottom-0 z-50" />}
+    <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
+      <Header className="sticky top-0 z-50 w-full" />
+      <div className="flex flex-1 relative">
+        <SideNav />
+        <div className="flex flex-col flex-1">
+          <main className={`flex-1 ${isLandscape ? 'flex flex-row overflow-y-auto' : 'flex flex-col'}`}>
+            {children}
+          </main>
+          {!isLandscape && <Footer className="sticky bottom-0 z-50" />}
+        </div>
       </div>
     </div>
   );
