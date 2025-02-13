@@ -76,7 +76,7 @@ export const App = () => {
 
     const loadSmartchartsStyles = () => {
       // @ts-expect-error type seems ok
-      import("@deriv/deriv-charts/dist/smartcharts.css");
+      import("@deriv-com/smartcharts-champion/dist/smartcharts.css");
     };
     loadSmartchartsStyles();
     setIsInitialized(true);
