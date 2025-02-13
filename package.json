@@ -14,6 +14,8 @@
   "dependencies": {
     "@deriv/deriv-charts": "^2.8.0",
     "@deriv/quill-icons": "^2.4.3",
+    "@cloudflare/stream-react": "^1.9.2",
+    "@lottiefiles/dotlottie-react": "^0.13.0",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-presence": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.1",
