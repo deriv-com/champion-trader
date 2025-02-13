@@ -30,23 +30,28 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   useDebounce(localStake, setDebouncedStake, 500);
 
   // Parse duration for API call
-  const { value: apiDurationValue, type: apiDurationType } = parseDuration(duration);
+  const { value: apiDurationValue, type: apiDurationType } =
+    parseDuration(duration);
 
   // Use SSE hook for payout info
-  const { loading, loadingStates, payouts: localPayouts } = useStakeSSE({
+  const {
+    loading,
+    loadingStates,
+    payouts: localPayouts,
+  } = useStakeSSE({
     duration: apiDurationValue,
     durationType: apiDurationType,
     trade_type,
     currency,
     stake: debouncedStake,
-    token
+    token,
   });
 
   const validateAndUpdateStake = (value: string) => {
     // Always validate empty field as error
     if (!value) {
       setError(true);
-      setErrorMessage('Please enter an amount');
+      setErrorMessage("Please enter an amount");
       return { error: true };
     }
 
@@ -55,12 +60,12 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
       amount,
       minStake: STAKE_CONFIG.min,
       maxPayout: localPayouts.max,
-      currency
+      currency,
     });
 
     setError(validation.error);
     setErrorMessage(validation.message);
-    
+
     return validation;
   };
 
@@ -68,7 +73,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   const validateStakeOnly = (value: string) => {
     if (!value) {
       setError(true);
-      setErrorMessage('Please enter an amount');
+      setErrorMessage("Please enter an amount");
       return { error: true };
     }
 
@@ -77,7 +82,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
       amount,
       minStake: STAKE_CONFIG.min,
       maxPayout: localPayouts.max,
-      currency
+      currency,
     });
 
     setError(validation.error);
@@ -86,7 +91,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   };
 
   const preventExceedingMax = (value: string) => {
-    if (error && errorMessage?.includes('maximum')) {
+    if (error && errorMessage?.includes("maximum")) {
       const newAmount = value ? parseStakeAmount(value) : 0;
       const maxAmount = parseStakeAmount(localPayouts.max.toString());
       return newAmount > maxAmount;
@@ -113,7 +118,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   // Watch for conditions and update store in desktop mode
   useEffect(() => {
     if (!isDesktop) return;
-    
+
     if (debouncedStake !== stake) {
       const validation = validateStakeOnly(debouncedStake);
       if (!validation.error && !loading) {
@@ -136,28 +141,29 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     <>
       {!isDesktop && <BottomSheetHeader title="Stake" />}
       <div className="flex flex-col justify-between flex-grow px-6">
-      <StakeInputLayout
-        value={localStake}
-        onChange={handleStakeChange}
-        error={error}
-        errorMessage={errorMessage}
-        maxPayout={localPayouts.max}
-        payoutValues={localPayouts.values}
-        isDesktop={isDesktop}
-        loading={loading}
-        loadingStates={loadingStates}
-      />
-        {!isDesktop && (
-          <div className="w-full p-6">
-            <PrimaryButton 
-              onClick={handleSave}
-              disabled={loading || error || debouncedStake === stake}
-            >
-              Save
-            </PrimaryButton>
-          </div>
-        )}
+        <StakeInputLayout
+          value={localStake}
+          onChange={handleStakeChange}
+          error={error}
+          errorMessage={errorMessage}
+          maxPayout={localPayouts.max}
+          payoutValues={localPayouts.values}
+          isDesktop={isDesktop}
+          loading={loading}
+          loadingStates={loadingStates}
+        />
       </div>
+      {!isDesktop && (
+        <div className="w-full py-6 px-3">
+          <PrimaryButton
+            className="rounded-3xl"
+            onClick={handleSave}
+            disabled={loading || error || debouncedStake === stake}
+          >
+            Save
+          </PrimaryButton>
+        </div>
+      )}
     </>
   );
 

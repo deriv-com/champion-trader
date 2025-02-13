@@ -10,7 +10,7 @@ export const DesktopTradeFieldCard = ({ children, className }: DesktopTradeField
   return (
     <div 
       className={cn(
-        "bg-[rgba(246,247,248,1)] rounded-lg p-2",
+        "bg-[rgba(246,247,248,1)] rounded-lg p-2 px-4",
         className
       )}
     >
