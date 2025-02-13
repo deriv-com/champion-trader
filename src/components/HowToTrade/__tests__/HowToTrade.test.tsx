@@ -23,6 +23,17 @@ describe('HowToTrade', () => {
   it('opens bottom sheet when clicked', () => {
     render(<HowToTrade />);
     fireEvent.click(screen.getByText('How to trade Rise/Fall?'));
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'how-to-trade', '90%');
+    
+    const call = mockSetBottomSheet.mock.calls[0];
+    expect(call[0]).toBe(true);
+    expect(call[1]).toBe('how-to-trade');
+    expect(call[2]).toBe('90%');
+    expect(call[3]).toEqual(expect.objectContaining({
+      show: true,
+      label: "Got it",
+      onClick: expect.any(Function)
+    }));
+    call[3].onClick();
+    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
   });
 });
