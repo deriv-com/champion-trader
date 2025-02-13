@@ -40,7 +40,7 @@ export default defineConfig({
       {
         from: path.resolve(
           __dirname,
-          "@deriv-com/smartcharts-champion/dist/fuck you"
+          "@deriv-com/smartcharts-champion/dist/"
         ),
         to: "js/smartcharts/",
       },
