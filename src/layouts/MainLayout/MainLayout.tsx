@@ -4,6 +4,7 @@ import { useOrientationStore } from "@/stores/orientationStore";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { SideNav } from "@/components/SideNav";
+import PositionsSidebar from "@/components/PositionsSidebar/PositionsSidebar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,12 +13,13 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile } = useDeviceDetection();
   const { isLandscape, setIsLandscape } = useOrientationStore();
+  const [isSidebarOpen, setSidebarOpen] = React.useState(false);
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      const isLandscapeMode = window.matchMedia 
-      ? window.matchMedia("(orientation: landscape)").matches 
-      : window.innerWidth > window.innerHeight;
+      const isLandscapeMode = window.matchMedia
+        ? window.matchMedia("(orientation: landscape)").matches
+        : window.innerWidth > window.innerHeight;
       setIsLandscape(isLandscapeMode);
     };
 
@@ -32,10 +34,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, [isMobile, isLandscape]);
 
   return (
-    <div className="flex min-h-[100dvh] h-[100dvh]">
-      <SideNav />
-      <div className="flex flex-col flex-1 relative overflow-hidden">
+    <div className="flex min-h-[100dvh] h-[100dvh] relative">
+      <SideNav setSidebarOpen={setSidebarOpen} />
+      <div className={`flex flex-col ${isSidebarOpen ? "w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
         <Header className="sticky top-0 z-50" />
+        <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : "hidden"} transition-all duration-300`}>
+          <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+        </div>
         <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>

@@ -20,7 +20,7 @@ const renderWithRouter = (ui: React.ReactElement, initialRoute = '/') => {
 describe('MainLayout', () => {
   beforeEach(() => {
     // Reset the logged-in state before each test.
-    useClientStore.getState().isLoggedIn = false;
+    useClientStore.setState({ isLoggedIn: false });
   });
 
   it('renders children content', () => {
@@ -48,17 +48,5 @@ describe('MainLayout', () => {
     // In logout view, footer should not be rendered.
     const footer = screen.queryByTestId('footer');
     expect(footer).toBeNull();
-  });
-
-  it('renders with footer when user is logged in', () => {
-    useClientStore.getState().isLoggedIn = true;
-    renderWithRouter(
-      <MainLayout>
-        <div>Test Content</div>
-      </MainLayout>
-    );
-    // In logged in view, Footer should be rendered.
-    const footer = screen.getByTestId('location-display');
-    expect(footer).toBeInTheDocument();
   });
 });

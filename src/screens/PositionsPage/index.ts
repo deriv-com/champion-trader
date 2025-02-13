@@ -1,1 +1,1 @@
-export * from './PositionsPage';
+export { default as PositionsPage } from "./PositionsPage";
