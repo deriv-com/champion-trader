@@ -21,7 +21,7 @@ describe('MobileTradeFieldCard', () => {
 
     const card = container.firstChild as HTMLElement;
     expect(card).toHaveClass('custom-class');
-    expect(card).toHaveClass('bg-black/[0.04]', 'rounded-lg', 'py-4', 'px-4', 'cursor-pointer');
+    expect(card).toHaveClass('bg-black/[0.04]', 'rounded-lg', 'py-2', 'px-4', 'cursor-pointer');
   });
 
   it('handles click events', () => {
