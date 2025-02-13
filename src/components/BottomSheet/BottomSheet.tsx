@@ -2,9 +2,10 @@ import { useRef, useCallback, useEffect } from "react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { PrimaryButton } from "../ui/primary-button";
 
 export const BottomSheet = () => {
-  const { showBottomSheet, key, height, onDragDown, setBottomSheet } =
+  const { showBottomSheet, key, height, onDragDown, actionButton, setBottomSheet } =
     useBottomSheetStore();
   const { isDesktop } = useDeviceDetection();
 
@@ -22,7 +23,7 @@ export const BottomSheet = () => {
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault(); // Prevent default selection
-    document.body.style.userSelect = 'none'; // Disable text selection
+    document.body.style.userSelect = "none"; // Disable text selection
     dragStartY.current = e.clientY;
     currentY.current = 0;
     isDragging.current = true;
@@ -68,7 +69,7 @@ export const BottomSheet = () => {
 
     if (isDragging.current) {
       isDragging.current = false;
-      document.body.style.userSelect = ''; // Re-enable text selection
+      document.body.style.userSelect = ""; // Re-enable text selection
       sheetRef.current.style.transform = "";
 
       if (currentY.current > 100) {
@@ -86,7 +87,9 @@ export const BottomSheet = () => {
       };
 
       // Touch events
-      document.addEventListener("touchmove", handleTouchMove, { passive: false });
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
       document.addEventListener("touchend", handleDragEnd);
       // Mouse events
       document.addEventListener("mousemove", handleMouseMove);
@@ -102,7 +105,7 @@ export const BottomSheet = () => {
         document.removeEventListener("mouseup", handleDragEnd);
         window.removeEventListener("mouseleave", handleMouseLeave);
         // Clean up styles when sheet is closed
-        document.body.style.userSelect = '';
+        document.body.style.userSelect = "";
       };
     }
   }, [showBottomSheet, handleTouchMove, handleMouseMove, handleDragEnd]);
@@ -163,7 +166,19 @@ export const BottomSheet = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">{body}</div>
+        <div className="flex-1 overflow-y-auto">
+          {body}
+          {actionButton?.show && (
+            <div className="sticky bottom-0 w-full p-4 bg-white">
+              <PrimaryButton
+                className="w-full rounded-3xl"
+                onClick={actionButton.onClick}
+              >
+                {actionButton.label}
+              </PrimaryButton>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

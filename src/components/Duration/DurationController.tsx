@@ -123,7 +123,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
       </div>
       {!isDesktop && (
         <div className="w-full p-3">
-          <PrimaryButton onClick={handleSave}>Save</PrimaryButton>
+          <PrimaryButton className="rounded-3xl" onClick={handleSave}>Save</PrimaryButton>
         </div>
       )}
     </>

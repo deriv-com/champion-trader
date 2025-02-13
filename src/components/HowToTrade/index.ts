@@ -1,1 +1,2 @@
-export { default } from './HowToTrade';
+export * from './HowToTrade';
+export * from './GuideModal';
