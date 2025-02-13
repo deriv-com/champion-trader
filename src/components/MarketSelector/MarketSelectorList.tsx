@@ -1,13 +1,12 @@
 import React, { useState } from "react"
-import { Search, X, Loader2, Star } from "lucide-react"
+import { Search, X, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useMarketStore } from "@/stores/marketStore"
 import { useToastStore } from "@/stores/toastStore"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
-import { tabs, stubMarketGroups } from "./data"
-import { MarketGroup } from "@/services/api/rest/types"
-import { useInstruments } from "@/hooks/useInstruments"
+import { tabs } from "./data"
+import { marketData, MarketInfo, marketTitles, marketTypeMap } from "./marketSelectorStub"
 import { MarketIcon } from "./MarketIcon"
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs"
 
@@ -15,19 +14,8 @@ interface MarketSelectorListProps {
   onDragDown?: () => void
 }
 
-interface ProcessedInstrument {
-  symbol: string
-  displayName: string
-  shortName: string
-  market_name: string
-  isOneSecond: boolean
-  isClosed?: boolean
-  type: "volatility" | "boom" | "crash"
-}
-
 export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   const { setBottomSheet } = useBottomSheetStore()
-  const { marketGroups, isLoading, error } = useInstruments()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Set<string>>(() => {
@@ -47,11 +35,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   const toggleFavorite = (symbol: string) => (e: React.MouseEvent) => {
     e.stopPropagation()
-    e.preventDefault();
+    e.preventDefault()
     setFavorites((prev) => {
       const newFavorites = new Set(prev)
       const isAdding = !newFavorites.has(symbol)
-      
+
       if (isAdding) {
         newFavorites.add(symbol)
         toast({
@@ -62,7 +50,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             </div>
           ),
           variant: "black",
-          duration: 2000
+          duration: 2000,
         })
       } else {
         newFavorites.delete(symbol)
@@ -74,7 +62,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             </div>
           ),
           variant: "black",
-          duration: 2000
+          duration: 2000,
         })
       }
       return newFavorites
@@ -94,7 +82,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   const isBottomSheetOpenRef = React.useRef(true)
 
-  const handleMarketSelect = (market: ProcessedInstrument) => {
+  const handleMarketSelect = (market: MarketInfo) => {
     isBottomSheetOpenRef.current = false
     setInstrument(market.symbol)
     setSelectedMarket(market)
@@ -107,92 +95,10 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     isBottomSheetOpenRef.current = true
   }, [])
 
-  const formatSyntheticSymbol = (symbol: string): ProcessedInstrument => {
-    const number = symbol.startsWith("1HZ")
-      ? symbol.replace("1HZ", "").replace("V", "")
-      : symbol.replace("R_", "")
-
-    // Convert to format used in marketIcons
-    const iconSymbol = symbol.startsWith("1HZ") ? symbol : `R_${number}`
-
-    return {
-      symbol: iconSymbol,
-      displayName: `Volatility ${number}${
-        symbol.startsWith("1HZ") ? " (1s)" : ""
-      } Index`,
-      shortName: number,
-      market_name: "synthetic_index",
-      isOneSecond: symbol.startsWith("1HZ"),
-      type: "volatility",
-      isClosed: symbol === "USDJPY",
-    }
-  }
-
-  const formatCrashBoomSymbol = (symbol: string): ProcessedInstrument => {
-    const type = symbol.startsWith("BOOM") ? "boom" : "crash"
-    const number = symbol.replace(type.toUpperCase(), "").replace("N", "")
-    
-    // Convert to format used in marketIcons
-    const iconSymbol = `${type.toUpperCase()}${number}${symbol.includes("N") ? "N" : ""}`
-
-    return {
-      symbol: iconSymbol,
-      displayName: `${type.charAt(0).toUpperCase() + type.slice(1)} ${number} Index`,
-      shortName: number,
-      market_name: "crash_boom",
-      isOneSecond: false,
-      type,
-      isClosed: false,
-    }
-  }
-
-  const formatForexSymbol = (symbol: string): ProcessedInstrument => {
-    const base = symbol.slice(0, 3)
-    const quote = symbol.slice(3)
-
-    // Convert to format used in marketIcons
-    const iconSymbol = `frx${base}${quote}`
-
-    return {
-      symbol: iconSymbol,
-      displayName: `${base}/${quote}`,
-      shortName: base,
-      market_name: "forex",
-      isOneSecond: false,
-      type: "volatility", // Using volatility icon for forex
-      isClosed: symbol === "USDJPY",
-    }
-  }
-
-  // Use stub data if marketGroups is null or empty
-  const effectiveMarketGroups = (!marketGroups || marketGroups.length === 0) ? stubMarketGroups : marketGroups;
-
-  // Process instruments from marketGroups to match our display needs
-  const processedInstruments = effectiveMarketGroups.flatMap((group: MarketGroup) =>
-    group.instruments
-      .map((symbol) => {
-        if (group.market_name === "synthetic_index") {
-          return formatSyntheticSymbol(symbol)
-        } else if (group.market_name === "crash_boom") {
-          return formatCrashBoomSymbol(symbol)
-        } else if (group.market_name === "forex") {
-          return formatForexSymbol(symbol)
-        }
-        return null
-      })
-      .filter((item): item is ProcessedInstrument => item !== null)
-  )
-
-  const filteredInstruments = processedInstruments.filter((instrument) => {
+  const filteredInstruments = marketData.filter((instrument) => {
     const matchesSearch = instrument.displayName
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
-
-    const marketTypeMap = {
-      derived: "synthetic_index",
-      forex: "forex",
-      crash_boom: "crash_boom",
-    }
 
     if (activeTab === "all") return matchesSearch
     if (activeTab === "favourites")
@@ -204,32 +110,31 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     )
   })
 
-  // Group instruments by market_name
+  // Group markets by market_name
   const groupedInstruments = filteredInstruments.reduce((acc, instrument) => {
     if (!acc[instrument.market_name]) {
       acc[instrument.market_name] = []
     }
     acc[instrument.market_name].push(instrument)
     return acc
-  }, {} as Record<string, ProcessedInstrument[]>)
-
-  const marketTitles: Record<string, string> = {
-    synthetic_index: "Synthetics",
-    crash_boom: "Crash/Boom",
-    forex: "Forex",
-  }
+  }, {} as Record<string, MarketInfo[]>)
 
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header with centered title and close button */}
       <div className="flex items-center justify-between px-6 py-8">
         <div className="flex-1" />
-        <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">Markets</h1>
+        <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">
+          Markets
+        </h1>
         <div className="flex-1 flex justify-end">
-          <button onClick={() => {
-            setBottomSheet(false);
-            setLeftSidebar(false);
-          }} className="text-text-primary">
+          <button
+            onClick={() => {
+              setBottomSheet(false)
+              setLeftSidebar(false)
+            }}
+            className="text-text-primary"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -267,100 +172,84 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
       {/* Market List */}
       <div className="flex-1 overflow-y-auto px-6">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
-        ) : error ? (
-          <div className="p-4 text-center text-rose-500">{error}</div>
-        ) : (
-          <>
-            {/* Market Groups */}
-            <div>
-              {Object.entries(groupedInstruments).map(
-                ([marketName, markets]) => (
+        {/* Market Groups */}
+        <div>
+          {Object.entries(groupedInstruments).map(([marketName, markets]) => (
+            <div key={marketName} className="mb-6">
+              <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
+                {marketTitles[marketName]}
+              </h2>
+              <div>
+                {marketName === "synthetic_index" && (
+                  <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
+                    Continuous Indices
+                  </h3>
+                )}
+                {markets.map((market) => (
                   <div
-                    key={marketName}
-                    className="mb-6"
+                    key={market.symbol}
+                    className={`flex items-center justify-between py-2 px-4 -mx-2 rounded-lg transition-all ${
+                      market.isClosed
+                        ? "cursor-not-allowed"
+                        : selectedMarket?.symbol === market.symbol
+                        ? "bg-black text-white"
+                        : "cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
+                    }`}
+                    onClick={() =>
+                      !market.isClosed && handleMarketSelect(market)
+                    }
                   >
-                    <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
-                      {marketTitles[marketName]}
-                    </h2>
-                    <div>
-                      {marketName === "synthetic_index" && (
-                        <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
-                          Continuous Indices
-                        </h3>
-                      )}
-                      {markets.map((market) => (
-                        <div
-                          key={market.symbol}
-                          className={`flex items-center justify-between py-2 px-4 -mx-2 rounded-lg transition-all ${
-                            market.isClosed
-                              ? "cursor-not-allowed"
-                              : selectedMarket?.symbol === market.symbol
-                              ? "bg-black text-white"
-                              : "cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
-                          }`}
-                          onClick={() =>
-                            !market.isClosed && handleMarketSelect(market)
-                          }
-                        >
-                          <div className="flex items-center gap-3 flex-1">
-                            <div className="w-8 h-8 flex items-center justify-center">
-                              <MarketIcon
-                                symbol={market.symbol}
-                              />
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-ibm-plex-sans text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
-                                {market.displayName}
-                              </span>
-                              {market.isClosed && (
-                                <span className="flex h-6 min-h-6 max-h-6 px-2 justify-center items-center gap-2 bg-[rgba(230,25,14,0.08)] rounded text-rose-500 text-xs font-normal leading-[18px] uppercase">
-                                  CLOSED
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleFavorite(market.symbol)(e);
-                            }}
-                            className={`
-                              ${favorites.has(market.symbol)
-                                ? "text-yellow-400"
-                                : selectedMarket?.symbol === market.symbol
-                                ? "text-white"
-                                : "text-text-tertiary"
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        <MarketIcon symbol={market.symbol} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-ibm-plex-sans text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
+                          {market.displayName}
+                        </span>
+                        {market.isClosed && (
+                          <span className="flex h-6 min-h-6 max-h-6 px-2 justify-center items-center gap-2 bg-[rgba(230,25,14,0.08)] rounded text-rose-500 text-xs font-normal leading-[18px] uppercase">
+                            CLOSED
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(market.symbol)(e)
+                      }}
+                      className={`
+                              ${
+                                favorites.has(market.symbol)
+                                  ? "text-yellow-400"
+                                  : selectedMarket?.symbol === market.symbol
+                                  ? "text-white"
+                                  : "text-text-tertiary"
                               }
                             `}
-                          >
-                            <Star
-                              className={`w-5 h-5 ${
-                                favorites.has(market.symbol)
-                                  ? "fill-yellow-400"
-                                  : selectedMarket?.symbol === market.symbol
-                                  ? "stroke-white"
-                                  : ""
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    >
+                      <Star
+                        className={`w-5 h-5 ${
+                          favorites.has(market.symbol)
+                            ? "fill-yellow-400"
+                            : selectedMarket?.symbol === market.symbol
+                            ? "stroke-white"
+                            : ""
+                        }`}
+                      />
+                    </button>
                   </div>
-                )
-              )}
-            </div>
-
-            {searchQuery && filteredInstruments.length === 0 && (
-              <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
-                No markets found matching "{searchQuery}"
+                ))}
               </div>
-            )}
-          </>
+            </div>
+          ))}
+        </div>
+
+        {searchQuery && filteredInstruments.length === 0 && (
+          <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
+            No markets found matching "{searchQuery}"
+          </div>
         )}
       </div>
     </div>

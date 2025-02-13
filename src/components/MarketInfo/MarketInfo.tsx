@@ -1,5 +1,4 @@
 import React from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { MarketIcon } from "@/components/MarketSelector/MarketIcon"
 import { useMarketStore } from "@/stores/marketStore"
 import { ChevronDown } from "lucide-react"
@@ -31,7 +30,6 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
             <div className="w-8 h-8 flex items-center justify-center">
               <MarketIcon
                 symbol={selectedMarket.symbol}
-                isOneSecond={selectedMarket.isOneSecond}
                 size="xlarge"
                 showBadge={false}
               />
@@ -60,7 +58,6 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
           <div className="w-8 h-8 flex items-center justify-center">
             <MarketIcon
               symbol={selectedMarket.symbol}
-              isOneSecond={selectedMarket.isOneSecond}
               size="xlarge"
               showBadge={false}
             />

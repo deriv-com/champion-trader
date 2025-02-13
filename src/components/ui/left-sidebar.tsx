@@ -1,7 +1,6 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
-import { X } from "lucide-react"
 
 interface LeftSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode

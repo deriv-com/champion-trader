@@ -21,7 +21,6 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
   symbol,
   price,
 }) => {
-  console.log('dsasd')
   const formatSymbol = (symbol: string): FormattedSymbol => {
     const isOneSecond = symbol.startsWith("1HZ")
     const isForex = !symbol.includes("HZ") && !symbol.includes("R_")
@@ -59,7 +58,7 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
       isClosed: symbol === "USDJPY",
     }
   }
-  const { number, isOneSecond, displayName, isClosed, iconSymbol } =
+  const {  displayName, isClosed, iconSymbol } =
     formatSymbol(symbol)
 
   const { setBottomSheet } = useBottomSheetStore()
@@ -75,7 +74,6 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
     >
       <MarketIcon
         symbol={iconSymbol}
-        isOneSecond={isOneSecond}
         size="large"
       />
       <div className="flex flex-col items-start">

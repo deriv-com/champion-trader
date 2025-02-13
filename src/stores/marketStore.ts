@@ -5,7 +5,6 @@ interface ProcessedInstrument {
   displayName: string
   shortName: string
   market_name: string
-  isOneSecond: boolean
   isClosed?: boolean
   type: "volatility" | "boom" | "crash"
 }
@@ -21,7 +20,6 @@ const defaultMarket: ProcessedInstrument = {
   displayName: "Volatility 100 Index",
   shortName: "100",
   market_name: "synthetic_index",
-  isOneSecond: false,
   type: "volatility"
 }
 

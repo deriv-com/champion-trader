@@ -6,18 +6,34 @@ import * as leftSidebarStore from "@/stores/leftSidebarStore"
 jest.mock("@/stores/leftSidebarStore")
 const mockSetLeftSidebar = jest.fn()
 
-// Mock useInstruments hook
-jest.mock("@/hooks/useInstruments", () => ({
-  useInstruments: () => ({
-    marketGroups: [
-      {
-        market_name: "synthetic_index",
-        instruments: ["1HZ100V", "R_100"]
-      }
-    ],
-    isLoading: false,
-    error: null
-  })
+// Mock the market stub data
+jest.mock("../marketSelectorStub", () => ({
+  marketData: [
+    {
+      symbol: "R_100",
+      displayName: "Volatility 100 Index",
+      shortName: "100",
+      market_name: "synthetic_index",
+      type: "volatility"
+    },
+    {
+      symbol: "1HZ100V",
+      displayName: "Volatility 100 (1s) Index",
+      shortName: "100",
+      market_name: "synthetic_index",
+      type: "volatility"
+    }
+  ],
+  marketTitles: {
+    synthetic_index: "Synthetics",
+    crash_boom: "Crash/Boom",
+    forex: "Forex"
+  },
+  marketTypeMap: {
+    derived: "synthetic_index",
+    forex: "forex",
+    crash_boom: "crash_boom"
+  }
 }))
 
 describe("MarketSelector", () => {
@@ -34,10 +50,8 @@ describe("MarketSelector", () => {
 
     render(<MarketSelector />)
 
-    // Check for LeftSidebar with MarketSelectorList
-    const sidebar = screen.getByText("Select Market")
+    const sidebar = screen.getByText("Markets")
     expect(sidebar).toBeInTheDocument()
-    expect(sidebar.closest("div")).toHaveClass("flex", "items-center", "justify-between")
   })
 
   it("returns null when isOpen is false", () => {

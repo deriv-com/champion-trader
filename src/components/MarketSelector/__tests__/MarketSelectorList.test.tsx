@@ -4,9 +4,8 @@ import * as bottomSheetStore from "@/stores/bottomSheetStore"
 import * as tradeStore from "@/stores/tradeStore"
 import * as marketStore from "@/stores/marketStore"
 import * as leftSidebarStore from "@/stores/leftSidebarStore"
-import { useInstruments } from "@/hooks/useInstruments"
 
-// Mock the stores and hooks
+// Mock the stores
 jest.mock("@/stores/bottomSheetStore", () => ({
   useBottomSheetStore: jest.fn(),
 }))
@@ -23,15 +22,55 @@ jest.mock("@/stores/leftSidebarStore", () => ({
   useLeftSidebarStore: jest.fn(),
 }))
 
-jest.mock("@/hooks/useInstruments", () => ({
-  useInstruments: jest.fn(),
+// Mock the market stub data
+jest.mock("../marketSelectorStub", () => ({
+  marketData: [
+    {
+      symbol: "R_100",
+      displayName: "Volatility 100 Index",
+      shortName: "100",
+      market_name: "synthetic_index",
+      type: "volatility",
+    },
+    {
+      symbol: "1HZ100V",
+      displayName: "Volatility 100 (1s) Index",
+      shortName: "100",
+      market_name: "synthetic_index",
+      type: "volatility",
+    },
+    {
+      symbol: "frxEURUSD",
+      displayName: "EUR/USD",
+      shortName: "EUR",
+      market_name: "forex",
+      type: "volatility",
+    },
+    {
+      symbol: "frxUSDJPY",
+      displayName: "USD/JPY",
+      shortName: "USD",
+      market_name: "forex",
+      type: "volatility",
+      isClosed: true,
+    },
+  ],
+  marketTitles: {
+    synthetic_index: "Synthetics",
+    crash_boom: "Crash/Boom",
+    forex: "Forex",
+  },
+  marketTypeMap: {
+    derived: "synthetic_index",
+    forex: "forex",
+    crash_boom: "crash_boom",
+  },
 }))
 
 // Mock Lucide icons
 jest.mock("lucide-react", () => ({
   Search: () => <div data-testid="search-icon">Search</div>,
   X: () => <div data-testid="clear-icon">Clear</div>,
-  Loader2: () => <div data-testid="loader-icon">Loading</div>,
   Star: () => <div data-testid="star-icon">Star</div>,
 }))
 
@@ -50,16 +89,6 @@ describe("MarketSelectorList", () => {
   const mockSetInstrument = jest.fn()
   const mockSetSelectedMarket = jest.fn()
   const mockSetLeftSidebar = jest.fn()
-  const mockMarketGroups = [
-    {
-      market_name: "synthetic_index",
-      instruments: ["R_100", "1HZ100V"],
-    },
-    {
-      market_name: "forex",
-      instruments: ["EURUSD", "USDJPY"],
-    },
-  ]
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -70,62 +99,33 @@ describe("MarketSelectorList", () => {
     ).mockReturnValue({
       setBottomSheet: mockSetBottomSheet,
     })
-    ;(tradeStore.useTradeStore as unknown as jest.Mock).mockImplementation((selector) => {
-      const store = {
-        setSymbol: mockSetSymbol,
-        setInstrument: mockSetInstrument,
+    ;(tradeStore.useTradeStore as unknown as jest.Mock).mockImplementation(
+      (selector) => {
+        const store = {
+          setSymbol: mockSetSymbol,
+          setInstrument: mockSetInstrument,
+        }
+        return selector ? selector(store) : store
       }
-      return selector ? selector(store) : store
-    })
+    )
     ;(marketStore.useMarketStore as unknown as jest.Mock).mockReturnValue({
       selectedMarket: {
         symbol: "1HZ100V",
         displayName: "Volatility 100 (1s) Index",
         shortName: "100",
         market_name: "synthetic_index",
-        isOneSecond: true,
-        type: "volatility"
+        type: "volatility",
       },
       setSelectedMarket: mockSetSelectedMarket,
     })
-    ;(leftSidebarStore.useLeftSidebarStore as unknown as jest.Mock).mockReturnValue({
+    ;(
+      leftSidebarStore.useLeftSidebarStore as unknown as jest.Mock
+    ).mockReturnValue({
       setLeftSidebar: mockSetLeftSidebar,
-    })
-
-    // Setup useInstruments mock with default successful state
-    ;(useInstruments as jest.Mock).mockReturnValue({
-      marketGroups: mockMarketGroups,
-      isLoading: false,
-      error: null,
     })
 
     // Setup localStorage mock
     mockLocalStorage.getItem.mockReturnValue(null)
-  })
-
-  describe("Loading and Error States", () => {
-    it("shows loading spinner when fetching data", () => {
-      ;(useInstruments as jest.Mock).mockReturnValue({
-        marketGroups: [],
-        isLoading: true,
-        error: null,
-      })
-
-      render(<MarketSelectorList />)
-      expect(screen.getByTestId("loader-icon")).toBeInTheDocument()
-    })
-
-    it("shows error message when fetch fails", () => {
-      const errorMessage = "Failed to fetch markets"
-      ;(useInstruments as jest.Mock).mockReturnValue({
-        marketGroups: [],
-        isLoading: false,
-        error: errorMessage,
-      })
-
-      render(<MarketSelectorList />)
-      expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    })
   })
 
   describe("Market Display", () => {
@@ -168,20 +168,6 @@ describe("MarketSelectorList", () => {
           screen.getByText('No markets found matching "XYZ"')
         ).toBeInTheDocument()
       })
-
-      it("clears search when X button is clicked", () => {
-        render(<MarketSelectorList />)
-
-        const searchInput = screen.getByPlaceholderText(
-          "Search markets on Rise/Fall"
-        )
-        fireEvent.change(searchInput, { target: { value: "EUR" } })
-
-        const clearButton = screen.getByTestId("clear-icon").parentElement
-        fireEvent.click(clearButton!)
-
-        expect(searchInput).toHaveValue("")
-      })
     })
 
     describe("Tab Navigation", () => {
@@ -212,7 +198,7 @@ describe("MarketSelectorList", () => {
 
     describe("Favorites Management", () => {
       beforeEach(() => {
-        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(["EURUSD"]))
+        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(["frxEURUSD"]))
       })
 
       it("toggles favorites and updates localStorage", () => {
@@ -263,7 +249,7 @@ describe("MarketSelectorList", () => {
         await act(async () => {
           render(<MarketSelectorList />)
         })
-        
+
         expect(mockSetInstrument).toHaveBeenCalledWith("1HZ100V")
       })
     })

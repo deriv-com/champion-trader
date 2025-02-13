@@ -7,8 +7,14 @@ jest.mock('@/stores/bottomSheetStore');
 
 // Mock Lucide icons
 jest.mock('lucide-react', () => ({
-  ChevronDown: () => <div data-testid="chevron-down">ChevronDown</div>,
-  CandlestickChart: () => <div data-testid="candlestick-chart">CandlestickChart</div>
+  ChevronDown: () => <div data-testid="chevron-down">ChevronDown</div>
+}));
+
+// Mock MarketIcon component
+jest.mock('../MarketIcon', () => ({
+  MarketIcon: ({ symbol }: { symbol: string }) => (
+    <div data-testid="market-icon">{symbol}</div>
+  ),
 }));
 
 describe('MarketSelectorButton', () => {
@@ -32,16 +38,14 @@ describe('MarketSelectorButton', () => {
     render(<MarketSelectorButton symbol="R_100" price="968.16" />);
     
     // Check main content
-    expect(screen.getByText('100')).toBeInTheDocument();
     expect(screen.getByText('Volatility 100 Index')).toBeInTheDocument();
     expect(screen.getByText('968.16')).toBeInTheDocument();
     
-    // Check icons
-    expect(screen.getByTestId('candlestick-chart')).toBeInTheDocument();
+    // Check icon
+    expect(screen.getByTestId('market-icon')).toBeInTheDocument();
     expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
     
     // Check what should not be present
-    expect(screen.queryByText('1s')).not.toBeInTheDocument();
     expect(screen.queryByText('Closed')).not.toBeInTheDocument();
     
     // Check styling
@@ -53,37 +57,31 @@ describe('MarketSelectorButton', () => {
     render(<MarketSelectorButton symbol="1HZ100V" price="968.16" />);
     
     // Check main content
-    expect(screen.getByText('100')).toBeInTheDocument();
     expect(screen.getByText('Volatility 100 (1s) Index')).toBeInTheDocument();
     expect(screen.getByText('968.16')).toBeInTheDocument();
     
-    // Check 1s badge
-    const badge = screen.getByText('1s');
-    expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('bg-rose-500', 'text-white');
+    // Check market icon
+    expect(screen.getByTestId('market-icon')).toHaveTextContent('1HZ100V');
   });
 
   it('renders forex pair correctly', () => {
     render(<MarketSelectorButton symbol="EURUSD" price="1.0923" />);
     
     // Check main content
-    expect(screen.getByText('EUR')).toBeInTheDocument();
     expect(screen.getByText('EUR/USD')).toBeInTheDocument();
     expect(screen.getByText('1.0923')).toBeInTheDocument();
     
     // Check what should not be present
     expect(screen.queryByText('Closed')).not.toBeInTheDocument();
     
-    // Check forex-specific styling
-    const number = screen.getByText('EUR');
-    expect(number).toHaveClass('text-sm');
+    // Check market icon
+    expect(screen.getByTestId('market-icon')).toHaveTextContent('frxEURUSD');
   });
 
   it('renders closed market indicator for USDJPY', () => {
     render(<MarketSelectorButton symbol="USDJPY" price="145.23" />);
     
     // Check main content
-    expect(screen.getByText('USD')).toBeInTheDocument();
     expect(screen.getByText('USD/JPY')).toBeInTheDocument();
     
     // Check closed indicator
@@ -96,7 +94,7 @@ describe('MarketSelectorButton', () => {
     render(<MarketSelectorButton symbol="R_100" price="968.16" />);
     
     fireEvent.click(screen.getByRole('button'));
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'market-info', '87%');
+    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'market-info', '90%');
   });
 
   it('applies hover styles to button', () => {
