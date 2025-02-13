@@ -40,14 +40,14 @@ export default defineConfig({
       {
         from: path.resolve(
           __dirname,
-          "./node_modules/@deriv-com/smartcharts-champion/dist"
+          "@deriv-com/smartcharts-champion/dist"
         ),
         to: "js/smartcharts/",
       },
       {
         from: path.resolve(
           __dirname,
-          "./node_modules/@deriv-com/smartcharts-champion/dist/chart/assets"
+          "@deriv-com/smartcharts-champion/dist/chart/assets"
         ),
         to: "assets",
       },
