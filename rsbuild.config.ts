@@ -39,15 +39,15 @@ export default defineConfig({
     copy: [
       {
         from: path.resolve(
-          __dirname,
-          "@deriv-com/smartcharts-champion/dist/"
+          // __dirname,
+          "./node_modules/@deriv-com/smartcharts-champion/dist"
         ),
         to: "js/smartcharts/",
       },
       {
         from: path.resolve(
-          __dirname,
-          "@deriv-com/smartcharts-champion/dist/chart/assets"
+          // __dirname,
+          "./node_modules/@deriv-com/smartcharts-champion/dist/chart/assets"
         ),
         to: "assets",
       },
