@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 
-export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void }> = ({ setSidebarOpen }) => {
+export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void; setMenuOpen: (open: boolean) => void; isMenuOpen: boolean }> = ({ setSidebarOpen, setMenuOpen, isMenuOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
@@ -18,7 +18,7 @@ export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void }> = ({
   };
 
   return (
-    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-index-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         <a href="/" className="pb-4">
           <img
@@ -61,9 +61,14 @@ export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void }> = ({
           </>
         )}
         <button
-          onClick={handleMenuClick}
-          className={`flex flex-col items-center gap-1 ${location.pathname === "/menu" ? "text-primary" : "text-gray-500"
-            }`}
+          onClick={() => {
+            if (window.innerWidth >= 1024) {
+              setMenuOpen(!isMenuOpen);
+            } else {
+              navigate("/menu");
+            }
+          }}
+          className="flex flex-col items-center gap-1 text-gray-500"
         >
           <Menu className="w-5 h-5" />
           <span className="text-xs">Menu</span>
