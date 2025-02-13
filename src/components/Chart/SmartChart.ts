@@ -2,14 +2,14 @@
 import React from 'react';
 import { getUrlBase, moduleLoader } from '@/lib/chart-utils';
 
-let whatever;
+let smartchartsModule;
 
 const init = () => {
-    whatever = moduleLoader(() => {
+    smartchartsModule = moduleLoader(() => {
         return import(/* webpackChunkName: "smart_chart" */ '@deriv-com/smartcharts-champion');
     });
 
-    whatever.then(({ setSmartChartsPublicPath }) => {
+    smartchartsModule.then(({ setSmartChartsPublicPath }) => {
         setSmartChartsPublicPath(getUrlBase('/js/smartcharts/'));
     });
 };
@@ -17,10 +17,10 @@ const init = () => {
 // React.Lazy expects a default export for the component
 // SmartChart library exports many components
 const load = component_name => () => {
-    if (!whatever) {
+    if (!smartchartsModule) {
         init();
     }
-    return whatever.then(module => {
+    return smartchartsModule.then(module => {
         return { default: module[component_name] };
     });
 };
