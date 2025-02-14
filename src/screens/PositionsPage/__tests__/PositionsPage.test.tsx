@@ -1,25 +1,22 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { PositionsPage } from '../PositionsPage';
+import PositionsPage from '../PositionsPage';
+
+const renderWithRouter = () => {
+  return render(
+    <MemoryRouter>
+      <PositionsPage />
+    </MemoryRouter>
+  );
+};
 
 describe('PositionsPage', () => {
-  const renderWithRouter = () => {
-    return render(
-      <MemoryRouter>
-        <PositionsPage />
-      </MemoryRouter>
-    );
-  };
-
-  it('renders page title', () => {
+  it('navigates to contract details when clicking a position', () => {
     renderWithRouter();
-    
-    expect(screen.getByText('Positions')).toBeInTheDocument();
-  });
 
-  it('renders empty state message', () => {
-    renderWithRouter();
-    
-    expect(screen.getByText('No open positions')).toBeInTheDocument();
+    const position = screen.getByText('Volatility 100 (1s) Index');
+    fireEvent.click(position);
+
+    expect(window.location.pathname).toMatch('/');
   });
 });

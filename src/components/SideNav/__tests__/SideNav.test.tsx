@@ -7,7 +7,12 @@ const renderWithRouter = (initialRoute = '/') => {
   window.history.pushState({}, 'Test page', initialRoute);
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
-      <SideNav />
+      <SideNav 
+        setSidebarOpen={jest.fn()} 
+        setMenuOpen={jest.fn()} 
+        isMenuOpen={false} 
+        isSidebarOpen={false}
+      />
       <Routes>
         <Route path="*" element={<div data-testid="location-display">{window.location.pathname}</div>} />
       </Routes>
@@ -16,16 +21,19 @@ const renderWithRouter = (initialRoute = '/') => {
 };
 
 describe('SideNav', () => {
-  it('renders navigation button', () => {
+  it('renders all navigation items', () => {
     renderWithRouter();
-    // In the current design, only the "Menu" navigation item is expected.
     expect(screen.getByText('Menu')).toBeInTheDocument();
+    expect(screen.getByText('Trade')).toBeInTheDocument();
   });
 
-  it('navigates correctly when "Menu" is clicked', () => {
+  it('navigates correctly when clicking navigation items', () => {
     renderWithRouter();
+
     fireEvent.click(screen.getByText('Menu'));
-    // Verify that the route has changed to "/" by checking the location display.
+    expect(screen.getByTestId('location-display')).toHaveTextContent('/');
+
+    fireEvent.click(screen.getByText('Trade'));
     expect(screen.getByTestId('location-display')).toHaveTextContent('/');
   });
 });
