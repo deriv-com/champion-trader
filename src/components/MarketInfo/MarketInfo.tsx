@@ -21,7 +21,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
   if (isMobile) {
     return (
       <div
-        className="w-full bg-black/[0.04] cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
+        className="w-full cursor-pointer"
         data-id="market-info"
         onClick={onClick}
       >

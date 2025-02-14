@@ -1,13 +1,13 @@
-import { create } from "zustand"
+import { create } from 'zustand';
 
 interface LeftSidebarStore {
-  isOpen: boolean
-  title: string | undefined
-  setLeftSidebar: (isOpen: boolean, title?: string) => void
+  isOpen: boolean;
+  key: string | null;
+  setLeftSidebar: (isOpen: boolean, key?: string | null) => void;
 }
 
 export const useLeftSidebarStore = create<LeftSidebarStore>((set) => ({
   isOpen: false,
-  title: undefined,
-  setLeftSidebar: (isOpen, title) => set({ isOpen, title }),
-}))
+  key: null,
+  setLeftSidebar: (isOpen, key = null) => set({ isOpen, key }),
+}));

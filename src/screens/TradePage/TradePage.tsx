@@ -28,7 +28,7 @@ export const TradePage: React.FC = () => {
     if (isMobile) {
       setBottomSheet(true, "market-info", "90%")
     } else {
-      setLeftSidebar(true, "Select Market")
+      setLeftSidebar(true, "market-list")
     }
   }, [isMobile, setBottomSheet, setLeftSidebar])
 

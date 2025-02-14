@@ -1,17 +1,11 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { leftSidebarConfig } from "@/config/leftSidebarConfig"
+import { X } from "lucide-react"
 
-interface LeftSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
-}
-
-export const LeftSidebar: React.FC<LeftSidebarProps> = ({
-  children,
-  className,
-  ...props
-}) => {
-  const { isOpen, setLeftSidebar } = useLeftSidebarStore()
+export const LeftSidebar: React.FC = () => {
+  const { isOpen, key, setLeftSidebar } = useLeftSidebarStore()
   const sidebarRef = React.useRef<HTMLDivElement>(null)
 
   // Handle escape key press
@@ -46,7 +40,9 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || !key || !leftSidebarConfig[key]) return null
+
+  const { body } = leftSidebarConfig[key]
 
   return (
     <>
@@ -66,13 +62,11 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
           "fixed left-0 top-0 z-50 h-full w-96 transform bg-background shadow-lg",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "animate-in slide-in-from-left-1/2",
-          className
+          "animate-in slide-in-from-left-1/2"
         )}
-        {...props}
       >
         {/* Content */}
-        <div className="h-[calc(100%-65px)] overflow-y-auto">{children}</div>
+        <div className="h-[calc(100%-65px)] overflow-y-auto">{body}</div>
       </div>
     </>
   )

@@ -1,6 +1,6 @@
 import React from "react"
 import { ChevronDown } from "lucide-react"
-import { useBottomSheetStore } from "@/stores/bottomSheetStore"
+import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { MarketIcon } from "./MarketIcon"
 
 interface MarketSelectorButtonProps {
@@ -58,13 +58,12 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
       isClosed: symbol === "USDJPY",
     }
   }
-  const {  displayName, isClosed, iconSymbol } =
-    formatSymbol(symbol)
+  const { displayName, isClosed, iconSymbol } = formatSymbol(symbol)
 
-  const { setBottomSheet } = useBottomSheetStore()
+  const { setLeftSidebar } = useLeftSidebarStore()
 
   const handleClick = () => {
-    setBottomSheet(true, "market-info", "90%")
+    setLeftSidebar(true, "market-list")
   }
 
   return (

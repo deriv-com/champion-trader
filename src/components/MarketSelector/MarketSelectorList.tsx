@@ -6,9 +6,15 @@ import { useMarketStore } from "@/stores/marketStore"
 import { useToastStore } from "@/stores/toastStore"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { tabs } from "./data"
-import { marketData, MarketInfo, marketTitles, marketTypeMap } from "./marketSelectorStub"
+import {
+  marketData,
+  MarketInfo,
+  marketTitles,
+  marketTypeMap,
+} from "./marketSelectorStub"
 import { MarketIcon } from "./MarketIcon"
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs"
+import { useDeviceDetection } from "@/hooks/useDeviceDetection"
 
 interface MarketSelectorListProps {
   onDragDown?: () => void
@@ -18,6 +24,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   const { setBottomSheet } = useBottomSheetStore()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const { isMobile } = useDeviceDetection()
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const savedFavorites = localStorage.getItem("market-favorites")
     return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set()
@@ -122,23 +129,25 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header with centered title and close button */}
-      <div className="flex items-center justify-between px-6 py-8">
-        <div className="flex-1" />
-        <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">
-          Markets
-        </h1>
-        <div className="flex-1 flex justify-end">
-          <button
-            onClick={() => {
-              setBottomSheet(false)
-              setLeftSidebar(false)
-            }}
-            className="text-text-primary"
-          >
-            <X className="w-5 h-5" />
-          </button>
+      {!isMobile && (
+        <div className="flex items-center justify-between px-6 py-8">
+          <div className="flex-1" />
+          <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">
+            Markets
+          </h1>
+          <div className="flex-1 flex justify-end">
+            <button
+              onClick={() => {
+                setBottomSheet(false)
+                setLeftSidebar(false)
+              }}
+              className="text-text-primary"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Search Bar */}
       <div className="px-6 pb-2">
