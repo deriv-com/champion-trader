@@ -50,6 +50,9 @@ export default defineConfig({
           "node_modules/@deriv-com/smartcharts-champion/dist"
         ),
         to: "js/smartcharts/",
+        globOptions: {
+          ignore: ["**/*.LICENSE.txt"]
+        }
       },
       {
         from: path.resolve(
@@ -59,5 +62,16 @@ export default defineConfig({
         to: "assets",
       },
     ],
+    filename: {
+      js: "[name].[hash:8].js",
+      css: "[name].[hash:8].css",
+      assets: "assets/[name].[hash:8][ext]"
+    },
+    distPath: {
+      js: "js",
+      css: "css",
+      html: ""
+    },
+    cleanDistPath: true
   },
 });
