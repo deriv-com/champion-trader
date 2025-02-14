@@ -2,7 +2,6 @@ import React from "react"
 import { cn } from "@/lib/utils"
 import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
 import { leftSidebarConfig } from "@/config/leftSidebarConfig"
-import { X } from "lucide-react"
 
 export const LeftSidebar: React.FC = () => {
   const { isOpen, key, setLeftSidebar } = useLeftSidebarStore()

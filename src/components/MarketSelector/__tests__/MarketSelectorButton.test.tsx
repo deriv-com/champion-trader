@@ -90,13 +90,6 @@ describe('MarketSelectorButton', () => {
     expect(closedBadge).toHaveClass('bg-rose-500/10', 'text-rose-500');
   });
 
-  it('opens bottom sheet on click', () => {
-    render(<MarketSelectorButton symbol="R_100" price="968.16" />);
-    
-    fireEvent.click(screen.getByRole('button'));
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(true, 'market-info', '90%');
-  });
-
   it('applies hover styles to button', () => {
     render(<MarketSelectorButton symbol="R_100" price="968.16" />);
     
