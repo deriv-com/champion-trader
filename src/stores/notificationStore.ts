@@ -1,12 +1,11 @@
 import { create } from 'zustand';
-import { toast } from 'sonner';
+import toast, { ToastPosition } from 'react-hot-toast';
 
-export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+export type { ToastPosition };
 
 export interface NotificationConfig {
   position?: ToastPosition;
   duration?: number;
-  closeButton?: boolean;
   className?: string;
 }
 
@@ -30,42 +29,47 @@ export interface NotificationStore {
 const defaultConfig: NotificationConfig = {
   position: 'top-right',
   duration: 4000,
-  closeButton: true,
   className: 'rounded-lg',
 };
 
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   config: defaultConfig,
-  setConfig: (newConfig) =>
-    set((state) => ({ config: { ...state.config, ...newConfig } })),
+  setConfig: (newConfig) => {
+    const currentConfig = get().config;
+    set({ config: { ...currentConfig, ...newConfig } });
+  },
 
-  success: (message, description) => {
+  success: (message: string, description?: string) => {
     const { config } = get();
     toast.success(description ? `${message}\n${description}` : message, {
-      ...config
+      ...config,
+      className: `${config.className} bg-green-50`,
     });
   },
 
-  error: (message, description) => {
+  error: (message: string, description?: string) => {
     const { config } = get();
     toast.error(description ? `${message}\n${description}` : message, {
-      ...config
+      ...config,
+      className: `${config.className} bg-red-50`,
     });
   },
 
-  info: (message, description) => {
+  info: (message: string, description?: string) => {
     const { config } = get();
     toast(description ? `${message}\n${description}` : message, {
       ...config,
       className: `${config.className} bg-blue-50`,
+      icon: '🔵',
     });
   },
 
-  warning: (message, description) => {
+  warning: (message: string, description?: string) => {
     const { config } = get();
     toast(description ? `${message}\n${description}` : message, {
       ...config,
       className: `${config.className} bg-yellow-50`,
+      icon: '⚠️',
     });
   },
 
@@ -74,12 +78,11 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     messages: { loading: string; success: string; error: string }
   ): Promise<T> => {
     const { config } = get();
-    toast.promise(promise, {
-      loading: messages.loading,
-      success: messages.success,
-      error: messages.error,
-      ...config
-    });
+    toast.promise(
+      promise,
+      messages,
+      config
+    );
     return promise;
   },
 }));

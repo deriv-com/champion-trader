@@ -1,21 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { useMarketWebSocket } from "@/hooks/websocket";
-import {
-  createChart,
-  IChartApi,
-  UTCTimestamp,
-  SingleValueData,
-  BaselineSeries,
-} from "lightweight-charts";
-
-interface ChartProps {
-  className?: string;
-}
+import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { useMarketWebSocket } from '@/hooks/websocket';
+import { IChartApi, UTCTimestamp, createChart, BaselineSeries, SingleValueData } from 'lightweight-charts';
 
 interface ChartData {
   time: UTCTimestamp;
   value: number;
+}
+
+interface ChartProps {
+  className?: string;
 }
 
 export const Chart: React.FC<ChartProps> = ({ className }) => {

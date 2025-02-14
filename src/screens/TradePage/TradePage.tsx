@@ -69,7 +69,8 @@ export const TradePage: React.FC = () => {
             )}
             <div className="flex-1 relative">
               <Suspense fallback={<div>Loading...</div>}>
-                <Chart className="flex-1 absolute inset-0" />
+                {/* <Chart className="flex-1 absolute inset-0" /> */}
+                <Chart />
               </Suspense>
             </div>
 

@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react-hooks";
 import { useMarketWebSocket } from "../useMarketWebSocket";
 import { useWebSocketStore } from "@/stores/websocketStore";
 import { InstrumentPriceResponse, WebSocketError } from "@/services/api/websocket/types";

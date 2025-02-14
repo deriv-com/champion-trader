@@ -84,6 +84,11 @@ export const App = () => {
       setToken(tokenFromStorage)
     }
 
+    const loadSmartchartsStyles = () => {
+      // @ts-expect-error type seems ok
+      import("@deriv-com/smartcharts-champion/dist/smartcharts.css");
+    };
+    loadSmartchartsStyles();
     setIsInitialized(true);
   }, [setToken]);
 
