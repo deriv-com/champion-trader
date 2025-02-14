@@ -17,6 +17,20 @@ const renderWithRouter = (ui: React.ReactElement, initialRoute = '/') => {
   );
 };
 
+beforeAll(() => {
+  global.fetch = jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve([]),
+    } as Response)
+  );
+});
+
+afterAll(() => {
+  jest.restoreAllMocks();
+});
+
 describe('MainLayout', () => {
   beforeEach(() => {
     // Reset the logged-in state before each test.
@@ -53,4 +67,3 @@ describe('MainLayout', () => {
     expect(footer).toBeNull();
   });
 });
-

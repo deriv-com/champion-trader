@@ -21,7 +21,7 @@ afterAll(() => {
 
 describe("PositionsSidebar", () => {
   test("opens and selects an option from the custom dropdown", () => {
-    const { getByText, queryByText } = render(
+    const { getByText } = render(
       <MemoryRouter>
         <PositionsSidebar isOpen={true} onClose={() => {}} />
       </MemoryRouter>
