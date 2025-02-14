@@ -1,5 +1,5 @@
 import { useNotificationStore } from '../notificationStore';
-import toast, { Toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 // Create interface for mocked toast functions
 interface MockToast extends jest.Mock {
