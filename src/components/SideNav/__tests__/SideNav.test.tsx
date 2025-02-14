@@ -11,6 +11,7 @@ const renderWithRouter = (initialRoute = '/') => {
         setSidebarOpen={jest.fn()} 
         setMenuOpen={jest.fn()} 
         isMenuOpen={false} 
+        isSidebarOpen={false}
       />
       <Routes>
         <Route path="*" element={<div data-testid="location-display">{window.location.pathname}</div>} />
