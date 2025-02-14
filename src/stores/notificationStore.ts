@@ -34,14 +34,15 @@ const defaultConfig: NotificationConfig = {
 
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   config: defaultConfig,
-  setConfig: (newConfig) =>
-    set((state) => ({ config: { ...state.config, ...newConfig } })),
+  setConfig: (newConfig) => {
+    const currentConfig = get().config;
+    set({ config: { ...currentConfig, ...newConfig } });
+  },
 
   success: (message: string, description?: string) => {
     const { config } = get();
     toast.success(description ? `${message}\n${description}` : message, {
-      position: config.position,
-      duration: config.duration,
+      ...config,
       className: `${config.className} bg-green-50`,
     });
   },
@@ -49,8 +50,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   error: (message: string, description?: string) => {
     const { config } = get();
     toast.error(description ? `${message}\n${description}` : message, {
-      position: config.position,
-      duration: config.duration,
+      ...config,
       className: `${config.className} bg-red-50`,
     });
   },
@@ -58,8 +58,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   info: (message: string, description?: string) => {
     const { config } = get();
     toast(description ? `${message}\n${description}` : message, {
-      position: config.position,
-      duration: config.duration,
+      ...config,
       className: `${config.className} bg-blue-50`,
       icon: '🔵',
     });
@@ -68,8 +67,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   warning: (message: string, description?: string) => {
     const { config } = get();
     toast(description ? `${message}\n${description}` : message, {
-      position: config.position,
-      duration: config.duration,
+      ...config,
       className: `${config.className} bg-yellow-50`,
       icon: '⚠️',
     });
@@ -82,16 +80,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     const { config } = get();
     toast.promise(
       promise,
-      {
-        loading: messages.loading,
-        success: messages.success,
-        error: messages.error,
-      },
-      {
-        position: config.position,
-        duration: config.duration,
-        className: config.className,
-      }
+      messages,
+      config
     );
     return promise;
   },
