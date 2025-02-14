@@ -4,12 +4,18 @@ import * as tradeStore from '@/stores/tradeStore';
 import * as bottomSheetStore from '@/stores/bottomSheetStore';
 import * as orientationStore from '@/stores/orientationStore';
 import * as clientStore from '@/stores/clientStore';
+import * as deviceDetection from '@/hooks/useDeviceDetection';
+import * as leftSidebarStore from '@/stores/leftSidebarStore';
+import * as marketStore from '@/stores/marketStore';
 
 // Mock all required stores
 jest.mock('@/stores/tradeStore');
 jest.mock('@/stores/bottomSheetStore');
 jest.mock('@/stores/orientationStore');
 jest.mock('@/stores/clientStore');
+jest.mock('@/stores/leftSidebarStore');
+jest.mock('@/stores/marketStore');
+jest.mock('@/hooks/useDeviceDetection');
 
 // Mock trade type config
 jest.mock('@/config/tradeTypes', () => ({
@@ -37,10 +43,6 @@ jest.mock('@/services/api/sse/createSSEConnection', () => ({
 }));
 
 // Mock the components that are loaded with Suspense
-jest.mock('@/components/AddMarketButton', () => ({
-  AddMarketButton: () => <div data-testid="add-market-button">Add Market Button</div>
-}));
-
 jest.mock('@/components/Chart', () => ({
   Chart: () => <div data-testid="chart">Chart</div>
 }));
@@ -53,47 +55,26 @@ jest.mock('@/components/DurationOptions', () => ({
   DurationOptions: () => <div data-testid="duration-options">Duration Options</div>
 }));
 
+jest.mock('@/components/MarketSelector', () => ({
+  MarketSelector: () => <div data-testid="market-selector">Market Selector</div>
+}));
+
 jest.mock('@/components/TradeButton', () => ({
-  TradeButton: () => <div data-testid="trade-button">Trade Button</div>
+  TradeButton: ({ className, title }: { className: string; title: string }) => (
+    <button className={className}>
+      {title}
+    </button>
+  )
 }));
 
 jest.mock('@/components/BottomSheet', () => ({
   BottomSheet: () => <div data-testid="bottom-sheet">Bottom Sheet</div>
 }));
 
-// Mock lazy loaded components
-jest.mock('@/components/Duration', () => ({
-  DurationField: () => (
-    <div className="h-auto bg-black/[0.04] rounded-lg py-4 px-4 cursor-pointer" onClick={() => {
-      const event = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-      });
-      document.dispatchEvent(event);
-    }}>
-      <button data-testid="duration-field" aria-label="Duration">Duration Field</button>
-    </div>
-  )
-}));
-
-jest.mock('@/components/Stake', () => ({
-  StakeField: () => (
-    <div className="h-auto bg-black/[0.04] rounded-lg py-4 px-4 cursor-pointer" onClick={() => {
-      const event = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-      });
-      document.dispatchEvent(event);
-    }}>
-      <button data-testid="stake-field" aria-label="Stake">Stake Field</button>
-    </div>
-  )
-}));
-
-jest.mock('@/components/EqualTrade', () => ({
-  EqualTradeController: () => (
-    <div data-testid="equal-trade">
-      <button role="switch" aria-label="Allow equals" data-testid="allow-equals-toggle">Toggle</button>
+jest.mock('../components/TradeFormController', () => ({
+  TradeFormController: ({ isLandscape }: { isLandscape: boolean }) => (
+    <div data-testid="trade-form-controller" data-landscape={isLandscape}>
+      Trade Form Controller
     </div>
   )
 }));
@@ -102,6 +83,16 @@ describe('TradePage', () => {
   const mockToggleAllowEquals = jest.fn();
   const mockSetBottomSheet = jest.fn();
   const mockSetPayouts = jest.fn();
+  const mockSetLeftSidebar = jest.fn();
+
+  const mockSelectedMarket = {
+    symbol: '1HZ100V',
+    displayName: 'Volatility 100 (1s) Index',
+    shortName: '100',
+    market_name: 'synthetic_index',
+    isOneSecond: true,
+    type: 'volatility' as const
+  };
 
   beforeEach(() => {
     // Setup store mocks
@@ -111,7 +102,8 @@ describe('TradePage', () => {
       duration: '1 minute',
       allowEquals: false,
       toggleAllowEquals: mockToggleAllowEquals,
-      setPayouts: mockSetPayouts
+      setPayouts: mockSetPayouts,
+      instrument: '1HZ100V'
     }));
 
     jest.spyOn(bottomSheetStore, 'useBottomSheetStore').mockImplementation(() => ({
@@ -129,10 +121,27 @@ describe('TradePage', () => {
       currency: 'USD'
     }));
 
+    jest.spyOn(deviceDetection, 'useDeviceDetection').mockImplementation(() => ({
+      isMobile: false,
+      isDesktop: true
+    }));
+
+    jest.spyOn(leftSidebarStore, 'useLeftSidebarStore').mockImplementation(() => ({
+      isOpen: false,
+      title: "Select Market",
+      setLeftSidebar: mockSetLeftSidebar
+    }));
+
+    jest.spyOn(marketStore, 'useMarketStore').mockImplementation(() => ({
+      selectedMarket: mockSelectedMarket,
+      setSelectedMarket: jest.fn()
+    }));
+
     // Clear mocks
     mockToggleAllowEquals.mockClear();
     mockSetBottomSheet.mockClear();
     mockSetPayouts.mockClear();
+    mockSetLeftSidebar.mockClear();
   });
 
   afterEach(() => {
@@ -140,6 +149,11 @@ describe('TradePage', () => {
   });
 
   it('renders in portrait mode', async () => {
+    jest.spyOn(deviceDetection, 'useDeviceDetection').mockImplementation(() => ({
+      isMobile: true,
+      isDesktop: false
+    }));
+
     render(<TradePage />);
 
     // Balance display should not be visible in portrait mode
@@ -147,9 +161,14 @@ describe('TradePage', () => {
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
 
+    expect(screen.getByText('Rise/Fall')).toBeInTheDocument();
+
     // Check layout classes
     const tradePage = screen.getByTestId('trade-page');
-    expect(tradePage).toHaveClass('flex flex-col flex-1 h-[100dvh]');
+    expect(tradePage.className).toContain('flex');
+    expect(tradePage.className).toContain('flex-col');
+    expect(tradePage.className).toContain('flex-1');
+    expect(tradePage.className).toContain('h-[100dvh]');
   });
 
   it('renders in landscape mode', async () => {
@@ -157,15 +176,39 @@ describe('TradePage', () => {
       isLandscape: true
     }));
 
+    jest.spyOn(deviceDetection, 'useDeviceDetection').mockImplementation(() => ({
+      isMobile: false,
+      isDesktop: true
+    }));
+
     render(<TradePage />);
 
     // Balance display should be visible in landscape mode
+    expect(screen.getByTestId('balance-display')).toBeInTheDocument();
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
+    expect(screen.getByTestId('market-selector')).toBeInTheDocument();
+
+    // // Check for MarketInfo with selected market
+    expect(screen.getByText('Rise/Fall')).toBeInTheDocument();
 
     // Check layout classes
     const tradePage = screen.getByTestId('trade-page');
-    expect(tradePage).toHaveClass('flex flex-row relative flex-1 h-[100dvh]');
+    expect(tradePage.className).toContain('flex');
+    expect(tradePage.className).toContain('flex-row');
+    expect(tradePage.className).toContain('relative');
+    expect(tradePage.className).toContain('flex-1');
+    expect(tradePage.className).toContain('h-[100dvh]');
   });
 
+  it('shows "Select Market" when no market is selected', () => {
+    jest.spyOn(marketStore, 'useMarketStore').mockImplementation(() => ({
+      selectedMarket: null,
+      setSelectedMarket: jest.fn()
+    }));
+
+    render(<TradePage />);
+
+    expect(screen.getByText('Select Market')).toBeInTheDocument();
+  });
 });

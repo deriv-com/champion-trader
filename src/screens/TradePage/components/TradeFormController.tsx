@@ -184,7 +184,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       id="trade-section"
       className={`${
         isLandscape
-          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start border-l border-gray-300 border-opacity-20"
+          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start mt-[78px] border-l border-gray-300 border-opacity-20"
           : ""
       }`}
     >

@@ -5,29 +5,29 @@ import { useBottomSheetStore } from '@/stores/bottomSheetStore';
 import type { BottomSheetState } from '@/stores/bottomSheetStore';
 
 // Mock the stores
-jest.mock('@/stores/tradeStore', () => ({
+jest.mock("@/stores/tradeStore", () => ({
   useTradeStore: jest.fn(),
-}));
+}))
 
-jest.mock('@/stores/bottomSheetStore', () => ({
+jest.mock("@/stores/bottomSheetStore", () => ({
   useBottomSheetStore: jest.fn(),
-}));
+}))
 
 // Mock scrollIntoView and IntersectionObserver
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
-const mockIntersectionObserver = jest.fn();
+window.HTMLElement.prototype.scrollIntoView = jest.fn()
+const mockIntersectionObserver = jest.fn()
 mockIntersectionObserver.mockReturnValue({
   observe: () => null,
   unobserve: () => null,
   disconnect: () => null,
-});
-window.IntersectionObserver = mockIntersectionObserver;
+})
+window.IntersectionObserver = mockIntersectionObserver
 
-describe('DurationController', () => {
-  const mockSetDuration = jest.fn();
-  const mockSetBottomSheet = jest.fn();
-  const mockSetStake = jest.fn();
-  const mockToggleAllowEquals = jest.fn();
+describe("DurationController", () => {
+  const mockSetDuration = jest.fn()
+  const mockSetBottomSheet = jest.fn()
+  const mockSetStake = jest.fn()
+  const mockToggleAllowEquals = jest.fn()
 
   const setupMocks = () => {
     // Setup store mocks with proper typing
@@ -45,23 +45,25 @@ describe('DurationController', () => {
       setTradeType: jest.fn()
     });
 
-    (useBottomSheetStore as jest.MockedFunction<typeof useBottomSheetStore>).mockReturnValue({
+    ;(
+      useBottomSheetStore as jest.MockedFunction<typeof useBottomSheetStore>
+    ).mockReturnValue({
       showBottomSheet: false,
       key: null,
-      height: '380px',
+      height: "380px",
       setBottomSheet: mockSetBottomSheet,
-    } as BottomSheetState);
-  };
+    } as BottomSheetState)
+  }
 
   beforeEach(() => {
-    setupMocks();
+    setupMocks()
     // Clear mocks
-    mockSetDuration.mockClear();
-    mockSetBottomSheet.mockClear();
-    mockSetStake.mockClear();
-    mockToggleAllowEquals.mockClear();
-    mockIntersectionObserver.mockClear();
-  });
+    mockSetDuration.mockClear()
+    mockSetBottomSheet.mockClear()
+    mockSetStake.mockClear()
+    mockToggleAllowEquals.mockClear()
+    mockIntersectionObserver.mockClear()
+  })
 
   describe('Initial Render', () => {
     it('renders duration types', () => {
@@ -88,11 +90,11 @@ describe('DurationController', () => {
   
   describe('Minutes Duration', () => {
     beforeEach(() => {
-      render(<DurationController />);
+      render(<DurationController />)
       act(() => {
-        fireEvent.click(screen.getByText('Minutes'));
-      });
-    });
+        fireEvent.click(screen.getByText("Minutes"))
+      })
+    })
 
     it('shows minute values from 0 to 59', () => {
       const valueItems = screen.getAllByRole('radio');
@@ -109,22 +111,29 @@ describe('DurationController', () => {
       expect(selectedValue.getAttribute('value')).toBe('0');
     });
 
-    it('updates duration on minute selection', () => {
-      const valueItems = screen.getAllByRole('radio');
-      const fiveMinutes = valueItems.find(item => item.getAttribute('value') === '5');
+    it("selects default minute value", () => {
+      const selectedValue = screen.getByRole("radio", { checked: true })
+      expect(selectedValue.getAttribute("value")).toBe("0")
+    })
+
+    it("updates duration on minute selection", () => {
+      const valueItems = screen.getAllByRole("radio")
+      const fiveMinutes = valueItems.find(
+        (item) => item.getAttribute("value") === "5"
+      )
 
       if (fiveMinutes) {
         act(() => {
-          fireEvent.click(fiveMinutes);
-        });
+          fireEvent.click(fiveMinutes)
+        })
       }
 
-      const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
+      const saveButton = screen.getByText("Save")
+      fireEvent.click(saveButton)
 
-      expect(mockSetDuration).toHaveBeenCalledWith('5 minute');
-    });
-  });
+      expect(mockSetDuration).toHaveBeenCalledWith("5 minute")
+    })
+  })
 
   
   

@@ -1,15 +1,15 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { MainLayout } from "@/layouts/MainLayout";
-import { useClientStore } from "@/stores/clientStore";
-import { BalanceHandler } from "@/components/BalanceHandler";
-import { ToastProvider } from "@/stores/toastStore";
+import { lazy, Suspense, useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { MainLayout } from "@/layouts/MainLayout"
+import { useClientStore } from "@/stores/clientStore"
+import { BalanceHandler } from "@/components/BalanceHandler"
+import { ToastProvider } from "@/stores/toastStore"
 
 const TradePage = lazy(() =>
   import("@/screens/TradePage").then((module) => ({
     default: module.TradePage,
   }))
-);
+)
 const PositionsPage = lazy(() =>
   import("@/screens/PositionsPage").then((module) => ({
     default: module.PositionsPage,
@@ -22,11 +22,13 @@ const ContractDetailsPage = lazy(() =>
 );
 const MenuPage = lazy(() =>
   import("@/screens/MenuPage").then((module) => ({ default: module.MenuPage }))
-);
+)
 
 const LoginPage = lazy(() =>
-  import("@/screens/LoginPage").then((module) => ({ default: module.LoginPage }))
-);
+  import("@/screens/LoginPage").then((module) => ({
+    default: module.LoginPage,
+  }))
+)
 
 const AppContent = () => {
   const { token, isLoggedIn } = useClientStore();
@@ -55,12 +57,12 @@ const AppContent = () => {
         </Routes>
       </Suspense>
     </MainLayout>
-  );
-};
+  )
+}
 
 export const App = () => {
-  const [isInitialized, setIsInitialized] = useState(false);
-  const { setToken } = useClientStore();
+  const [isInitialized, setIsInitialized] = useState(false)
+  const { setToken } = useClientStore()
 
   // Handle login token
   useEffect(() => {
@@ -79,14 +81,14 @@ export const App = () => {
         : window.location.pathname;
       window.history.replaceState({}, "", newUrl);
     } else if (tokenFromStorage) {
-      setToken(tokenFromStorage);
+      setToken(tokenFromStorage)
     }
 
     setIsInitialized(true);
   }, [setToken]);
 
   if (!isInitialized) {
-    return <div>Initializing...</div>;
+    return <div>Initializing...</div>
   }
 
   return (
@@ -94,5 +96,5 @@ export const App = () => {
       <ToastProvider />
       <AppContent />
     </BrowserRouter>
-  );
-};
+  )
+}

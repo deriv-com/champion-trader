@@ -12,6 +12,7 @@
     "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
+    "@deriv/quill-icons": "^2.4.3",
     "@cloudflare/stream-react": "^1.9.2",
     "@lottiefiles/dotlottie-react": "^0.13.0",
     "@radix-ui/react-dialog": "^1.1.5",
@@ -30,6 +31,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.1.3",
+    "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "zustand": "^4.5.0"
