@@ -8,13 +8,14 @@ export interface AvailableInstrumentsRequest {
   context: Context;
 }
 
-export interface Instrument {
-  id: string;
-  name: string;
+export interface MarketGroup {
+  instruments: string[];
+  market_name: string;
 }
 
 export interface AvailableInstrumentsResponse {
-  instruments: Instrument[];
+  performance: string;
+  result: MarketGroup[];
 }
 
 export interface ErrorResponse {

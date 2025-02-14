@@ -1,16 +1,16 @@
-import { create } from 'zustand';
-import { TradeType, tradeTypeConfigs, TradeButton } from '@/config/tradeTypes';
+import { create } from "zustand"
+import { TradeType, tradeTypeConfigs, TradeButton } from "@/config/tradeTypes"
 
 /**
  * Trade Store
- * 
+ *
  * Manages the state for trade parameters and configuration.
  * Integrates with the trade type configuration system.
- * 
+ *
  * @example
  * ```typescript
  * const { trade_type, setTradeType } = useTradeStore();
- * 
+ *
  * // Change trade type
  * setTradeType('rise_fall');
  * ```
@@ -20,8 +20,8 @@ import { TradeType, tradeTypeConfigs, TradeButton } from '@/config/tradeTypes';
  * Payout values for trade buttons
  */
 interface Payouts {
-  max: number;
-  values: Record<string, number>; // Map button actionName to payout value
+  max: number
+  values: Record<string, number> // Map button actionName to payout value
 }
 
 /**
@@ -30,63 +30,70 @@ interface Payouts {
 export interface TradeState {
   // State
   /** Current stake amount (numeric value only) */
-  stake: string;
+  stake: string
   /** Duration value with unit */
-  duration: string;
+  duration: string
   /** Whether equals option is enabled */
-  allowEquals: boolean;
+  allowEquals: boolean
   /** Current trade type (from trade type configuration) */
-  trade_type: TradeType;
+  trade_type: TradeType
   /** Current trading instrument */
-  instrument: string;
+  instrument: string
   /** Payout values for each button */
-  payouts: Payouts;
-  
+  payouts: Payouts
+
   // Actions
   /** Set the stake amount */
-  setStake: (stake: string) => void;
+  setStake: (stake: string) => void
   /** Set the duration value */
-  setDuration: (duration: string) => void;
+  setDuration: (duration: string) => void
   /** Toggle the equals option */
-  toggleAllowEquals: () => void;
+  toggleAllowEquals: () => void
   /** Update all payout values */
-  setPayouts: (payouts: Payouts) => void;
+  setPayouts: (payouts: Payouts) => void
+  /** Set the current trading instrument */
+  setInstrument: (instrument: string) => void
   /**
    * Set the current trade type
    * This will update the form fields and buttons based on the trade type configuration
-   * 
+   *
    * @param trade_type - Trade type from configuration
    */
-  setTradeType: (trade_type: TradeType) => void;
+  setTradeType: (trade_type: TradeType) => void
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
-  stake: '10',
-  duration: '5 minute',
+  stake: "10",
+  duration: "5 minute",
   allowEquals: false,
-  trade_type: 'rise_fall', // Default to rise_fall trade type
-  instrument: 'R_100', // Default to R_100
+  trade_type: "rise_fall", // Default to rise_fall trade type
+  instrument: "R_100", // Default to R_100
   payouts: {
     max: 50000,
     values: {
-      buy_rise: 19.50,
-      buy_fall: 19.50
-    }
+      buy_rise: 19.5,
+      buy_fall: 19.5,
+    },
   },
   setStake: (stake) => set({ stake }),
   setDuration: (duration) => set({ duration }),
-  toggleAllowEquals: () => set((state) => ({ allowEquals: !state.allowEquals })),
+  toggleAllowEquals: () =>
+    set((state) => ({ allowEquals: !state.allowEquals })),
   setPayouts: (payouts) => set({ payouts }),
   setInstrument: (instrument: string) => set({ instrument }),
-  setTradeType: (trade_type: TradeType) => set((state) => ({ 
-    trade_type,
-    // Reset payouts for the new trade type with default values
-    payouts: {
-      max: state.payouts.max,
-      values: tradeTypeConfigs[trade_type].buttons.reduce((acc: Record<string, number>, button: TradeButton) => {
-        acc[button.actionName] = 0;
-        return acc;
-      }, {})
-    }
-  })),
-}));
+  setTradeType: (trade_type: TradeType) =>
+    set((state) => ({
+      trade_type,
+      // Reset payouts for the new trade type with default values
+      payouts: {
+        max: state.payouts.max,
+        values: tradeTypeConfigs[trade_type].buttons.reduce(
+          (acc: Record<string, number>, button: TradeButton) => {
+            acc[button.actionName] = 0
+            return acc
+          },
+          {}
+        ),
+      },
+    })),
+}))

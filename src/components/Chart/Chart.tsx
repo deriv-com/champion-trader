@@ -155,13 +155,6 @@ export const Chart: React.FC<ChartProps> = ({ className }) => {
   return (
     <div className={cn("flex flex-col flex-1 h-full", className)}>
       <div className="flex-1 bg-white w-full rounded-lg relative h-full overflow-hidden">
-        {currentPrice && currentTime && (
-          <div className="absolute top-4 left-4 bg-gray-100 p-2 rounded shadow-sm z-10">
-            <div className="text-sm font-medium">VOLATILITY 100 (1S) INDEX</div>
-            <div className="text-sm font-bold">{currentPrice.toFixed(2)}</div>
-            <div className="text-xs text-gray-600">{currentTime}</div>
-          </div>
-        )}
         <div
           ref={chartContainerRef}
           className="w-full h-full"

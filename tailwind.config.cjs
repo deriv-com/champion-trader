@@ -12,7 +12,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        'ibm': ['IBM Plex Sans', 'sans-serif'],
+        ibm: ["IBM Plex Sans", "sans-serif"],
+        ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -20,6 +21,16 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        hover: "rgba(0, 0, 0, 0.08)",
+        active: "rgba(0, 0, 0, 0.16)",
+        market: {
+          DEFAULT: "#f6f7f8",
+        },
+        text: {
+          primary: "rgba(0, 0, 0, 0.72)",
+          secondary: "rgba(0, 0, 0, 0.48)",
+          tertiary: "rgba(0, 0, 0, 0.24)",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -27,18 +38,18 @@ module.exports = {
         color: {
           solid: {
             emerald: {
-              700: 'rgba(0, 195, 144, 1)',
-              600: 'rgba(0, 195, 144, 0.8)',
+              700: "rgba(0, 195, 144, 1)",
+              600: "rgba(0, 195, 144, 0.8)",
             },
             cherry: {
-              700: 'rgba(222, 0, 64, 1)',
-              600: 'rgba(222, 0, 64, 0.8)',
+              700: "rgba(222, 0, 64, 1)",
+              600: "rgba(222, 0, 64, 0.8)",
             },
             glacier: {
-              700: 'rgba(0, 208, 255, 1)',
-              600: 'rgba(0, 208, 255, 0.8)',
-            }
-          }
+              700: "rgba(0, 208, 255, 1)",
+              600: "rgba(0, 208, 255, 0.8)",
+            },
+          },
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -87,4 +98,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
+}

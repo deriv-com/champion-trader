@@ -1,20 +1,20 @@
-import React from "react";
-import { useOrientationStore } from "@/stores/orientationStore";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { WebSocketError } from "@/services/api/websocket/types";
-import * as Tooltip from "@radix-ui/react-tooltip";
+import React from "react"
+import { useOrientationStore } from "@/stores/orientationStore"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { WebSocketError } from "@/services/api/websocket/types"
+import * as Tooltip from "@radix-ui/react-tooltip"
 
-interface TradeButtonProps {
-  title: string;
-  label: string;
-  value: string;
-  title_position?: "left" | "right";
-  className?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  error?: Event | WebSocketError | null;
+export interface TradeButtonProps {
+  title: string
+  label: string
+  value: string
+  title_position?: "left" | "right"
+  className?: string
+  onClick?: () => void
+  disabled?: boolean
+  loading?: boolean
+  error?: Event | WebSocketError | null
 }
 
 export const TradeButton: React.FC<TradeButtonProps> = ({
@@ -28,7 +28,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
   loading,
   error,
 }) => {
-  const { isLandscape } = useOrientationStore();
+  const { isLandscape } = useOrientationStore()
 
   return (
     <Tooltip.Provider>
@@ -120,5 +120,5 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
         )}
       </Tooltip.Root>
     </Tooltip.Provider>
-  );
-};
+  )
+}

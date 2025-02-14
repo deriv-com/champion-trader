@@ -3,28 +3,32 @@ import { Toast } from '@/components/ui/toast';
 import { type FC } from 'react';
 import { type JSX } from 'react/jsx-runtime';
 
+interface ToastOptions {
+  content: React.ReactNode;
+  variant?: 'success' | 'error' | 'black';
+  duration?: number;
+}
+
 interface ToastState {
-  message: string;
-  type: 'success' | 'error';
+  options: ToastOptions | null;
   show: boolean;
-  showToast: (message: string, type: 'success' | 'error') => void;
+  toast: (options: ToastOptions) => void;
   hideToast: () => void;
 }
 
 export const useToastStore = create<ToastState>((set) => ({
-  message: '',
-  type: 'success',
+  options: null,
   show: false,
-  showToast: (message: string, type: 'success' | 'error') => 
-    set({ message, type, show: true }),
+  toast: (options: ToastOptions) => 
+    set({ options, show: true }),
   hideToast: () => set({ show: false })
 }));
 
 // Toast Provider component to be used in App.tsx
 export const ToastProvider: FC = (): JSX.Element | null => {
-  const { message, type, show, hideToast } = useToastStore();
+  const { options, show, hideToast } = useToastStore();
 
-  if (!show) return null;
+  if (!show || !options) return null;
 
-  return <Toast message={message} type={type} onClose={hideToast} />;
+  return <Toast content={options.content} variant={options.variant} duration={options.duration} onClose={hideToast} />;
 };
