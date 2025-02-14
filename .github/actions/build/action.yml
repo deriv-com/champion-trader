@@ -16,6 +16,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Install rspack binding
+      shell: bash
+      run: |
+        npm install @rspack/binding-linux-x64-gnu || true
+        npm rebuild @rspack/binding-linux-x64-gnu
+
     - name: Build project
       shell: bash
       env:
