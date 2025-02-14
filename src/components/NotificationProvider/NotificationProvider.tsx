@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toaster } from 'sonner';
+import { Toaster } from 'react-hot-toast';
 import { useNotificationStore } from '@/stores/notificationStore';
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -9,12 +9,15 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     <>
       <Toaster
         position={config.position}
-        duration={config.duration}
-        closeButton={config.closeButton}
-        className={config.className}
-        theme="light"
-        richColors
-        expand
+        toastOptions={{
+          duration: config.duration,
+          className: config.className,
+          style: {
+            background: '#fff',
+            color: '#363636',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          },
+        }}
       />
       {children}
     </>

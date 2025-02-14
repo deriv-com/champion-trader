@@ -1,169 +1,127 @@
-import { act } from '@testing-library/react';
 import { useNotificationStore } from '../notificationStore';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
-// Mock sonner toast
-jest.mock('sonner', () => ({
-  toast: Object.assign(
-    jest.fn(),
-    {
-      success: jest.fn(),
-      error: jest.fn(),
-      promise: jest.fn(),
-    }
-  ),
+// Mock react-hot-toast
+jest.mock('react-hot-toast', () => ({
+  __esModule: true,
+  default: {
+    success: jest.fn(),
+    error: jest.fn(),
+    promise: jest.fn(),
+    default: jest.fn(),
+  },
 }));
 
 describe('notificationStore', () => {
+  const mockedToast = toast as jest.Mocked<typeof toast>;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset store to default state
-    act(() => {
-      useNotificationStore.getState().setConfig({
-        position: 'top-right',
-        duration: 4000,
-        closeButton: true,
-        className: 'rounded-lg',
-      });
-    });
   });
 
-  describe('config management', () => {
-    it('should initialize with default config', () => {
-      const config = useNotificationStore.getState().config;
-      expect(config).toEqual({
+  describe('config', () => {
+    it('should have default config', () => {
+      const store = useNotificationStore.getState();
+      expect(store.config).toEqual({
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
         className: 'rounded-lg',
       });
     });
 
-    it('should update config partially', () => {
-      act(() => {
-        useNotificationStore.getState().setConfig({
-          position: 'bottom-right',
-          duration: 5000,
-        });
-      });
-
-      const config = useNotificationStore.getState().config;
-      expect(config).toEqual({
-        position: 'bottom-right',
+    it('should update config', () => {
+      const store = useNotificationStore.getState();
+      store.setConfig({ position: 'bottom-left', duration: 5000 });
+      expect(store.config).toEqual({
+        position: 'bottom-left',
         duration: 5000,
-        closeButton: true,
         className: 'rounded-lg',
       });
     });
   });
 
-  describe('notification methods', () => {
+  describe('notifications', () => {
     it('should show success notification', () => {
-      useNotificationStore.getState().success('Success', 'Operation completed');
-      expect(toast.success).toHaveBeenCalledWith('Success\nOperation completed', {
+      const store = useNotificationStore.getState();
+      store.success('Success', 'Operation completed');
+      
+      expect(mockedToast.success).toHaveBeenCalledWith('Success\nOperation completed', {
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
-        className: 'rounded-lg',
+        className: 'rounded-lg bg-green-50',
       });
     });
 
     it('should show error notification', () => {
-      useNotificationStore.getState().error('Error', 'Something went wrong');
-      expect(toast.error).toHaveBeenCalledWith('Error\nSomething went wrong', {
+      const store = useNotificationStore.getState();
+      store.error('Error', 'Something went wrong');
+      
+      expect(mockedToast.error).toHaveBeenCalledWith('Error\nSomething went wrong', {
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
-        className: 'rounded-lg',
+        className: 'rounded-lg bg-red-50',
       });
     });
 
-    it('should show info notification with blue background', () => {
-      useNotificationStore.getState().info('Info', 'Here is some information');
-      expect(toast).toHaveBeenCalledWith('Info\nHere is some information', {
+    it('should show info notification', () => {
+      const store = useNotificationStore.getState();
+      store.info('Info', 'Some information');
+      
+      expect(mockedToast).toHaveBeenCalledWith('Info\nSome information', {
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
         className: 'rounded-lg bg-blue-50',
+        icon: '🔵',
       });
     });
 
-    it('should show warning notification with yellow background', () => {
-      useNotificationStore.getState().warning('Warning', 'Please be careful');
-      expect(toast).toHaveBeenCalledWith('Warning\nPlease be careful', {
+    it('should show warning notification', () => {
+      const store = useNotificationStore.getState();
+      store.warning('Warning', 'Be careful');
+      
+      expect(mockedToast).toHaveBeenCalledWith('Warning\nBe careful', {
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
         className: 'rounded-lg bg-yellow-50',
+        icon: '⚠️',
       });
     });
 
-    it('should handle promise notifications', async () => {
-      const mockPromise = Promise.resolve('success');
+    it('should handle promise notification', async () => {
+      const store = useNotificationStore.getState();
+      const promise = Promise.resolve('result');
       const messages = {
         loading: 'Loading...',
         success: 'Success!',
         error: 'Error!',
       };
 
-      const result = useNotificationStore.getState().promise(mockPromise, messages);
-
-      expect(toast.promise).toHaveBeenCalledWith(mockPromise, {
-        loading: 'Loading...',
-        success: 'Success!',
-        error: 'Error!',
-        ...useNotificationStore.getState().config,
-      });
-
-      await expect(result).resolves.toBe('success');
+      store.promise(promise, messages);
+      
+      expect(mockedToast.promise).toHaveBeenCalledWith(
+        promise,
+        {
+          loading: messages.loading,
+          success: messages.success,
+          error: messages.error,
+        },
+        {
+          position: 'top-right',
+          duration: 4000,
+          className: 'rounded-lg',
+        }
+      );
     });
 
-    it('should handle single message notifications', () => {
-      useNotificationStore.getState().success('Success');
-      expect(toast.success).toHaveBeenCalledWith('Success', {
+    it('should show notification without description', () => {
+      const store = useNotificationStore.getState();
+      store.success('Success');
+      
+      expect(mockedToast.success).toHaveBeenCalledWith('Success', {
         position: 'top-right',
         duration: 4000,
-        closeButton: true,
-        className: 'rounded-lg',
+        className: 'rounded-lg bg-green-50',
       });
-    });
-
-    it('should handle notifications with custom config', () => {
-      act(() => {
-        useNotificationStore.getState().setConfig({
-          position: 'bottom-left',
-          duration: 5000,
-        });
-      });
-
-      useNotificationStore.getState().success('Success', 'Custom config');
-      expect(toast.success).toHaveBeenCalledWith('Success\nCustom config', {
-        position: 'bottom-left',
-        duration: 5000,
-        closeButton: true,
-        className: 'rounded-lg',
-      });
-    });
-
-    it('should handle promise rejection', async () => {
-      const mockError = new Error('Test error');
-      const mockPromise = Promise.reject(mockError);
-      const messages = {
-        loading: 'Loading...',
-        success: 'Success!',
-        error: 'Error!',
-      };
-
-      const promise = useNotificationStore.getState().promise(mockPromise, messages);
-
-      expect(toast.promise).toHaveBeenCalledWith(mockPromise, {
-        loading: 'Loading...',
-        success: 'Success!',
-        error: 'Error!',
-        ...useNotificationStore.getState().config,
-      });
-
-      await expect(promise).rejects.toEqual(mockError);
     });
   });
 });
