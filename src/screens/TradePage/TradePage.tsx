@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from "react"
-import { BalanceDisplay } from "@/components/BalanceDisplay"
 import { BottomSheet } from "@/components/BottomSheet"
 import { DurationOptions } from "@/components/DurationOptions"
-import { Card, CardContent } from "@/components/ui/card"
 import { useOrientationStore } from "@/stores/orientationStore";
 // import { AddMarketButton } from "@/components/AddMarketButton";
 import { TradeFormController } from "./components/TradeFormController";
