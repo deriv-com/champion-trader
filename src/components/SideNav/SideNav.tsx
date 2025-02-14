@@ -4,50 +4,58 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 
-export const SideNav: React.FC = () => {
+export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void; setMenuOpen: (open: boolean) => void; isMenuOpen: boolean, isSidebarOpen: boolean }> = ({ setSidebarOpen, setMenuOpen, isMenuOpen, isSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
   const { isLandscape } = useOrientationStore();
 
-  const handleMenuClick = () => {
-    navigate(location.pathname === "/menu" ? "/trade" : "/menu");
-  };
-
   return (
-    <nav
-      className={`${
-        isLandscape ? "flex" : "hidden"
-      } flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}
-    >
+    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         <button
-          onClick={() => navigate("/trade")}
-          className={`flex flex-col items-center gap-1 ${
-            location.pathname === "/trade" ? "text-primary" : "text-gray-500"
-          }`}
+          onClick={() => {
+            if (window.innerWidth >= 1024) {
+              setSidebarOpen(false);
+            }
+            navigate("/trade");
+          }}
+          className={`flex flex-col items-center gap-1 ${location.pathname === "/trade" ? "text-primary" : "text-gray-500"
+            }`}
         >
           <BarChart2 className="w-5 h-5" />
           <span className="text-xs">Trade</span>
         </button>
         {isLoggedIn && (
-          <button
-            onClick={() => navigate("/positions")}
-            className={`flex flex-col items-center gap-1 ${
-              location.pathname === "/positions"
-                ? "text-primary"
-                : "text-gray-500"
-            }`}
-          >
-            <Clock className="w-5 h-5" />
-            <span className="text-xs">Positions</span>
-          </button>
+          <>
+            <button
+              onClick={() => {
+                if (window.innerWidth >= 1024) {
+                  setSidebarOpen(true);
+                  navigate("/trade");
+                } else {
+                  navigate('/positions')
+                }
+              }}
+              className={`flex flex-col items-center gap-1 ${location.pathname === '/positions' ? 'text-primary' : 'text-gray-500'
+                }`}
+              disabled={isSidebarOpen}
+            >
+              <Clock className="w-5 h-5" />
+              <span className="text-xs">Positions</span>
+            </button>
+          </>
         )}
         <button
-          onClick={handleMenuClick}
-          className={`flex flex-col items-center gap-1 ${
-            location.pathname === "/menu" ? "text-primary" : "text-gray-500"
-          }`}
+          onClick={() => {
+            if (window.innerWidth >= 1024) {
+              setMenuOpen(!isMenuOpen);
+            } else {
+              navigate("/menu");
+            }
+          }}
+          disabled={isMenuOpen}
+          className="flex flex-col items-center gap-1 text-gray-500"
         >
           <Menu className="w-5 h-5" />
           <span className="text-xs">Menu</span>

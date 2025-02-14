@@ -29,7 +29,10 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
     }
   };
 
+  const { setStake } = useTradeStore();
+
   const handleClose = () => {
+    setStake(stake); // Ensure the latest stake value is saved
     popoverRef.current.isClosing = true;
     setIsOpen(false);
     // Reset after a longer delay

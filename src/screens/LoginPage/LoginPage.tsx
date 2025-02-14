@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { OPTION_TRADING_API_REST_URL } from "@/config/constants";
 import { useClientStore } from "@/stores/clientStore";
 import { useToastStore } from "@/stores/toastStore";
 
@@ -18,7 +19,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "https://options-trading-api.deriv.ai/login",
+        `${OPTION_TRADING_API_REST_URL}/login`,
         {
           account_id: accountId,
           password,
@@ -45,7 +46,7 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleCreateAccount = () => {
-    window.location.href = "https://options-trading.deriv.ai/";
+    window.location.href = `${OPTION_TRADING_API_REST_URL}/`;
   };
 
   return (
