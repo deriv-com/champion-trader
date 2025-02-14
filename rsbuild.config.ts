@@ -38,17 +38,11 @@ export default defineConfig({
   output: {
     copy: [
       {
-        from: path.resolve(
-          // __dirname,
-          "./node_modules/@deriv-com/smartcharts-champion/dist"
-        ),
+        from: path.join(process.cwd(), "node_modules/@deriv-com/smartcharts-champion/dist"),
         to: "js/smartcharts/",
       },
       {
-        from: path.resolve(
-          // __dirname,
-          "./node_modules/@deriv-com/smartcharts-champion/dist/chart/assets"
-        ),
+        from: path.join(process.cwd(), "node_modules/@deriv-com/smartcharts-champion/dist/chart/assets"),
         to: "assets",
       },
     ],
