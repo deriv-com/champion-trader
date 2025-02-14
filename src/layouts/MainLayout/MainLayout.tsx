@@ -37,9 +37,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex min-h-[100dvh] h-[100dvh] relative">
-      <SideNav setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
+      <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
       <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
-        <Header className="sticky top-0 z-50" />
+        <Header className="sticky top-0 z-50 w-full" />
         <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : "hidden"} transition-all duration-300`}>
           <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
         </div>
