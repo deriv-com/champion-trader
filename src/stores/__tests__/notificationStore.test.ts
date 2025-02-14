@@ -1,19 +1,31 @@
 import { useNotificationStore } from '../notificationStore';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
+
+// Create interface for mocked toast functions
+interface MockToast extends jest.Mock {
+  success: jest.Mock;
+  error: jest.Mock;
+  promise: jest.Mock;
+}
 
 // Mock react-hot-toast
-jest.mock('react-hot-toast', () => ({
-  __esModule: true,
-  default: {
-    success: jest.fn(),
-    error: jest.fn(),
-    promise: jest.fn(),
-    default: jest.fn(),
-  },
-}));
+jest.mock('react-hot-toast', () => {
+  const mockToast: MockToast = Object.assign(
+    jest.fn(),
+    {
+      success: jest.fn(),
+      error: jest.fn(),
+      promise: jest.fn(),
+    }
+  );
+  return {
+    __esModule: true,
+    default: mockToast,
+  };
+});
 
 describe('notificationStore', () => {
-  const mockedToast = toast as jest.Mocked<typeof toast>;
+  const mockedToast = toast as unknown as MockToast;
 
   beforeEach(() => {
     jest.clearAllMocks();
