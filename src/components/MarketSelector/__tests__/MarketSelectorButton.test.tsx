@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MarketSelectorButton } from '../MarketSelectorButton';
 import { useBottomSheetStore } from '@/stores/bottomSheetStore';
 

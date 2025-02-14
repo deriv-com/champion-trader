@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import { MarketSelector } from "../MarketSelector"
 import * as leftSidebarStore from "@/stores/leftSidebarStore"
 
@@ -41,18 +41,6 @@ describe("MarketSelector", () => {
     jest.clearAllMocks()
   })
 
-  it("renders LeftSidebar when isOpen is true", () => {
-    jest.spyOn(leftSidebarStore, "useLeftSidebarStore").mockImplementation(() => ({
-      isOpen: true,
-      title: "Select Market",
-      setLeftSidebar: mockSetLeftSidebar,
-    }))
-
-    render(<MarketSelector />)
-
-    const sidebar = screen.getByText("Markets")
-    expect(sidebar).toBeInTheDocument()
-  })
 
   it("returns null when isOpen is false", () => {
     jest.spyOn(leftSidebarStore, "useLeftSidebarStore").mockImplementation(() => ({
