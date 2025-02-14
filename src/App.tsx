@@ -15,6 +15,11 @@ const PositionsPage = lazy(() =>
     default: module.PositionsPage,
   }))
 );
+const ContractDetailsPage = lazy(() =>
+  import("@/screens/ContractDetailsPage").then((module) => ({
+    default: module.ContractDetailsPage,
+  }))
+);
 const MenuPage = lazy(() =>
   import("@/screens/MenuPage").then((module) => ({ default: module.MenuPage }))
 );
@@ -38,7 +43,10 @@ const AppContent = () => {
           <Route path="/" element={<TradePage />} />
           <Route path="/trade" element={<TradePage />} />
           {isLoggedIn ? (
-            <Route path="/positions" element={<PositionsPage />} />
+            <>
+              <Route path="/positions" element={<PositionsPage />} />
+              <Route path="/contract/:id" element={<ContractDetailsPage />} />
+            </>
           ) : (
             <Route path="/positions" element={<Navigate to="/menu" />} />
           )}
