@@ -12,6 +12,7 @@
     "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
+    "@deriv/quill-icons": "^2.4.3",
     "@cloudflare/stream-react": "^1.9.2",
     "@deriv-com/smartcharts-champion": "^0.0.1",
     "@lottiefiles/dotlottie-react": "^0.13.0",
