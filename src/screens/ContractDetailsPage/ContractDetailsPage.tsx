@@ -7,7 +7,7 @@ import axios from "axios";
 const ContractDetailsPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [contractData, setContractData] = useState({
+  const [, setContractData] = useState({
     type: "Rise",
     market: "Volatility 100 (1s) Index",
     stake: "10.00",
