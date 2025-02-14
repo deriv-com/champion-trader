@@ -1,9 +1,34 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const ContractDetailsPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [contractData, setContractData] = useState({
+    type: "Rise",
+    market: "Volatility 100 (1s) Index",
+    stake: "10.00",
+    profit: "+0.00",
+    duration: "5 minutes",
+    barrier: "329879.6438",
+    payout: "11.00",
+    startTime: "01 Jan 2024",
+    startTimeGMT: "16:00:02 GMT",
+    entrySpot: "238972.7174",
+    entryTimeGMT: "01 Jan 2024, 16:00:02 GMT",
+    exitTime: "01 Jan 2024",
+    exitTimeGMT: "17:20:36 GMT",
+    exitSpot: "283297.3823"
+  });
+
+  useEffect(() => {
+    axios.get(`/api/contracts/${id}`)
+      .then(response => setContractData(response.data))
+      .catch(error => console.error("Error fetching contract details:", error));
+  }, [id]);
 
   return (
     <div className="w-full bg-gray-100 h-screen flex flex-col">
@@ -15,19 +40,23 @@ const ContractDetailsPage: React.FC = () => {
       </div>
 
       {/* Rise/Fall Card */}
-      <div className="p-4 bg-white shadow-md rounded-lg mb-4 border-b border-gray-300">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="text-red-500 font-bold">Rise</div>
-            <div className="text-gray-500 text-sm">Volatility 100 (1s) Index</div>
+      {[
+        { title: "Rise", titleClass: "text-red-500", description: "Volatility 100 (1s) Index", amount: "10.00 USD", change: "+0.00 USD", changeClass: "text-green-500" }
+      ].map((card, index) => (
+        <div key={index} className="p-4 bg-white shadow-md rounded-lg mb-4 border-b border-gray-300">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className={`${card.titleClass} font-bold`}>{card.title}</div>
+              <div className="text-gray-500 text-sm">{card.description}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-gray-700">{card.amount}</div>
+              <div className={card.changeClass}>{card.change}</div>
+            </div>
           </div>
-          <div className="text-right">
-            <div className="text-gray-700">10.00 USD</div>
-            <div className="text-green-500">+0.00 USD</div>
-          </div>
+          <div className="text-gray-500 text-sm mt-2">0/10 ticks</div>
         </div>
-        <div className="text-gray-500 text-sm mt-2">0/10 ticks</div>
-      </div>
+      ))}
 
       {/* Order Details */}
       
@@ -37,32 +66,18 @@ const ContractDetailsPage: React.FC = () => {
       </div>
       <div className="mt-4 p-4 bg-white shadow-md rounded-lg border-b border-gray-300">
         <h2 className="text-md font-bold mb-4">Order details</h2>
-        <div className="grid grid-cols-2 gap-y-2">
-          <div className="col-span-2 flex justify-between border-b border-gray-300 py-2">
-            <span className="text-gray-500">Reference ID</span>
-            <span className="text-right">{id}</span>
+        {[
+          { label: "Reference ID", value: id },
+          { label: "Duration", value: "5 minutes" },
+          { label: "Barrier", value: "329879.6438" },
+          { label: "Stake", value: "10.00 USD" },
+          { label: "Potential payout", value: "11.00 USD" }
+        ].map((detail, index) => (
+          <div key={index} className="col-span-2 flex justify-between border-b border-gray-300 py-2">
+            <span className="text-gray-500">{detail.label}</span>
+            <span className="text-right">{detail.value}</span>
           </div>
-
-          <div className="col-span-2 flex justify-between border-b border-gray-300 py-2">
-            <span className="text-gray-500">Duration</span>
-            <span className="text-right">5 minutes</span>
-          </div>
-
-          <div className="col-span-2 flex justify-between border-b border-gray-300 py-2">
-            <span className="text-gray-500">Barrier</span>
-            <span className="text-right">329879.6438</span>
-          </div>
-
-          <div className="col-span-2 flex justify-between border-b border-gray-300 py-2">
-            <span className="text-gray-500">Stake</span>
-            <span className="text-right">10.00 USD</span>
-          </div>
-
-          <div className="col-span-2 flex justify-between py-2">
-            <span className="text-gray-500">Potential payout</span>
-            <span className="text-right">11.00 USD</span>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* How Do I Earn a Payout */}
@@ -75,45 +90,20 @@ const ContractDetailsPage: React.FC = () => {
 
       <div className="mt-4 p-4 bg-white shadow-md rounded-lg mb-12 border-b border-gray-300">
         <h2 className="text-md font-bold mb-4">Entry & exit details</h2>
-        <div className="grid grid-cols-2 gap-y-4">
-          <div className="col-span-2 flex justify-between border-b border-gray-300 pb-2">
-            <span className="text-gray-500">Start time</span>
+        {[
+          { label: "Start time", value: "01 Jan 2024", subValue: "16:00:02 GMT" },
+          { label: "Entry spot", value: "238972.7174", subValue: "01 Jan 2024, 16:00:02 GMT" },
+          { label: "Exit time", value: "01 Jan 2024", subValue: "17:20:36 GMT" },
+          { label: "Exit spot", value: "283297.3823", subValue: "01 Jan 2024, 17:20:36 GMT" }
+        ].map((detail, index) => (
+          <div key={index} className="col-span-2 flex justify-between border-b border-gray-300 pb-2">
+            <span className="text-gray-500">{detail.label}</span>
             <div className="text-right">
-              <span className="font-bold">01 Jan 2024</span>
-              <div className="text-gray-500 text-sm">16:00:02 GMT</div>
+              <span className="font-bold block">{detail.value}</span>
+              {detail.subValue && <span className="text-gray-500 text-sm block">{detail.subValue}</span>}
             </div>
           </div>
-
-          <div className="col-span-2 flex justify-between border-b border-gray-300 pb-2">
-            <span className="text-gray-500">Entry spot</span>
-            <div className="text-right">
-            <div className="text-right">
-              <span className="font-bold block">238972.7174</span>
-              <span className="text-gray-500 text-sm block">01 Jan 2024</span>
-              <span className="text-gray-500 text-sm block">16:00:02 GMT</span>
-            </div>
-            </div>
-          </div>
-
-          <div className="col-span-2 flex justify-between border-b border-gray-300 pb-2">
-            <span className="text-gray-500">Exit time</span>
-            <div className="text-right">
-              <span className="font-bold">01 Jan 2024</span>
-              <div className="text-gray-500 text-sm">17:20:36 GMT</div>
-            </div>
-          </div>
-
-          <div className="col-span-2 flex justify-between pb-2">
-            <span className="text-gray-500">Exit spot</span>
-            <div className="text-right">
-            <div className="text-right">
-              <span className="font-bold block">283297.3823</span>
-              <span className="text-gray-500 text-sm block">01 Jan 2024</span>
-              <span className="text-gray-500 text-sm block">17:20:36 GMT</span>
-            </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       </div>

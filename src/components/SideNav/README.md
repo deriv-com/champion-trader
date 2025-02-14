@@ -1,6 +1,7 @@
 # Side Navigation and Menu Sidebar
 
 ## Overview
+A responsive navigation sidebar component that appears in landscape mode, providing easy access to main application routes.
 This directory contains components related to the application's side navigation, including:
 - `SideNav.tsx`: The main navigation bar.
 - `MenuSidebar.tsx`: A collapsible sidebar for menu options.
