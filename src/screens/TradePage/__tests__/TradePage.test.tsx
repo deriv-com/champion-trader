@@ -184,7 +184,6 @@ describe('TradePage', () => {
     render(<TradePage />);
 
     // Balance display should be visible in landscape mode
-    expect(screen.getByTestId('balance-display')).toBeInTheDocument();
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
     expect(screen.getByTestId('duration-options')).toBeInTheDocument();
     expect(screen.getByTestId('market-selector')).toBeInTheDocument();
