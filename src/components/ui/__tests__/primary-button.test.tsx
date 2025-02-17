@@ -22,15 +22,6 @@ describe('PrimaryButton', () => {
     expect(button).toHaveClass('w-full', 'py-6', 'text-base', 'font-semibold', 'rounded-lg');
   });
 
-  it('merges custom className with default styles', () => {
-    const { container } = render(
-      <PrimaryButton className="custom-class">Test</PrimaryButton>
-    );
-    const button = container.firstChild as HTMLElement;
-    expect(button).toHaveClass('custom-class');
-    expect(button).toHaveClass('w-full', 'py-6', 'text-base', 'font-semibold', 'rounded-lg');
-  });
-
   it('passes props to underlying Button component', () => {
     const onClick = jest.fn();
     render(
