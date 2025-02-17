@@ -1,19 +1,19 @@
 import React from "react";
 import { useClientStore } from "@/stores/clientStore";
 import { LogOut } from "lucide-react";
-import { accountData } from "@/config/accountConfig";
+import { useAccount } from "@/hooks/useAccount";
 import { CurrencyIcon } from "@/components/Currency/CurrencyIcon";
 import { useLogout } from "@/hooks/useLogout";
 
 export const AccountInfo: React.FC = () => {
+  const { balance, currency } = useClientStore();
   const {
-    balance,
-    currency,
     accountType,
-    setAccountType,
     selectedAccountId,
-    setSelectedAccountId,
-  } = useClientStore();
+    switchAccountType,
+    selectAccount,
+    getAvailableAccounts,
+  } = useAccount();
   const logout = useLogout();
 
   return (
@@ -25,7 +25,7 @@ export const AccountInfo: React.FC = () => {
               ? "font-semibold border-b-2 border-black"
               : "text-gray-500"
           }`}
-          onClick={() => setAccountType("real")}
+          onClick={() => switchAccountType("real")}
         >
           Real
         </button>
@@ -35,7 +35,7 @@ export const AccountInfo: React.FC = () => {
               ? "font-semibold border-b-2 border-black"
               : "text-gray-500"
           }`}
-          onClick={() => setAccountType("demo")}
+          onClick={() => switchAccountType("demo")}
         >
           Demo
         </button>
@@ -46,13 +46,13 @@ export const AccountInfo: React.FC = () => {
           <h3 className="text-sm font-semibold">Trading account</h3>
           {accountType === "real" ? (
             <div className="flex flex-col gap-2">
-              {accountData.map((account) => (
+              {getAvailableAccounts().map((account) => (
                 <button
                   key={account.id}
                   className={`flex items-center p-2 rounded hover:bg-gray-50 ${
                     selectedAccountId === account.id ? "bg-gray-50" : ""
                   }`}
-                  onClick={() => setSelectedAccountId(account.id)}
+                  onClick={() => selectAccount(account.id)}
                 >
                   <div className="w-8 h-8 flex items-center justify-center mr-2">
                     <CurrencyIcon currency={account.id} />

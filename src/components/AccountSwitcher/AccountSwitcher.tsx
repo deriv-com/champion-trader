@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useClientStore } from '@/stores/clientStore';
-import { accountData } from '@/config/accountConfig';
+import { useAccount } from '@/hooks/useAccount';
 import { AccountPopover, AccountPopoverContent, AccountPopoverTrigger } from '@/components/ui/account-popover';
 import { AccountInfo } from './AccountInfo';
 import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 
 export const AccountSwitcher: React.FC = () => {
-  const { balance, accountType, selectedAccountId } = useClientStore();
+  const { balance } = useClientStore();
+  const { accountType, selectedAccount } = useAccount();
   const { isMobile } = useDeviceDetection();
   const [isOpen, setIsOpen] = useState(false);
-  const selectedAccount = accountData.find(account => account.id === selectedAccountId);
 
   return (
     <AccountPopover onOpenChange={setIsOpen}>
