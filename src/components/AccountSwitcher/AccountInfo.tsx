@@ -2,6 +2,7 @@ import React from 'react';
 import { useClientStore } from '@/stores/clientStore';
 import { LogOut } from 'lucide-react';
 import { accountData } from '@/config/accountConfig';
+import { CurrencyIcon } from '@/components/Currency/CurrencyIcon';
 
 export const AccountInfo: React.FC = () => {
   const { balance, currency, accountType, logout, setAccountType, selectedAccountId, setSelectedAccountId } = useClientStore();
@@ -45,8 +46,8 @@ export const AccountInfo: React.FC = () => {
                   }`}
                   onClick={() => setSelectedAccountId(account.id)}
                 >
-                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-white">{account.symbol}</span>
+                  <div className="w-8 h-8 flex items-center justify-center mr-2">
+                    <CurrencyIcon currency={account.id} />
                   </div>
                   <div className="flex-1 text-left">
                     <p className="text-sm font-semibold">{account.displayName}</p>
@@ -61,8 +62,8 @@ export const AccountInfo: React.FC = () => {
           ) : (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-white">D</span>
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <CurrencyIcon isVirtual />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">Demo Account</p>
