@@ -1,5 +1,5 @@
 import React from "react";
-import { TradeChart as BaseChart } from "./Chart1";
+import { TradeChart as BaseChart } from "./Chart";
 import { ChartErrorBoundary } from "./ChartErrorBoundary";
 
 const ChartWithErrorBoundary = (props: React.ComponentProps<typeof BaseChart>) => {
