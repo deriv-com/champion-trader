@@ -49,17 +49,21 @@ export const AccountInfo: React.FC = () => {
           </div>
 
           <div>
-            <p className="text-sm text-gray-500">Total assets</p>
-            <p className="font-semibold">
-              {balance} {currency}
-            </p>
+            <div className="flex items-center gap-2 justify-between">
+              <p className="text-sm text-gray-500 pb-2">Total assets</p>
+              <p className="text-sm font-semibold">
+                {balance} {currency}
+              </p>
+            </div>
             <p className="text-xs text-gray-400">Total assets in your Deriv accounts.</p>
           </div>
 
-          <button className="flex items-center gap-2 text-gray-500 hover:text-gray-700">
-            <span>Log out</span>
-            <LogOut className="w-5 h-5" />
-          </button>
+          <div className="flex justify-end">
+            <button className="flex items-center gap-2 text-gray-700">
+              <span>Log out</span>
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import React from 'react';
-import { BalanceDisplay } from '@/components/BalanceDisplay';
-import { useOrientationStore } from '@/stores/orientationStore';
-import { useClientStore } from '@/stores/clientStore';
+import React from "react";
+import { useOrientationStore } from "@/stores/orientationStore";
+import { useClientStore } from "@/stores/clientStore";
+import { AccountSwitcher } from "@/components/AccountSwitcher";
 
 interface HeaderProps {
   className?: string;
@@ -11,17 +11,20 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  className = '',
+  className = "",
   onDeposit,
-  depositLabel = 'Deposit',
-  loginUrl = '/login',
+  depositLabel = "Deposit",
+  loginUrl = "/login",
 }) => {
   const { isLandscape } = useOrientationStore();
   const { isLoggedIn } = useClientStore();
   const showLogo = isLandscape || !isLoggedIn;
 
   return (
-    <header className={`flex items-center gap-4 px-4 py-2 border-b border-opacity-10 bg-white ${className}`} id="header">
+    <header
+      className={`flex items-center gap-4 px-4 py-2 border-b border-opacity-10 bg-white ${className}`}
+      id="header"
+    >
       {showLogo && (
         <a href="/">
           <img
@@ -31,16 +34,30 @@ export const Header: React.FC<HeaderProps> = ({
           />
         </a>
       )}
-      <div className={`flex items-center ${isLandscape ? 'justify-end gap-4' : 'justify-end'} flex-1`}>
-        <div className={isLandscape ? 'flex items-center gap-4' : 'flex-1'}>
-          {isLoggedIn && <BalanceDisplay />}
+      <div
+        className={`flex items-center ${
+          isLandscape ? "justify-end gap-4" : "justify-end"
+        } flex-1`}
+      >
+        <div className={isLandscape ? "flex items-center gap-4" : "flex-1"}>
+          {isLoggedIn && (
+            <div className={isLandscape ? "px-4" : ""}>
+              <AccountSwitcher />
+            </div>
+          )}
         </div>
         {isLoggedIn ? (
-          <button className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600" onClick={onDeposit}>
+          <button
+            className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600"
+            onClick={onDeposit}
+          >
             {depositLabel}
           </button>
         ) : (
-          <a href={loginUrl} className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600">
+          <a
+            href={loginUrl}
+            className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600"
+          >
             Log in
           </a>
         )}
