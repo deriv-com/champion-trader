@@ -1,33 +1,41 @@
-import React from 'react';
-import { useClientStore } from '@/stores/clientStore';
-import { LogOut } from 'lucide-react';
-import { accountData } from '@/config/accountConfig';
-import { CurrencyIcon } from '@/components/Currency/CurrencyIcon';
+import React from "react";
+import { useClientStore } from "@/stores/clientStore";
+import { LogOut } from "lucide-react";
+import { accountData } from "@/config/accountConfig";
+import { CurrencyIcon } from "@/components/Currency/CurrencyIcon";
+import { useLogout } from "@/hooks/useLogout";
 
 export const AccountInfo: React.FC = () => {
-  const { balance, currency, accountType, logout, setAccountType, selectedAccountId, setSelectedAccountId } = useClientStore();
-  // const selectedAccount = accountData.find(account => account.id === selectedAccountId);
+  const {
+    balance,
+    currency,
+    accountType,
+    setAccountType,
+    selectedAccountId,
+    setSelectedAccountId,
+  } = useClientStore();
+  const logout = useLogout();
 
   return (
     <div className="w-full min-w-[280px]">
       <div className="flex border-b border-gray-200 text-sm">
         <button
           className={`flex-1 py-2 text-center ${
-            accountType === 'real'
-              ? 'font-semibold border-b-2 border-black'
-              : 'text-gray-500'
+            accountType === "real"
+              ? "font-semibold border-b-2 border-black"
+              : "text-gray-500"
           }`}
-          onClick={() => setAccountType('real')}
+          onClick={() => setAccountType("real")}
         >
           Real
         </button>
         <button
           className={`flex-1 py-2 text-center ${
-            accountType === 'demo'
-              ? 'font-semibold border-b-2 border-black'
-              : 'text-gray-500'
+            accountType === "demo"
+              ? "font-semibold border-b-2 border-black"
+              : "text-gray-500"
           }`}
-          onClick={() => setAccountType('demo')}
+          onClick={() => setAccountType("demo")}
         >
           Demo
         </button>
@@ -36,13 +44,13 @@ export const AccountInfo: React.FC = () => {
       <div className="p-4">
         <div className="flex flex-col gap-4">
           <h3 className="text-sm font-semibold">Trading account</h3>
-          {accountType === 'real' ? (
+          {accountType === "real" ? (
             <div className="flex flex-col gap-2">
               {accountData.map((account) => (
                 <button
                   key={account.id}
                   className={`flex items-center p-2 rounded hover:bg-gray-50 ${
-                    selectedAccountId === account.id ? 'bg-gray-50' : ''
+                    selectedAccountId === account.id ? "bg-gray-50" : ""
                   }`}
                   onClick={() => setSelectedAccountId(account.id)}
                 >
@@ -50,12 +58,14 @@ export const AccountInfo: React.FC = () => {
                     <CurrencyIcon currency={account.id} />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold">{account.displayName}</p>
-                    <p className="text-xs text-gray-500">{account.accountNumber}</p>
+                    <p className="text-sm font-semibold">
+                      {account.displayName}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {account.accountNumber}
+                    </p>
                   </div>
-                  <p className="text-sm ml-4">
-                    0.00 {account.currency}
-                  </p>
+                  <p className="text-sm ml-4">0.00 {account.currency}</p>
                 </button>
               ))}
             </div>
@@ -84,12 +94,17 @@ export const AccountInfo: React.FC = () => {
                 {balance} {currency}
               </p>
             </div>
-            <p className="text-xs text-gray-400">Total assets in your Deriv accounts.</p>
+            <p className="text-xs text-gray-400">
+              Total assets in your Deriv accounts.
+            </p>
           </div>
 
           <div className="w-full h-1 bg-gray-100"></div>
           <div className="flex justify-end text-sm">
-            <button className="flex items-center gap-2 text-gray-700" onClick={logout}>
+            <button
+              className="flex items-center gap-2 text-gray-700"
+              onClick={logout}
+            >
               <span>Log out</span>
               <LogOut className="w-5 h-5" />
             </button>

@@ -1,44 +1,39 @@
-import { create } from 'zustand';
-
-import { accountData } from '@/config/accountConfig';
+import { create } from "zustand";
+import { accountData } from "@/config/accountConfig";
 
 interface ClientState {
   token: string | null;
   isLoggedIn: boolean;
   balance: string;
   currency: string;
-  accountType: 'real' | 'demo';
+  accountType: "real" | "demo";
   selectedAccountId: string;
   setToken: (token: string | null) => void;
   setBalance: (balance: string, currency: string) => void;
-  setAccountType: (type: 'real' | 'demo') => void;
+  setAccountType: (type: "real" | "demo") => void;
   setSelectedAccountId: (id: string) => void;
-  logout: () => void;
+  resetState: () => void;
 }
 
 export const useClientStore = create<ClientState>((set) => ({
   isLoggedIn: false,
   token: null,
-  balance: '0',
-  currency: 'USD',
-  accountType: 'demo',
+  balance: "0",
+  currency: "USD",
+  accountType: "demo",
   selectedAccountId: accountData[0].id,
-  setToken: (token: string | null) => 
-    set({ token, isLoggedIn: !!token }),
-  setBalance: (balance: string, currency: string) => 
-    set({ balance, currency }),
+  setToken: (token: string | null) => set({ token, isLoggedIn: !!token }),
+  setBalance: (balance: string, currency: string) => set({ balance, currency }),
   setAccountType: (type) => set({ accountType: type }),
   setSelectedAccountId: (id: string) => set({ selectedAccountId: id }),
-  logout: () => {
-    localStorage.removeItem("loginToken");
-    set({ 
-      token: null, 
-      isLoggedIn: false, 
-      balance: '0', 
-      currency: 'USD', 
-      accountType: 'demo',
-      selectedAccountId: accountData[0].id 
+  resetState: () => {
+    set({
+      token: null,
+      isLoggedIn: false,
+      balance: "0",
+      currency: "USD",
+      accountType: "demo",
+      selectedAccountId: accountData[0].id,
     });
-    window.location.href = "/trade";
   },
 }));
