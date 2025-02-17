@@ -23,6 +23,9 @@ export const useClientStore = create<ClientState>((set) => ({
   setBalance: (balance: string, currency: string) => 
     set({ balance, currency }),
   setAccountType: (type) => set({ accountType: type }),
-  logout: () =>
-    set({ token: null, isLoggedIn: false, balance: '0', currency: 'USD', accountType: 'demo' }),
+  logout: () => {
+    localStorage.removeItem("loginToken");
+    set({ token: null, isLoggedIn: false, balance: '0', currency: 'USD', accountType: 'demo' });
+    window.location.href = "/trade";
+  },
 }));

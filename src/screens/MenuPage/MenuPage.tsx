@@ -6,13 +6,7 @@ import { Home, Moon, LogOut, ExternalLink } from "lucide-react";
 
 export const MenuPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout, isLoggedIn } = useClientStore();
-
-  const handleLogout = () => {
-    localStorage.removeItem("loginToken");
-    logout();
-    navigate("/trade");
-  };
+  const { isLoggedIn, logout } = useClientStore();
 
   return (
     <div className="flex flex-col flex-1 p-4">
@@ -40,7 +34,7 @@ export const MenuPage: React.FC = () => {
         {isLoggedIn && (
           <>
             <button
-              onClick={handleLogout}
+              onClick={logout}
               className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
             >
               <LogOut className="w-5 h-5" />
