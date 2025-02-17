@@ -1,16 +1,20 @@
-import React from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "./button";
+import React from "react"
+import { cn } from "@/lib/utils"
+import { Button } from "./button"
 
-export interface MobileNumberInputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: boolean;
-  errorMessage?: string;
-  onIncrement?: () => void;
-  onDecrement?: () => void;
-  prefix?: string;
+export interface MobileNumberInputFieldProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean
+  errorMessage?: string
+  onIncrement?: () => void
+  onDecrement?: () => void
+  prefix?: string
 }
 
-export const MobileNumberInputField = React.forwardRef<HTMLInputElement, MobileNumberInputFieldProps>(
+export const MobileNumberInputField = React.forwardRef<
+  HTMLInputElement,
+  MobileNumberInputFieldProps
+>(
   (
     {
       error,
@@ -29,7 +33,7 @@ export const MobileNumberInputField = React.forwardRef<HTMLInputElement, MobileN
           className={cn(
             "flex items-center w-full h-[56px]",
             "bg-white rounded-lg border border-gray-200",
-            error && "border-red-500",
+            error && "border-red-500 bg-[rgba(230,25,14,0.08)]",
             className
           )}
         >
@@ -43,13 +47,13 @@ export const MobileNumberInputField = React.forwardRef<HTMLInputElement, MobileN
           </Button>
           <div className="flex items-center justify-center w-full">
             {prefix && (
-              <span className="font-ibm text-[0.75rem] sm:text-[1rem] font-normal leading-[1.125rem] sm:leading-7 text-black/48 mr-1">
+              <span className="font-ibm-plex text-base font-normal leading-6 text-[rgba(0,0,0,0.24)]">
                 {prefix}
               </span>
             )}
             <input
               ref={ref}
-              className="w-full bg-transparent focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-black"
+              className="w-full bg-transparent ml-[-32px] focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-black"
               inputMode="decimal"
               {...props}
             />
@@ -64,13 +68,13 @@ export const MobileNumberInputField = React.forwardRef<HTMLInputElement, MobileN
           </Button>
         </div>
         {error && errorMessage && (
-          <p className="text-red-500 mt-2 px-4 font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]">
+          <p className="text-red-500 font-ibm-plex text-xs font-normal leading-[18px]">
             {errorMessage}
           </p>
         )}
       </div>
-    );
+    )
   }
-);
+)
 
-MobileNumberInputField.displayName = "MobileNumberInputField";
+MobileNumberInputField.displayName = "MobileNumberInputField"

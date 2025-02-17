@@ -11,6 +11,7 @@ import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
 import { useClientStore } from "@/stores/clientStore";
 import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
+import { PayoutDisplay } from "@/components/Stake/components/PayoutDisplay";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -51,6 +52,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
   const { token, currency } = useClientStore();
   const tradeActions = useTradeActions();
   const config = tradeTypeConfigs[trade_type];
+  const [isStakeSelected, setIsStakeSelected] = useState(false);
+  const [stakeError, setStakeError] = useState(false);
 
   const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
     // Initialize states for all buttons in the current trade type
@@ -184,21 +187,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       id="trade-section"
       className={`${
         isLandscape
-          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start border-l border-gray-300 border-opacity-20"
+          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start  "
           : ""
       }`}
     >
       <div
-        className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"}
+        className={isLandscape ? "pt-4 px-4 bg-[rgba(246,247,248,1)]" : "pt-1 px-4"}
         id="how-to-trade"
       >
         <HowToTrade />
       </div>
-      <div id="trade-fields">
-        {isLandscape ? (
-          // Desktop layout
+      {isLandscape ? (
+        // Desktop layout
+        <div className="flex-1 bg-[rgba(246,247,248,1)]">
           <div
-            className="flex flex-col gap-4 pt-4 pb-2 px-4"
+            className="flex flex-col gap-0 pt-4 pb-2 px-4"
             onMouseDown={() => {
               // When clicking anywhere in the trade fields section, hide any open controllers
               const event = new MouseEvent("mousedown", {
@@ -218,101 +221,156 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
               )}
               {config.fields.stake && (
                 <Suspense fallback={<div>Loading stake field...</div>}>
-                  <DesktopTradeFieldCard>
-                    <StakeField className="w-full" />
-                  </DesktopTradeFieldCard>
+                  <div className="bg-white rounded-lg">
+                    <DesktopTradeFieldCard isSelected={isStakeSelected} error={stakeError}>
+                      <StakeField 
+                        className="w-full" 
+                        onSelect={(selected) => setIsStakeSelected(selected)}
+                        onError={(error) => setStakeError(error)}
+                      />
+                    </DesktopTradeFieldCard>
+                    <div className="mt-2 p-2">
+                      <PayoutDisplay
+                        hasError={Boolean(stake && parseFloat(stake) > 50000)}
+                        loading={Object.values(buttonStates).some(state => state.loading)}
+                        loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
+                          ...acc,
+                          [key]: buttonStates[key].loading
+                        }), {})}
+                        maxPayout={50000}
+                        payoutValues={Object.keys(buttonStates).reduce((acc, key) => ({
+                          ...acc,
+                          [key]: buttonStates[key].payout
+                        }), {})}
+                      />
+                    </div>
+                  </div>
                 </Suspense>
               )}
             </div>
             {config.fields.allowEquals && <EqualTradeController />}
           </div>
-        ) : (
-          // Mobile layout
-          <div className="p-4">
-            <ResponsiveTradeParamLayout>
-              {config.fields.duration && (
-                <Suspense fallback={<div>Loading duration field...</div>}>
-                  <MobileTradeFieldCard
-                    onClick={() => {
-                      const durationField = document.querySelector(
-                        'button[aria-label^="Duration"]'
-                      );
-                      if (durationField) {
-                        (durationField as HTMLButtonElement).click();
-                      }
-                    }}
-                  >
-                    <DurationField />
-                  </MobileTradeFieldCard>
-                </Suspense>
-              )}
-              {config.fields.stake && (
-                <Suspense fallback={<div>Loading stake field...</div>}>
-                  <MobileTradeFieldCard
-                    onClick={() => {
-                      const stakeField = document.querySelector(
-                        'button[aria-label^="Stake"]'
-                      );
-                      if (stakeField) {
-                        (stakeField as HTMLButtonElement).click();
-                      }
-                    }}
-                  >
-                    <StakeField />
-                  </MobileTradeFieldCard>
-                </Suspense>
-              )}
-            </ResponsiveTradeParamLayout>
-            {config.fields.allowEquals && (
-              <Suspense fallback={<div>Loading equals controller...</div>}>
-                <div className="mt-4">
-                  <EqualTradeController />
-                </div>
-              </Suspense>
-            )}
-          </div>
-        )}
-      </div>
 
-      <div
-        className={`flex ${isLandscape ? "flex-col py-2" : "pt-0"} gap-2 p-4`}
-        id="trade-buttons"
-      >
-        {config.buttons.map((button) => (
-          <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
-            <TradeButton
-              className={`${button.className} rounded-[32px] ${
-                isLandscape ? "h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm" : ""
-              }`}
-              title={button.title}
-              label={button.label}
-              value={
-                buttonStates[button.actionName]?.loading
-                  ? "Loading..."
-                  : `${
-                      buttonStates[button.actionName]?.payout || 0
-                    } ${currency}`
-              }
-              title_position={button.position}
-              disabled={
-                buttonStates[button.actionName]?.loading ||
-                buttonStates[button.actionName]?.error !== null
-              }
-              loading={
-                buttonStates[button.actionName]?.loading ||
-                buttonStates[button.actionName]?.reconnecting
-              }
-              error={buttonStates[button.actionName]?.error}
-              onClick={() => {
-                const action = tradeActions[button.actionName];
-                if (action) {
-                  action();
-                }
-              }}
-            />
-          </Suspense>
-        ))}
-      </div>
+          <div className="flex flex-col py-2 gap-2 p-4" id="trade-buttons">
+            {config.buttons.map((button) => (
+              <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
+                <TradeButton
+                  className={`${button.className} rounded-[32px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
+                  title={button.title}
+                  label={button.label}
+                  value={
+                    buttonStates[button.actionName]?.loading
+                      ? "Loading..."
+                      : `${
+                          buttonStates[button.actionName]?.payout || 0
+                        } ${currency}`
+                  }
+                  title_position={button.position}
+                  disabled={
+                    buttonStates[button.actionName]?.loading ||
+                    buttonStates[button.actionName]?.error !== null
+                  }
+                  loading={
+                    buttonStates[button.actionName]?.loading ||
+                    buttonStates[button.actionName]?.reconnecting
+                  }
+                  error={buttonStates[button.actionName]?.error}
+                  onClick={() => {
+                    const action = tradeActions[button.actionName];
+                    if (action) {
+                      action();
+                    }
+                  }}
+                />
+              </Suspense>
+            ))}
+          </div>
+        </div>
+      ) : (
+        // Mobile layout
+        <>
+          <div id="trade-fields" className="flex flex-col">
+            <div className="p-4">
+              <ResponsiveTradeParamLayout>
+                {config.fields.duration && (
+                  <Suspense fallback={<div>Loading duration field...</div>}>
+                    <MobileTradeFieldCard
+                      onClick={() => {
+                        const durationField = document.querySelector(
+                          'button[aria-label^="Duration"]'
+                        );
+                        if (durationField) {
+                          (durationField as HTMLButtonElement).click();
+                        }
+                      }}
+                    >
+                      <DurationField />
+                    </MobileTradeFieldCard>
+                  </Suspense>
+                )}
+                {config.fields.stake && (
+                  <Suspense fallback={<div>Loading stake field...</div>}>
+                    <MobileTradeFieldCard
+                      onClick={() => {
+                        const stakeField = document.querySelector(
+                          'button[aria-label^="Stake"]'
+                        );
+                        if (stakeField) {
+                          (stakeField as HTMLButtonElement).click();
+                        }
+                      }}
+                    >
+                      <StakeField />
+                    </MobileTradeFieldCard>
+                  </Suspense>
+                )}
+              </ResponsiveTradeParamLayout>
+              {config.fields.allowEquals && (
+                <Suspense fallback={<div>Loading equals controller...</div>}>
+                  <div className="mt-4">
+                    <EqualTradeController />
+                  </div>
+                </Suspense>
+              )}
+            </div>
+          </div>
+
+          <div className="flex pt-0 gap-2 p-4" id="trade-buttons">
+            {config.buttons.map((button) => (
+              <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
+                <TradeButton
+                  className={`${button.className} rounded-[32px]`}
+                  title={button.title}
+                  label={button.label}
+                  value={
+                    buttonStates[button.actionName]?.loading
+                      ? "Loading..."
+                      : `${
+                          buttonStates[button.actionName]?.payout || 0
+                        } ${currency}`
+                  }
+                  title_position={button.position}
+                  disabled={
+                    buttonStates[button.actionName]?.loading ||
+                    buttonStates[button.actionName]?.error !== null
+                  }
+                  loading={
+                    buttonStates[button.actionName]?.loading ||
+                    buttonStates[button.actionName]?.reconnecting
+                  }
+                  error={buttonStates[button.actionName]?.error}
+                  onClick={() => {
+                    const action = tradeActions[button.actionName];
+                    if (action) {
+                      action();
+                    }
+                  }}
+                />
+              </Suspense>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

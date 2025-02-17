@@ -26,7 +26,7 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed top-0 left-[65px] h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${
+      className={`fixed top-0 left-[65px] h-full w-[20%] bg-gray-100 shadow-lg transform transition-all duration-500 ease-in-out ${
         isOpen ? "translate-x-0 opacity-100 " : "-translate-x-full opacity-0"
       } z-[50]`}
       ref={sidebarRef}
