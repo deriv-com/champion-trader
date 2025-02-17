@@ -9,7 +9,7 @@ import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 export const AccountSwitcher: React.FC = () => {
   const { balance } = useClientStore();
   const { accountType, selectedAccount } = useAccount();
-  const { isMobile } = useDeviceDetection();
+  const { isDesktop } = useDeviceDetection();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -18,7 +18,7 @@ export const AccountSwitcher: React.FC = () => {
         <button
           data-testid="balance-display"
           className={`flex flex-col relative ${
-            isMobile ? 'items-start' : 'items-end'
+            isDesktop ? 'items-end' : 'items-start'
           }`}
         >
           <div className="flex items-center gap-1">
@@ -37,7 +37,7 @@ export const AccountSwitcher: React.FC = () => {
         </button>
       </AccountPopoverTrigger>
       <AccountPopoverContent
-        align={isMobile ? "start" : "end"}
+        align={isDesktop ? "end" : "start"}
       >
         <AccountInfo />
       </AccountPopoverContent>
