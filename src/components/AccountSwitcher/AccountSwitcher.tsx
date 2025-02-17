@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useClientStore } from '@/stores/clientStore';
+import { accountData } from '@/config/accountConfig';
 import { AccountPopover, AccountPopoverContent, AccountPopoverTrigger } from '@/components/ui/account-popover';
 import { AccountInfo } from './AccountInfo';
 import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 
 export const AccountSwitcher: React.FC = () => {
-  const { balance, currency, accountType } = useClientStore();
+  const { balance, accountType, selectedAccountId } = useClientStore();
   const { isMobile } = useDeviceDetection();
   const [isOpen, setIsOpen] = useState(false);
+  const selectedAccount = accountData.find(account => account.id === selectedAccountId);
 
   return (
     <AccountPopover onOpenChange={setIsOpen}>
@@ -30,7 +32,7 @@ export const AccountSwitcher: React.FC = () => {
             )}
           </div>
           <span className="text-sm font-semibold align-start">
-            {balance} {currency}
+            {balance} {accountType === 'real' ? selectedAccount?.currency : 'USD'}
           </span>
         </button>
       </AccountPopoverTrigger>
