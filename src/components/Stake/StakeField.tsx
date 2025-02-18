@@ -1,69 +1,115 @@
-import React, { useState, useRef } from "react";
-import { useTradeStore } from "@/stores/tradeStore";
-import { useClientStore } from "@/stores/clientStore";
-import { useBottomSheetStore } from "@/stores/bottomSheetStore";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
-import TradeParam from "@/components/TradeFields/TradeParam";
-import { StakeController } from "./StakeController";
-import { Popover } from "@/components/ui/popover";
+import React from "react"
+import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import TradeParam from "@/components/TradeFields/TradeParam"
+import { Tooltip } from "@/components/ui/tooltip"
+import { useStakeField } from "./hooks/useStakeField"
+import { cn } from "@/lib/utils"
 
 interface StakeFieldProps {
-  className?: string;
+  className?: string
+  onSelect?: (isSelected: boolean) => void
+  onError?: (error: boolean) => void
 }
 
-export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
-  const { stake } = useTradeStore();
-  const { currency } = useClientStore();
-  const { setBottomSheet } = useBottomSheetStore();
-  const { isDesktop } = useDeviceDetection();
-  const [isOpen, setIsOpen] = useState(false);
-  const popoverRef = useRef<{ isClosing: boolean }>({ isClosing: false });
+export const StakeField: React.FC<StakeFieldProps> = ({
+  className,
+  onSelect,
+  onError,
+}) => {
+  const { isDesktop } = useDeviceDetection()
+  const {
+    stake,
+    currency,
+    error,
+    errorMessage,
+    localValue,
+    inputRef,
+    containerRef,
+    handleSelect,
+    handleChange,
+    handleIncrement,
+    handleDecrement,
+    handleMobileClick,
+  } = useStakeField({ onSelect, onError })
 
-  const handleClick = () => {
-    if (isDesktop) {
-      if (!popoverRef.current.isClosing) {
-        setIsOpen(!isOpen);
-      }
-    } else {
-      setBottomSheet(true, "stake", "400px");
-    }
-  };
-
-  const { setStake } = useTradeStore();
-
-  const handleClose = () => {
-    setStake(stake); // Ensure the latest stake value is saved
-    popoverRef.current.isClosing = true;
-    setIsOpen(false);
-    // Reset after a longer delay
-    setTimeout(() => {
-      popoverRef.current.isClosing = false;
-    }, 300); // 300ms should be enough for the animation to complete
-  };
+  if (!isDesktop) {
+    return (
+      <div className="flex flex-col">
+        <div
+          className={cn(
+            error ? "bg-[rgba(230,25,14,0.08)]" : "bg-[rgba(246,247,248,1)]",
+            "rounded-lg"
+          )}
+        >
+          <TradeParam
+            label="Stake"
+            value={`${stake} ${currency}`}
+            onClick={handleMobileClick}
+            className={className}
+          />
+        </div>
+        {error && errorMessage && (
+          <div className="mt-1 px-2">
+            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
+              {errorMessage}
+            </span>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
-    <div className="relative">
-      <TradeParam
-        label="Stake"
-        value={`${stake} ${currency}`}
-        onClick={handleClick}
-        className={className}
-      />
-
-      {isDesktop && isOpen && (
-        <Popover
-          isOpen={isOpen}
-          onClose={handleClose}
-          style={{
-            position: 'absolute',
-            right: '100%',
-            top: '-8px',
-            marginRight: '16px'
-          }}
-        >
-          <StakeController />
-        </Popover>
-      )}
+    <div
+      className={`flex flex-col ${className}`}
+      onClick={() => handleSelect(true)}
+      onBlur={(e) => {
+        // Only blur if we're not clicking inside the component
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          handleSelect(false)
+        }
+      }}
+      tabIndex={0}
+    >
+      <div ref={containerRef} className="flex rounded-lg h-[48px]">
+        <div className="flex flex-col flex-1 justify-between">
+          <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
+            Stake ({currency})
+          </span>
+          <div className="relative">
+            <input
+              ref={inputRef}
+              type="text"
+              value={`${localValue}`}
+              onChange={handleChange}
+              onFocus={() => handleSelect(true)}
+              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
+              aria-label="Stake amount"
+            />
+          </div>
+        </div>
+        <div className="flex items-center space-x-2 ml-4">
+          <button
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+            onClick={handleDecrement}
+            aria-label="Decrease stake"
+          >
+            <span className="text-black text-2xl leading-none flex items-center justify-center">
+              −
+            </span>
+          </button>
+          <button
+            className="w-8 h-8 rounded-full  flex items-center justify-center transition-colors"
+            onClick={handleIncrement}
+            aria-label="Increase stake"
+          >
+            <span className="text-black text-2xl leading-none flex items-center justify-center">
+              +
+            </span>
+          </button>
+        </div>
+      </div>
+      <Tooltip />
     </div>
-  );
-};
+  )
+}

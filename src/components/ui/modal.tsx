@@ -49,43 +49,37 @@ export const Modal = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center">
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
-          "relative bg-white rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-4",
+          "relative bg-white rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px]",
           className
         )}
       >
-          <div className="flex items-center justify-between p-4">
-            {title && <h2 className="text-xl font-bold px-4 pt-2">{title}</h2>}
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 transition-colors"
-              aria-label="Close modal"
-            >
-              <X />
-            </button>
-          </div>
-          {headerContent && (
-            <div className="px-4">
-              {headerContent}
-            </div>
-          )}
-
-        <div className="overflow-y-auto flex-1 pt-2 px-2">
-          {children}
-          {actionButton?.show && (
-            <div className="sticky bottom-0 w-full pt-4">
-              <PrimaryButton
-                className="w-full rounded-3xl"
-                onClick={actionButton.onClick}
-              >
-                {actionButton.label}
-              </PrimaryButton>
-            </div>
-          )}
+        <div className="flex items-center justify-between pb-6">
+          {title && <h2 className="text-xl font-bold">{title}</h2>}
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 transition-colors"
+            aria-label="Close modal"
+          >
+            <X />
+          </button>
         </div>
+        {headerContent && <div className="pb-4">{headerContent}</div>}
+
+        <div className="overflow-y-auto flex-1">{children}</div>
+        {actionButton?.show && (
+          <div className="pt-4">
+            <PrimaryButton
+              className="w-full rounded-3xl"
+              onClick={actionButton.onClick}
+            >
+              {actionButton.label}
+            </PrimaryButton>
+          </div>
+        )}
       </div>
     </div>
   );
