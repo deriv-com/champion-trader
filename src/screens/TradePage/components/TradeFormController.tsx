@@ -199,7 +199,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       </div>
       {isLandscape ? (
         // Desktop layout
-        <div className="flex-1 ">
+        <div className="flex-1">
           <div
             className="flex flex-col gap-0 pt-4 pb-2 px-4"
             onMouseDown={() => {
@@ -229,21 +229,23 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                         onError={(error) => setStakeError(error)}
                       />
                     </DesktopTradeFieldCard>
-                    <div className=" p-2">
-                      <PayoutDisplay
-                        hasError={Boolean(stake && parseFloat(stake) > 50000)}
-                        loading={Object.values(buttonStates).some(state => state.loading)}
-                        loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
-                          ...acc,
-                          [key]: buttonStates[key].loading
-                        }), {})}
-                        maxPayout={50000}
-                        payoutValues={Object.keys(buttonStates).reduce((acc, key) => ({
-                          ...acc,
-                          [key]: buttonStates[key].payout
-                        }), {})}
-                      />
-                    </div>
+                    {isStakeSelected && (
+                      <div className="p-2">
+                        <PayoutDisplay
+                          hasError={Boolean(stake && parseFloat(stake) > 50000)}
+                          loading={Object.values(buttonStates).some(state => state.loading)}
+                          loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
+                            ...acc,
+                            [key]: buttonStates[key].loading
+                          }), {})}
+                          maxPayout={50000}
+                          payoutValues={Object.keys(buttonStates).reduce((acc, key) => ({
+                            ...acc,
+                            [key]: buttonStates[key].payout
+                          }), {})}
+                        />
+                      </div>
+                    )}
                   </div>
                 </Suspense>
               )}
