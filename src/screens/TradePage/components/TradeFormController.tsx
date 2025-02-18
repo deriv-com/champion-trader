@@ -187,12 +187,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       id="trade-section"
       className={`${
         isLandscape
-          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start  "
+          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start px-4 py-2 "
           : ""
       }`}
     >
       <div
-        className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"}
+        className={isLandscape ? "p-2" : "pt-1 px-4"}
         id="how-to-trade"
       >
         <HowToTrade />
@@ -201,7 +201,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
         // Desktop layout
         <div className="flex-1">
           <div
-            className="flex flex-col gap-0 pt-4 pb-2 px-4"
+            className="flex flex-col gap-0"
             onMouseDown={() => {
               // When clicking anywhere in the trade fields section, hide any open controllers
               const event = new MouseEvent("mousedown", {
@@ -222,9 +222,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
               {config.fields.stake && (
                 <Suspense fallback={<div>Loading stake field...</div>}>
                   <div className="bg-white rounded-lg">
-                    <DesktopTradeFieldCard isSelected={isStakeSelected} error={stakeError}>
-                      <StakeField 
-                        className="w-full" 
+                    <DesktopTradeFieldCard
+                      isSelected={isStakeSelected}
+                      error={stakeError}
+                    >
+                      <StakeField
+                        className="w-full"
                         onSelect={(selected) => setIsStakeSelected(selected)}
                         onError={(error) => setStakeError(error)}
                       />
@@ -253,9 +256,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
             {config.fields.allowEquals && <EqualTradeController />}
           </div>
 
-          <div className="flex flex-col py-2 gap-2 p-4" id="trade-buttons">
+          <div className="flex flex-col p-2 gap-2" id="trade-buttons">
             {config.buttons.map((button) => (
-              <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
+              <Suspense
+                key={button.actionName}
+                fallback={<div>Loading...</div>}
+              >
                 <TradeButton
                   className={`${button.className} rounded-[32px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
                   title={button.title}
@@ -339,7 +345,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
 
           <div className="flex pt-0 gap-2 p-4" id="trade-buttons">
             {config.buttons.map((button) => (
-              <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
+              <Suspense
+                key={button.actionName}
+                fallback={<div>Loading...</div>}
+              >
                 <TradeButton
                   className={`${button.className} rounded-[32px]`}
                   title={button.title}

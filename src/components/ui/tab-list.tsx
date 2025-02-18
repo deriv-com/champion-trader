@@ -15,24 +15,30 @@ interface TabListProps extends BaseTabListProps {
   variant: "chip" | "vertical";
 }
 
-const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
+const ChipTabList: React.FC<BaseTabListProps> = ({
+  tabs,
+  selectedValue,
+  onSelect,
+}) => {
   return (
-    <div 
+    <div
       className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
       style={{
         scrollbarWidth: "none",
-        msOverflowStyle: "none"
-      }}>
-      <div className="flex gap-4 min-w-min px-4 py-2">
+        msOverflowStyle: "none",
+      }}
+    >
+      <div className="flex gap-4 min-w-min">
         {tabs.map(({ label, value }) => (
           <div key={value} className="shrink-0">
             <button
               onClick={() => onSelect(value)}
               className={`
                 px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${selectedValue === value
-                  ? "bg-gray-900 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ${
+                  selectedValue === value
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }
               `}
             >
@@ -45,7 +51,11 @@ const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect
   );
 };
 
-const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
+const VerticalTabList: React.FC<BaseTabListProps> = ({
+  tabs,
+  selectedValue,
+  onSelect,
+}) => {
   return (
     <div className="w-48 border-r border-gray-200">
       {tabs.map(({ label, value }) => (
@@ -54,9 +64,10 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSe
           onClick={() => onSelect(value)}
           className={`
             w-full text-left py-2 px-4 transition-colors
-            ${selectedValue === value
-              ? "bg-gray-100 font-bold"
-              : "hover:bg-gray-50"
+            ${
+              selectedValue === value
+                ? "bg-gray-100 font-bold"
+                : "hover:bg-gray-50"
             }
           `}
         >

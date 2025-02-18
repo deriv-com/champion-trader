@@ -38,9 +38,8 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     isInitialRender.current = true;
     return () => {
       isInitialRender.current = false;
-    }
-  }, [])
-  
+    };
+  }, []);
 
   // Initialize local state for both mobile and desktop
   const [localDuration, setLocalDuration] = React.useState(duration);
@@ -93,12 +92,14 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     <>
       <div className={isDesktop ? "flex" : ""}>
         {!isDesktop && <BottomSheetHeader title="Duration" />}
-        <TabList
-          tabs={DURATION_TYPES}
-          selectedValue={selectedType}
-          onSelect={handleTypeSelect as (value: string) => void}
-          variant={isDesktop ? "vertical" : "chip"}
-        />
+        <div className="px-4 py-2">
+          <TabList
+            tabs={DURATION_TYPES}
+            selectedValue={selectedType}
+            onSelect={handleTypeSelect as (value: string) => void}
+            variant={isDesktop ? "vertical" : "chip"}
+          />
+        </div>
         <div className={`flex-1 relative ${isDesktop ? "px-4" : "px-8"}`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
@@ -123,7 +124,9 @@ export const DurationController: React.FC<DurationControllerProps> = ({
       </div>
       {!isDesktop && (
         <div className="w-full p-3">
-          <PrimaryButton className="rounded-3xl" onClick={handleSave}>Save</PrimaryButton>
+          <PrimaryButton className="rounded-3xl" onClick={handleSave}>
+            Save
+          </PrimaryButton>
         </div>
       )}
     </>
