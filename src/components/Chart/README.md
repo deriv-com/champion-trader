@@ -50,6 +50,35 @@ function App() {
 - Provides a user-friendly error message with a retry option.
 - Prevents the entire application from crashing due to chart errors.
 
+## TradeChart Component
+
+The `TradeChart` component is an alternative chart implementation that integrates with `SmartChart` and provides additional customization options.
+
+### Features:
+- **Uses `SmartChart`** for rendering candlestick charts.
+- **Integrates with `useChartData`** to fetch and display streaming market data.
+- **Manages theme settings** using `useThemeStore` to toggle between light and dark modes.
+- **Includes mock candlestick data** for visualization.
+
+### Usage
+
+```tsx
+import { TradeChart } from "@/components/Chart/Chart1";
+
+function App() {
+  return (
+    <div>
+      <TradeChart />
+    </div>
+  );
+}
+```
+
+### Implementation Details
+- Uses a `useRef` to interact with `SmartChart` methods.
+- Stores theme settings in `localStorage` and updates the document class accordingly.
+- Accepts streaming data and mock data for rendering.
+
 ## Error Boundary Usage
 
 The Chart component is automatically wrapped with an error boundary that will catch and handle any errors that occur during rendering or data updates. If an error occurs:

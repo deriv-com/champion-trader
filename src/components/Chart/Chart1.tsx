@@ -526,13 +526,10 @@ export const TradeChart: React.FC = () => {
   const { isDarkMode } = useThemeStore();
   const [theme, setTheme] = useState<string>("dark");
   useEffect(() => {
-    console.log("isDarkMode", isDarkMode);
     localStorage.setItem("isDarkMode", String(isDarkMode));
     document.documentElement.classList.toggle("dark", isDarkMode);
     setTheme(isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
-
-  console.log("theme", localStorage.getItem('isDarkMode'), theme);
 
   return (
     <div style={{ display: "flex", height: "100%", position: "relative" }}>
@@ -544,9 +541,7 @@ export const TradeChart: React.FC = () => {
         ref={ref}
         // id="charts"
         barriers={[]}
-        chartStatusListener={(isChartReady: boolean) =>
-          console.log("isChartReady", isChartReady)
-        }
+        chartStatusListener={(isChartReady: boolean) => {}}
         crosshair={0}
         isLive
         chartControlsWidgets={null}
