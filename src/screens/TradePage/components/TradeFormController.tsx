@@ -192,14 +192,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       }`}
     >
       <div
-        className={isLandscape ? "pt-4 px-4 bg-[rgba(246,247,248,1)]" : "pt-1 px-4"}
+        className={isLandscape ? "pt-4 px-4" : "pt-1 px-4"}
         id="how-to-trade"
       >
         <HowToTrade />
       </div>
       {isLandscape ? (
         // Desktop layout
-        <div className="flex-1 bg-[rgba(246,247,248,1)]">
+        <div className="flex-1 ">
           <div
             className="flex flex-col gap-0 pt-4 pb-2 px-4"
             onMouseDown={() => {
@@ -211,7 +211,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
               document.dispatchEvent(event);
             }}
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-0">
               {config.fields.duration && (
                 <Suspense fallback={<div>Loading duration field...</div>}>
                   <DesktopTradeFieldCard>
@@ -229,7 +229,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                         onError={(error) => setStakeError(error)}
                       />
                     </DesktopTradeFieldCard>
-                    <div className="mt-2 p-2">
+                    <div className=" p-2">
                       <PayoutDisplay
                         hasError={Boolean(stake && parseFloat(stake) > 50000)}
                         loading={Object.values(buttonStates).some(state => state.loading)}
