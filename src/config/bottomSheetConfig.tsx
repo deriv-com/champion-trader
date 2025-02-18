@@ -22,6 +22,11 @@ export const bottomSheetConfig: BottomSheetConfig = {
     body: <DurationController />
   },
   'how-to-trade': {
-    body: guideConfig["rise-fall"].body
+    body: (
+      <div>
+        {guideConfig["rise-fall"].header}
+        {guideConfig["rise-fall"].body}
+      </div>
+    )
   }
 };
