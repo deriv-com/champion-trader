@@ -27,12 +27,12 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
     <div className="space-y-1">
       {config.payouts.max && (
         <div className="flex justify-between">
-          <span className="font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem] text-black/48">
+          <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
             Max payout
           </span>
           <span className={cn(
-            "font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]",
-            hasError ? "text-red-500" : loading ? "text-black/48" : "text-black/72"
+            "font-ibm-plex text-xs font-normal leading-[18px] text-right",
+            hasError ? "text-red-500" : loading ? "text-[rgba(0,0,0,0.24)]" : "text-[rgba(0,0,0,0.72)]"
           )}>
             {loading ? "Loading..." : `${maxPayout} ${currency}`}
           </span>
@@ -40,12 +40,12 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
       )}
       {config.buttons.map(button => (
         <div key={button.actionName} className="flex justify-between">
-          <span className="font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem] text-black/48">
+          <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
             {config.payouts.labels[button.actionName]}
           </span>
           <span className={cn(
-            "font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem]",
-            hasError ? "text-red-500" : loadingStates[button.actionName] ? "text-black/48" : "text-black/72"
+            "font-ibm-plex text-xs font-normal leading-[18px] text-right",
+            hasError ? "text-red-500" : loadingStates[button.actionName] ? "text-[rgba(0,0,0,0.24)]" : "text-[rgba(0,0,0,0.72)]"
           )}>
             {loadingStates[button.actionName] ? "Loading..." : `${payoutValues[button.actionName]} ${currency}`}
           </span>

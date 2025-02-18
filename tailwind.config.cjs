@@ -16,6 +16,8 @@ module.exports = {
         ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
+        error: '#C40000',
+        dim: 'rgba(0, 0, 0, 0.24)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
