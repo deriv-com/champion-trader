@@ -14,7 +14,7 @@
   "dependencies": {
     "@deriv/quill-icons": "^2.4.3",
     "@cloudflare/stream-react": "^1.9.2",
-    "@deriv-com/smartcharts-champion": "^0.0.1",
+    "@deriv-com/smartcharts-champion": "^0.0.2",
     "@lottiefiles/dotlottie-react": "^0.13.0",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-presence": "^1.1.2",
