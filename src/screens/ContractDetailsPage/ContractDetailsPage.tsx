@@ -38,11 +38,11 @@ const ContractDetailsPage: React.FC = () => {
       </div>  
 
       {/* Close Button */}
-      <div className="fixed bottom-0 left-0 right-0 z-[60]">
-        <div className="mx-2 max-w-[1200px]">
+      <div className=" fixed bottom-0 left-0 right-0 z-[60]">
+        <div className="mx-2  text-center">
           <button
             onClick={() => navigate(-1)}
-            className="text-white bg-black w-full p-3 px-8 text-center rounded-xl shadow-md"
+            className="text-white bg-black max-w-[500px] mx-auto  w-full p-3 px-8 text-center rounded-xl shadow-md"
           >
             Close
           </button>

@@ -18,6 +18,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isLandscape, setIsLandscape } = useOrientationStore();
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
   const [isMenuOpen, setMenuOpen] = React.useState(false);
+  const isHeaderVisible = useHeaderStore(state => state.isVisible);
+  const isBottomNavVisible = useBottomNavStore(state => state.isVisible);
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -39,7 +41,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-      {useHeaderStore(state => state.isVisible) && (
+      {isHeaderVisible && (
         <Header className="sticky top-0 z-50 w-full" />
       )}
       <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : "" }`}>
@@ -58,7 +60,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>
-        {!isLandscape && useBottomNavStore(state => state.isVisible) && <Footer className="sticky bottom-0 z-50" />}
+        {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
       </div>
       </div>
     </div>
