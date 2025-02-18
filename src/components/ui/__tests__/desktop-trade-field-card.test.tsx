@@ -20,7 +20,7 @@ describe('DesktopTradeFieldCard', () => {
     );
 
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass('bg-white', 'rounded-lg', 'p-2');
+    expect(card).toHaveClass('rounded-lg', 'p-2','bg-[rgba(246,247,248,1)]','border','border-transparent');
   });
 
   it('merges custom className with default styles', () => {
@@ -31,6 +31,6 @@ describe('DesktopTradeFieldCard', () => {
     );
 
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass('bg-white p-2 rounded-lg');
+    expect(card).toHaveClass('bg-[rgba(246,247,248,1)] rounded-lg p-2 border border-transparent custom-class');
   });
 });
