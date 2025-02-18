@@ -3,17 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import ToggleButton from "@/components/TradeFields/ToggleButton";
 import { Home, Moon, LogOut, ExternalLink } from "lucide-react";
+import { useLogout } from "@/hooks/useLogout";
 
 export const MenuPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout, isLoggedIn } = useClientStore();
-
-const handleLogout = () => {
-  console.log("Logout button clicked");
-  localStorage.removeItem("loginToken");
-  logout();
-  navigate("/trade");
-};
+  const { isLoggedIn } = useClientStore();
+  const logout = useLogout();
 
   console.log("MenuPage rendered");
   return (
@@ -33,16 +28,12 @@ const handleLogout = () => {
         <div className="text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border-b border-gray-200 flex items-center gap-3">
           <Moon className="w-5 h-5" />
           <span className="text-sm peer-checked:text-black">Theme</span>
-          <ToggleButton
-            label=""
-            value={false}
-            onChange={() => {}}
-          />
+          <ToggleButton label="" value={false} onChange={() => {}} />
         </div>
         {isLoggedIn && (
           <>
             <button
-              onClick={handleLogout}
+              onClick={logout}
               className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
             >
               <LogOut className="w-5 h-5" />

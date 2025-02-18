@@ -38,9 +38,8 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     isInitialRender.current = true;
     return () => {
       isInitialRender.current = false;
-    }
-  }, [])
-  
+    };
+  }, []);
 
   // Initialize local state for both mobile and desktop
   const [localDuration, setLocalDuration] = React.useState(duration);
@@ -99,7 +98,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
           onSelect={handleTypeSelect as (value: string) => void}
           variant={isDesktop ? "vertical" : "chip"}
         />
-        <div className={`flex-1 relative ${isDesktop ? "px-4" : "px-8"}`}>
+        <div className={`flex-1 relative bg-white ${isDesktop ? "px-2" : "px-8"}`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
               selectedValue={selectedValue.toString()}
@@ -123,7 +122,9 @@ export const DurationController: React.FC<DurationControllerProps> = ({
       </div>
       {!isDesktop && (
         <div className="w-full p-3">
-          <PrimaryButton className="rounded-3xl" onClick={handleSave}>Save</PrimaryButton>
+          <PrimaryButton className="rounded-3xl" onClick={handleSave}>
+            Save
+          </PrimaryButton>
         </div>
       )}
     </>
@@ -131,8 +132,8 @@ export const DurationController: React.FC<DurationControllerProps> = ({
 
   if (isDesktop) {
     return (
-      <DesktopTradeFieldCard>
-        <div className="w-[480px]">{content}</div>
+      <DesktopTradeFieldCard className="p-0">
+        <div className="w-[368px]">{content}</div>
       </DesktopTradeFieldCard>
     );
   }

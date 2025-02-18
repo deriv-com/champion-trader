@@ -28,7 +28,7 @@ describe('clientStore', () => {
     useClientStore.getState().setToken('test-token');
     
     // Then logout
-    useClientStore.getState().logout();
+    useClientStore.getState().resetState();
     
     const state = useClientStore.getState();
     expect(state.token).toBeNull();

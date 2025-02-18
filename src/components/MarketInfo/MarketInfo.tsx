@@ -25,7 +25,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         data-id="market-info"
         onClick={onClick}
       >
-        <div className="flex items-center gap-4 px-4 py-3">
+        <div className="flex items-center gap-4 px-4 py-3 bg-black/[0.04]">
           {selectedMarket && (
             <div className="w-8 h-8 flex items-center justify-center">
               <MarketIcon
