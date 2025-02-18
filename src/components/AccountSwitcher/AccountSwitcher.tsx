@@ -4,12 +4,12 @@ import { useClientStore } from '@/stores/clientStore';
 import { useAccount } from '@/hooks/useAccount';
 import { AccountPopover, AccountPopoverContent, AccountPopoverTrigger } from '@/components/ui/account-popover';
 import { AccountInfo } from './AccountInfo';
-import { useDeviceDetection } from '@/hooks/useDeviceDetection';
+import { useOrientationStore } from '@/stores/orientationStore';
 
 export const AccountSwitcher: React.FC = () => {
   const { balance } = useClientStore();
   const { accountType, selectedAccount } = useAccount();
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -18,7 +18,7 @@ export const AccountSwitcher: React.FC = () => {
         <button
           data-testid="balance-display"
           className={`flex flex-col relative ${
-            isDesktop ? 'items-end' : 'items-start'
+            isLandscape ? 'items-end' : 'items-start'
           }`}
         >
           <div className="flex items-center gap-1">
@@ -37,7 +37,7 @@ export const AccountSwitcher: React.FC = () => {
         </button>
       </AccountPopoverTrigger>
       <AccountPopoverContent
-        align={isDesktop ? "end" : "start"}
+        align={isLandscape ? "end" : "start"}
       >
         <AccountInfo />
       </AccountPopoverContent>
