@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { DurationController } from '@/components/Duration';
-import { MarketSelectorList } from '@/components/MarketSelector/MarketSelectorList';
-import { StakeController } from '@/components/Stake';
-import { guideConfig } from './guideConfig';
+import { ReactNode } from "react";
+import { DurationController } from "@/components/Duration";
+import { MarketSelectorList } from "@/components/MarketSelector/MarketSelectorList";
+import { StakeController } from "@/components/Stake";
+import { guideConfig } from "./guideConfig";
 
 export interface BottomSheetConfig {
   [key: string]: {
@@ -12,21 +12,23 @@ export interface BottomSheetConfig {
 }
 
 export const bottomSheetConfig: BottomSheetConfig = {
-  'market-info': {
+  "market-info": {
     body: <MarketSelectorList />,
   },
-  'stake': {
-    body: <StakeController />
+  stake: {
+    body: <StakeController />,
   },
-  'duration': {
-    body: <DurationController />
+  duration: {
+    body: <DurationController />,
   },
-  'how-to-trade': {
+  "how-to-trade": {
     body: (
-      <div>
+      <div className="flex flex-col h-full px-6 pt-6">
         {guideConfig["rise-fall"].header}
-        {guideConfig["rise-fall"].body}
+        <div className="flex-1 overflow-y-auto">
+          {guideConfig["rise-fall"].body}
+        </div>
       </div>
-    )
-  }
+    ),
+  },
 };
