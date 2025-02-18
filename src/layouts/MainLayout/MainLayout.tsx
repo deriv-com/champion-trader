@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useHeaderStore } from "@/stores/headerStore";
+import { useBottomNavStore } from "@/stores/bottomNavStore";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { SideNav } from "@/components/SideNav";
@@ -37,7 +39,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-      <Header className="sticky top-0 z-50 w-full" />
+      {useHeaderStore(state => state.isVisible) && (
+        <Header className="sticky top-0 z-50 w-full" />
+      )}
       <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : "" }`}>
         {isLandscape && (
           <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
@@ -54,7 +58,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
           {children}
         </main>
-        {!isLandscape && <Footer className="sticky bottom-0 z-50" />}
+        {!isLandscape && useBottomNavStore(state => state.isVisible) && <Footer className="sticky bottom-0 z-50" />}
       </div>
       </div>
     </div>

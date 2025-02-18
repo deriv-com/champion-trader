@@ -17,6 +17,14 @@ const renderWithRouter = (ui: React.ReactElement, initialRoute = '/') => {
   );
 };
 
+jest.mock('../../../stores/headerStore', () => ({
+  useHeaderStore: jest.fn().mockImplementation((selector) => selector({ isVisible: true, setIsVisible: jest.fn() }))
+}));
+
+jest.mock('../../../stores/bottomNavStore', () => ({
+  useBottomNavStore: jest.fn().mockImplementation((selector) => selector({ isVisible: true, setIsVisible: jest.fn() }))
+}));
+
 beforeAll(() => {
   global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
@@ -52,7 +60,7 @@ describe('MainLayout', () => {
       </MainLayout>
     );
     // Check for base layout classes.
-    expect(container.firstChild).toHaveClass('flex');
+    expect(container.firstChild).toHaveClass('min-h-[100dvh]');
   });
 
   it('does not render footer when user is logged out', () => {
