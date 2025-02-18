@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 
@@ -23,17 +23,32 @@ export const MobileNumberInputField = React.forwardRef<
       onDecrement,
       prefix,
       className,
+      onFocus,
+      onBlur,
       ...props
     },
     ref
   ) => {
+    const [isSelected, setIsSelected] = useState(false);
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsSelected(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsSelected(false);
+      onBlur?.(e);
+    };
+
     return (
       <div className="flex flex-col w-full">
         <div
           className={cn(
             "flex items-center w-full h-[56px]",
-            "bg-white rounded-lg border border-gray-200",
-            error && "border-red-500 bg-[rgba(230,25,14,0.08)]",
+            "rounded-lg bg-black/[0.04]",
+            isSelected && !error && "border border-black",
+            error && "border border-red-500 bg-[rgba(230,25,14,0.08)]",
             className
           )}
         >
@@ -55,6 +70,8 @@ export const MobileNumberInputField = React.forwardRef<
               ref={ref}
               className="w-full bg-transparent ml-[-32px] focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-black"
               inputMode="decimal"
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               {...props}
             />
           </div>
