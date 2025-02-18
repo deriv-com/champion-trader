@@ -57,17 +57,18 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({
   onSelect,
 }) => {
   return (
-    <div className="w-48 border-r border-gray-200">
+    <div className="w-28 bg-[#F6F7F8]">
       {tabs.map(({ label, value }) => (
         <button
           key={value}
           onClick={() => onSelect(value)}
           className={`
-            w-full text-left py-2 px-4 transition-colors
-            ${
-              selectedValue === value
-                ? "bg-gray-100 font-bold"
-                : "hover:bg-gray-50"
+            relative w-full text-left py-3 px-6 transition-colors font-ibm-plex text-base leading-6 font-normal
+            text-primary cursor-pointer
+            before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[4px]
+            ${selectedValue === value
+              ? "bg-white before:bg-black"
+              : "hover:bg-gray-50 before:bg-transparent"
             }
           `}
         >

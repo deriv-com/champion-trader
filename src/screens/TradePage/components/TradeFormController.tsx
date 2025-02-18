@@ -1,77 +1,77 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
-import { TradeButton } from "@/components/TradeButton";
-import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
-import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
-import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
-import { useTradeStore } from "@/stores/tradeStore";
-import { tradeTypeConfigs } from "@/config/tradeTypes";
-import { useTradeActions } from "@/hooks/useTradeActions";
-import { parseDuration, formatDuration } from "@/utils/duration";
-import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
-import { useClientStore } from "@/stores/clientStore";
-import { WebSocketError } from "@/services/api/websocket/types";
-import { HowToTrade } from "@/components/HowToTrade";
-import { PayoutDisplay } from "@/components/Stake/components/PayoutDisplay";
+import React, { Suspense, lazy, useEffect, useState } from "react"
+import { TradeButton } from "@/components/TradeButton"
+import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout"
+import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card"
+import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card"
+import { useTradeStore } from "@/stores/tradeStore"
+import { tradeTypeConfigs } from "@/config/tradeTypes"
+import { useTradeActions } from "@/hooks/useTradeActions"
+import { parseDuration, formatDuration } from "@/utils/duration"
+import { createSSEConnection } from "@/services/api/sse/createSSEConnection"
+import { useClientStore } from "@/stores/clientStore"
+import { WebSocketError } from "@/services/api/websocket/types"
+import { HowToTrade } from "@/components/HowToTrade"
+import { PayoutDisplay } from "@/components/Stake/components/PayoutDisplay"
 
 // Lazy load components
 const DurationField = lazy(() =>
   import("@/components/Duration").then((module) => ({
     default: module.DurationField,
   }))
-);
+)
 
 const StakeField = lazy(() =>
   import("@/components/Stake").then((module) => ({
     default: module.StakeField,
   }))
-);
+)
 
 const EqualTradeController = lazy(() =>
   import("@/components/EqualTrade").then((module) => ({
     default: module.EqualTradeController,
   }))
-);
+)
 
 interface TradeFormControllerProps {
-  isLandscape: boolean;
+  isLandscape: boolean
 }
 
 interface ButtonState {
-  loading: boolean;
-  error: Event | WebSocketError | null;
-  payout: number;
-  reconnecting?: boolean;
+  loading: boolean
+  error: Event | WebSocketError | null
+  payout: number
+  reconnecting?: boolean
 }
 
-type ButtonStates = Record<string, ButtonState>;
+type ButtonStates = Record<string, ButtonState>
 
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({
   isLandscape,
 }) => {
-  const { trade_type, duration, setPayouts, stake } = useTradeStore();
-  const { token, currency } = useClientStore();
-  const tradeActions = useTradeActions();
-  const config = tradeTypeConfigs[trade_type];
-  const [isStakeSelected, setIsStakeSelected] = useState(false);
-  const [stakeError, setStakeError] = useState(false);
+  const { trade_type, duration, setPayouts, stake } = useTradeStore()
+  const { token, currency } = useClientStore()
+  const tradeActions = useTradeActions()
+  const config = tradeTypeConfigs[trade_type]
+  const [isStakeSelected, setIsStakeSelected] = useState(false)
+  const [stakeError, setStakeError] = useState(false)
 
   const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
     // Initialize states for all buttons in the current trade type
-    const initialStates: ButtonStates = {};
+    const initialStates: ButtonStates = {}
     tradeTypeConfigs[trade_type].buttons.forEach((button) => {
       initialStates[button.actionName] = {
         loading: true,
         error: null,
         payout: 0,
         reconnecting: false,
-      };
-    });
-    return initialStates;
-  });
+      }
+    })
+    return initialStates
+  })
 
   // Parse duration for API call
   const { value: apiDurationValue, type: apiDurationType } =
-    parseDuration(duration);
+    parseDuration(duration)
 
   useEffect(() => {
     // Create SSE connections for each button's contract type
@@ -98,10 +98,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 payout: Number(priceData.price),
                 reconnecting: false,
               },
-            }));
+            }))
 
             // Update payouts in store
-            const payoutValue = Number(priceData.price);
+            const payoutValue = Number(priceData.price)
 
             // Create a map of button action names to their payout values
             const payoutValues = Object.keys(buttonStates).reduce(
@@ -109,16 +109,16 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 acc[key] =
                   key === button.actionName
                     ? payoutValue
-                    : buttonStates[key]?.payout || 0;
-                return acc;
+                    : buttonStates[key]?.payout || 0
+                return acc
               },
               {} as Record<string, number>
-            );
+            )
 
             setPayouts({
               max: 50000,
               values: payoutValues,
-            });
+            })
           },
           onError: (error) => {
             // Update only this button's state on error
@@ -130,7 +130,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 error,
                 reconnecting: true,
               },
-            }));
+            }))
           },
           onOpen: () => {
             // Reset error and reconnecting state on successful connection
@@ -141,46 +141,46 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 error: null,
                 reconnecting: false,
               },
-            }));
+            }))
           },
-        });
+        })
       }
-    );
+    )
 
     return () => {
-      cleanupFunctions.forEach((cleanup) => cleanup());
-    };
-  }, [duration, stake, currency, token]);
+      cleanupFunctions.forEach((cleanup) => cleanup())
+    }
+  }, [duration, stake, currency, token])
 
   // Reset loading states when duration or trade type changes
   useEffect(() => {
-    const initialStates: ButtonStates = {};
+    const initialStates: ButtonStates = {}
     tradeTypeConfigs[trade_type].buttons.forEach((button) => {
       initialStates[button.actionName] = {
         loading: true,
         error: null,
         payout: buttonStates[button.actionName]?.payout || 0,
         reconnecting: false,
-      };
-    });
-    setButtonStates(initialStates);
-  }, [duration, trade_type, stake]);
+      }
+    })
+    setButtonStates(initialStates)
+  }, [duration, trade_type, stake])
 
   // Preload components based on metadata
   useEffect(() => {
     if (config.metadata?.preloadFields) {
       // Preload field components
       if (config.fields.duration) {
-        import("@/components/Duration");
+        import("@/components/Duration")
       }
       if (config.fields.stake) {
-        import("@/components/Stake");
+        import("@/components/Stake")
       }
       if (config.fields.allowEquals) {
-        import("@/components/EqualTrade");
+        import("@/components/EqualTrade")
       }
     }
-  }, [trade_type, config]);
+  }, [trade_type, config])
 
   return (
     <div
@@ -207,16 +207,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
               const event = new MouseEvent("mousedown", {
                 bubbles: true,
                 cancelable: true,
-              });
-              document.dispatchEvent(event);
+              })
+              document.dispatchEvent(event)
             }}
           >
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col gap-2">
               {config.fields.duration && (
                 <Suspense fallback={<div>Loading duration field...</div>}>
-                  <DesktopTradeFieldCard>
-                    <DurationField className="w-full" />
-                  </DesktopTradeFieldCard>
+                  <DurationField className="w-full" />
                 </Suspense>
               )}
               {config.fields.stake && (
@@ -236,16 +234,24 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                       <div className="p-2">
                         <PayoutDisplay
                           hasError={Boolean(stake && parseFloat(stake) > 50000)}
-                          loading={Object.values(buttonStates).some(state => state.loading)}
-                          loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
-                            ...acc,
-                            [key]: buttonStates[key].loading
-                          }), {})}
+                          loading={Object.values(buttonStates).some(
+                            (state) => state.loading
+                          )}
+                          loadingStates={Object.keys(buttonStates).reduce(
+                            (acc, key) => ({
+                              ...acc,
+                              [key]: buttonStates[key].loading,
+                            }),
+                            {}
+                          )}
                           maxPayout={50000}
-                          payoutValues={Object.keys(buttonStates).reduce((acc, key) => ({
-                            ...acc,
-                            [key]: buttonStates[key].payout
-                          }), {})}
+                          payoutValues={Object.keys(buttonStates).reduce(
+                            (acc, key) => ({
+                              ...acc,
+                              [key]: buttonStates[key].payout,
+                            }),
+                            {}
+                          )}
                         />
                       </div>
                     )}
@@ -284,9 +290,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
-                    const action = tradeActions[button.actionName];
+                    const action = tradeActions[button.actionName]
                     if (action) {
-                      action();
+                      action()
                     }
                   }}
                 />
@@ -306,9 +312,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                       onClick={() => {
                         const durationField = document.querySelector(
                           'button[aria-label^="Duration"]'
-                        );
+                        )
                         if (durationField) {
-                          (durationField as HTMLButtonElement).click();
+                          ;(durationField as HTMLButtonElement).click()
                         }
                       }}
                     >
@@ -322,9 +328,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                       onClick={() => {
                         const stakeField = document.querySelector(
                           'button[aria-label^="Stake"]'
-                        );
+                        )
                         if (stakeField) {
-                          (stakeField as HTMLButtonElement).click();
+                          ;(stakeField as HTMLButtonElement).click()
                         }
                       }}
                     >
@@ -371,9 +377,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
-                    const action = tradeActions[button.actionName];
+                    const action = tradeActions[button.actionName]
                     if (action) {
-                      action();
+                      action()
                     }
                   }}
                 />
@@ -383,5 +389,5 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
         </>
       )}
     </div>
-  );
-};
+  )
+}
