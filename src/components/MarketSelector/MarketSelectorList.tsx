@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Search, X, Star, ChevronRight } from "lucide-react"
+import { Search, X, Star } from "lucide-react"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useMarketStore } from "@/stores/marketStore"

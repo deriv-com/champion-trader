@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useThemeStore } from "@/stores/themeStore";
 
 interface ToggleProps {
@@ -7,7 +6,7 @@ interface ToggleProps {
   onChange: () => void;
 }
 
-const ToggleButton: React.FC<ToggleProps> = ({ label, value, onChange }) => {
+const ToggleButton: React.FC<ToggleProps> = ({ label }) => {
   const id = `toggle-${label.toLowerCase().replace(/\s+/g, '-')}`;
   const { isDarkMode, toggleTheme } = useThemeStore();
   
