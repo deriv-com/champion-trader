@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { TradeType, tradeTypeConfigs, TradeButton } from "@/config/tradeTypes"
+import { ContractDetails, contractDetailsStub } from "@/screens/ContractDetailsPage/contractDetailsStub"
 
 /**
  * Trade Store
@@ -60,6 +61,10 @@ export interface TradeState {
    * @param trade_type - Trade type from configuration
    */
   setTradeType: (trade_type: TradeType) => void
+  /** Current contract details */
+  contractDetails: ContractDetails | null
+  /** Set contract details */
+  setContractDetails: (details: ContractDetails | null) => void
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
@@ -96,4 +101,6 @@ export const useTradeStore = create<TradeState>((set) => ({
         ),
       },
     })),
+  contractDetails: contractDetailsStub, // Initialize with stub data
+  setContractDetails: (details) => set({ contractDetails: details }),
 }))

@@ -22,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`flex items-center gap-4 px-4 py-2 border-b border-opacity-10 bg-white ${className}`}
+      className={`flex items-center gap-4 px-4 py-3 border-b border-opacity-10 bg-white ${className}`}
       id="header"
     >
       {showLogo && (
