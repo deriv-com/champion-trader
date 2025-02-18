@@ -187,12 +187,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       id="trade-section"
       className={`${
         isLandscape
-          ? "w-[30%] min-w-[260px] max-w-[360px] flex flex-col justify-start px-4 py-2 "
+          ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 py-2 "
           : ""
       }`}
     >
       <div
-        className={isLandscape ? "p-2" : "pt-1 px-4"}
+        className={isLandscape ? "py-2" : "pt-1 px-4"}
         id="how-to-trade"
       >
         <HowToTrade />
@@ -262,14 +262,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
             {config.fields.allowEquals && <EqualTradeController />}
           </div>
 
-          <div className="flex flex-col p-2 gap-2" id="trade-buttons">
+          <div className="flex flex-col py-2 gap-2" id="trade-buttons">
             {config.buttons.map((button) => (
               <Suspense
                 key={button.actionName}
                 fallback={<div>Loading...</div>}
               >
                 <TradeButton
-                  className={`${button.className} rounded-[32px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
+                  className={`${button.className} rounded-[16px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
                   title={button.title}
                   label={button.label}
                   value={
@@ -349,7 +349,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
             </div>
           </div>
 
-          <div className="flex pt-0 gap-2 p-4" id="trade-buttons">
+          <div className="flex p-4 pt-0 gap-2" id="trade-buttons">
             {config.buttons.map((button) => (
               <Suspense
                 key={button.actionName}
