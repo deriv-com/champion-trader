@@ -31,7 +31,7 @@ const ContractDetailsPage: React.FC = () => {
   }, [id]);
 
   return (
-    <div className="w-full bg-gray-100 h-screen flex flex-col">
+    <div className="w-full bg-[var(--background-color)] text-[var(--text-color)] h-screen flex flex-col">
       <div className="p-4 flex-1 overflow-y-auto pb-32 w-full lg:w-3/5 mx-auto">
       {/* Header */}
       <div className="flex items-center mb-4">
@@ -43,7 +43,7 @@ const ContractDetailsPage: React.FC = () => {
       {[
         { title: "Rise", titleClass: "text-red-500", description: "Volatility 100 (1s) Index", amount: "10.00 USD", change: "+0.00 USD", changeClass: "text-green-500" }
       ].map((card, index) => (
-        <div key={index} className="p-4 bg-white shadow-md rounded-lg mb-4 border-b border-gray-300">
+        <div key={index} className="p-4 bg-[var(--background-color)] text-[var(--text-color)] shadow-md rounded-lg mb-4">
           <div className="flex justify-between items-center">
             <div>
               <div className={`${card.titleClass} font-bold`}>{card.title}</div>
@@ -61,10 +61,10 @@ const ContractDetailsPage: React.FC = () => {
       {/* Order Details */}
       
       {/* Chart Space */}
-      <div className="min-h-[400px] bg-gray-200 flex items-center justify-center rounded-lg border-b border-gray-300">
+      <div className="min-h-[400px] bg-gray-200 flex items-center justify-center rounded-lg">
         <span className="text-gray-500">Chart space (empty)</span>
       </div>
-      <div className="mt-4 p-4 bg-white shadow-md rounded-lg border-b border-gray-300">
+      <div className="mt-4 p-4 bg-[var(--background-color)] text-[var(--text-color)] shadow-md rounded-lg">
         <h2 className="text-md font-bold mb-4">Order details</h2>
         {[
           { label: "Reference ID", value: id },
@@ -81,14 +81,14 @@ const ContractDetailsPage: React.FC = () => {
       </div>
 
       {/* How Do I Earn a Payout */}
-      <div className="mt-4 p-4 bg-white shadow-md rounded-lg border-b border-gray-300">
+      <div className="mt-4 p-4 bg-[var(--background-color)] text-[var(--text-color)] shadow-md rounded-lg">
         <h2 className="text-md font-bold mb-2">How do I earn a payout?</h2>
         <p className="text-gray-500">
           Win payout if [market] after [duration] is strictly higher than entry spot.
         </p>
       </div>
 
-      <div className="mt-4 p-4 bg-white shadow-md rounded-lg mb-12 border-b border-gray-300">
+      <div className="mt-4 p-4 bg-[var(--background-color)] text-[var(--text-color)] shadow-md rounded-lg mb-12">
         <h2 className="text-md font-bold mb-4">Entry & exit details</h2>
         {[
           { label: "Start time", value: "01 Jan 2024", subValue: "16:00:02 GMT" },
@@ -96,7 +96,7 @@ const ContractDetailsPage: React.FC = () => {
           { label: "Exit time", value: "01 Jan 2024", subValue: "17:20:36 GMT" },
           { label: "Exit spot", value: "283297.3823", subValue: "01 Jan 2024, 17:20:36 GMT" }
         ].map((detail, index) => (
-          <div key={index} className="col-span-2 flex justify-between border-b border-gray-300 pb-2">
+          <div key={index} className="col-span-2 flex justify-between pb-2">
             <span className="text-gray-500">{detail.label}</span>
             <div className="text-right">
               <span className="font-bold block">{detail.value}</span>

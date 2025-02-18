@@ -19,6 +19,9 @@ export const useClientStore = create<ClientState>((set) => ({
     set({ token, isLoggedIn: !!token }),
   setBalance: (balance: string, currency: string) => 
     set({ balance, currency }),
-  logout: () => 
-    set({ token: null, isLoggedIn: false, balance: '0', currency: 'USD' }),
+  logout: () => {
+    localStorage.removeItem("loginToken");
+    set({ token: null, isLoggedIn: false, balance: '0', currency: 'USD' });
+    window.location.href = "/logout";
+  },
 }));

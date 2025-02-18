@@ -64,8 +64,10 @@ export const App = () => {
   const [isInitialized, setIsInitialized] = useState(false)
   const { setToken } = useClientStore()
 
-  // Handle login token
   useEffect(() => {
+    const storedTheme = localStorage.getItem("isDarkMode") === "true";
+    document.documentElement.classList.toggle("dark", storedTheme);
+
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
     const tokenFromStorage = localStorage.getItem("loginToken");

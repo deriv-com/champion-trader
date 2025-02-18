@@ -55,7 +55,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
 
   return (
     <div
-      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[99999]`}
+      className={`absolute top-0 left-0 h-full min-w-[300px] w-[20%] bg-[var(--background-color)] text-[var(--text-color)] shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[99999]`}
       ref={sidebarRef}
     > 
       <div className="p-4 border-b flex justify-between items-center">
@@ -63,15 +63,15 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
       <div className="p-4">
-        <div className="flex justify-between border-b">
+        <div className="flex justify-between border-b border-width-[0.1px]">
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${isOpenTab ? "border-black" : "border-gray-300 text-gray-500"}`}
+            className={`flex-1 py-2 text-center font-bold border-b-2 ${isOpenTab ? "dark:border-white" : "border-transparent text-gray-500"}`}
             onClick={() => setIsOpenTab(true)}
           >
             Open
           </button>
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${!isOpenTab ? "border-black" : "border-gray-300 text-gray-500"}`}
+            className={`flex-1 py-2 text-center font-bold border-b-2 ${!isOpenTab ? "dark:border-white" : "border-transparent text-gray-500"}`}
             onClick={() => setIsOpenTab(false)}
           >
             Closed
@@ -80,7 +80,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
         <div className="mt-4">
           <div className="relative w-[50%]" ref={dropdownRef} onMouseDown={(event) => event.stopPropagation()}>
             <button 
-              className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
+              className="text-sm h-9 w-full p-2 border rounded-full text-[var(--text-color)] bg-[var(--background-color)] border-[var(--border-color)] flex items-center justify-between"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <span>{selectedTradeType}</span>
@@ -88,7 +88,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
             </button>
           </div>
           {dropdownOpen && (
-            <ul className="absolute text-sm left-0 w-1/2 bg-white border rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
+            <ul className="absolute text-sm left-0 w-1/2 bg-[var(--background-color)] border-[var(--border-color)] rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
               {["Option 1", "Option 2", "Option 3"].map((option) => (
                 <li 
                   key={option} 

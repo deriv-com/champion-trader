@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { SmartChart } from "./SmartChart";
 import { useChartData } from "@/hooks/useChartData";
+import { useThemeStore } from "@/stores/themeStore";
 
 export const TradeChart: React.FC = () => {
   const ref = useRef<{
@@ -522,9 +523,24 @@ export const TradeChart: React.FC = () => {
   };
 
   // if (symbols.length == 0) return null
+  const { isDarkMode } = useThemeStore();
+  const [theme, setTheme] = useState<string>("dark");
+  useEffect(() => {
+    console.log("isDarkMode", isDarkMode);
+    localStorage.setItem("isDarkMode", String(isDarkMode));
+    document.documentElement.classList.toggle("dark", isDarkMode);
+    setTheme(isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  console.log("theme", localStorage.getItem('isDarkMode'), theme);
+
   return (
     <div style={{ display: "flex", height: "100%", position: "relative" }}>
       <SmartChart
+        key={theme}
+        settings={{
+          theme
+        }}
         ref={ref}
         // id="charts"
         barriers={[]}

@@ -83,7 +83,7 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
               Closed
             </span>
           )}
-          <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          <ChevronDown className="w-5 h-5 text-white bg-black p-1 rounded" />
         </div>
         <span className="text-lg font-semibold">{price}</span>
       </div>

@@ -11,7 +11,7 @@ export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void; setMen
   const { isLandscape } = useOrientationStore();
 
   return (
-    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-[var(--background-color)] text-[var(--text-color)] overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         <button
           onClick={() => {
