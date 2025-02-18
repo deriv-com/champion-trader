@@ -5,8 +5,14 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { PrimaryButton } from "../ui/primary-button";
 
 export const BottomSheet = () => {
-  const { showBottomSheet, key, height, onDragDown, actionButton, setBottomSheet } =
-    useBottomSheetStore();
+  const {
+    showBottomSheet,
+    key,
+    height,
+    onDragDown,
+    actionButton,
+    setBottomSheet,
+  } = useBottomSheetStore();
   const { isDesktop } = useDeviceDetection();
 
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -166,19 +172,17 @@ export const BottomSheet = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
-          {body}
-          {actionButton?.show && (
-            <div className="sticky bottom-0 w-full p-4 bg-white">
-              <PrimaryButton
-                className="w-full rounded-3xl"
-                onClick={actionButton.onClick}
-              >
-                {actionButton.label}
-              </PrimaryButton>
-            </div>
-          )}
-        </div>
+        <div className="flex-1 overflow-y-auto">{body}</div>
+        {actionButton?.show && (
+          <div className="sticky bottom-0 w-full p-4">
+            <PrimaryButton
+              className="w-full rounded-3xl"
+              onClick={actionButton.onClick}
+            >
+              {actionButton.label}
+            </PrimaryButton>
+          </div>
+        )}
       </div>
     </>
   );

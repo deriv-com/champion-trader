@@ -49,7 +49,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
           />
         </div>
         {error && errorMessage && (
-          <div className="px-2">
+          <div className="mt-1 px-2">
             <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
               {errorMessage}
             </span>
@@ -73,14 +73,14 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     >
       <div ref={containerRef} className="flex rounded-lg h-[48px]">
         <div className="flex flex-col flex-1 justify-between">
-          <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-gray-500">
-            Stake
+          <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
+            Stake ({currency})
           </span>
           <div className="relative">
             <input
               ref={inputRef}
               type="text"
-              value={`${localValue} ${currency}`}
+              value={`${localValue}`}
               onChange={handleChange}
               onFocus={() => handleSelect(true)}
               className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
@@ -90,7 +90,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
         </div>
         <div className="flex items-center space-x-2 ml-4">
           <button
-            className="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
             onClick={handleDecrement}
             aria-label="Decrease stake"
           >
@@ -99,7 +99,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             </span>
           </button>
           <button
-            className="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full  flex items-center justify-center transition-colors"
             onClick={handleIncrement}
             aria-label="Increase stake"
           >
