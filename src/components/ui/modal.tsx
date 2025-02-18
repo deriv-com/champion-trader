@@ -49,7 +49,7 @@ export const Modal = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center">
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
@@ -73,7 +73,7 @@ export const Modal = ({
             </div>
           )}
 
-        <div className="overflow-y-auto flex-1 pt-2 px-2">
+        <div className="overflow-y-auto flex-1 pt-2 px-4">
           {children}
           {actionButton?.show && (
             <div className="sticky bottom-0 w-full pt-4">

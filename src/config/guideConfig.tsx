@@ -3,18 +3,21 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export interface GuideConfig {
   [key: string]: {
+    header: ReactNode;
     body: ReactNode;
   };
 }
 
 export const guideConfig: GuideConfig = {
   "rise-fall": {
+    header: (
+      <h2 className="text-lg font-bold mb-4">Rise/Fall</h2>
+    ),
     body: (
       <div className="p-2">
-        <h2 className="text-lg font-bold mb-4">Rise/Fall</h2>
-        <div className="space-y-4">
+        <div className="space-y-4 text-sm">
           <div>
-            <h3 className="font-semibold mb-2">Rise</h3>
+            <h3 className="text-lg font-semibold mb-2">Rise</h3>
             <p className="text-gray-600 mb-2">
               If you select Rise, you win the payout if the exit spot is
               strictly higher than the entry spot.
@@ -22,7 +25,7 @@ export const guideConfig: GuideConfig = {
             <DotLottieReact autoplay src="/videos/rise.lottie" loop />
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Fall</h3>
+            <h3 className="text-lg font-semibold mb-2">Fall</h3>
             <p className="text-gray-600 mb-2">
               If you select Fall, you win the payout if the exit spot is
               strictly lower than the entry spot.
