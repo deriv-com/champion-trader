@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useHeaderStore } from "@/stores/headerStore";
-import { useBottomNavStore } from "@/stores/bottomNavStore";
+import React, { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useHeaderStore } from "@/stores/headerStore"
+import { useBottomNavStore } from "@/stores/bottomNavStore"
+import DesktopContractDetailsPage from "./DesktopContractDetailsPage"
 import {
   Header,
   ContractSummary,
@@ -9,21 +11,22 @@ import {
   Chart,
   Payout,
   EntryExitDetails,
-} from "./components";
+} from "./components"
 
-const ContractDetailsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const setHeaderVisible = useHeaderStore(state => state.setIsVisible);
-  const setBottomNavVisible = useBottomNavStore(state => state.setIsVisible);
+const MobileContractDetailsPage: React.FC = () => {
+  const navigate = useNavigate()
+  const setHeaderVisible = useHeaderStore((state) => state.setIsVisible)
+  const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible)
 
   useEffect(() => {
-    setHeaderVisible(false);
-    setBottomNavVisible(false);
+    setHeaderVisible(false)
+    setBottomNavVisible(false)
     return () => {
-      setHeaderVisible(true);
-      setBottomNavVisible(true);
-    };
-  }, [setHeaderVisible, setBottomNavVisible]);
+      setHeaderVisible(true)
+      setBottomNavVisible(true)
+    }
+  }, [setHeaderVisible, setBottomNavVisible])
+
   return (
     <div className="w-full bg-gray-100 h-screen flex flex-col">
       <Header />
@@ -35,11 +38,11 @@ const ContractDetailsPage: React.FC = () => {
           <Payout />
           <EntryExitDetails />
         </div>
-      </div>  
+      </div>
 
       {/* Close Button */}
-      <div className=" fixed bottom-0 left-0 right-0 z-[60]">
-        <div className="mx-2  text-center">
+      <div className="fixed bottom-0 left-0 right-0 z-[60]">
+        <div className="mx-2 text-center">
           <button
             onClick={() => navigate(-1)}
             className="text-white bg-black max-w-[500px] mx-auto  w-full p-3 px-8 text-center rounded-xl shadow-md"
@@ -49,7 +52,16 @@ const ContractDetailsPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ContractDetailsPage;
+const ContractDetailsPage: React.FC = () => {
+  const { isMobile } = useDeviceDetection()
+  return isMobile ? (
+    <MobileContractDetailsPage />
+  ) : (
+    <DesktopContractDetailsPage />
+  )
+}
+
+export default ContractDetailsPage
