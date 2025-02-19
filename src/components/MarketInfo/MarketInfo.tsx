@@ -21,11 +21,11 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
   if (isMobile) {
     return (
       <div
-        className="w-full cursor-pointer"
+        className="inline-flex cursor-pointer mx-4 my-2"
         data-id="market-info"
         onClick={onClick}
       >
-        <div className="flex items-center gap-4 px-4 py-3 bg-black/[0.04]">
+        <div className="flex items-center gap-4 px-4 py-3 bg-black/[0.04] rounded-lg">
           {selectedMarket && (
             <div className="w-8 h-8 flex items-center justify-center">
               <MarketIcon
@@ -49,7 +49,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
 
   return (
     <div
-      className="inline-flex cursor-pointer bg-white hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors"
+      className="inline-flex cursor-pointer bg-gray-100 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors"
       data-id="market-info"
       onClick={onClick}
     >
@@ -65,12 +65,12 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         )}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <div className="text-base font-bold text-black/[0.72] leading-6 font-ibm-plex-sans truncate">{title}</div>
-            <ChevronDown className="w-5  text-black/[0.72] flex-shrink-0 stroke-[1.5]" />
+            <div className="text-base font-bold text-[#4C4C4C] leading-6 font-ibm-plex-sans truncate">{title}</div>
+            <ChevronDown className="w-5 text-[#4C4C4C] flex-shrink-0 stroke-[1.5]" />
           </div>
-          <div className="text-sm text-black/[0.48] leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
+          <div className="text-sm text-[#808080] leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
         </div>
       </div>
     </div>
   )
-}
+} 
