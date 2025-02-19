@@ -3,11 +3,11 @@ import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface PositionsSidebarProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
 }
 
-export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose }) => {
+export const PositionsSidebar: FC<PositionsSidebarProps> = ({ onClose }) => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
