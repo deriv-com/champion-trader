@@ -6,7 +6,7 @@ import { CurrencyIcon } from "@/components/Currency/CurrencyIcon";
 import { useLogout } from "@/hooks/useLogout";
 
 export const AccountInfo: React.FC = () => {
-  const { balance, currency } = useClientStore();
+  const { balance, currency, setBalance } = useClientStore();
   const {
     accountType,
     selectedAccountId,
@@ -44,47 +44,44 @@ export const AccountInfo: React.FC = () => {
       <div className="p-4">
         <div className="flex flex-col gap-4">
           <h3 className="text-sm font-semibold">Trading account</h3>
-          {accountType === "real" ? (
-            <div className="flex flex-col gap-2">
-              {getAvailableAccounts().map((account) => (
-                <button
-                  key={account.id}
-                  className={`flex items-center p-2 rounded hover:bg-gray-50 ${
-                    selectedAccountId === account.id ? "bg-gray-50" : ""
-                  }`}
-                  onClick={() => selectAccount(account.id)}
-                >
-                  <div className="w-8 h-8 flex items-center justify-center mr-2">
-                    <CurrencyIcon currency={account.id} />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold">
-                      {account.displayName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {account.accountNumber}
-                    </p>
-                  </div>
-                  <p className="text-sm ml-4">0.00 {account.currency}</p>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <CurrencyIcon isVirtual />
+          <div className="flex flex-col gap-2">
+            {getAvailableAccounts().map((account) => (
+              <button
+                key={account.id}
+                className={`flex items-center p-2 rounded hover:bg-gray-50 ${
+                  selectedAccountId === account.id ? "bg-gray-200" : ""
+                }`}
+                onClick={() => selectAccount(account.id)}
+              >
+                <div className="w-8 h-8 flex items-center justify-center mr-2">
+                  <CurrencyIcon currency={account.id} isVirtual={account.isDemo} />
                 </div>
-                <div>
-                  <p className="text-sm font-semibold">Demo Account</p>
-                  <p className="text-xs text-gray-500">VRTC5722704</p>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-semibold">
+                    {account.displayName}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {account.accountNumber}
+                  </p>
                 </div>
-              </div>
-              <button className="px-2 py-1 text-xs border border-gray-400 rounded hover:bg-gray-300">
-                Reset balance
+                <div className="flex items-center gap-2">
+                  {selectedAccountId === account.id && account.isDemo ? (
+                    <button 
+                      className="px-2 py-1 text-xs border border-gray-400 rounded hover:bg-gray-300"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBalance("10000", "USD");
+                      }}
+                    >
+                      Reset balance
+                    </button>
+                  ) : (
+                    <p className="text-sm">{balance} {account.currency}</p>
+                  )}
+                </div>
               </button>
-            </div>
-          )}
+            ))}
+          </div>
 
           <div className="w-full h-1 bg-gray-100"></div>
           <div>

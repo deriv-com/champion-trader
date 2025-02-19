@@ -3,9 +3,17 @@ export interface AccountInfo {
   displayName: string;
   currency: string;
   accountNumber: string;
+  isDemo?: boolean;
 }
 
 export const accountData: AccountInfo[] = [
+  {
+    id: 'demo',
+    displayName: 'Demo Account',
+    currency: 'USD',
+    accountNumber: 'VRTC5722704',
+    isDemo: true,
+  },
   {
     id: 'usd',
     displayName: 'US Dollar',
