@@ -8,7 +8,7 @@ import { useOrientationStore } from '@/stores/orientationStore';
 
 export const AccountSwitcher: React.FC = () => {
   const { balance } = useClientStore();
-  const { accountType, selectedAccount } = useAccount();
+  const { selectedAccount } = useAccount();
   const { isLandscape } = useOrientationStore();
   const [isOpen, setIsOpen] = useState(false);
 
