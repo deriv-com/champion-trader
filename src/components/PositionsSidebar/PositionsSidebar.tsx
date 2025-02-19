@@ -3,11 +3,11 @@ import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface PositionsSidebarProps {
-  isOpen?: boolean;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-export const PositionsSidebar: FC<PositionsSidebarProps> = ({ onClose }) => {
+export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose }) => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,14 +55,14 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ onClose }) => {
 
   return (
     <div
-      className="h-full bg-white shadow-lg"
+      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[99999]`}
       ref={sidebarRef}
-    >
-      <div className="px-4 py-3 border-b flex justify-between items-center">
+    > 
+      <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-lg font-bold">Positions</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
-      <div className="px-4 py-2">
+      <div className="p-4">
         <div className="flex justify-between border-b">
           <button
             className={`flex-1 py-2 text-center font-bold border-b-2 ${isOpenTab ? "border-black" : "border-gray-300 text-gray-500"}`}
@@ -138,7 +138,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ onClose }) => {
           ))}
         </div>
       </div>
-      <div className="p-4 font-bold border-t flex justify-between">
+      <div className="mt-6 p-4 font-bold border-t flex justify-between">
         <span className="text-black-300">Total profit/loss: </span>
         <span className="text-red-500">-1.50 USD</span>
       </div>

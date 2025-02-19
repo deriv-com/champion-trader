@@ -48,18 +48,20 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {isLandscape && (
           <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
         )}
-        <div className="grid flex-1" style={{ gridTemplateColumns: isLandscape ? (isSidebarOpen ? '320px 1fr' : '0 1fr') : '1fr', transition: 'grid-template-columns 300ms' }}>
+        <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
           {isLandscape && (
-            <div className=" overflow-hidden">
+            <>
+            <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : "hidden"} transition-all duration-300`}>
               <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
             </div>
+            <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
+            </>
           )}
-          <main className={`${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-            {children}
-          </main>
-          {isLandscape && <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />}
-          {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
-        </div>
+        <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
+          {children}
+        </main>
+        {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
+      </div>
       </div>
     </div>
   );
