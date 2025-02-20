@@ -3,27 +3,29 @@ import { SmartChart } from "@/components/Chart/SmartChart";
 import { useChartData } from "@/hooks/useChartData";
 import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
 import { transformTickData } from "@/utils/transformChartData";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
 export const ContractDetailsChart: React.FC = () => {
   const ref = useRef<{
     hasPredictionIndicators(): void;
     triggerPopup(arg: () => void): void;
   }>(null);
+  const { isDesktop } = useDeviceDetection();
 
   const historicalData = useMemo(() => {
     const data = generateHistoricalTicks("1HZ100V", 100);
     return transformTickData(data);
   }, []);
 
-  const streamingData = useChartData({
+  const streamingData = useChartData({ 
     useMockData: true,
-    instrumentId: "1HZ100V",
-    type: "tick",
-    durationInSeconds: 0,
+    instrumentId: '1HZ100V',
+    type: 'tick',
+    durationInSeconds: 0
   });
 
   return (
-    <div className="h-[400px] relative bg-white shadow-md rounded-lg">
+    <div className={`relative bg-white shadow-md rounded-lg ${isDesktop ? 'h-full' : 'h-[400px]'}`}>
       <div className="absolute inset-0">
         <SmartChart
           ref={ref}

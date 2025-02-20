@@ -1,8 +1,8 @@
 import React, { useRef, useMemo } from "react";
 import { SmartChart } from "./SmartChart";
 import { useChartData } from "@/hooks/useChartData";
-import { generateHistoricalCandles } from "@/utils/generateHistoricalData";
-import { transformCandleData } from "@/utils/transformChartData";
+import { generateHistoricalCandles, generateHistoricalTicks } from "@/utils/generateHistoricalData";
+import { transformCandleData, transformTickData } from "@/utils/transformChartData";
 
 export const TradeChart: React.FC = () => {
   const ref = useRef<{
@@ -10,29 +10,29 @@ export const TradeChart: React.FC = () => {
     triggerPopup(arg: () => void): void;
   }>(null);
 
-  const historicalData = useMemo(() => {
-    const data = generateHistoricalCandles(100, 60);
-    return transformCandleData(data);
-  }, []);
-
   // const historicalData = useMemo(() => {
-  //   const data = generateHistoricalTicks('1HZ100V', 100);
-  //   return transformTickData(data);
+  //   const data = generateHistoricalCandles(100, 60);
+  //   return transformCandleData(data);
   // }, []);
 
-  const streamingData = useChartData({ 
-    useMockData: true,
-    instrumentId: '1HZ100V',
-    type: 'candle',
-    durationInSeconds: 60
-  });
+  const historicalData = useMemo(() => {
+    const data = generateHistoricalTicks('1HZ100V', 100);
+    return transformTickData(data);
+  }, []);
 
   // const streamingData = useChartData({ 
   //   useMockData: true,
   //   instrumentId: '1HZ100V',
-  //   type: 'tick',
-  //   durationInSeconds: 0
+  //   type: 'candle',
+  //   durationInSeconds: 60
   // });
+
+  const streamingData = useChartData({ 
+    useMockData: true,
+    instrumentId: '1HZ100V',
+    type: 'tick',
+    durationInSeconds: 0
+  });
 
   return (
     <div style={{ display: "flex", height: "100%", position: "relative" }}>
@@ -54,7 +54,7 @@ export const TradeChart: React.FC = () => {
         requestForget={() => {}}
         requestForgetStream={() => {}}
         enabledChartFooter={false}
-        granularity={60}
+        granularity={0}
         isVerticalScrollEnabled
         isConnectionOpened
         clearChart={false}
@@ -68,7 +68,7 @@ export const TradeChart: React.FC = () => {
           top: 76,
         }}
         leftMargin={80}
-        chartType="candles"
+        chartType="line"
         ticksHistory={historicalData}
         streamingData={streamingData}
       />

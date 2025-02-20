@@ -7,6 +7,7 @@ import {
   OrderDetails,
   Payout,
 } from "./components"
+import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart"
 
 const DesktopContractDetailsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -40,8 +41,8 @@ const DesktopContractDetailsPage: React.FC = () => {
           </div>
         </div>
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 m-4 mb-20 bg-white rounded-lg border flex items-center justify-center text-gray-500 ">
-            Chart placeholder
+          <div className="m-4 mb-20 bg-white rounded-lg border h-full text-gray-500 ">
+            <ContractDetailsChart />
           </div>
         </div>
       </div>
