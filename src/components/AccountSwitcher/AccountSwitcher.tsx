@@ -39,7 +39,7 @@ export const AccountSwitcher: React.FC = () => {
       <AccountPopoverContent
         align={isLandscape ? "end" : "start"}
       >
-        <AccountInfo />
+        <AccountInfo onSelect={() => setIsOpen(false)} />
       </AccountPopoverContent>
     </AccountPopover>
   );
