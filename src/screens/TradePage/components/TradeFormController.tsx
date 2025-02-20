@@ -182,7 +182,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     }
   }, [trade_type, config])
 
-  console.log("", buttonStates)
   return (
     <div
       id="trade-section"
