@@ -40,7 +40,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@rsbuild/core": "^1.2.3",
+    "@rsbuild/core": "^1.2.10",
     "@rsbuild/plugin-react": "^1.1.0",
     "@rspack/cli": "^1.2.5",
     "@testing-library/jest-dom": "^6.3.0",
