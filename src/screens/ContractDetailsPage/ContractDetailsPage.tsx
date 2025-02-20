@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-import { useEffect, useState } from "react";
+import { ContractDetailsChart } from "@/components/ContractDetailsChart";
 import axios from "axios";
 
 const ContractDetailsPage: React.FC = () => {
@@ -61,8 +60,8 @@ const ContractDetailsPage: React.FC = () => {
       {/* Order Details */}
       
       {/* Chart Space */}
-      <div className="min-h-[400px] bg-gray-200 flex items-center justify-center rounded-lg border-b border-gray-300">
-        <span className="text-gray-500">Chart space (empty)</span>
+      <div className="min-h-[400px] bg-white rounded-lg border-b border-gray-300">
+        <ContractDetailsChart />
       </div>
       <div className="mt-4 p-4 bg-white shadow-md rounded-lg border-b border-gray-300">
         <h2 className="text-md font-bold mb-4">Order details</h2>
