@@ -8,7 +8,7 @@ import { useOrientationStore } from '@/stores/orientationStore';
 
 export const AccountSwitcher: React.FC = () => {
   const { balance } = useClientStore();
-  const { accountType, selectedAccount } = useAccount();
+  const { selectedAccount } = useAccount();
   const { isLandscape } = useOrientationStore();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,24 +22,24 @@ export const AccountSwitcher: React.FC = () => {
           }`}
         >
           <div className="flex items-center gap-1">
-            <span className={`text-sm font-semibold ${accountType === 'real' ? 'text-color-solid-glacier-700' : 'text-orange-500'}`}>
-              {accountType === 'real' ? 'Real' : 'Demo'}
+            <span className={`text-sm font-semibold ${selectedAccount?.isDemo ? 'text-orange-500' : 'text-color-solid-glacier-700'}`}>
+              {selectedAccount?.isDemo ? 'Demo' : 'Real'}
             </span>
             {isOpen ? (
-              <ChevronUp className={`h-4 w-4 ${accountType === 'real' ? 'text-color-solid-glacier-700' : 'text-orange-500'}`} />
+              <ChevronUp className={`h-4 w-4 ${selectedAccount?.isDemo ? 'text-orange-500' : 'text-color-solid-glacier-700'}`} />
             ) : (
-              <ChevronDown className={`h-4 w-4 ${accountType === 'real' ? 'text-color-solid-glacier-700' : 'text-orange-500'}`} />
+              <ChevronDown className={`h-4 w-4 ${selectedAccount?.isDemo ? 'text-orange-500' : 'text-color-solid-glacier-700'}`} />
             )}
           </div>
           <span className="text-sm font-semibold align-start">
-            {balance} {accountType === 'real' ? selectedAccount?.currency : 'USD'}
+            {balance} {selectedAccount?.currency || 'USD'}
           </span>
         </button>
       </AccountPopoverTrigger>
       <AccountPopoverContent
         align={isLandscape ? "end" : "start"}
       >
-        <AccountInfo />
+        <AccountInfo onSelect={() => setIsOpen(false)} />
       </AccountPopoverContent>
     </AccountPopover>
   );
