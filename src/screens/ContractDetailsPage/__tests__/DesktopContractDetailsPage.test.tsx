@@ -9,6 +9,10 @@ jest.mock("react-router-dom", () => ({
 }));
 
 // Mock the components
+jest.mock("@/components/ContractDetailsChart/ContractDetailsChart", () => ({
+  ContractDetailsChart: () => <div>Chart placeholder</div>,
+}));
+
 jest.mock("../components", () => ({
   ContractSummary: function ContractSummary() { return React.createElement('div', { 'data-testid': 'contract-summary' }, 'Contract Summary') },
   OrderDetails: function OrderDetails() { return React.createElement('div', { 'data-testid': 'order-details' }, 'Order Details') },
