@@ -56,17 +56,25 @@ const PositionsPage: React.FC = () => {
   }, [swipedCard]);
 
   return (
-    <div className="p-4 w-full lg:w-1/4 h-full fixed left-15 top-0 bg-white shadow-md overflow-y-auto"> 
+    <div className="flex flex-col flex-1 h-full bg-white"> 
       {/* Tabs */}
-      <div className="flex border-b mt-4">
+      <div className="flex sticky top-0 z-10 px-4 bg-white border-b border-border">
         <button
-          className={`mt-7 flex-1 p-2 text-center ${activeTab === "open" ? "border-b-2 border-black font-bold" : "text-gray-500"}`}
+          className={`flex-1 py-3 border-b-2 transition-colors ${
+            activeTab === "open" 
+              ? "border-primary text-primary" 
+              : "border-transparent text-muted-foreground"
+          }`}
           onClick={() => setActiveTab("open")}
         >
           Open
         </button>
         <button
-          className={`mt-7 flex-1 p-2 text-center ${activeTab === "closed" ? "border-b-2 border-black font-bold" : "text-gray-500"}`}
+          className={`flex-1 py-3 border-b-2 transition-colors ${
+            activeTab === "closed" 
+              ? "border-primary text-primary" 
+              : "border-transparent text-muted-foreground"
+          }`}
           onClick={() => setActiveTab("closed")}
         >
           Closed
@@ -74,7 +82,7 @@ const PositionsPage: React.FC = () => {
       </div>
 
       {/* Positions List */}
-      <div className="mt-4">
+      <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-gray-100">
         {positions
           .filter((position) => (activeTab === "open" ? position.isOpen : !position.isOpen))
           .map((position) => {

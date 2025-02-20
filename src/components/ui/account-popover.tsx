@@ -1,6 +1,6 @@
 import * as Popover from "@radix-ui/react-popover"
 import { cn } from "@/lib/utils"
-import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useOrientationStore } from "@/stores/orientationStore"
 
 export const AccountPopover = Popover.Root
 export const AccountPopoverTrigger = Popover.Trigger
@@ -11,12 +11,12 @@ export const AccountPopoverContent = ({
   sideOffset = 4,
   ...props
 }: Popover.PopoverContentProps) => {
-  const { isDesktop } = useDeviceDetection()
+  const { isLandscape } = useOrientationStore()
 
   return (
   <Popover.Portal>
     <>
-      {!isDesktop && (
+      {!isLandscape && (
         <div 
           className="fixed inset-0 z-50 bg-black/60 animate-in fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
         />
@@ -26,7 +26,7 @@ export const AccountPopoverContent = ({
       sideOffset={sideOffset}
       className={cn(
         "z-50 rounded-md border bg-white p-0 shadow-md outline-none",
-        isDesktop ? "w-80" : "w-[90vw]",
+        isLandscape ? "w-80" : "w-[90vw]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
