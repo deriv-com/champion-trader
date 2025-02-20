@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from "react"
+import { ServerTime } from "@/components/ServerTime"
 import { TradeButton } from "@/components/TradeButton"
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout"
 import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card"
@@ -196,7 +197,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       </div>
       {isLandscape ? (
         // Desktop layout
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <div
             className="flex flex-col gap-0"
             onMouseDown={() => {
@@ -298,6 +299,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 />
               </Suspense>
             ))}
+          </div>
+          <div className="mt-auto">
+            <ServerTime />
           </div>
         </div>
       ) : (
