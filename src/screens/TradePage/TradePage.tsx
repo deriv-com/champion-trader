@@ -35,7 +35,7 @@ export const TradePage: React.FC = () => {
     <div
       className={`flex ${
         isLandscape ? "flex-row relative" : "flex-col"
-      } flex-1 h-[100dvh]`}
+      } flex-1 h-[100%]`}
       data-testid="trade-page"
     >
       <div
@@ -68,9 +68,11 @@ export const TradePage: React.FC = () => {
             </Suspense>
           </div>
 
-          <Suspense fallback={<div>Loading...</div>}>
-            <DurationOptions />
-          </Suspense>
+          {!isLandscape && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <DurationOptions />
+            </Suspense>
+          )}
         </div>
       </div>
 

@@ -16,11 +16,6 @@ export const useAccount = () => {
 
   const switchAccountType = (type: "real" | "demo") => {
     setAccountType(type);
-    // When switching to demo, we don't need to change selectedAccountId as it's not used
-    // When switching to real, ensure we have a valid account selected
-    if (type === "real" && !selectedAccount) {
-      setSelectedAccountId(accountData[0].id);
-    }
   };
 
   const selectAccount = (id: string) => {
@@ -32,7 +27,9 @@ export const useAccount = () => {
   };
 
   const getAvailableAccounts = (): AccountInfo[] => {
-    return accountType === "real" ? accountData : [];
+    return accountType === "real" 
+      ? accountData.filter(account => !account.isDemo)
+      : accountData.filter(account => account.isDemo);
   };
 
   return {
