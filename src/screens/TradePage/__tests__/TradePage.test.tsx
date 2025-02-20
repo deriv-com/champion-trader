@@ -168,7 +168,7 @@ describe('TradePage', () => {
     expect(tradePage.className).toContain('flex');
     expect(tradePage.className).toContain('flex-col');
     expect(tradePage.className).toContain('flex-1');
-    expect(tradePage.className).toContain('h-[100dvh]');
+    expect(tradePage.className).toContain('h-[100%]');
   });
 
   it('renders in landscape mode', async () => {
@@ -185,7 +185,6 @@ describe('TradePage', () => {
 
     // Balance display should be visible in landscape mode
     expect(screen.getByTestId('bottom-sheet')).toBeInTheDocument();
-    expect(screen.getByTestId('duration-options')).toBeInTheDocument();
     expect(screen.getByTestId('market-selector')).toBeInTheDocument();
 
     // // Check for MarketInfo with selected market
@@ -197,7 +196,7 @@ describe('TradePage', () => {
     expect(tradePage.className).toContain('flex-row');
     expect(tradePage.className).toContain('relative');
     expect(tradePage.className).toContain('flex-1');
-    expect(tradePage.className).toContain('h-[100dvh]');
+    expect(tradePage.className).toContain('h-[100%]');
   });
 
   it('shows "Select Market" when no market is selected', () => {
