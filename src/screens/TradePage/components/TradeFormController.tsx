@@ -158,7 +158,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     const initialStates: ButtonStates = {}
     tradeTypeConfigs[trade_type].buttons.forEach((button) => {
       initialStates[button.actionName] = {
-        loading: true,
+        loading: false,
         error: null,
         payout: buttonStates[button.actionName]?.payout || 0,
         reconnecting: false,
@@ -192,10 +192,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
           : ""
       }`}
     >
-      <div
-        className={isLandscape ? "py-2" : "pt-1 px-4"}
-        id="how-to-trade"
-      >
+      <div className={isLandscape ? "py-2" : "pt-1 px-4"} id="how-to-trade">
         <HowToTrade />
       </div>
       {isLandscape ? (
@@ -277,17 +274,20 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                     buttonStates[button.actionName]?.loading
                       ? "Loading..."
                       : `${
-                          buttonStates[button.actionName]?.payout || 0
+                          // added for demo proposes will change it to 0 once api is connected
+                          buttonStates[button.actionName]?.payout || 10
                         } ${currency}`
                   }
                   title_position={button.position}
                   disabled={
-                    buttonStates[button.actionName]?.loading ||
-                    buttonStates[button.actionName]?.error !== null
+                    buttonStates[button.actionName]?.loading
+                    // Commenting it as api is not working we'll enable it once api is working
+                    // buttonStates[button.actionName]?.error !== null
                   }
                   loading={
-                    buttonStates[button.actionName]?.loading ||
-                    buttonStates[button.actionName]?.reconnecting
+                    buttonStates[button.actionName]?.loading
+                    // Commenting it as api is not working we'll enable it once api is working
+                    // buttonStates[button.actionName]?.reconnecting
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
@@ -367,17 +367,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                     buttonStates[button.actionName]?.loading
                       ? "Loading..."
                       : `${
-                          buttonStates[button.actionName]?.payout || 0
+                          buttonStates[button.actionName]?.payout || 10
                         } ${currency}`
                   }
                   title_position={button.position}
                   disabled={
-                    buttonStates[button.actionName]?.loading ||
-                    buttonStates[button.actionName]?.error !== null
+                    buttonStates[button.actionName]?.loading
+                    // ||
+                    // Commenting it as api is not working we'll enable it once api is working
+                    // buttonStates[button.actionName]?.error !== null
                   }
                   loading={
-                    buttonStates[button.actionName]?.loading ||
-                    buttonStates[button.actionName]?.reconnecting
+                    buttonStates[button.actionName]?.loading
+                    // ||
+                    // Commenting it as api is not working we'll enable it once api is working
+                    // buttonStates[button.actionName]?.reconnecting
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
