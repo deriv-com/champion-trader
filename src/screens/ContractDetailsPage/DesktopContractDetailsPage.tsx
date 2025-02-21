@@ -14,7 +14,7 @@ const DesktopContractDetailsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 w-full" data-testid="desktop-contract-details">
-      <div className="flex justify-between items-center p-4 bg-white">
+      <div className="flex justify-between items-center p-4 bg-white dark:bg-black border-b">
         <h1 className="text-xl font-bold mx-auto">Contract details</h1>
         <button onClick={() => navigate(-1)} className="text-gray-600">
           <X className="w-6 h-6" />
@@ -23,7 +23,7 @@ const DesktopContractDetailsPage: React.FC = () => {
 
       <div className="flex flex-1 overflow-hidden relative">
         <div className="w-[320px] border-r bg-white flex flex-col" data-testid="left-panel">
-          <div className="flex-1 overflow-y-auto p-4 pb-40" data-testid="content-area">
+          <div className="flex-1 overflow-y-auto p-4 pb-40 dark:bg-black" data-testid="content-area">
             <ContractSummary />
             <OrderDetails />
             <Payout />
@@ -33,7 +33,7 @@ const DesktopContractDetailsPage: React.FC = () => {
             <div className="max-w-[1200px] mx-auto">
               <button
                 onClick={() => navigate(-1)}
-                className="w-full bg-black text-white py-3 rounded-lg"
+                className="w-full bg-black text-white py-3 rounded-lg dark:text-gray-300 dark:bg-gray-700"
               >
                 Close
               </button>

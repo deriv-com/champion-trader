@@ -53,12 +53,12 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
         <button
           onClick={() => scroll('left')}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
-          aria-label="Scroll left"
+          aria-label="Scroll right"
         >
           <ChevronLeft className="w-5 h-5 text-text-primary" />
         </button>
       )}
-      
+
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
@@ -77,8 +77,8 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
               className={cn(
                 "px-4 py-3 font-ibm text-base font-normal leading-6 whitespace-nowrap transition-colors relative",
                 activeTab === tab.id
-                  ? "text-black after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
-                  : "text-black/72 hover:text-black"
+                  ? "text-[var(--text-color)] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
+                  : "text-[var(--text-color)]/72 hover:text-[var(--text-color)]"
               )}
             >
               {tab.label}

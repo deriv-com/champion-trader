@@ -48,7 +48,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {isLandscape && (
           <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
         )}
-        <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
+        <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "d-contents w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
           {isLandscape && (
             <>
             <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : "hidden"} transition-all duration-300`}>

@@ -55,12 +55,12 @@ export const TradeParamField: React.FC<TradeParamFieldProps> = ({
 
   return (
     <div ref={paramRef} className="relative">
-      <TradeParam
-        label={label}
-        value={value}
-        onClick={handleClick}
-        className={className}
-      />
+<TradeParam
+  label={label}
+  value={value}
+  onClick={handleClick}
+  className={`${className} text-black dark:text-white`}
+/>
 
       {isDesktop && showPopover && (
         <>

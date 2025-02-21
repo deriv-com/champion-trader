@@ -37,8 +37,8 @@ const ChipTabList: React.FC<BaseTabListProps> = ({
                 px-4 py-2 rounded-full text-sm font-medium transition-colors
                 ${
                   selectedValue === value
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-gray-900 text-black dark:bg-gray-700 dark:text-white rounded-3xl"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-black dark:bg-gray-700 dark:text-gray-300 hover:dark:bg-gray-600 hover:dark:text-white"
                 }
               `}
             >
@@ -67,8 +67,8 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({
             text-primary cursor-pointer
             before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[4px]
             ${selectedValue === value
-              ? "bg-white before:bg-black"
-              : "hover:bg-gray-50 before:bg-transparent"
+              ? "bg-gray-100 font-bold text-black dark:bg-gray-800 dark:text-white"
+              : "hover:bg-gray-50 hover:text-black dark:hover:bg-gray-700 dark:text-gray-300 hover:dark:text-black"
             }
           `}
         >
