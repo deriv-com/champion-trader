@@ -55,7 +55,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
 
   return (
     <div
-      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50]`}
+      className={`fixed top-[64px] left-[64px] h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"} z-[50]`}
       ref={sidebarRef}
     > 
       <div className="p-4 border-b flex justify-between items-center">
