@@ -17,10 +17,20 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile, isDesktop } = useDeviceDetection();
   const { isLandscape, setIsLandscape } = useOrientationStore();
-  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore();
+  const { isSidebarOpen, setSidebarOpen, togglePositionsSidebar } = useMainLayoutStore();
   const [isMenuOpen, setMenuOpen] = React.useState(false);
   const isHeaderVisible = useHeaderStore(state => state.isVisible);
   const isBottomNavVisible = useBottomNavStore(state => state.isVisible);
+
+  // Handle menu toggling
+  const handleMenuToggle = () => {
+    if (isMenuOpen) {
+      setMenuOpen(false);
+    } else {
+      setSidebarOpen(false);
+      setMenuOpen(true);
+    }
+  };
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -47,22 +57,28 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       )}
       <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : "" }`}>
         {isLandscape && (
-          <SideNav setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
+          <SideNav 
+            setMenuOpen={handleMenuToggle} 
+            isMenuOpen={isMenuOpen} 
+          />
         )}
         <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[100%] ml-auto" : "w-full"} w-[100%] overflow-hidden transition-all duration-300`}>
           {isLandscape && (
             <>
-            <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : ""} transition-all duration-300`}>
-              <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-            </div>
-            <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
+              <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : ""} transition-all duration-300`}>
+                <PositionsSidebar 
+                  isOpen={isSidebarOpen} 
+                  onClose={() => setSidebarOpen(false)} 
+                />
+              </div>
+              <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
             </>
           )}
-        <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-          {children}
-        </main>
-        {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
-      </div>
+          <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
+            {children}
+          </main>
+          {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
+        </div>
       </div>
     </div>
   );
