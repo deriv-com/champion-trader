@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useThemeStore } from "@/stores/themeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { ExternalLink, Home, LogOut, Moon } from "lucide-react";
+import { useLogout } from "@/hooks/useLogout";
 
 interface MenuSidebarProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface MenuSidebarProps {
 
 const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const { logout } = useLogout();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,11 +58,7 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
         </div>
         <div className="flex items-center gap-3 cursor-pointer py-2" >
           <LogOut 
-          onClick={() => {
-            localStorage.removeItem("loginToken");
-            useClientStore.getState().logout();
-            window.location.href = "/logout";
-          }} 
+          onClick={() => logout()} 
           className="w-5 h-5" />
           <span className="dark:text-white">Log out</span>
         </div>
