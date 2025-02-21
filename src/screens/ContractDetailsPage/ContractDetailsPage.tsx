@@ -28,7 +28,7 @@ const MobileContractDetailsPage: React.FC = () => {
   }, [setHeaderVisible, setBottomNavVisible]);
 
   return (
-    <div className="w-full bg-gray-100 h-screen flex flex-col">
+    <div className="w-full bg-gray-100 dark:bg-black h-screen flex flex-col">
       <Header />
       <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
         <div className="p-2 pb-[56px]">

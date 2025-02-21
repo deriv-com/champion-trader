@@ -28,26 +28,26 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed left-[65px] h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 opacity-100 " : "-translate-x-full opacity-0"
+      className={`fixed left-[65px] h-full min-w-[320px] bg-white dark:bg-black !important shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 opacity-100 " : "-translate-x-full opacity-0"
         } z-[50]`}
       ref={sidebarRef}
     >
       <div className="p-4 flex justify-between items-center">
-        <h2 className="text-lg font-bold">Menu</h2>
-        <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
+        <h2 className="text-lg font-bold dark:text-white">Menu</h2>
+        <button onClick={onClose} className="text-gray-600 dark:text-white hover:text-gray-900 dark:hover:text-gray-300">✕</button>
       </div>
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between cursor-pointer py-2">
           <div className="flex items-center gap-3">
             <Home className="w-5 h-5" />
-            <span>Go to Home</span>
+            <span className="dark:text-white">Go to Home</span>
           </div>
           <ExternalLink className="w-5 h-5" />
         </div>
         <div className="flex items-center justify-between cursor-pointer py-2">
           <div className="flex items-center gap-3">
             <Moon className="w-5 h-5" />
-            <span>Theme</span>
+            <span className="dark:text-white">Theme</span>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" className="sr-only peer" checked={isDarkMode} onChange={toggleTheme} />
@@ -62,7 +62,7 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
             window.location.href = "/logout";
           }} 
           className="w-5 h-5" />
-          <span>Log out</span>
+          <span className="dark:text-white">Log out</span>
         </div>
       </div>
     </div>
