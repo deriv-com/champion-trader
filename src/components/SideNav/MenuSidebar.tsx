@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { useThemeStore } from "@/stores/themeStore";
-import { useClientStore } from "@/stores/clientStore";
 import { ExternalLink, Home, LogOut, Moon } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 
