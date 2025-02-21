@@ -34,8 +34,8 @@ export const TradePage: React.FC = () => {
   return (
     <div
       className={`flex ${
-        isLandscape ? "flex-row relative" : "flex-col"
-      } flex-1 h-[100%]`}
+        isLandscape ? "flex-row relative h-[calc(100vh-4rem)]" : "flex-col h-[100dvh]"
+      } flex-1`}
       data-testid="trade-page"
     >
       <div
