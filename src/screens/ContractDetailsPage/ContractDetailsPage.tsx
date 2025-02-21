@@ -8,7 +8,6 @@ import {
   Header,
   ContractSummary,
   OrderDetails,
-  Payout,
   EntryExitDetails,
 } from "./components";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
@@ -37,7 +36,6 @@ const MobileContractDetailsPage: React.FC = () => {
             <ContractDetailsChart />
           </div>
           <OrderDetails />
-          <Payout />
           <EntryExitDetails />
         </div>
 

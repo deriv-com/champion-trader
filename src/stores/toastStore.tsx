@@ -3,10 +3,13 @@ import { Toast } from '@/components/ui/toast';
 import { type FC } from 'react';
 import { type JSX } from 'react/jsx-runtime';
 
+type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+
 interface ToastOptions {
   content: React.ReactNode;
   variant?: 'success' | 'error' | 'black';
   duration?: number;
+  position?: ToastPosition;
 }
 
 interface ToastState {
@@ -30,5 +33,11 @@ export const ToastProvider: FC = (): JSX.Element | null => {
 
   if (!show || !options) return null;
 
-  return <Toast content={options.content} variant={options.variant} duration={options.duration} onClose={hideToast} />;
+  return <Toast 
+    content={options.content} 
+    variant={options.variant} 
+    duration={options.duration} 
+    position={options.position}
+    onClose={hideToast} 
+  />;
 };

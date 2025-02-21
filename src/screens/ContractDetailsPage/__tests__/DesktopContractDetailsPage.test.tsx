@@ -40,7 +40,6 @@ describe("DesktopContractDetailsPage", () => {
     // Check all sections are rendered
     expect(screen.getByTestId("contract-summary")).toBeInTheDocument();
     expect(screen.getByTestId("order-details")).toBeInTheDocument();
-    expect(screen.getByTestId("payout")).toBeInTheDocument();
     expect(screen.getByTestId("entry-exit-details")).toBeInTheDocument();
 
     // Check chart placeholder
@@ -97,7 +96,6 @@ describe("DesktopContractDetailsPage", () => {
     // Check components are rendered in correct order
     expect(children[0]).toHaveAttribute("data-testid", "contract-summary");
     expect(children[1]).toHaveAttribute("data-testid", "order-details");
-    expect(children[2]).toHaveAttribute("data-testid", "payout");
-    expect(children[3]).toHaveAttribute("data-testid", "entry-exit-details");
+    expect(children[2]).toHaveAttribute("data-testid", "entry-exit-details");
   });
 });

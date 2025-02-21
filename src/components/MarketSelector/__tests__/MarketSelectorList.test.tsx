@@ -4,6 +4,7 @@ import * as bottomSheetStore from "@/stores/bottomSheetStore"
 import * as tradeStore from "@/stores/tradeStore"
 import * as marketStore from "@/stores/marketStore"
 import * as leftSidebarStore from "@/stores/leftSidebarStore"
+import * as toastStore from "@/stores/toastStore"
 
 // Mock the stores
 jest.mock("@/stores/bottomSheetStore", () => ({
@@ -20,6 +21,10 @@ jest.mock("@/stores/marketStore", () => ({
 
 jest.mock("@/stores/leftSidebarStore", () => ({
   useLeftSidebarStore: jest.fn(),
+}))
+
+jest.mock("@/stores/toastStore", () => ({
+  useToastStore: jest.fn(),
 }))
 
 // Mock the market stub data
@@ -89,6 +94,7 @@ describe("MarketSelectorList", () => {
   const mockSetInstrument = jest.fn()
   const mockSetSelectedMarket = jest.fn()
   const mockSetLeftSidebar = jest.fn()
+  const mockToast = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -123,6 +129,14 @@ describe("MarketSelectorList", () => {
     ).mockReturnValue({
       setLeftSidebar: mockSetLeftSidebar,
     })
+    ;(toastStore.useToastStore as unknown as jest.Mock).mockImplementation(
+      (selector) => {
+        const store = {
+          toast: mockToast,
+        }
+        return selector ? selector(store) : store
+      }
+    )
 
     // Setup localStorage mock
     mockLocalStorage.getItem.mockReturnValue(null)
@@ -211,6 +225,11 @@ describe("MarketSelectorList", () => {
           "market-favorites",
           expect.any(String)
         )
+        expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+          variant: "black",
+          duration: 2000,
+          position: "bottom-center"
+        }))
       })
 
       it("shows only favorites in Favourites tab", () => {
@@ -242,7 +261,6 @@ describe("MarketSelectorList", () => {
         expect(mockSetInstrument).toHaveBeenCalledWith("frxEURUSD")
         expect(mockSetSelectedMarket).toHaveBeenCalled()
         expect(mockSetBottomSheet).toHaveBeenCalledWith(false)
-        expect(mockSetLeftSidebar).toHaveBeenCalledWith(false)
       })
 
       it("sets initial instrument based on default market", async () => {

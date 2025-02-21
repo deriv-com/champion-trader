@@ -3,12 +3,14 @@ import { BarChart2, Clock, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
-export const SideNav: React.FC<{ setSidebarOpen: (open: boolean) => void; setMenuOpen: (open: boolean) => void; isMenuOpen: boolean, isSidebarOpen: boolean }> = ({ setSidebarOpen, setMenuOpen, isMenuOpen, isSidebarOpen }) => {
+export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpen: boolean }> = ({ setMenuOpen, isMenuOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
   const { isLandscape } = useOrientationStore();
+  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore();
 
   return (
     <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>

@@ -3,6 +3,7 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { SideNav } from "@/components/SideNav";
@@ -16,7 +17,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile, isDesktop } = useDeviceDetection();
   const { isLandscape, setIsLandscape } = useOrientationStore();
-  const [isSidebarOpen, setSidebarOpen] = React.useState(false);
+  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore();
   const [isMenuOpen, setMenuOpen] = React.useState(false);
   const isHeaderVisible = useHeaderStore(state => state.isVisible);
   const isBottomNavVisible = useBottomNavStore(state => state.isVisible);
@@ -46,7 +47,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       )}
       <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : "" }`}>
         {isLandscape && (
-          <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
+          <SideNav setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
         )}
         <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[75%] ml-auto" : "w-full"} overflow-hidden transition-all duration-300`}>
           {isLandscape && (

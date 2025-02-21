@@ -1,6 +1,6 @@
 import React from "react"
 import { ChevronDown } from "lucide-react"
-import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { MarketIcon } from "./MarketIcon"
 
 interface MarketSelectorButtonProps {
@@ -60,10 +60,10 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
   }
   const { displayName, isClosed, iconSymbol } = formatSymbol(symbol)
 
-  const { setLeftSidebar } = useLeftSidebarStore()
+  const { setOverlaySidebar } = useMainLayoutStore()
 
   const handleClick = () => {
-    setLeftSidebar(true, "market-list")
+    setOverlaySidebar(true, "market-list")
   }
 
   return (

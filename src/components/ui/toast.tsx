@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
+type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+
 export interface ToastProps {
   content: React.ReactNode;
   variant?: 'success' | 'error' | 'black';
   onClose: () => void;
   duration?: number;
+  position?: ToastPosition;
 }
 
-export const Toast = ({ content, variant = 'success', onClose, duration = 3000 }: ToastProps) => {
+export const Toast = ({ content, variant = 'success', onClose, duration = 3000, position = 'bottom-center' }: ToastProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -20,14 +23,14 @@ export const Toast = ({ content, variant = 'success', onClose, duration = 3000 }
   return (
     <div
       className={cn(
-        'fixed top-4 left-1/2 -translate-x-1/2 z-[999]',
-        'px-6 py-3 rounded-lg shadow-lg',
-        'animate-in fade-in slide-in-from-top-4',
+        'fixed bottom-4 z-[99999]',
         {
-          'bg-emerald-600 text-white': variant === 'success',
-          'bg-red-600 text-white': variant === 'error',
-          'bg-gray-900 text-white': variant === 'black'
-        }
+          'left-4': position === 'bottom-left',
+          'left-1/2 -translate-x-1/2': position === 'bottom-center',
+          'right-4': position === 'bottom-right'
+        },
+        'shadow-lg',
+        'animate-in fade-in slide-in-from-bottom-4'
       )}
       role="alert"
     >
