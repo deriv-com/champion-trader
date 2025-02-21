@@ -33,6 +33,7 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
             <button
               onClick={() => {
                 if (window.innerWidth >= 1024) {
+                  setMenuOpen(false)
                   setSidebarOpen(true);
                   navigate("/trade");
                 } else {
@@ -51,6 +52,7 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
         <button
           onClick={() => {
             if (window.innerWidth >= 1024) {
+              setSidebarOpen(false);
               setMenuOpen(!isMenuOpen);
             } else {
               navigate("/menu");
