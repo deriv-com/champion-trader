@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
-type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right' | 'top-center';
 
 export interface ToastProps {
   content: React.ReactNode;
@@ -23,14 +23,18 @@ export const Toast = ({ content, variant = 'success', onClose, duration = 3000, 
   return (
     <div
       className={cn(
-        'fixed bottom-4 z-[99999]',
+        'fixed z-[99999]',
         {
-          'left-4': position === 'bottom-left',
-          'left-1/2 -translate-x-1/2': position === 'bottom-center',
-          'right-4': position === 'bottom-right'
+          'bottom-4 left-4': position === 'bottom-left',
+          'bottom-4 left-1/2 -translate-x-1/2': position === 'bottom-center',
+          'bottom-4 right-4': position === 'bottom-right',
+          'top-4 left-1/2 -translate-x-1/2': position === 'top-center'
         },
         'shadow-lg',
-        'animate-in fade-in slide-in-from-bottom-4'
+        {
+          'animate-in fade-in slide-in-from-bottom-4': position.startsWith('bottom'),
+          'animate-in fade-in slide-in-from-top-4': position.startsWith('top')
+        }
       )}
       role="alert"
     >

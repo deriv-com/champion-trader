@@ -3,7 +3,7 @@ import { Toast } from '@/components/ui/toast';
 import { type FC } from 'react';
 import { type JSX } from 'react/jsx-runtime';
 
-type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+type ToastPosition = 'bottom-left' | 'bottom-center' | 'bottom-right' | 'top-center';
 
 interface ToastOptions {
   content: React.ReactNode;

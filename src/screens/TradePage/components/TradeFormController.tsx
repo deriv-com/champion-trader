@@ -287,7 +287,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                       ),
                       variant: "black",
                       duration: 3000,
-                      position: 'bottom-left'
+                      position: isLandscape ? 'bottom-left' : 'top-center'
                     })
                   }}
                 />
@@ -399,7 +399,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                       ),
                       variant: "black",
                       duration: 3000,
-                      position: 'bottom-left'
+                      position: isLandscape ? 'bottom-left' : 'top-center'
                     })
                   }}
                 />
