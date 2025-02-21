@@ -49,22 +49,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
         )}
         <div className="flex flex-1 overflow-hidden">
-          <div className="flex flex-1">
-            {isLandscape && (
-              <>
-                <div className={`${isSidebarOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
-                  <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-                </div>
-                <div className={`${isMenuOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
-                  <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
-                </div>
-              </>
-            )}
-            <main className={`flex-1 ${isLandscape ? "flex flex-row" : "flex flex-col"} transition-all duration-300`}>
+          {isLandscape ? (
+            <div className="flex flex-1">
+              <div className={`${isSidebarOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
+                <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+              </div>
+              <div className={`${isMenuOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
+                <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
+              </div>
+              <main className="flex-1 flex flex-row transition-all duration-300">
+                {children}
+              </main>
+            </div>
+          ) : (
+            <main className="flex-1 flex flex-col">
               {children}
+              {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
             </main>
-          </div>
-          {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
+          )}
         </div>
       </div>
     </div>
