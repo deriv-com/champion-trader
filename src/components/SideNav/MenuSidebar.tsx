@@ -11,7 +11,7 @@ interface MenuSidebarProps {
 
 const MenuSidebar: React.FC<MenuSidebarProps> = ({ isOpen, onClose }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const { logout } = useLogout();
+   const logout = useLogout()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
