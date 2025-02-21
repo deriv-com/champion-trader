@@ -1,8 +1,8 @@
 import React, { useRef, useMemo } from "react";
 import { SmartChart } from "./SmartChart";
 import { useChartData } from "@/hooks/useChartData";
-import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
-import { transformTickData } from "@/utils/transformChartData";
+import { generateHistoricalCandles, generateHistoricalTicks } from "@/utils/generateHistoricalData";
+import { transformCandleData, transformTickData } from "@/utils/transformChartData";
 
 export const TradeChart: React.FC = () => {
   const ref = useRef<{
