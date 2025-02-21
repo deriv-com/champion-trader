@@ -193,7 +193,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
           : ""
       }`}
     >
-      <div className={isLandscape ? "py-2" : "pt-1 px-4"} id="how-to-trade">
+      <div className={isLandscape ? "pb-2" : "pt-1 px-4"} id="how-to-trade">
         <HowToTrade />
       </div>
       {isLandscape ? (
