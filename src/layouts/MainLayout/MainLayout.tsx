@@ -17,7 +17,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile, isDesktop } = useDeviceDetection();
   const { isLandscape, setIsLandscape } = useOrientationStore();
-  const { isSidebarOpen, setSidebarOpen, togglePositionsSidebar } = useMainLayoutStore();
+  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore();
   const [isMenuOpen, setMenuOpen] = React.useState(false);
   const isHeaderVisible = useHeaderStore(state => state.isVisible);
   const isBottomNavVisible = useBottomNavStore(state => state.isVisible);
