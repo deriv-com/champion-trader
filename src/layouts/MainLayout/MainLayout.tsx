@@ -44,24 +44,30 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {isHeaderVisible && (
         <Header className="sticky top-0 z-50 w-full" />
       )}
-      <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : "" }`}>
+      <div className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : ""}`}>
         {isLandscape && (
           <SideNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} setMenuOpen={setMenuOpen} isMenuOpen={isMenuOpen} />
         )}
-        <div className={`flex flex-col ${isSidebarOpen || isMenuOpen ? "w-[100%] ml-auto" : "w-full"} w-[100%] overflow-hidden transition-all duration-300`}>
-          {isLandscape && (
-            <>
-            <div className={`${isSidebarOpen ? "w-[25%] flex-grow" : ""} transition-all duration-300`}>
-              <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <div className="flex flex-1 overflow-hidden">
+          {isLandscape ? (
+            <div className="flex flex-1">
+              <div className={`${isSidebarOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
+                <PositionsSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+              </div>
+              <div className={`${isMenuOpen ? "w-[22%]" : "w-0"} transition-all duration-300 flex-shrink-0`}>
+                <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
+              </div>
+              <main className="flex-1 flex flex-row transition-all duration-300">
+                {children}
+              </main>
             </div>
-            <MenuSidebar isOpen={isMenuOpen} onClose={() => setMenuOpen(false)} />
-            </>
+          ) : (
+            <main className="flex-1 flex flex-col">
+              {children}
+              {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
+            </main>
           )}
-        <main className={`flex-1 ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-          {children}
-        </main>
-        {!isLandscape && isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
-      </div>
+        </div>
       </div>
     </div>
   );
