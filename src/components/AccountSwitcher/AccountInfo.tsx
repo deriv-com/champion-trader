@@ -4,7 +4,6 @@ import { LogOut } from "lucide-react"
 import { useAccount } from "@/hooks/useAccount"
 import { CurrencyIcon } from "@/components/Currency/CurrencyIcon"
 import { useLogout } from "@/hooks/useLogout"
-import * as Popover from "@radix-ui/react-popover"
 
 interface AccountInfoProps {
   onSelect: () => void
