@@ -54,7 +54,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
   // const { isMobile } = useDeviceDetection()
   const { setSidebarOpen } = useMainLayoutStore()
   const { toast, hideToast } = useToastStore()
-  const { currency } = useClientStore()
+  const { currency, isLoggedIn } = useClientStore()
   // const tradeActions = useTradeActions()
   const config = tradeTypeConfigs[trade_type]
   const [isStakeSelected, setIsStakeSelected] = useState(false)
@@ -267,6 +267,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
+                    if (!isLoggedIn) return;
                     // Comment out actual API call but keep the success flow
                     // await tradeActions[button.actionName]()
                     
@@ -379,6 +380,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
+                    if (!isLoggedIn) return;
                     // Comment out actual API call but keep the success flow
                     // await tradeActions[button.actionName]()
                     
