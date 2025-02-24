@@ -22,7 +22,6 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
                 if (window.innerWidth >= 1024) {
                   setMenuOpen(false)
                   setSidebarOpen(true);
-                  setMenuOpen(false);
                 } else {
                   navigate('/positions')
                 }
@@ -43,7 +42,6 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
             if (window.innerWidth >= 1024) {
               setSidebarOpen(false);
               setMenuOpen(!isMenuOpen);
-              setSidebarOpen(false);
             } else {
               navigate("/menu");
             }
