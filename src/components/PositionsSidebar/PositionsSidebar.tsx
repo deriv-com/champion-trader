@@ -1,7 +1,8 @@
-import { ChevronDown } from "lucide-react";
 import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { TRADE_TYPES, TIME_PERIODS, OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
+import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
+import { useFilteredPositions } from "./hooks/useFilteredPositions";
+import { FilterDropdown } from "./components/FilterDropdown";
 
 interface PositionsSidebarProps {
   isOpen: boolean;
@@ -11,45 +12,22 @@ interface PositionsSidebarProps {
 export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose }) => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-
   const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
-  const [filteredPositions, setFilteredPositions] = useState<Position[]>(OPEN_POSITIONS);
+
+  const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
+    isOpenTab,
+    allPositions,
+    closedPositions: CLOSED_POSITIONS,
+  });
 
   useEffect(() => {
     fetch("/api/positions")
       .then(response => response.json())
       .then(data => {
         setAllPositions(data);
-        setFilteredPositions(data);
       })
       .catch(error => console.error("Error fetching positions:", error));
-  }, []);
-
-  useEffect(() => {
-    if (!isOpenTab) {
-      setSelectedFilter("All time");
-      setFilteredPositions(CLOSED_POSITIONS);
-    } else {
-      setSelectedFilter("All trade types");
-      setFilteredPositions(allPositions);
-    }
-  }, [isOpenTab, allPositions]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {
@@ -64,23 +42,6 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-
-  const handleFilterSelect = (filter: string) => {
-    setSelectedFilter(filter);
-    setDropdownOpen(false);
-
-    // Filter positions based on selected filter
-    const positions = !isOpenTab ? CLOSED_POSITIONS : allPositions;
-    if (filter === "All trade types" || filter === "All time") {
-      setFilteredPositions(positions);
-    } else if (!isOpenTab) {
-      // Time-based filtering logic would go here
-      // For now, just showing all positions
-      setFilteredPositions(positions);
-    } else {
-      setFilteredPositions(positions.filter(position => position.type === filter));
-    }
-  };
 
   return (
     <div
@@ -115,50 +76,11 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
           </button>
         </div>
         <div className="mt-4">
-          <div className="relative w-[50%]" ref={dropdownRef} onMouseDown={(event) => event.stopPropagation()}>
-            <button 
-              className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <span>{selectedFilter}</span>
-              <span className={`transform transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}>
-                <ChevronDown className="text-black-400" />
-              </span>
-            </button>
-          </div>
-          {dropdownOpen && (
-            <ul className="absolute text-sm left-0 w-1/2 bg-white border rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
-              {isOpenTab ? (
-                <>
-                  <li 
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleFilterSelect("All trade types")}
-                  >
-                    All trade types
-                  </li>
-                  {TRADE_TYPES.map((type) => (
-                    <li 
-                      key={type} 
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleFilterSelect(type)}
-                    >
-                      {type}
-                    </li>
-                  ))}
-                </>
-              ) : (
-                TIME_PERIODS.map((period) => (
-                  <li 
-                    key={period} 
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleFilterSelect(period)}
-                  >
-                    {period}
-                  </li>
-                ))
-              )}
-            </ul>
-          )}
+          <FilterDropdown
+            isOpenTab={isOpenTab}
+            selectedFilter={selectedFilter}
+            onFilterSelect={handleFilterSelect}
+          />
         </div>
         <div className="mt-4 space-y-4">
           {filteredPositions.map((position) => (
