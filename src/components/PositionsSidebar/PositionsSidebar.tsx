@@ -45,14 +45,14 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
 
   return (
     <div
-      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50]`}
+      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50] flex flex-col`}
       ref={sidebarRef}
     > 
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-lg font-bold">Positions</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
-      <div className="p-6 ">
+      <div className="p-6 flex-1 overflow-auto">
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <button
             className={`flex-1 py-2 text-center font-small rounded-lg transition-all ${
@@ -127,7 +127,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
           ))}
         </div>
       </div>
-      <div className="mt-6 p-4 font-bold border-t flex justify-between">
+      <div className="p-4 font-bold border-t flex justify-between mt-auto">
         <span className="text-black-300">Total profit/loss: </span>
         <span className="text-red-500">-1.50 USD</span>
       </div>
