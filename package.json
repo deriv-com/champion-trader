@@ -1,5 +1,5 @@
 {
-  "name": "champion-trader",
+  "name": "@deriv-com/champion-trader",
   "private": true,
   "version": "0.0.0",
   "type": "module",
