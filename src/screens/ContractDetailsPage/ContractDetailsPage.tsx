@@ -10,7 +10,7 @@ import {
   OrderDetails,
   EntryExitDetails,
 } from "./components";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 const MobileContractDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -56,8 +56,8 @@ const MobileContractDetailsPage: React.FC = () => {
 };
 
 const ContractDetailsPage: React.FC = () => {
-  const { isMobile } = useDeviceDetection();
-  return isMobile ? (
+  const { isLandscape } = useOrientationStore();
+  return !isLandscape ? (
     <MobileContractDetailsPage />
   ) : (
     <DesktopContractDetailsPage />

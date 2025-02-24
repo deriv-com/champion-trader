@@ -26,7 +26,7 @@ export const useFilteredPositions = ({
       setSelectedFilter("All time");
       setFilteredPositions(closedPositions);
     } else {
-      setSelectedFilter("All trade types");
+      setSelectedFilter("Trade types");
       setFilteredPositions(allPositions);
     }
   }, [isOpenTab, allPositions, closedPositions]);
@@ -36,7 +36,7 @@ export const useFilteredPositions = ({
 
     // Filter positions based on selected filter
     const positions = !isOpenTab ? closedPositions : allPositions;
-    if (filter === "All trade types" || filter === "All time") {
+    if (filter === "Trade types" || filter === "All time") {
       setFilteredPositions(positions);
     } else if (!isOpenTab) {
       // Time-based filtering logic would go here

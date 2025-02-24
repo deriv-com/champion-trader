@@ -15,7 +15,7 @@ interface MainLayoutProps {
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { isMobile, isDesktop } = useDeviceDetection()
+  const { isMobile } = useDeviceDetection()
   const { isLandscape, setIsLandscape } = useOrientationStore()
   const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore()
   const [isMenuOpen, setMenuOpen] = React.useState(false)
@@ -44,7 +44,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
       {isHeaderVisible && <Header className="sticky top-0 z-50 w-full" />}
       <div
-        className={`flex flex-1 relative ${isDesktop ? "overflow-hidden" : ""}`}
+        className={`flex flex-1 relative ${isLandscape ? "overflow-hidden" : ""}`}
       >
         {isLandscape && (
           <SideNav

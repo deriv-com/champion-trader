@@ -51,9 +51,9 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
             <>
               <li 
                 className="p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleSelect("All trade types")}
+                onClick={() => handleSelect("Trade types")}
               >
-                All trade types
+                Trade types
               </li>
               {TRADE_TYPES.map((type) => (
                 <li 

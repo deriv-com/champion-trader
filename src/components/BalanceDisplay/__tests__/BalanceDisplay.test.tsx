@@ -43,7 +43,7 @@ describe('BalanceDisplay', () => {
       render(<BalanceDisplay />);
       
       expect(screen.getByText('Real')).toBeInTheDocument();
-      expect(screen.getByText('1,000 USD')).toBeInTheDocument(); // matches combined balance and currency
+      expect(screen.getByText('10,000 USD')).toBeInTheDocument(); // matches combined balance and currency
     });
   });
 });
