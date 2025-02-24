@@ -76,7 +76,7 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check left panel
     const leftPanel = screen.getByTestId("left-panel");
-    expect(leftPanel).toHaveClass("w-[320px] border-r bg-white flex flex-col");
+    expect(leftPanel).toHaveClass("w-[320px] bg-white flex flex-col");
 
     // Check content area
     const contentArea = screen.getByTestId("content-area");
