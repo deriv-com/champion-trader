@@ -55,7 +55,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
       <div className="p-6 flex-1 overflow-auto">
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <button
-            className={`flex-1 py-2 text-center font-small rounded-lg transition-all ${
+            className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
               isOpenTab 
                 ? "bg-white text-black shadow-sm" 
                 : "text-gray-500 hover:bg-gray-50"
@@ -65,7 +65,7 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
             Open
           </button>
           <button
-            className={`flex-1 py-2 text-center font-medium rounded-lg transition-all ${
+            className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
               !isOpenTab 
                 ? "bg-white text-black shadow-sm" 
                 : "text-gray-500 hover:bg-gray-50"
