@@ -3,14 +3,14 @@ import { SmartChart } from "@/components/Chart/SmartChart";
 import { useChartData } from "@/hooks/useChartData";
 import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
 import { transformTickData } from "@/utils/transformChartData";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 export const ContractDetailsChart: React.FC = () => {
   const ref = useRef<{
     hasPredictionIndicators(): void;
     triggerPopup(arg: () => void): void;
   }>(null);
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
 
   const historicalData = useMemo(() => {
     const data = generateHistoricalTicks("1HZ100V", 100);
@@ -25,7 +25,7 @@ export const ContractDetailsChart: React.FC = () => {
   });
 
   return (
-    <div className={`relative bg-white shadow-md rounded-lg ${isDesktop ? 'h-full' : 'h-[400px]'}`}>
+    <div className={`relative bg-white shadow-md rounded-lg ${isLandscape ? 'h-full' : 'h-[400px]'}`}>
       <div className="absolute inset-0">
         <SmartChart
           ref={ref}
