@@ -1,4 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react"
+import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
+import { useToastStore } from "@/stores/toastStore"
 import { ServerTime } from "@/components/ServerTime"
 import { TradeButton } from "@/components/TradeButton"
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout"
@@ -7,12 +10,10 @@ import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card"
 import { useTradeStore } from "@/stores/tradeStore"
 import { tradeTypeConfigs } from "@/config/tradeTypes"
 import { useTradeActions } from "@/hooks/useTradeActions"
-import { parseDuration, formatDuration } from "@/utils/duration"
-import { createSSEConnection } from "@/services/api/sse/createSSEConnection"
 import { useClientStore } from "@/stores/clientStore"
 import { WebSocketError } from "@/services/api/websocket/types"
 import { HowToTrade } from "@/components/HowToTrade"
-import { PayoutDisplay } from "@/components/Stake/components/PayoutDisplay"
+import { TradeNotification } from "@/components/ui/trade-notification"
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -49,9 +50,12 @@ type ButtonStates = Record<string, ButtonState>
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({
   isLandscape,
 }) => {
-  const { trade_type, duration, setPayouts, stake } = useTradeStore()
-  const { token, currency } = useClientStore()
-  const tradeActions = useTradeActions()
+  const { trade_type } = useTradeStore()
+  // const { isMobile } = useDeviceDetection()
+  const { togglePositionsSidebar } = useMainLayoutStore()
+  const { toast, hideToast } = useToastStore()
+  const { currency, isLoggedIn } = useClientStore()
+  // const tradeActions = useTradeActions()
   const config = tradeTypeConfigs[trade_type]
   const [isStakeSelected, setIsStakeSelected] = useState(false)
   const [stakeError, setStakeError] = useState(false)
@@ -70,88 +74,85 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     return initialStates
   })
 
-  // Parse duration for API call
-  const { value: apiDurationValue, type: apiDurationType } =
-    parseDuration(duration)
+  // Commented out API calls for now
+  // useEffect(() => {
+  //   // Create SSE connections for each button's contract type
+  //   const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(
+  //     (button) => {
+  //       return createSSEConnection({
+  //         params: {
+  //           action: "contract_price",
+  //           duration: formatDuration(Number(apiDurationValue), apiDurationType),
+  //           trade_type: button.contractType,
+  //           instrument: "R_100",
+  //           currency: currency,
+  //           payout: stake,
+  //           strike: stake,
+  //         },
+  //         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  //         onMessage: (priceData) => {
+  //           // Update button state for this specific button
+  //           setButtonStates((prev) => ({
+  //             ...prev,
+  //             [button.actionName]: {
+  //               loading: false,
+  //               error: null,
+  //               payout: Number(priceData.price),
+  //               reconnecting: false,
+  //             },
+  //           }))
 
-  useEffect(() => {
-    // Create SSE connections for each button's contract type
-    const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(
-      (button) => {
-        return createSSEConnection({
-          params: {
-            action: "contract_price",
-            duration: formatDuration(Number(apiDurationValue), apiDurationType),
-            trade_type: button.contractType,
-            instrument: "R_100",
-            currency: currency,
-            payout: stake,
-            strike: stake,
-          },
-          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-          onMessage: (priceData) => {
-            // Update button state for this specific button
-            setButtonStates((prev) => ({
-              ...prev,
-              [button.actionName]: {
-                loading: false,
-                error: null,
-                payout: Number(priceData.price),
-                reconnecting: false,
-              },
-            }))
+  //           // Update payouts in store
+  //           const payoutValue = Number(priceData.price)
 
-            // Update payouts in store
-            const payoutValue = Number(priceData.price)
+  //           // Create a map of button action names to their payout values
+  //           const payoutValues = Object.keys(buttonStates).reduce(
+  //             (acc, key) => {
+  //               acc[key] =
+  //                 key === button.actionName
+  //                   ? payoutValue
+  //                   : buttonStates[key]?.payout || 0
+  //               return acc
+  //             },
+  //             {} as Record<string, number>
+  //           )
 
-            // Create a map of button action names to their payout values
-            const payoutValues = Object.keys(buttonStates).reduce(
-              (acc, key) => {
-                acc[key] =
-                  key === button.actionName
-                    ? payoutValue
-                    : buttonStates[key]?.payout || 0
-                return acc
-              },
-              {} as Record<string, number>
-            )
+  //           setPayouts({
+  //             max: 50000,
+  //             values: payoutValues,
+  //           })
+  //         },
+  //         onError: (error) => {
+  //           // Update only this button's state on error
+  //           setButtonStates((prev) => ({
+  //             ...prev,
+  //             [button.actionName]: {
+  //               ...prev[button.actionName],
+  //               loading: false,
+  //               error,
+  //               reconnecting: true,
+  //             },
+  //           }))
+  //         },
+  //         onOpen: () => {
+  //           // Reset error and reconnecting state on successful connection
+  //           setButtonStates((prev) => ({
+  //             ...prev,
+  //             [button.actionName]: {
+  //               ...prev[button.actionName],
+  //               error: null,
+  //               reconnecting: false,
+  //             },
+  //           }))
+  //         },
+  //       })
+  //     }
+  //   )
 
-            setPayouts({
-              max: 50000,
-              values: payoutValues,
-            })
-          },
-          onError: (error) => {
-            // Update only this button's state on error
-            setButtonStates((prev) => ({
-              ...prev,
-              [button.actionName]: {
-                ...prev[button.actionName],
-                loading: false,
-                error,
-                reconnecting: true,
-              },
-            }))
-          },
-          onOpen: () => {
-            // Reset error and reconnecting state on successful connection
-            setButtonStates((prev) => ({
-              ...prev,
-              [button.actionName]: {
-                ...prev[button.actionName],
-                error: null,
-                reconnecting: false,
-              },
-            }))
-          },
-        })
-      }
-    )
-
-    return () => {
-      cleanupFunctions.forEach((cleanup) => cleanup())
-    }
-  }, [duration, stake, currency, token])
+  //   return () => {
+  //     cleanupFunctions.forEach((cleanup) => cleanup())
+  //   }
+  // }, [duration, stake, currency, token])
 
   // Reset loading states when duration or trade type changes
   useEffect(() => {
@@ -165,7 +166,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
       }
     })
     setButtonStates(initialStates)
-  }, [duration, trade_type, stake])
+  }, [trade_type])
 
   // Preload components based on metadata
   useEffect(() => {
@@ -228,31 +229,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                         onError={(error) => setStakeError(error)}
                       />
                     </DesktopTradeFieldCard>
-                    {isStakeSelected && (
-                      <div className="p-2">
-                        <PayoutDisplay
-                          hasError={Boolean(stake && parseFloat(stake) > 50000)}
-                          loading={Object.values(buttonStates).some(
-                            (state) => state.loading
-                          )}
-                          loadingStates={Object.keys(buttonStates).reduce(
-                            (acc, key) => ({
-                              ...acc,
-                              [key]: buttonStates[key].loading,
-                            }),
-                            {}
-                          )}
-                          maxPayout={50000}
-                          payoutValues={Object.keys(buttonStates).reduce(
-                            (acc, key) => ({
-                              ...acc,
-                              [key]: buttonStates[key].payout,
-                            }),
-                            {}
-                          )}
-                        />
-                      </div>
-                    )}
                   </div>
                 </Suspense>
               )}
@@ -291,10 +267,29 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
-                    const action = tradeActions[button.actionName]
-                    if (action) {
-                      action()
+                    if (!isLoggedIn) return;
+                    // Comment out actual API call but keep the success flow
+                    // await tradeActions[button.actionName]()
+                    
+                    // Open positions sidebar only in desktop view
+                    if (isLandscape) {
+                      togglePositionsSidebar()
                     }
+
+                    // Show trade notification
+                    toast({ 
+                      content: (
+                        <TradeNotification 
+                          stake={`${10.00} ${currency}`}
+                          market="Volatility 75 Index"
+                          type={button.title}
+                          onClose={hideToast}
+                        />
+                      ),
+                      variant: "black",
+                      duration: 3000,
+                      position: isLandscape ? 'bottom-left' : 'top-center'
+                    })
                   }}
                 />
               </Suspense>
@@ -385,10 +380,29 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                   }
                   error={buttonStates[button.actionName]?.error}
                   onClick={() => {
-                    const action = tradeActions[button.actionName]
-                    if (action) {
-                      action()
+                    if (!isLoggedIn) return;
+                    // Comment out actual API call but keep the success flow
+                    // await tradeActions[button.actionName]()
+                    
+                    // Open positions sidebar only in desktop view
+                    if (isLandscape) {
+                      togglePositionsSidebar()
                     }
+
+                    // Show trade notification
+                    toast({ 
+                      content: (
+                        <TradeNotification 
+                          stake={`${10.00} ${currency}`}
+                          market="Volatility 75 Index"
+                          type={button.title}
+                          onClose={hideToast}
+                        />
+                      ),
+                      variant: "black",
+                      duration: 3000,
+                      position: isLandscape ? 'bottom-left' : 'top-center'
+                    })
                   }}
                 />
               </Suspense>

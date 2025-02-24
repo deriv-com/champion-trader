@@ -5,7 +5,6 @@ import {
   ContractSummary,
   EntryExitDetails,
   OrderDetails,
-  Payout,
 } from "./components"
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart"
 
@@ -26,7 +25,6 @@ const DesktopContractDetailsPage: React.FC = () => {
           <div className="flex-1 overflow-y-auto p-4 pb-40" data-testid="content-area">
             <ContractSummary />
             <OrderDetails />
-            <Payout />
             <EntryExitDetails />
           </div>
           <div className="absolute bottom-16 left-0 right-0 m-4 w-[290px] b-[55px]" data-testid="close-button-container">
