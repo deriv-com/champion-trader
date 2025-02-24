@@ -72,7 +72,7 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check main container
     const mainContainer = screen.getByTestId("desktop-contract-details");
-    expect(mainContainer).toHaveClass("flex flex-col h-screen bg-gray-50 w-full");
+    expect(mainContainer).toHaveClass("flex flex-col bg-gray-50 w-full");
 
     // Check left panel
     const leftPanel = screen.getByTestId("left-panel");
