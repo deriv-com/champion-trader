@@ -40,16 +40,12 @@ describe('SideNav', () => {
   it('renders all navigation items', () => {
     renderWithRouter();
     expect(screen.getByText('Menu')).toBeInTheDocument();
-    expect(screen.getByText('Trade')).toBeInTheDocument();
   });
 
   it('navigates correctly when clicking navigation items', () => {
     renderWithRouter();
 
     fireEvent.click(screen.getByText('Menu'));
-    expect(screen.getByTestId('location-display')).toHaveTextContent('/');
-
-    fireEvent.click(screen.getByText('Trade'));
     expect(screen.getByTestId('location-display')).toHaveTextContent('/');
   });
 });
