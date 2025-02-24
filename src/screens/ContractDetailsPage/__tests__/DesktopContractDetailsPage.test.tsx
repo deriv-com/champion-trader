@@ -84,7 +84,7 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check close button container
     const closeButtonContainer = screen.getByTestId("close-button-container");
-    expect(closeButtonContainer).toHaveClass("absolute bottom-16 left-0 right-0 m-4 w-[290px] b-[55px]");
+    expect(closeButtonContainer).toHaveClass("absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]");
   });
 
   it("renders in correct order", () => {
