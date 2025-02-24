@@ -80,7 +80,7 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check content area
     const contentArea = screen.getByTestId("content-area");
-    expect(contentArea).toHaveClass("flex-1 overflow-y-auto p-4 pb-40");
+    expect(contentArea).toHaveClass("flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50");
 
     // Check close button container
     const closeButtonContainer = screen.getByTestId("close-button-container");
