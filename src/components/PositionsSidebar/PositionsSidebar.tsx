@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { TRADE_TYPES, TIME_PERIODS, OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
 
 interface PositionsSidebarProps {
   isOpen: boolean;
@@ -11,21 +12,32 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedTradeType, setSelectedTradeType] = useState("Trade types");
+  const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const [positions, setPositions] = useState([
-    { id: 1, type: "Rise/Fall", market: "Volatility 100 Index", ticks: "2/150", stake: "10.00 USD", profit: "+1.00 USD" },
-    { id: 2, type: "Rise/Fall", market: "Volatility 75 Index", ticks: "6/150", stake: "10.00 USD", profit: "+1.00 USD" }
-  ]);
+  const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
+  const [filteredPositions, setFilteredPositions] = useState<Position[]>(OPEN_POSITIONS);
 
   useEffect(() => {
     fetch("/api/positions")
       .then(response => response.json())
-      .then(data => setPositions(data))
+      .then(data => {
+        setAllPositions(data);
+        setFilteredPositions(data);
+      })
       .catch(error => console.error("Error fetching positions:", error));
   }, []);
+
+  useEffect(() => {
+    if (!isOpenTab) {
+      setSelectedFilter("All time");
+      setFilteredPositions(CLOSED_POSITIONS);
+    } else {
+      setSelectedFilter("All trade types");
+      setFilteredPositions(allPositions);
+    }
+  }, [isOpenTab, allPositions]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -53,6 +65,23 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
     };
   }, [onClose]);
 
+  const handleFilterSelect = (filter: string) => {
+    setSelectedFilter(filter);
+    setDropdownOpen(false);
+
+    // Filter positions based on selected filter
+    const positions = !isOpenTab ? CLOSED_POSITIONS : allPositions;
+    if (filter === "All trade types" || filter === "All time") {
+      setFilteredPositions(positions);
+    } else if (!isOpenTab) {
+      // Time-based filtering logic would go here
+      // For now, just showing all positions
+      setFilteredPositions(positions);
+    } else {
+      setFilteredPositions(positions.filter(position => position.type === filter));
+    }
+  };
+
   return (
     <div
       className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50]`}
@@ -62,16 +91,24 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
         <h2 className="text-lg font-bold">Positions</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
-      <div className="p-4">
-        <div className="flex justify-between border-b">
+      <div className="p-6 ">
+        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${isOpenTab ? "border-black" : "border-gray-300 text-gray-500"}`}
+            className={`flex-1 py-2 text-center font-small rounded-lg transition-all ${
+              isOpenTab 
+                ? "bg-white text-black shadow-sm" 
+                : "text-gray-500 hover:bg-gray-50"
+            }`}
             onClick={() => setIsOpenTab(true)}
           >
             Open
           </button>
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${!isOpenTab ? "border-black" : "border-gray-300 text-gray-500"}`}
+            className={`flex-1 py-2 text-center font-medium rounded-lg transition-all ${
+              !isOpenTab 
+                ? "bg-white text-black shadow-sm" 
+                : "text-gray-500 hover:bg-gray-50"
+            }`}
             onClick={() => setIsOpenTab(false)}
           >
             Closed
@@ -83,30 +120,48 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
               className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <span>{selectedTradeType}</span>
-              <span><ChevronDown className="text-black-400" /></span>
+              <span>{selectedFilter}</span>
+              <span className={`transform transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}>
+                <ChevronDown className="text-black-400" />
+              </span>
             </button>
           </div>
           {dropdownOpen && (
             <ul className="absolute text-sm left-0 w-1/2 bg-white border rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
-              {["Option 1", "Option 2", "Option 3"].map((option) => (
-                <li 
-                  key={option} 
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSelectedTradeType(option);
-                    setDropdownOpen(false);
-                  }}
-                >
-                  {option}
-                </li>
-              ))}
+              {isOpenTab ? (
+                <>
+                  <li 
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleFilterSelect("All trade types")}
+                  >
+                    All trade types
+                  </li>
+                  {TRADE_TYPES.map((type) => (
+                    <li 
+                      key={type} 
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleFilterSelect(type)}
+                    >
+                      {type}
+                    </li>
+                  ))}
+                </>
+              ) : (
+                TIME_PERIODS.map((period) => (
+                  <li 
+                    key={period} 
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleFilterSelect(period)}
+                  >
+                    {period}
+                  </li>
+                ))
+              )}
             </ul>
           )}
         </div>
         <div className="mt-4 space-y-4">
-          {positions.map((position) => (
+          {filteredPositions.map((position) => (
             <div 
               key={position.id}
               className="p-3 rounded-lg shadow-sm cursor-pointer"
@@ -117,23 +172,35 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
             >
               <div className="flex justify-between text-sm font-medium">
                 <div className="flex flex-col items-start">
-                  <img src="/market icon.svg" alt="Market Icon" className="w-5 h-8 mb-1" />
+                  <div className="flex items-center gap-2">
+                    <img src="/market icon.svg" alt="Market Icon" className="w-5 h-8 mb-1" />
+                  </div>
                   <span className="mb-[5] font-light text-black-400">{position.type}</span>
                   <span className="text-s font-light text-gray-500 mb-4">{position.market}</span>
                 </div>
                 <div>
                   <div className="flex flex-col items-end">
-                    <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
-                      <span className="mr-2">⏳</span> {position.ticks}
-                    </span>
+                    {isOpenTab ? (
+                      <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
+                        <span className="mr-2">⏳</span> {position.ticks}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium mb-3">
+                        Closed
+                      </span>
+                    )}
                     <span className="text-s font-light text-gray-400 mb-[2]">{position.stake}</span>
-                    <span className="text-[#008832] text-sm">{position.profit}</span>
+                    <span className={`text-sm ${position.profit.startsWith('+') ? 'text-[#008832]' : 'text-red-500'}`}>
+                      {position.profit}
+                    </span>
                   </div>
                 </div>
               </div>
-              <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
-                Close {position.stake}
-              </button>
+              {isOpenTab && (
+                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
+                  Close {position.stake}
+                </button>
+              )}
             </div>
           ))}
         </div>

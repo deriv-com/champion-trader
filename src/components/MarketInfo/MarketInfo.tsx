@@ -21,7 +21,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
   if (isMobile) {
     return (
       <div
-        className="inline-flex cursor-pointer mx-4 my-2"
+        className="inline-flex cursor-pointer mx-4 mt-3"
         data-id="market-info"
         onClick={onClick}
       >
