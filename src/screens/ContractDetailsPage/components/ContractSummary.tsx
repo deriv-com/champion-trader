@@ -11,7 +11,7 @@ export const ContractSummary: React.FC = () => {
 
   const { type, market, stake, profit } = contractDetails;
   return (
-    <div className="h-[104px] w-full p-4 mb-4 bg-white rounded-lg border-b border-gray-300" style={{ boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)' }}>
+    <div className="h-[104px] w-full p-4 bg-white rounded-lg border-b border-gray-300" style={{ boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)' }}>
       <div className="flex justify-between">
         <div>
           <div className=" mb-1">
