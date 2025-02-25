@@ -1,9 +1,9 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 import { useMainLayoutStore } from "@/stores/mainLayoutStore"
-import { leftSidebarConfig } from "@/config/leftSidebarConfig"
+import { marketSidebarConfig } from "@/config/marketSidebarConfig"
 
-export const LeftSidebar: React.FC = () => {
+export const MarketSidebar: React.FC = () => {
   const { isOverlaySidebarOpen: isOpen, overlaySidebarKey: key, setOverlaySidebar } = useMainLayoutStore()
   const sidebarRef = React.useRef<HTMLDivElement>(null)
 
@@ -39,9 +39,9 @@ export const LeftSidebar: React.FC = () => {
     }
   }, [isOpen])
 
-  if (!isOpen || !key || !leftSidebarConfig[key]) return null
+  if (!isOpen || !key || !marketSidebarConfig[key]) return null
 
-  const { body } = leftSidebarConfig[key]
+  const { body } = marketSidebarConfig[key]
 
   return (
     <>
