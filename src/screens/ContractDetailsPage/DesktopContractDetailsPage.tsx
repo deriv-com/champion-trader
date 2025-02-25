@@ -31,7 +31,7 @@ const DesktopContractDetailsPage: React.FC = () => {
       </div>
 
       <div className="flex flex-1 overflow-hidden relative m-4">
-        <div className="w-[320px] border-r bg-white flex flex-col" data-testid="left-panel">
+        <div className="w-[320px] bg-white flex flex-col" data-testid="left-panel">
           <div className="flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50" data-testid="content-area">
             <ContractSummary />
             <OrderDetails />
