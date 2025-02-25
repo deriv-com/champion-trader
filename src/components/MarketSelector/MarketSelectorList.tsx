@@ -4,7 +4,7 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useMarketStore } from "@/stores/marketStore"
 import { useToastStore } from "@/stores/toastStore"
-import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { tabs } from "./data"
 import {
   marketData,
@@ -51,25 +51,27 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         newFavorites.add(symbol)
         toast({
           content: (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-black text-white p-4 rounded-lg">
               <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
               <span className="text-base">Added to favourites</span>
             </div>
           ),
           variant: "black",
           duration: 2000,
+          position: 'bottom-center'
         })
       } else {
         newFavorites.delete(symbol)
         toast({
           content: (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-black text-white p-4 rounded-lg">
               <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
               <span className="text-base">Removed from favourites</span>
             </div>
           ),
           variant: "black",
           duration: 2000,
+          position: 'bottom-center'
         })
       }
       return newFavorites
@@ -78,7 +80,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
   const setInstrument = useTradeStore((state) => state.setInstrument)
   const { selectedMarket, setSelectedMarket } = useMarketStore()
-  const { setLeftSidebar } = useLeftSidebarStore()
+  const { setOverlaySidebar } = useMainLayoutStore()
 
   // Set initial instrument based on default market
   React.useEffect(() => {
@@ -94,7 +96,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     setInstrument(market.symbol)
     setSelectedMarket(market)
     setBottomSheet(false)
-    setLeftSidebar(false)
+    setOverlaySidebar(false)
   }
 
   // Reset isBottomSheetOpenRef when component mounts
@@ -139,7 +141,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             <button
               onClick={() => {
                 setBottomSheet(false)
-                setLeftSidebar(false)
+                setOverlaySidebar(false)
               }}
               className="text-text-primary"
             >

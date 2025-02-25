@@ -6,7 +6,7 @@ import { TradeFormController } from "./components/TradeFormController";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { MarketSelector } from "@/components/MarketSelector";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
-import { useLeftSidebarStore } from "@/stores/leftSidebarStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useMarketStore } from "@/stores/marketStore";
 import { MarketInfo } from "@/components/MarketInfo";
 
@@ -21,21 +21,21 @@ export const TradePage: React.FC = () => {
   const { setBottomSheet } = useBottomSheetStore();
   const { isMobile } = useDeviceDetection();
   const selectedMarket = useMarketStore((state) => state.selectedMarket);
-  const { setLeftSidebar } = useLeftSidebarStore();
+  const { setOverlaySidebar } = useMainLayoutStore();
 
   const handleMarketSelect = React.useCallback(() => {
     if (isMobile) {
       setBottomSheet(true, "market-info", "90%");
     } else {
-      setLeftSidebar(true, "market-list");
+      setOverlaySidebar(true, "market-list");
     }
-  }, [isMobile, setBottomSheet, setLeftSidebar]);
+  }, [isMobile, setBottomSheet, setOverlaySidebar]);
 
   return (
     <div
       className={`flex ${
-        isLandscape ? "flex-row relative" : "flex-col"
-      } flex-1 h-[100%]`}
+        isLandscape ? "flex-row relative h-[calc(100vh-4rem)]" : "flex-col h-[100dvh]"
+      } flex-1`}
       data-testid="trade-page"
     >
       <div

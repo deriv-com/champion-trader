@@ -1,7 +1,8 @@
 import React from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useClientStore } from "@/stores/clientStore";
-import { AccountSwitcher } from "@/components/AccountSwitcher";
+// import { AccountSwitcher } from "@/components/AccountSwitcher";
+import { BalanceDisplay } from "@/components/BalanceDisplay";
 
 interface HeaderProps {
   className?: string;
@@ -39,7 +40,8 @@ export const Header: React.FC<HeaderProps> = ({
         <div className={isLandscape ? "flex items-center gap-4" : "flex-1"}>
           {isLoggedIn && (
             <div className={isLandscape ? "px-4" : ""}>
-              <AccountSwitcher />
+              {/* <AccountSwitcher /> */}
+              <BalanceDisplay />
             </div>
           )}
         </div>

@@ -1,17 +1,17 @@
 import React from "react"
 import { cn } from "@/lib/utils"
-import { useLeftSidebarStore } from "@/stores/leftSidebarStore"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { leftSidebarConfig } from "@/config/leftSidebarConfig"
 
 export const LeftSidebar: React.FC = () => {
-  const { isOpen, key, setLeftSidebar } = useLeftSidebarStore()
+  const { isOverlaySidebarOpen: isOpen, overlaySidebarKey: key, setOverlaySidebar } = useMainLayoutStore()
   const sidebarRef = React.useRef<HTMLDivElement>(null)
 
   // Handle escape key press
   React.useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
-        setLeftSidebar(false)
+        setOverlaySidebar(false)
       }
     }
 
@@ -29,7 +29,7 @@ export const LeftSidebar: React.FC = () => {
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        setLeftSidebar(false)
+        setOverlaySidebar(false)
       }
     }
 

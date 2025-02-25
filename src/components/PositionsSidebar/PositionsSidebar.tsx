@@ -1,6 +1,8 @@
-import { ChevronDown } from "lucide-react";
 import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
+import { useFilteredPositions } from "./hooks/useFilteredPositions";
+import { FilterDropdown } from "./components/FilterDropdown";
 
 interface PositionsSidebarProps {
   isOpen: boolean;
@@ -10,34 +12,22 @@ interface PositionsSidebarProps {
 export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose }) => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedTradeType, setSelectedTradeType] = useState("Trade types");
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
 
-  const [positions, setPositions] = useState([
-    { id: 1, type: "Rise/Fall", market: "Volatility 100 Index", ticks: "2/150", stake: "10.00 USD", profit: "+1.00 USD" },
-    { id: 2, type: "Rise/Fall", market: "Volatility 75 Index", ticks: "6/150", stake: "10.00 USD", profit: "+1.00 USD" }
-  ]);
+  const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
+    isOpenTab,
+    allPositions,
+    closedPositions: CLOSED_POSITIONS,
+  });
 
   useEffect(() => {
     fetch("/api/positions")
       .then(response => response.json())
-      .then(data => setPositions(data))
+      .then(data => {
+        setAllPositions(data);
+      })
       .catch(error => console.error("Error fetching positions:", error));
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {
@@ -55,58 +45,45 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
 
   return (
     <div
-      className={`absolute top-0 left-0 h-full min-w-[320px] bg-[var(--background-color)] text-[var(--text-color)] shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[99999]`}
+      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50] flex flex-col`}
       ref={sidebarRef}
     > 
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-lg font-bold">Positions</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
-      <div className="p-4">
-        <div className="flex justify-between border-b border-width-[0.1px]">
+      <div className="p-6 flex-1 overflow-auto">
+        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${isOpenTab ? "dark:border-white" : "border-transparent text-gray-500"}`}
+            className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
+              isOpenTab 
+                ? "bg-white text-black shadow-sm" 
+                : "text-gray-500 hover:bg-gray-50"
+            }`}
             onClick={() => setIsOpenTab(true)}
           >
             Open
           </button>
           <button
-            className={`flex-1 py-2 text-center font-bold border-b-2 ${!isOpenTab ? "dark:border-white" : "border-transparent text-gray-500"}`}
+            className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
+              !isOpenTab 
+                ? "bg-white text-black shadow-sm" 
+                : "text-gray-500 hover:bg-gray-50"
+            }`}
             onClick={() => setIsOpenTab(false)}
           >
             Closed
           </button>
         </div>
         <div className="mt-4">
-          <div className="relative w-[50%]" ref={dropdownRef} onMouseDown={(event) => event.stopPropagation()}>
-            <button 
-              className="text-sm h-9 w-full p-2 border rounded-full text-[var(--text-color)] bg-[var(--background-color)] border-[var(--border-color)] flex items-center justify-between"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <span>{selectedTradeType}</span>
-              <span><ChevronDown className="text-black-400" /></span>
-            </button>
-          </div>
-          {dropdownOpen && (
-            <ul className="absolute text-sm left-0 w-1/2 bg-[var(--background-color)] border-[var(--border-color)] rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
-              {["Option 1", "Option 2", "Option 3"].map((option) => (
-                <li 
-                  key={option} 
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSelectedTradeType(option);
-                    setDropdownOpen(false);
-                  }}
-                >
-                  {option}
-                </li>
-              ))}
-            </ul>
-          )}
+          <FilterDropdown
+            isOpenTab={isOpenTab}
+            selectedFilter={selectedFilter}
+            onFilterSelect={handleFilterSelect}
+          />
         </div>
         <div className="mt-4 space-y-4">
-          {positions.map((position) => (
+          {filteredPositions.map((position) => (
             <div 
               key={position.id}
               className="p-3 rounded-lg shadow-sm cursor-pointer"
@@ -117,28 +94,40 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
             >
               <div className="flex justify-between text-sm font-medium">
                 <div className="flex flex-col items-start">
-                  <img src="/market icon.svg" alt="Market Icon" className="w-5 h-8 mb-1" />
+                  <div className="flex items-center gap-2">
+                    <img src="/market icon.svg" alt="Market Icon" className="w-5 h-8 mb-1" />
+                  </div>
                   <span className="mb-[5] font-light text-black-400">{position.type}</span>
                   <span className="text-s font-light text-gray-500 mb-4">{position.market}</span>
                 </div>
                 <div>
                   <div className="flex flex-col items-end">
-                    <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
-                      <span className="mr-2">⏳</span> {position.ticks}
-                    </span>
+                    {isOpenTab ? (
+                      <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
+                        <span className="mr-2">⏳</span> {position.ticks}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium mb-3">
+                        Closed
+                      </span>
+                    )}
                     <span className="text-s font-light text-gray-400 mb-[2]">{position.stake}</span>
-                    <span className="text-[#008832] text-sm">{position.profit}</span>
+                    <span className={`text-sm ${position.profit.startsWith('+') ? 'text-[#008832]' : 'text-red-500'}`}>
+                      {position.profit}
+                    </span>
                   </div>
                 </div>
               </div>
-              <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
-                Close {position.stake}
-              </button>
+              {isOpenTab && (
+                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
+                  Close {position.stake}
+                </button>
+              )}
             </div>
           ))}
         </div>
       </div>
-      <div className="mt-6 p-4 font-bold border-t flex justify-between">
+      <div className="p-4 font-bold border-t flex justify-between mt-auto">
         <span className="text-black-300">Total profit/loss: </span>
         <span className="text-red-500">-1.50 USD</span>
       </div>

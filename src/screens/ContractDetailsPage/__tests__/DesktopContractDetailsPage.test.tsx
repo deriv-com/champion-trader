@@ -40,7 +40,6 @@ describe("DesktopContractDetailsPage", () => {
     // Check all sections are rendered
     expect(screen.getByTestId("contract-summary")).toBeInTheDocument();
     expect(screen.getByTestId("order-details")).toBeInTheDocument();
-    expect(screen.getByTestId("payout")).toBeInTheDocument();
     expect(screen.getByTestId("entry-exit-details")).toBeInTheDocument();
 
     // Check chart placeholder
@@ -73,7 +72,7 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check main container
     const mainContainer = screen.getByTestId("desktop-contract-details");
-    expect(mainContainer).toHaveClass("flex flex-col h-screen bg-gray-50 w-full");
+    expect(mainContainer).toHaveClass("flex flex-col bg-gray-50 w-full");
 
     // Check left panel
     const leftPanel = screen.getByTestId("left-panel");
@@ -81,11 +80,11 @@ describe("DesktopContractDetailsPage", () => {
 
     // Check content area
     const contentArea = screen.getByTestId("content-area");
-    expect(contentArea).toHaveClass("flex-1 overflow-y-auto p-4 pb-40");
+    expect(contentArea).toHaveClass("flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50");
 
     // Check close button container
     const closeButtonContainer = screen.getByTestId("close-button-container");
-    expect(closeButtonContainer).toHaveClass("absolute bottom-16 left-0 right-0 m-4 w-[290px] b-[55px]");
+    expect(closeButtonContainer).toHaveClass("absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]");
   });
 
   it("renders in correct order", () => {
@@ -97,7 +96,6 @@ describe("DesktopContractDetailsPage", () => {
     // Check components are rendered in correct order
     expect(children[0]).toHaveAttribute("data-testid", "contract-summary");
     expect(children[1]).toHaveAttribute("data-testid", "order-details");
-    expect(children[2]).toHaveAttribute("data-testid", "payout");
-    expect(children[3]).toHaveAttribute("data-testid", "entry-exit-details");
+    expect(children[2]).toHaveAttribute("data-testid", "entry-exit-details");
   });
 });

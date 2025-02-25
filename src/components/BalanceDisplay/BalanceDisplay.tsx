@@ -1,5 +1,5 @@
 import React from "react";
-import { useClientStore } from "@/stores/clientStore";
+// import { useClientStore } from "@/stores/clientStore";
 
 interface BalanceDisplayProps {
   className?: string;
@@ -8,13 +8,14 @@ interface BalanceDisplayProps {
 export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   className = "",
 }) => {
-  const { balance, currency } = useClientStore();
+  // const { balance, currency } = useClientStore();
 
   return (
     <div className={`flex flex-col ${className}`}>
       <span className="text-sm font-semibold text-color-solid-glacier-700">Real</span>
       <span className="text-sm font-semibold">
-        {balance} {currency}
+        {/* {balance} {currency} */}
+        10,000 USD
       </span>
     </div>
   );
