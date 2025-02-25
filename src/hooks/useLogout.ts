@@ -8,6 +8,6 @@ export const useLogout = () => {
   return () => {
     localStorage.removeItem("loginToken");
     resetState();
-    navigate("/trade");
+    navigate("/");
   };
 };
