@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { StakeInputLayout } from "./components/StakeInputLayout";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
-import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { validateStake } from "./utils/validation";
 import { parseDuration, formatDuration } from "@/utils/duration";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 interface ButtonState {
   loading: boolean;
@@ -28,7 +27,7 @@ interface StakeControllerProps {}
 export const StakeController: React.FC<StakeControllerProps> = () => {
   const { stake, setStake, trade_type, duration, payouts, setPayouts } = useTradeStore();
   const { currency, token } = useClientStore();
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
   const { setBottomSheet } = useBottomSheetStore();
 
   const [localStake, setLocalStake] = React.useState(stake);
@@ -184,7 +183,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   const handleStakeChange = (value: string) => {
     if (preventExceedingMax(value)) return;
 
-    if (isDesktop) {
+    if (isLandscape) {
       setLocalStake(value);
       validateStakeOnly(value);
       return;
@@ -195,7 +194,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   };
 
   useEffect(() => {
-    if (!isDesktop) return;
+    if (!isLandscape) return;
 
     if (debouncedStake !== stake) {
       const validation = validateStakeOnly(debouncedStake);
@@ -203,10 +202,10 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         setStake(debouncedStake);
       }
     }
-  }, [isDesktop, debouncedStake, stake]);
+  }, [isLandscape, debouncedStake, stake]);
 
   const handleSave = () => {
-    if (isDesktop) return;
+    if (isLandscape) return;
 
     const validation = validateAndUpdateStake(localStake);
     if (validation.error) return;
@@ -217,7 +216,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
 
   const content = (
     <>
-      {!isDesktop && <BottomSheetHeader title="Stake" />}
+      {!isLandscape && <BottomSheetHeader title="Stake" />}
       <div className="flex flex-col justify-between flex-grow px-6">
         <StakeInputLayout
           value={localStake}
@@ -226,7 +225,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
           errorMessage={errorMessage}
           maxPayout={payouts.max}
           payoutValues={payouts.values}
-          isDesktop={isDesktop}
+          isDesktop={isLandscape}
           loading={Object.values(buttonStates).some(state => state.loading)}
           loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
             ...acc,
@@ -234,7 +233,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
           }), {})}
         />
       </div>
-      {!isDesktop && (
+      {!isLandscape && (
         <div className="w-full py-6 px-3">
           <PrimaryButton
             className="rounded-3xl"
@@ -248,7 +247,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     </>
   );
 
-  if (isDesktop) {
+  if (isLandscape) {
     return (
         <div className="w-[480px]">{content}</div>
     );

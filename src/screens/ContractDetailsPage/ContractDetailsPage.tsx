@@ -32,7 +32,7 @@ const MobileContractDetailsPage: React.FC = () => {
       <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
         <div className="p-2 pb-[72px]">
           <ContractSummary />
-          <div className="min-h-[400px] bg-white rounded-lg border-b border-gray-300">
+          <div className="min-h-[400px] mt-4 bg-white rounded-lg border-b border-gray-300">
             <ContractDetailsChart />
           </div>
           <OrderDetails />

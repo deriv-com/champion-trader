@@ -25,7 +25,7 @@ export const TradePage: React.FC = () => {
 
   const handleMarketSelect = React.useCallback(() => {
     if (isMobile) {
-      setBottomSheet(true, "market-info", "90%");
+      setBottomSheet(true, "market-info", "80%");
     } else {
       setOverlaySidebar(true, "market-list");
     }

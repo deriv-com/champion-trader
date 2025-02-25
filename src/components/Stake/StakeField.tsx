@@ -1,9 +1,9 @@
 import React from "react"
-import { useDeviceDetection } from "@/hooks/useDeviceDetection"
 import TradeParam from "@/components/TradeFields/TradeParam"
 import { Tooltip } from "@/components/ui/tooltip"
 import { useStakeField } from "./hooks/useStakeField"
 import { cn } from "@/lib/utils"
+import { useOrientationStore } from "@/stores/orientationStore"
 
 interface StakeFieldProps {
   className?: string
@@ -16,7 +16,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
   onSelect,
   onError,
 }) => {
-  const { isDesktop } = useDeviceDetection()
+  const { isLandscape } = useOrientationStore()
   const {
     stake,
     currency,
@@ -32,7 +32,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     handleMobileClick,
   } = useStakeField({ onSelect, onError })
 
-  if (!isDesktop) {
+  if (!isLandscape) {
     return (
       <div className="flex flex-col">
         <div

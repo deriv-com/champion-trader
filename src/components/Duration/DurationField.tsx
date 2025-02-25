@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react"
 import { useTradeStore } from "@/stores/tradeStore"
 import { useBottomSheetStore } from "@/stores/bottomSheetStore"
-import { useDeviceDetection } from "@/hooks/useDeviceDetection"
 import TradeParam from "@/components/TradeFields/TradeParam"
 import { DurationController } from "./DurationController"
 import { Popover } from "@/components/ui/popover"
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card"
+import { useOrientationStore } from "@/stores/orientationStore"
 
 interface DurationFieldProps {
   className?: string
@@ -14,12 +14,12 @@ interface DurationFieldProps {
 export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
   const { duration } = useTradeStore()
   const { setBottomSheet } = useBottomSheetStore()
-  const { isDesktop } = useDeviceDetection()
+  const { isLandscape } = useOrientationStore()
   const [isOpen, setIsOpen] = useState(false)
   const popoverRef = useRef<{ isClosing: boolean }>({ isClosing: false })
 
   const handleClick = () => {
-    if (isDesktop) {
+    if (isLandscape) {
       if (!popoverRef.current.isClosing) {
         setIsOpen(!isOpen)
       }
@@ -39,7 +39,7 @@ export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
 
   return (
     <div className="relative">
-      {isDesktop ? (
+      {isLandscape ? (
         <DesktopTradeFieldCard isSelected={isOpen}>
           <TradeParam
             label="Duration"
@@ -56,7 +56,7 @@ export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
           className={className}
         />
       )}
-      {isDesktop && isOpen && (
+      {isLandscape && isOpen && (
         <Popover
           isOpen={isOpen}
           onClose={handleClose}

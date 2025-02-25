@@ -27,7 +27,7 @@ describe('HowToTrade', () => {
     const call = mockSetBottomSheet.mock.calls[0];
     expect(call[0]).toBe(true);
     expect(call[1]).toBe('how-to-trade');
-    expect(call[2]).toBe('90%');
+    expect(call[2]).toBe('80%');
     expect(call[3]).toEqual(expect.objectContaining({
       show: true,
       label: "Got it",
