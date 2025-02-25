@@ -1,163 +1,129 @@
-# Market Selector Component
+# MarketSelector Component
 
-A responsive market selection interface that adapts between desktop and mobile views.
-
-## Components
-
-### MarketSelector
-The main controller component that manages the market selection interface.
-
-```typescript
-import { MarketSelector } from '@/components/MarketSelector';
-
-<MarketSelector 
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-/>
-```
-
-#### Props
-- `isOpen`: boolean - Controls the visibility of the market selector
-- `onClose`: () => void - Callback function when the selector is closed
-
-#### Responsive Behavior
-- **Desktop**: Renders as a LeftSidebar component
-- **Mobile**: Uses BottomSheet component via bottomSheetStore
-
-### MarketSelectorList
-The main content component that displays the list of markets with search and filtering capabilities.
-
-### MarketIcon
-Custom SVG icons for different market types:
-- Volatility indices with candlestick pattern
-- Boom indices with upward trend
-- Crash indices with downward trend
-- Support for 1s badge on applicable markets
+A component that enables users to browse, search, and select trading markets with comprehensive market information display.
 
 ## Features
 
-### Market Categories
-- All markets
-- Favorites (persistent storage)
-- Derived (Synthetic indices)
-- Forex
-- Crash/Boom indices
-- Stocks & indices
-- Commodities
+- Market list display
+- Market search
+- Category filtering
+- Market details preview
+- Favorites management
+- Real-time updates
 
-### Market Display
-- Custom icons per market type
-- Market symbol and name
-- Market status (open/closed)
-- Favorite status
-- Market grouping by type
+## Component Structure
 
-### Search and Filtering
-- Real-time search across all markets
-- Filter by market category
-- Show/hide closed markets
-- Favorites filtering
-
-### Responsive Design
-```typescript
-import { MarketSelector } from '@/components/MarketSelector';
-import { useState } from 'react';
-
-const TradingPage = () => {
-  const [isMarketSelectorOpen, setIsMarketSelectorOpen] = useState(false);
-
-  return (
-    <div>
-      <button onClick={() => setIsMarketSelectorOpen(true)}>
-        Select Market
-      </button>
-
-      <MarketSelector
-        isOpen={isMarketSelectorOpen}
-        onClose={() => setIsMarketSelectorOpen(false)}
-      />
-    </div>
-  );
-};
+```
+MarketSelector/
+├── components/
+├── MarketSelector.tsx       # Main component
+├── MarketSelectorButton.tsx # Selection trigger
+├── MarketSelectorList.tsx   # Market list display
+├── MarketIcon.tsx          # Market icon component
+├── data.ts                 # Market data types
+├── marketIcons.ts          # Icon mappings
+├── marketSelectorStub.ts   # Test data
+├── index.ts                # Exports
+└── README.md               # This file
 ```
 
-## Market Data Structure
+## Usage
 
-```typescript
-interface ProcessedInstrument {
-  symbol: string;        // Market symbol (e.g., "R_100", "EURUSD")
-  displayName: string;   // Formatted name (e.g., "Volatility 100 Index")
-  shortName: string;     // Short identifier (e.g., "100", "EUR")
-  market_name: string;   // Market category
-  isOneSecond: boolean;  // Whether it's a 1-second market
-  isClosed?: boolean;    // Market availability status
-  type: "volatility" | "boom" | "crash"; // Icon type
+```tsx
+import { MarketSelector } from '@/components/MarketSelector';
+
+function TradingView() {
+  const handleMarketSelect = (market: Market) => {
+    console.log('Selected market:', market);
+  };
+
+  return (
+    <MarketSelector
+      onSelect={handleMarketSelect}
+      defaultMarket="frxEURUSD"
+    />
+  );
 }
 ```
 
-## State Management
+## Props
 
-The component integrates with several stores:
-- `bottomSheetStore`: Manages mobile bottom sheet display
-- `tradeStore`: Handles market selection
-- Local state for:
-  - Active tab
-  - Search query
-  - Favorites list
+### MarketSelector
 
-## Best Practices
+| Prop | Type | Description |
+|------|------|-------------|
+| onSelect | (market: Market) => void | Market selection handler |
+| defaultMarket? | string | Initial selected market |
+| className? | string | Optional CSS classes |
 
-1. **Market Selection**:
-   - Validate market availability before selection
-   - Prevent selection of closed markets
-   - Provide clear feedback on selection
+### MarketSelectorButton
 
-2. **Search Implementation**:
-   - Case-insensitive search
-   - Search across display names
-   - Clear search option
-   - "No results" feedback
+| Prop | Type | Description |
+|------|------|-------------|
+| selected | Market | Currently selected market |
+| onClick | () => void | Click handler |
+| className? | string | Optional CSS classes |
 
-3. **Favorites Management**:
-   - Persistent storage in localStorage
-   - Immediate UI updates
-   - Clear favorite/unfavorite feedback
+## Features
 
-4. **Performance**:
-   - Efficient filtering
-   - Smooth transitions
-   - Optimized re-renders
-   - Lazy loading where applicable
+### Market Display
+- Market name and symbol
+- Market category
+- Trading hours
+- Market status
+- Price information
 
-5. **Responsive Behavior**:
-   - Use useDeviceDetection for viewport detection
-   - Smooth transitions between views
-   - Consistent behavior across devices
-   - Proper touch interaction on mobile
+### Filtering & Search
+- Category filters
+- Search by name/symbol
+- Recent markets
+- Favorite markets
 
-## Error Handling
-
-The component handles various states:
-- Loading state with spinner
-- Error state with message
-- Empty search results
-- Network errors
-- Invalid market data
-- Fallback to stub data when API fails
-
-## Accessibility
-
-- Keyboard navigation support
-- ARIA labels
-- Focus management
-- Screen reader friendly structure
-- Touch targets for mobile
+### Market Information
+- Current price
+- Price change
+- Trading status
+- Market restrictions
 
 ## Styling
 
-The component uses Tailwind CSS for styling with:
-- Responsive design
-- Smooth transitions
-- Custom market icons
-- Consistent theming
-- Mobile-first approach
+The component uses TailwindCSS for styling:
+- Responsive layout
+- Search input styling
+- List virtualization
+- Market card design
+- Status indicators
+
+## State Management
+
+The component manages:
+- Selected market
+- Search query
+- Filter state
+- Favorites list
+- Recent selections
+
+## Best Practices
+
+1. Implement search debouncing
+2. Handle loading states
+3. Show error messages
+4. Cache market data
+5. Follow atomic design principles
+6. Maintain test coverage
+
+## Error Handling
+
+The component handles:
+- Invalid market data
+- Search errors
+- Network issues
+- Market restrictions
+- Invalid selections
+
+## Related Components
+
+- MarketInfo: Displays market details
+- Chart: Shows market price chart
+- TradeButton: Initiates trades
+- PositionsSidebar: Shows market positions

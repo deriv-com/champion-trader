@@ -29,6 +29,24 @@ The following components are implemented but reserved for future use:
 - [Stake Component](src/components/Stake/README.md)
   - [SSE Integration](src/components/Stake/hooks/useStakeSSE.ts)
   - [Validation](src/components/Stake/utils/validation.ts)
+- [Positions Sidebar](src/components/PositionsSidebar/README.md)
+  - Overview: A sidebar component that displays open and closed trading positions
+  - Features:
+    - Tab switching between open and closed positions
+    - Filtering by trade types (for open positions)
+    - Filtering by time periods (for closed positions)
+    - Real-time position updates
+    - Total profit/loss display
+  - Components:
+    - FilterDropdown: Reusable dropdown component for position filtering
+    - Custom Hooks:
+      - useFilteredPositions: Manages position filtering logic
+  - Implementation:
+    - Follows Atomic Design principles
+    - Uses TypeScript for type safety
+    - Implements TDD with comprehensive test coverage
+    - Responsive layout with proper overflow handling
+    - Modular and maintainable code structure
 
 ## Typography System
 

@@ -1,95 +1,131 @@
-# Bottom Navigation Component
+# BottomNav Component
 
-A responsive bottom navigation bar component for the Champion Trader application that provides primary navigation on mobile devices.
+A mobile-first navigation component that provides easy access to primary application features through a bottom navigation bar.
 
-## Overview
+## Features
 
-The Bottom Navigation component implements a mobile-first navigation interface that adapts based on the user's authentication status and device type. It follows atomic component design principles and is implemented using Test-Driven Development (TDD).
+- Mobile-optimized navigation
+- Icon and label display
+- Active route indication
+- Badge support
+- Smooth transitions
+- Touch-friendly design
 
 ## Component Structure
 
 ```
 BottomNav/
 ├── BottomNav.tsx    # Main component
-├── index.ts        # Public exports
-└── __tests__/     # Test suite
-    └── BottomNav.test.tsx
+├── index.ts         # Exports
+└── README.md        # This file
 ```
 
 ## Usage
 
-```typescript
+```tsx
 import { BottomNav } from '@/components/BottomNav';
 
-function App() {
+function MobileLayout() {
   return (
-    <div>
-      <main>{/* Main content */}</main>
+    <div className="mobile-layout">
+      <main>{/* Content */}</main>
       <BottomNav />
     </div>
   );
 }
 ```
 
-## Features
+## Props
 
-- Responsive mobile-first design
-- Authentication-aware navigation
-- Smooth transitions and animations
-- Active route highlighting
-- Device-type specific rendering
+| Prop | Type | Description |
+|------|------|-------------|
+| className? | string | Optional CSS classes |
+| items? | NavItem[] | Optional custom navigation items |
 
-## Implementation Details
-
-The component follows atomic design principles:
-- Self-contained navigation logic
-- Independent state management
-- Clear prop interfaces
-- Comprehensive test coverage
-
-### State Management
-
-The component manages:
-- Authentication state via clientStore
-- Active route state
-- Device type detection
-- Navigation state
-
-### Navigation Items
-
-Navigation items are conditionally rendered based on authentication status:
+## Types
 
 ```typescript
 interface NavItem {
   label: string;
-  icon: React.ReactNode;
+  icon: IconComponent;
   path: string;
-  requiresAuth: boolean;
+  badge?: number | string;
 }
 ```
 
-## Testing
+## Features
 
-The component includes comprehensive tests following TDD methodology:
-- Unit tests for navigation logic
-- Authentication state tests
-- Device type rendering tests
-- Route handling tests
-- Transition animation tests
+### Navigation Items
+- Icon representation
+- Text labels
+- Active state
+- Optional badges
+- Touch targets
+
+### Interactions
+- Touch feedback
+- Active highlighting
+- Route transitions
+- Badge updates
+
+### Responsive Behavior
+- Portrait/Landscape handling
+- Safe area support
+- Keyboard awareness
+- Gesture handling
+
+## Styling
+
+The component uses TailwindCSS for styling:
+- Mobile-first design
+- Touch-friendly sizing
+- Active states
+- Badge styling
+- iOS/Android adaptations
+
+## State Management
+
+The component integrates with:
+- Route management
+- Badge updates
+- Device orientation
+- Keyboard visibility
 
 ## Best Practices
 
-- Uses TailwindCSS for consistent styling
-- Implements proper cleanup for event listeners
-- Handles all authentication states
-- Provides clear visual feedback
-- Maintains accessibility standards
-- Supports keyboard navigation
+1. Use clear, recognizable icons
+2. Keep labels short and clear
+3. Ensure adequate touch targets
+4. Handle safe areas properly
+5. Follow atomic design principles
+6. Maintain test coverage
 
-## Responsive Design
+## Accessibility
 
-The component implements responsive behavior:
-- Full-width on mobile devices
-- Hidden on desktop (uses side navigation instead)
-- Adapts to device orientation changes
-- Handles safe area insets on mobile devices
+The component implements:
+- ARIA roles
+- Touch targets
+- Focus indicators
+- Screen reader support
+- High contrast modes
+
+## Platform Considerations
+
+### iOS
+- Safe area insets
+- Bottom sheet interaction
+- Gesture handling
+- Native-like feel
+
+### Android
+- Material Design alignment
+- Back button handling
+- Navigation patterns
+- System UI integration
+
+## Related Components
+
+- SideNav: Desktop navigation
+- MenuSidebar: Expanded menu
+- Header: Top navigation
+- PositionsSidebar: Trading panel
