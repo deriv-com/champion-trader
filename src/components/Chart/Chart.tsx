@@ -10,22 +10,22 @@ export const TradeChart: React.FC = () => {
     triggerPopup(arg: () => void): void;
   }>(null);
 
-  // const historicalData = useMemo(() => {
-  //   const data = generateHistoricalCandles(100, 60);
-  //   return transformCandleData(data);
-  // }, []);
+  const historicalData1 = useMemo(() => {
+    const data = generateHistoricalCandles(100, 60);
+    return transformCandleData(data);
+  }, []);
 
   const historicalData = useMemo(() => {
     const data = generateHistoricalTicks('1HZ100V', 100);
     return transformTickData(data);
   }, []);
 
-  // const streamingData = useChartData({ 
-  //   useMockData: true,
-  //   instrumentId: '1HZ100V',
-  //   type: 'candle',
-  //   durationInSeconds: 60
-  // });
+  const streamingData1 = useChartData({ 
+    useMockData: true,
+    instrumentId: '1HZ100V',
+    type: 'candle',
+    durationInSeconds: 60
+  });
 
   const streamingData = useChartData({ 
     useMockData: true,
@@ -68,7 +68,7 @@ export const TradeChart: React.FC = () => {
           top: 76,
         }}
         leftMargin={80}
-        chartType="line"
+        chartType="line" // "line", "candles", "hollow"
         ticksHistory={historicalData}
         streamingData={streamingData}
       />
