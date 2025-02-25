@@ -10,9 +10,16 @@ interface MainLayoutStore {
   isOverlaySidebarOpen: boolean;
   overlaySidebarKey: string | null;
   setOverlaySidebar: (isOpen: boolean, key?: string | null) => void;
+
+  // SideNav visibility
+  isSideNavVisible: boolean;
+  setSideNavVisible: (isVisible: boolean) => void;
 }
 
 export const useMainLayoutStore = create<MainLayoutStore>((set, get) => ({
+  // SideNav state
+  isSideNavVisible: true,
+  setSideNavVisible: (isVisible) => set({ isSideNavVisible: isVisible }),
   // Main sidebar state
   isSidebarOpen: false,
   setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),

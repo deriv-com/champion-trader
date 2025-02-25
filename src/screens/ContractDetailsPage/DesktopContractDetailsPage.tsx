@@ -1,5 +1,6 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { X } from "lucide-react"
 import {
   ContractSummary,
@@ -10,6 +11,15 @@ import { ContractDetailsChart } from "@/components/ContractDetailsChart/Contract
 
 const DesktopContractDetailsPage: React.FC = () => {
   const navigate = useNavigate()
+  const { setSideNavVisible } = useMainLayoutStore()
+
+  useEffect(() => {
+    // Hide SideNav when component mounts
+    setSideNavVisible(false)
+    
+    // Show SideNav when component unmounts
+    return () => setSideNavVisible(true)
+  }, [setSideNavVisible])
 
   return (
     <div className="flex flex-col bg-gray-50 w-full" data-testid="desktop-contract-details">
