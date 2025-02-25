@@ -1,8 +1,8 @@
 import { useRef, useCallback, useEffect } from "react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { bottomSheetConfig } from "@/config/bottomSheetConfig";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { PrimaryButton } from "../ui/primary-button";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 export const BottomSheet = () => {
   const {
@@ -13,7 +13,7 @@ export const BottomSheet = () => {
     actionButton,
     setBottomSheet,
   } = useBottomSheetStore();
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
 
   const sheetRef = useRef<HTMLDivElement>(null);
   const dragStartY = useRef<number>(0);
@@ -162,7 +162,7 @@ export const BottomSheet = () => {
           onTouchStart={handleTouchStart}
           onMouseDown={handleMouseDown}
           onClick={() => {
-            if (isDesktop) {
+            if (isLandscape) {
               onDragDown?.();
               setBottomSheet(false);
             }

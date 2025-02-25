@@ -13,7 +13,7 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
   const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore();
 
   return (
-    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[100] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         {isLoggedIn && (
           <>
