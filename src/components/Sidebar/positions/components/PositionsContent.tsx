@@ -1,63 +1,44 @@
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
-import { useFilteredPositions } from "./hooks/useFilteredPositions";
-import { FilterDropdown } from "./components/FilterDropdown";
+import {
+  OPEN_POSITIONS,
+  CLOSED_POSITIONS,
+  Position,
+} from "../positionsSidebarStub";
+import { useFilteredPositions } from "../hooks/useFilteredPositions";
+import { FilterDropdown } from "./FilterDropdown";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
-interface PositionsSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose }) => {
+export const PositionsContent: FC = () => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
-  const sidebarRef = useRef<HTMLDivElement>(null);
+  const { setSidebar } = useMainLayoutStore();
   const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
 
-  const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
-    isOpenTab,
-    allPositions,
-    closedPositions: CLOSED_POSITIONS,
-  });
+  const { filteredPositions, selectedFilter, handleFilterSelect } =
+    useFilteredPositions({
+      isOpenTab,
+      allPositions,
+      closedPositions: CLOSED_POSITIONS,
+    });
 
   useEffect(() => {
     fetch("/api/positions")
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setAllPositions(data);
       })
-      .catch(error => console.error("Error fetching positions:", error));
+      .catch((error) => console.error("Error fetching positions:", error));
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
-    <div
-      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50] flex flex-col`}
-      ref={sidebarRef}
-    > 
-      <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-lg font-bold">Positions</h2>
-        <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
-      </div>
+    <div className="flex flex-col h-full">
       <div className="p-6 flex-1 overflow-auto">
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <button
             className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
-              isOpenTab 
-                ? "bg-white text-black shadow-sm" 
+              isOpenTab
+                ? "bg-white text-black shadow-sm"
                 : "text-gray-500 hover:bg-gray-50"
             }`}
             onClick={() => setIsOpenTab(true)}
@@ -66,9 +47,9 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
           </button>
           <button
             className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
-              !isOpenTab 
-                ? "bg-white text-black shadow-sm" 
-                : "text-gray-500 hover:bg-gray-50"
+              isOpenTab
+                ? "text-gray-500 hover:bg-gray-50"
+                : "bg-white text-black shadow-sm"
             }`}
             onClick={() => setIsOpenTab(false)}
           >
@@ -84,21 +65,29 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
         </div>
         <div className="mt-4 space-y-4">
           {filteredPositions.map((position) => (
-            <div 
+            <div
               key={position.id}
               className="p-3 rounded-lg shadow-sm cursor-pointer"
               onClick={() => {
                 navigate(`/contract/${position.id}`);
-                onClose();
+                setSidebar(null);
               }}
             >
               <div className="flex justify-between text-sm font-medium">
                 <div className="flex flex-col items-start">
                   <div className="flex items-center gap-2">
-                    <img src="/market icon.svg" alt="Market Icon" className="w-5 h-8 mb-1" />
+                    <img
+                      src="/market icon.svg"
+                      alt="Market Icon"
+                      className="w-5 h-8 mb-1"
+                    />
                   </div>
-                  <span className="mb-[5] font-light text-black-400">{position.type}</span>
-                  <span className="text-s font-light text-gray-500 mb-4">{position.market}</span>
+                  <span className="mb-[5] font-light text-black-400">
+                    {position.type}
+                  </span>
+                  <span className="text-s font-light text-gray-500 mb-4">
+                    {position.market}
+                  </span>
                 </div>
                 <div>
                   <div className="flex flex-col items-end">
@@ -111,8 +100,16 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
                         Closed
                       </span>
                     )}
-                    <span className="text-s font-light text-gray-400 mb-[2]">{position.stake}</span>
-                    <span className={`text-sm ${position.profit.startsWith('+') ? 'text-[#008832]' : 'text-red-500'}`}>
+                    <span className="text-s font-light text-gray-400 mb-[2]">
+                      {position.stake}
+                    </span>
+                    <span
+                      className={`text-sm ${
+                        position.profit.startsWith("+")
+                          ? "text-[#008832]"
+                          : "text-red-500"
+                      }`}
+                    >
                       {position.profit}
                     </span>
                   </div>
@@ -135,4 +132,4 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
   );
 };
 
-export default PositionsSidebar;
+export default PositionsContent;

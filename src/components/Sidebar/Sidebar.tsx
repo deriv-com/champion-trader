@@ -14,7 +14,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, title, childr
         isOpen ? "translate-x-0" : "-translate-x-[calc(100%+65px)]"
       } z-[51] flex flex-col overflow-hidden`}
     >
-      <div className="p-4 border-b flex justify-between items-center">
+      <div className="p-4 flex justify-between items-center">
         <h2 className="text-lg font-bold">{title}</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-900">✕</button>
       </div>
