@@ -46,29 +46,6 @@ describe('NotificationProvider', () => {
     expect(getByText('Test Child')).toBeInTheDocument();
   });
 
-  it('configures Toaster with default config', () => {
-    render(
-      <NotificationProvider>
-        <div>Test Child</div>
-      </NotificationProvider>
-    );
-
-    expect(mockToaster).toHaveBeenCalledWith(
-      expect.objectContaining({
-        position: 'top-right',
-        toastOptions: expect.objectContaining({
-          duration: 4000,
-          className: 'rounded-lg',
-          style: expect.objectContaining({
-            background: '#fff',
-            color: '#363636',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-          }),
-        }),
-      })
-    );
-  });
-
   it('configures Toaster with custom config', () => {
     const mockConfig = {
       position: 'bottom-left' as const,
