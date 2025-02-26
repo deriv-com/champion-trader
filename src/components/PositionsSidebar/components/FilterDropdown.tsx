@@ -1,4 +1,5 @@
 import { FC, useRef, useEffect, useState } from 'react';
+import { useThemeStore } from "@/stores/themeStore";
 import { ChevronDown } from "lucide-react";
 import { TRADE_TYPES, TIME_PERIODS } from '../positionsSidebarStub';
 
@@ -34,10 +35,12 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
     setDropdownOpen(false);
   };
 
+  const { isDarkMode } = useThemeStore();
+
   return (
     <div className="relative w-[50%]" ref={dropdownRef} onMouseDown={(event) => event.stopPropagation()}>
       <button 
-        className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
+        className={`text-sm h-9 w-full p-2 border rounded-full flex items-center justify-between ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "text-gray-500 bg-white border-gray-300"}`}
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
         <span>{selectedFilter}</span>
@@ -46,11 +49,11 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
         </span>
       </button>
       {dropdownOpen && (
-        <ul className="absolute text-sm left-0 w-full bg-white border rounded-lg shadow-md mt-1" onMouseDown={(event) => event.stopPropagation()}>
+        <ul className={`absolute text-sm left-0 w-full border rounded-lg shadow-md mt-1 ${isDarkMode ? "bg-black text-gray-300 border-gray-700" : "bg-white text-black border-gray-300"}`} onMouseDown={(event) => event.stopPropagation()}>
           {isOpenTab ? (
             <>
               <li 
-                className="p-2 hover:bg-gray-100 cursor-pointer"
+                className={`p-2 cursor-pointer ${isDarkMode ? "hover:bg-gray-800 hover:text-white" : "hover:bg-gray-100"}`}
                 onClick={() => handleSelect("Trade types")}
               >
                 Trade types
@@ -58,7 +61,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
               {TRADE_TYPES.map((type) => (
                 <li 
                   key={type} 
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  className={`p-2 cursor-pointer ${isDarkMode ? "hover:bg-gray-800 hover:text-white" : "hover:bg-gray-100"}`}
                   onClick={() => handleSelect(type)}
                 >
                   {type}
@@ -69,7 +72,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
             TIME_PERIODS.map((period) => (
               <li 
                 key={period} 
-                className="p-2 hover:bg-gray-100 cursor-pointer"
+                className={`p-2 cursor-pointer ${isDarkMode ? "hover:bg-gray-700 hover:text-black" : "hover:bg-gray-100"}`}
                 onClick={() => handleSelect(period)}
               >
                 {period}

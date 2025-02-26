@@ -142,7 +142,7 @@ export const ScrollSelect = <T extends React.Key>({
           <label
             key={option.value}
             style={{ height: `${itemHeight}px` }}
-            className="scroll-select-item flex items-center justify-center snap-center cursor-pointer"
+            className="scroll-select-item flex items-center justify-center snap-center cursor-pointer bg-transparent dark:text-white"
             data-value={option.value}
             onClick={() => handleClick(option.value)}
           >
@@ -160,7 +160,7 @@ export const ScrollSelect = <T extends React.Key>({
               <span
                 className={`
                   text-base font-normal leading-6 text-center transition-colors
-                  ${selectedValue === option.value ? "text-black" : "text-gray-300"}
+                  ${selectedValue === option.value ? "bg-black/8 text-white dark:bg-black/8 dark:text-white" : "text-gray-300 dark:text-white/72"}
                 `}
               >
                 {option.label}

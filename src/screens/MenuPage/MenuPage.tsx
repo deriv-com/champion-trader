@@ -10,6 +10,7 @@ export const MenuPage: React.FC = () => {
   const { isLoggedIn } = useClientStore();
   const logout = useLogout();
 
+  console.log("MenuPage rendered");
   return (
     <div className="flex flex-col flex-1 p-4">
       <h1 className="text-2xl font-bold">Menu</h1>
@@ -24,9 +25,9 @@ export const MenuPage: React.FC = () => {
             <ExternalLink className="w-5 h-5" />
           </div>
         </button>
-        <div className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3">
+        <div className="text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border-b border-gray-200 flex items-center gap-3">
           <Moon className="w-5 h-5" />
-          <span className="text-sm">Theme</span>
+          <span className="text-sm peer-checked:text-black">Theme</span>
           <ToggleButton label="" value={false} onChange={() => {}} />
         </div>
         {isLoggedIn && (
