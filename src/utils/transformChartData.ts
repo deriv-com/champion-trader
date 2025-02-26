@@ -1,14 +1,14 @@
 interface CandleData {
-  openEpochMs: number;
+  open_epoch_ms: string;
   open: string;
   high: string;
   low: string;
   close: string;
-  closeEpochMs: number;
+  close_epoch_ms: string;
 }
 
 interface TickData {
-  epochMs: number;
+  epoch_ms: string;
   ask: string;
   bid: string;
   price: string;
@@ -31,79 +31,93 @@ interface TransformedTick {
 }
 
 interface TransformedCandleDataMultiple {
-  msg_type: 'candles';
+  msg_type: "candles";
   candles: TransformedCandle[];
+  instrument_id: string;
 }
 
 interface TransformedCandleDataSingle {
-  msg_type: 'ohlc';
+  msg_type: "ohlc";
   ohlc: TransformedCandle;
+  instrument_id: string;
 }
 
-type TransformedCandleData = TransformedCandleDataMultiple | TransformedCandleDataSingle;
+type TransformedCandleData =
+  | TransformedCandleDataMultiple
+  | TransformedCandleDataSingle;
 
 interface TransformedTickDataMultiple {
-  msg_type: 'history';
-  instrumentId: string;
+  msg_type: "history";
+  instrument_id: string;
   history: TransformedTick[];
 }
 
 interface TransformedTickDataSingle {
-  msg_type: 'tick';
-  instrumentId: string;
+  msg_type: "tick";
+  instrument_id: string;
   tick: TransformedTick;
 }
 
-type TransformedTickData = TransformedTickDataMultiple | TransformedTickDataSingle;
+type TransformedTickData =
+  | TransformedTickDataMultiple
+  | TransformedTickDataSingle;
 
-export const transformCandleData = (data: { candles: CandleData[] }): TransformedCandleData => {
-  const { candles } = data;
+export const transformCandleData = (data: {
+  candles: CandleData[];
+  instrument_id: string;
+}): TransformedCandleData => {
+  const { candles, instrument_id } = data;
   const isMultipleCandles = candles.length > 1;
 
-  const transformedCandles = candles.map(candle => ({
-    open_time: candle.openEpochMs,
+  const transformedCandles = candles.map((candle) => ({
+    open_time: Math.floor(parseInt(candle.open_epoch_ms) / 1000),
     open: candle.open,
     high: candle.high,
     low: candle.low,
     close: candle.close,
-    epoch: candle.closeEpochMs
+    epoch: Math.floor(parseInt(candle.close_epoch_ms) / 1000),
   }));
 
   if (isMultipleCandles) {
     return {
-      msg_type: 'candles',
-      candles: transformedCandles
+      msg_type: "candles",
+      instrument_id,
+      candles: transformedCandles,
     };
   }
 
   return {
-    msg_type: 'ohlc',
-    ohlc: transformedCandles[0]
+    msg_type: "ohlc",
+    instrument_id,
+    ohlc: transformedCandles[0],
   };
 };
 
-export const transformTickData = (data: { instrumentId: string; ticks: TickData[] }): TransformedTickData => {
-  const { instrumentId, ticks } = data;
+export const transformTickData = (data: {
+  instrument_id: string;
+  ticks: TickData[];
+}): TransformedTickData => {
+  const { instrument_id, ticks } = data;
   const isHistory = ticks.length > 1;
 
-  const transformedTicks = ticks.map(tick => ({
-    epoch: Math.floor(tick.epochMs / 1000),
+  const transformedTicks = ticks.map((tick) => ({
+    epoch: Math.floor(parseInt(tick.epoch_ms) / 1000),
     ask: tick.ask,
     bid: tick.bid,
-    quote: tick.price
+    quote: tick.price,
   }));
 
   if (isHistory) {
     return {
-      msg_type: 'history',
-      instrumentId,
-      history: transformedTicks
+      msg_type: "history",
+      instrument_id,
+      history: transformedTicks,
     };
   }
 
   return {
-    msg_type: 'tick',
-    instrumentId,
-    tick: transformedTicks[0]
+    msg_type: "tick",
+    instrument_id,
+    tick: transformedTicks[0],
   };
 };

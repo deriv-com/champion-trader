@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import TradeParam from "./TradeParam";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 interface TradeParamFieldProps {
   label: string;
@@ -17,12 +17,12 @@ export const TradeParamField: React.FC<TradeParamFieldProps> = ({
   onSelect,
   className,
 }) => {
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
   const [showPopover, setShowPopover] = useState(false);
   const paramRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
-    if (isDesktop) {
+    if (isLandscape) {
       setShowPopover(true);
     } else {
       onSelect?.();
@@ -62,7 +62,7 @@ export const TradeParamField: React.FC<TradeParamFieldProps> = ({
   className={`${className} text-black dark:text-white`}
 />
 
-      {isDesktop && showPopover && (
+      {isLandscape && showPopover && (
         <>
           {/* Popover */}
           <div

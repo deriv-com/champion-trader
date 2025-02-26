@@ -1,5 +1,5 @@
 import React from "react"
-import { LeftSidebar } from "@/components/ui/left-sidebar"
+import { MarketSidebar } from "@/components/ui/market-sidebar"
 import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 
 export const MarketSelector: React.FC = () => {
@@ -8,5 +8,5 @@ export const MarketSelector: React.FC = () => {
   // Only render when open to save memory
   if (!isOpen) return null
 
-  return <LeftSidebar />
+  return <MarketSidebar />
 }

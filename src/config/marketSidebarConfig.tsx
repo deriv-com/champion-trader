@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 import { MarketSelectorList } from '@/components/MarketSelector/MarketSelectorList';
 
-export interface LeftSidebarConfig {
+export interface MarketSidebarConfig {
   [key: string]: {
     body: ReactNode;
     title?: string;
   };
 }
 
-export const leftSidebarConfig: LeftSidebarConfig = {
+export const marketSidebarConfig: MarketSidebarConfig = {
   'market-list': {
     body: <MarketSelectorList />,
   },

@@ -1,151 +1,119 @@
-# Trade Button Components
+# TradeButton Component
 
-A collection of button components for executing trades in the Champion Trader application.
+A critical component that handles trade execution, providing users with the ability to place trades with proper validation and feedback.
 
-## Overview
+## Features
 
-The Trade Button directory contains two main components:
-- `Button`: A base button component with trade-specific styling
-- `TradeButton`: A specialized button for trade execution with advanced features
+- Trade execution
+- Price validation
+- Loading states
+- Error handling
+- Success feedback
+- Responsive design
 
 ## Component Structure
 
 ```
 TradeButton/
-├── Button.tsx         # Base button component
-├── TradeButton.tsx    # Trade execution button
-├── index.ts          # Public exports
-└── __tests__/       # Test suite
-    └── TradeButton.test.tsx
+├── TradeButton.tsx   # Main component
+└── README.md        # This file
 ```
 
 ## Usage
 
-### Base Button
-
-```typescript
-import { Button } from '@/components/TradeButton';
+```tsx
+import { TradeButton } from '@/components/TradeButton';
 
 function TradeForm() {
   return (
-    <Button
-      onClick={handleClick}
-      variant="primary"
-      disabled={isLoading}
-    >
-      Execute Trade
-    </Button>
-  );
-}
-```
-
-### Trade Button
-
-```typescript
-import { TradeButton } from '@/components/TradeButton';
-
-function TradePage() {
-  return (
     <TradeButton
-      onTrade={handleTrade}
-      price={currentPrice}
-      loading={isProcessing}
+      type="RISE"
+      amount={100}
+      duration={5}
+      durationUnit="m"
+      onSuccess={handleSuccess}
+      onError={handleError}
     />
   );
 }
 ```
 
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| type | TradeType | Type of trade (RISE, FALL, etc.) |
+| amount | number | Trade stake amount |
+| duration | number | Trade duration value |
+| durationUnit | string | Duration unit (s, m, h, d) |
+| onSuccess? | (response: TradeResponse) => void | Success callback |
+| onError? | (error: Error) => void | Error callback |
+| disabled? | boolean | Disable button state |
+| className? | string | Optional CSS classes |
+
 ## Features
 
-### Base Button
-- Multiple variants (primary, secondary)
-- Loading state handling
-- Disabled state styling
-- Touch-optimized feedback
-- Consistent TailwindCSS styling
+### Trade Execution
+- Price validation before execution
+- Server time synchronization
+- Rate limiting
+- Duplicate prevention
 
-### Trade Button
-- Real-time price updates
-- Trade execution handling
-- Loading and error states
-- Price change animations
-- Comprehensive validation
+### State Management
+- Loading state during execution
+- Success/Error states
+- Disabled state handling
+- Price update tracking
 
-## Implementation Details
+### Validation
+- Amount limits
+- Duration constraints
+- Market availability
+- Account restrictions
 
-Both components follow atomic design principles:
-- Self-contained functionality
-- Independent state management
-- Clear prop interfaces
-- Comprehensive test coverage
+## Styling
 
-### Props
+The component uses TailwindCSS for styling:
+- State-based colors
+- Loading animation
+- Hover/Active states
+- Disabled appearance
+- Responsive sizing
 
-#### Button Props
+## States
+
+The button handles multiple states:
 ```typescript
-interface ButtonProps {
-  onClick: () => void;
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
-  loading?: boolean;
-  className?: string;
-}
+type ButtonState = 
+  | 'idle'      // Ready for trade
+  | 'loading'   // Processing trade
+  | 'success'   // Trade executed
+  | 'error'     // Trade failed
+  | 'disabled'  // Cannot trade
 ```
-
-#### Trade Button Props
-```typescript
-interface TradeButtonProps {
-  onTrade: (params: TradeParams) => Promise<void>;
-  price: number;
-  loading?: boolean;
-  disabled?: boolean;
-  className?: string;
-}
-```
-
-## State Management
-
-The TradeButton component manages:
-- Trade execution state
-- Price update animations
-- Loading states
-- Error handling
-- Validation state
-
-## Testing
-
-Components include comprehensive tests following TDD methodology:
-- Unit tests for button functionality
-- Integration tests for trade execution
-- Price update animation tests
-- Error handling test cases
-- Loading state tests
-- Validation logic tests
 
 ## Best Practices
 
-- Uses TailwindCSS for consistent styling
-- Implements proper loading states
-- Handles all error cases gracefully
-- Provides clear visual feedback
-- Maintains accessibility standards
-- Supports keyboard interaction
+1. Validate all inputs before execution
+2. Show clear feedback states
+3. Handle all error cases
+4. Prevent duplicate submissions
+5. Follow atomic design principles
+6. Maintain test coverage
 
-## Animation and Interaction
+## Error Handling
 
-The components implement several interaction patterns:
-- Price change animations
-- Loading state transitions
-- Click/touch feedback
-- Error state indicators
-- Disabled state styling
+The component handles various scenarios:
+- Network errors
+- Invalid parameters
+- Market closure
+- Insufficient balance
+- Rate limiting
+- Server errors
 
-## Accessibility
+## Related Components
 
-Both components maintain high accessibility standards:
-- Proper ARIA attributes
-- Keyboard navigation support
-- Clear focus indicators
-- Screen reader support
-- Color contrast compliance
+- Stake: Provides trade amount
+- Duration: Sets trade duration
+- MarketInfo: Shows market status
+- PositionsSidebar: Displays executed trades

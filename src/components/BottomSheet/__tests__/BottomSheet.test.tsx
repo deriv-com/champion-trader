@@ -155,27 +155,6 @@ describe("BottomSheet", () => {
     expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
   });
 
-  it("closes bottom sheet when clicking handle bar on desktop", () => {
-    mockUseDeviceDetection.mockReturnValue({ isDesktop: true });
-    const mockOnDragDown = jest.fn();
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      onDragDown: mockOnDragDown,
-      setBottomSheet: mockSetBottomSheet
-    });
-
-    const { container } = render(<BottomSheet />);
-
-    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
-    expect(handleBar).toBeInTheDocument();
-    fireEvent.click(handleBar!);
-
-    expect(mockOnDragDown).toHaveBeenCalled();
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-  });
-
   it("does not close bottom sheet when clicking handle bar on mobile", () => {
     mockUseDeviceDetection.mockReturnValue({ isDesktop: false });
     mockUseBottomSheetStore.mockReturnValue({

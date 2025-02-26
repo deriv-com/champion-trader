@@ -4,13 +4,13 @@ import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
 import { DurationValueList } from "./components/DurationValueList";
 import { HoursDurationValue } from "./components/HoursDurationValue";
 import { useTradeStore } from "@/stores/tradeStore";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { generateDurationValues as getDurationValues } from "@/utils/duration";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 const DURATION_TYPES: Tab[] = [
   { label: "Ticks", value: "tick" },
@@ -30,7 +30,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
   onClose,
 }) => {
   const { duration, setDuration } = useTradeStore();
-  const { isDesktop } = useDeviceDetection();
+  const { isLandscape } = useOrientationStore();
   const { setBottomSheet } = useBottomSheetStore();
   const isInitialRender = useRef(true);
 
@@ -52,7 +52,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
   useDebounce(
     localDuration,
     (value) => {
-      if (isDesktop) {
+      if (isLandscape) {
         setDuration(value);
       }
     },
@@ -74,14 +74,14 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     const newDuration = `${value} ${selectedType}`;
     setLocalDuration(newDuration);
     setDuration(newDuration); // Update store immediately on click
-    if (isDesktop) {
+    if (isLandscape) {
       onClose?.();
     }
   };
 
   const handleSave = () => {
     setDuration(localDuration);
-    if (isDesktop) {
+    if (isLandscape) {
       onClose?.();
     } else {
       setBottomSheet(false);
@@ -90,15 +90,15 @@ export const DurationController: React.FC<DurationControllerProps> = ({
 
   const content = (
     <>
-      <div className={isDesktop ? "flex" : ""}>
-        {!isDesktop && <BottomSheetHeader title="Duration" />}
+      <div className={isLandscape ? "flex" : ""}>
+        {!isLandscape && <BottomSheetHeader title="Duration" />}
         <TabList
           tabs={DURATION_TYPES}
           selectedValue={selectedType}
           onSelect={handleTypeSelect as (value: string) => void}
-          variant={isDesktop ? "vertical" : "chip"}
+          variant={isLandscape ? "vertical" : "chip"}
         />
-        <div className={`flex-1 relative bg-white ${isDesktop ? "px-2" : "px-8"}`}>
+        <div className={`flex-1 relative bg-white ${isLandscape ? "px-2" : "px-8"}`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
               selectedValue={selectedValue.toString()}
@@ -120,7 +120,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
           )}
         </div>
       </div>
-      {!isDesktop && (
+      {!isLandscape && (
         <div className="w-full p-3">
           <PrimaryButton className="rounded-3xl" onClick={handleSave}>
             Save
@@ -130,7 +130,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     </>
   );
 
-  if (isDesktop) {
+  if (isLandscape) {
     return (
       <DesktopTradeFieldCard className="p-0">
         <div className="w-[368px]">{content}</div>

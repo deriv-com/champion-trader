@@ -13,7 +13,7 @@ export const HowToTrade: React.FC = () => {
     if (isDesktop) {
       setIsModalOpen(true);
     } else {
-      setBottomSheet(true, "how-to-trade", "90%", {
+      setBottomSheet(true, "how-to-trade", "80%", {
         show: true,
         label: "Got it",
         onClick: () => setBottomSheet(false)

@@ -1,5 +1,6 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { X } from "lucide-react"
 import {
   ContractSummary,
@@ -10,6 +11,15 @@ import { ContractDetailsChart } from "@/components/ContractDetailsChart/Contract
 
 const DesktopContractDetailsPage: React.FC = () => {
   const navigate = useNavigate()
+  const { setSideNavVisible } = useMainLayoutStore()
+
+  useEffect(() => {
+    // Hide SideNav when component mounts
+    setSideNavVisible(false)
+    
+    // Show SideNav when component unmounts
+    return () => setSideNavVisible(true)
+  }, [setSideNavVisible])
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 w-full" data-testid="desktop-contract-details">
@@ -21,8 +31,8 @@ const DesktopContractDetailsPage: React.FC = () => {
       </div>
 
       <div className="flex flex-1 overflow-hidden relative m-4">
-        <div className="w-[320px] border-r bg-white flex flex-col" data-testid="left-panel">
-          <div className="flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50 dark:bg-black" data-testid="content-area">
+        <div className="w-[320px] bg-white flex flex-col" data-testid="left-panel">
+          <div className="flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50" data-testid="content-area">
             <ContractSummary />
             <OrderDetails />
             <EntryExitDetails />
