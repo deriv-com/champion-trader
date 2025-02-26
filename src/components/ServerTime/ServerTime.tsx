@@ -17,9 +17,10 @@ export const ServerTime: React.FC = () => {
   }, [setServerTime]);
 
   return (
-    <div className="text-xs text-gray-700 flex justify-between items-center">
+    <div className="text-xs text-gray-700 dark:text-gray-300 flex justify-between items-center">
       <div className="flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-[var(--status-indicator-color)]"></div>
+  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+        <div className="w-2 h-2 rounded-full bg-[var(--status-indicator-color)] dark:bg-red-500"></div>
         {serverTime.getDate().toString().padStart(2, '0')} {' '}
         {serverTime.toLocaleString('default', { month: 'short' })} {' '}
         {serverTime.getFullYear()}

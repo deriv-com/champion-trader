@@ -17,8 +17,8 @@ const TradeParam: React.FC<TradeParamProps> = ({
   const formattedValue = label === "Duration" ? formatDurationDisplay(value) : value;
 
   const labelClasses = "text-left font-ibm-plex text-xs leading-[18px] font-normal text-gray-500";
-  const valueClasses = "text-left font-ibm-plex text-base leading-6 font-normal text-black";
-
+  const valueClasses = "text-left font-ibm-plex text-base leading-6 font-normal text-black dark:text-white dark:bg-gray-800";
+  
   if (onClick) {
     return (
       <button
@@ -42,7 +42,7 @@ const TradeParam: React.FC<TradeParamProps> = ({
   }
 
   return (
-    <div className={`${className} text-start`}>
+    <div className={`${className} text-start dark:bg-gray-900 dark:text-white p-3 rounded-lg`}>
       <span className={labelClasses}>{label}</span>
       <div className="text-left">
         <span className={valueClasses}>{formattedValue}</span>

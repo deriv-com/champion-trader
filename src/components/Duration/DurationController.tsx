@@ -90,9 +90,9 @@ export const DurationController: React.FC<DurationControllerProps> = ({
 
   const content = (
     <>
-<div className={isLandscape ? "flex" : ""}>
+<div className={`${isLandscape ? "flex" : ""} shadow-md`}>
         {!isLandscape && <BottomSheetHeader title="Duration" />}
-        <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-black"} rounded-lg`}>
+        <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-black"} rounded-lg dark:bg-gray-800 dark:text-white`}>
           <TabList
             tabs={DURATION_TYPES}
             selectedValue={selectedType}
@@ -100,7 +100,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
             variant={isLandscape ? "vertical" : "chip"}
           />
         </div>
-        <div className={`flex-1 relative ${isDarkMode ? "bg-black text-white" : "bg-white text-black"} ${isLandscape ? "px-2" : "px-8"}`}>
+        <div className={`flex-1 relative ${isDarkMode ? "bg-black text-white" : "bg-white text-black"} ${isLandscape ? "px-2" : "px-8"}  dark:bg-[#111827]`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
               selectedValue={selectedValue.toString()}

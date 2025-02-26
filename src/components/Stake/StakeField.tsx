@@ -83,7 +83,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
               value={`${localValue}`}
               onChange={handleChange}
               onFocus={() => handleSelect(true)}
-              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-black"
+              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-black dark:text-white"
               aria-label="Stake amount"
             />
           </div>
@@ -94,7 +94,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             onClick={handleDecrement}
             aria-label="Decrease stake"
           >
-            <span className="text-black text-2xl leading-none flex items-center justify-center">
+            <span className="text-black dark:text-white text-2xl leading-none flex items-center justify-center">
               −
             </span>
           </button>
@@ -103,7 +103,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             onClick={handleIncrement}
             aria-label="Increase stake"
           >
-            <span className="text-black text-2xl leading-none flex items-center justify-center">
+            <span className="text-black dark:text-white text-2xl leading-none flex items-center justify-center">
               +
             </span>
           </button>
