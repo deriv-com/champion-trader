@@ -126,7 +126,7 @@ export const PositionsContent: FC = () => {
       </div>
       <div className="p-4 font-bold border-t flex justify-between mt-auto">
         <span className="text-black-300">Total profit/loss: </span>
-        <span className="text-red-500">-1.50 USD</span>
+        <span className="text-[#008832]">+2.00 USD</span>
       </div>
     </div>
   );

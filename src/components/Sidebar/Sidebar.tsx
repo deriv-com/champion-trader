@@ -10,8 +10,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, title, children }) => {
   return (
     <div
-      className={`fixed left-[65px] h-full w-[320px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-        isOpen ? "translate-x-0" : "-translate-x-[calc(100%+65px)]"
+      className={`absolute h-full w-[320px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
       } z-[51] flex flex-col overflow-hidden`}
     >
       <div className="p-4 flex justify-between items-center">
