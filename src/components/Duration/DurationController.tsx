@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { TabList, Tab } from "@/components/ui/tab-list";
+import { useThemeStore } from "@/stores/themeStore";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
 import { DurationValueList } from "./components/DurationValueList";
 import { HoursDurationValue } from "./components/HoursDurationValue";
@@ -17,7 +18,6 @@ const DURATION_TYPES: Tab[] = [
   { label: "Seconds", value: "second" },
   { label: "Minutes", value: "minute" },
   { label: "Hours", value: "hour" },
-  // { label: "End Time", value: "day" },
 ] as const;
 
 type DurationType = keyof DurationRangesResponse;
@@ -41,14 +41,12 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     };
   }, []);
 
-  // Initialize local state for both mobile and desktop
   const [localDuration, setLocalDuration] = React.useState(duration);
   const [value, type] = localDuration.split(" ");
   const selectedType = type as DurationType;
   const selectedValue: string | number =
     type === "hour" ? value : parseInt(value, 10);
 
-  // Use debounced updates for desktop scroll
   useDebounce(
     localDuration,
     (value) => {
@@ -73,7 +71,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
   const handleValueClick = (value: number | string) => {
     const newDuration = `${value} ${selectedType}`;
     setLocalDuration(newDuration);
-    setDuration(newDuration); // Update store immediately on click
+    setDuration(newDuration);
     if (isLandscape) {
       onClose?.();
     }
@@ -88,17 +86,21 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     }
   };
 
+  const { isDarkMode } = useThemeStore();
+
   const content = (
     <>
-      <div className={isLandscape ? "flex" : ""}>
+<div className={isLandscape ? "flex" : ""}>
         {!isLandscape && <BottomSheetHeader title="Duration" />}
-        <TabList
-          tabs={DURATION_TYPES}
-          selectedValue={selectedType}
-          onSelect={handleTypeSelect as (value: string) => void}
-          variant={isLandscape ? "vertical" : "chip"}
-        />
-        <div className={`flex-1 relative bg-white ${isLandscape ? "px-2" : "px-8"}`}>
+        <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-black"} rounded-lg`}>
+          <TabList
+            tabs={DURATION_TYPES}
+            selectedValue={selectedType}
+            onSelect={handleTypeSelect as (value: string) => void}
+            variant={isLandscape ? "vertical" : "chip"}
+          />
+        </div>
+        <div className={`flex-1 relative ${isDarkMode ? "bg-black text-white" : "bg-white text-black"} ${isLandscape ? "px-2" : "px-8"}`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
               selectedValue={selectedValue.toString()}
@@ -128,15 +130,15 @@ export const DurationController: React.FC<DurationControllerProps> = ({
         </div>
       )}
     </>
-  );
+    );
 
-  if (isLandscape) {
+    if (isLandscape) {
     return (
-      <DesktopTradeFieldCard className="p-0">
-        <div className="w-[368px]">{content}</div>
-      </DesktopTradeFieldCard>
+    <DesktopTradeFieldCard className={`p-0 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
+      <div className="w-[368px]">{content}</div>
+    </DesktopTradeFieldCard>
     );
   }
 
-  return <div className="flex flex-col h-full">{content}</div>;
+    return <div className="flex flex-col h-full">{content}</div>;
 };

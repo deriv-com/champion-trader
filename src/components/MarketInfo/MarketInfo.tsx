@@ -65,12 +65,12 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         )}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <div className="text-base font-bold text-[#4C4C4C] leading-6 font-ibm-plex-sans truncate">{title}</div>
-            <ChevronDown className="w-5 text-[#4C4C4C] flex-shrink-0 stroke-[1.5]" />
+            <div className="text-base font-bold text-[var(--market-title-color)] leading-6 font-ibm-plex-sans truncate">{title}</div>
+            <ChevronDown className="w-5 text-[var(--market-title-color)] flex-shrink-0 stroke-[1.5]" />
           </div>
-          <div className="text-sm text-[#808080] leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
+          <div className="text-sm text-[var(--market-subtitle-color)] leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
         </div>
       </div>
     </div>
   )
-} 
+}

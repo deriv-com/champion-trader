@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { useThemeStore } from "@/stores/themeStore";
 import { useNavigate } from "react-router-dom";
 import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "./positionsSidebarStub";
 import { useFilteredPositions } from "./hooks/useFilteredPositions";
@@ -43,9 +44,11 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
     };
   }, [onClose]);
 
+  const { isDarkMode } = useThemeStore();
+
   return (
     <div
-      className={`absolute top-0 left-0 h-full w-[20%] bg-white shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} z-[50] flex flex-col`}
+      className={`absolute top-0 left-0 h-full w-[20%] shadow-lg transform transition-all duration-500 ease-in-out ${isOpen ? "translate-x-0 left-[65px] opacity-100" : "-translate-x-full opacity-0"} ${isDarkMode ? "bg-black text-white" : "bg-white text-black"} z-[50] flex flex-col`}
       ref={sidebarRef}
     > 
       <div className="p-4 border-b flex justify-between items-center">
@@ -112,14 +115,14 @@ export const PositionsSidebar: FC<PositionsSidebarProps> = ({ isOpen, onClose })
                       </span>
                     )}
                     <span className="text-s font-light text-gray-400 mb-[2]">{position.stake}</span>
-                    <span className={`text-sm ${position.profit.startsWith('+') ? 'text-[#008832]' : 'text-red-500'}`}>
+                    <span className={`text-sm ${position.profit.startsWith('+') ? 'text-[var(--profit-color)]' : 'text-red-500'}`}>
                       {position.profit}
                     </span>
                   </div>
                 </div>
               </div>
               {isOpenTab && (
-                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
+                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8] no-hover">
                   Close {position.stake}
                 </button>
               )}
