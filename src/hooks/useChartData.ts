@@ -19,29 +19,30 @@ export const useChartData = ({
   type = "tick",
   durationInSeconds = 60,
 }: UseChartDataProps = {}) => {
-  const openTime = useRef(Math.floor(Date.now() / 1000));
+  const openTime = useRef(Date.now());
   const closeTime = useRef(openTime.current);
 
   const [data, setData] = useState(() => {
     if (type === "candle") {
       return transformCandleData({
+        instrument_id: instrumentId,
         candles: [
           {
-            openEpochMs: openTime.current,
+            open_epoch_ms: openTime.current.toString(),
             open: "911.5",
             high: "913.5",
             low: "909.8",
             close: "911.73",
-            closeEpochMs: closeTime.current,
+            close_epoch_ms: closeTime.current.toString(),
           },
         ],
       });
     } else {
       return transformTickData({
-        instrumentId,
+        instrument_id: instrumentId,
         ticks: [
           {
-            epochMs: Date.now(),
+            epoch_ms: Date.now().toString(),
             ask: "911.5",
             bid: "911.3",
             price: "911.4",
@@ -63,34 +64,35 @@ export const useChartData = ({
       const basePrice = 911.5 + change;
 
       if (type === "candle") {
-        // Increment closeEpochMs by 1 second
-        closeTime.current += 1;
+        // Increment close_epoch_ms by 1 second in milliseconds
+        closeTime.current += 1000;
 
-        // Check if closeEpochMs has reached the next candle period
-        if (closeTime.current >= openTime.current + durationInSeconds) {
-          // Increment openEpochMs by durationInSeconds
-          openTime.current += durationInSeconds;
+        // Check if close_epoch_ms has reached the next candle period
+        if (closeTime.current >= openTime.current + (durationInSeconds * 1000)) {
+          // Increment open_epoch_ms by durationInSeconds in milliseconds
+          openTime.current += (durationInSeconds * 1000);
         }
 
         const candleData = {
+          instrument_id: instrumentId,
           candles: [
             {
-              openEpochMs: openTime.current,
+              open_epoch_ms: openTime.current.toString(),
               open: basePrice.toString(),
               high: (basePrice + 2).toString(),
               low: (basePrice - 1.7).toString(),
               close: (basePrice + 0.23).toString(),
-              closeEpochMs: closeTime.current,
+              close_epoch_ms: closeTime.current.toString(),
             },
           ],
         };
         setData(transformCandleData(candleData));
       } else {
         const tickData = {
-          instrumentId,
+          instrument_id: instrumentId,
           ticks: [
             {
-              epochMs: Date.now(),
+              epoch_ms: Date.now().toString(),
               ask: (basePrice + 0.2).toString(),
               bid: (basePrice - 0.2).toString(),
               price: basePrice.toString(),

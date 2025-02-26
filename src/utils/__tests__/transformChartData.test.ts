@@ -3,18 +3,20 @@ import { transformCandleData, transformTickData } from '../transformChartData';
 describe('transformCandleData', () => {
   it('should transform single candle data to ohlc format', () => {
     const input = {
+      instrument_id: 'frxUSDJPY',
       candles: [{
-        openEpochMs: 1644825600,
+        open_epoch_ms: '1644825600000',
         open: '100',
         high: '110',
         low: '90',
         close: '105',
-        closeEpochMs: 1644829200
+        close_epoch_ms: '1644829200000'
       }]
     };
 
     const expected = {
       msg_type: 'ohlc',
+      instrument_id: 'frxUSDJPY',
       ohlc: {
         open_time: 1644825600,
         open: '100',
@@ -30,28 +32,30 @@ describe('transformCandleData', () => {
 
   it('should transform multiple candles data to candles format', () => {
     const input = {
+      instrument_id: 'frxUSDJPY',
       candles: [
         {
-          openEpochMs: 1644825600,
+          open_epoch_ms: '1644825600000',
           open: '100',
           high: '110',
           low: '90',
           close: '105',
-          closeEpochMs: 1644829200
+          close_epoch_ms: '1644829200000'
         },
         {
-          openEpochMs: 1644829200,
+          open_epoch_ms: '1644829200000',
           open: '105',
           high: '115',
           low: '95',
           close: '110',
-          closeEpochMs: 1644832800
+          close_epoch_ms: '1644832800000'
         }
       ]
     };
 
     const expected = {
       msg_type: 'candles',
+      instrument_id: 'frxUSDJPY',
       candles: [
         {
           open_time: 1644825600,
@@ -79,9 +83,9 @@ describe('transformCandleData', () => {
 describe('transformTickData', () => {
   it('should transform single tick data to tick format', () => {
     const input = {
-      instrumentId: 'R_100',
+      instrument_id: 'R_100',
       ticks: [{
-        epochMs: 1644825600000,
+        epoch_ms: '1644825600000',
         ask: '100.5',
         bid: '100.3',
         price: '100.4'
@@ -90,7 +94,7 @@ describe('transformTickData', () => {
 
     const expected = {
       msg_type: 'tick',
-      instrumentId: 'R_100',
+      instrument_id: 'R_100',
       tick: {
         epoch: 1644825600,
         ask: '100.5',
@@ -104,16 +108,16 @@ describe('transformTickData', () => {
 
   it('should transform multiple ticks data to history format', () => {
     const input = {
-      instrumentId: 'R_100',
+      instrument_id: 'R_100',
       ticks: [
         {
-          epochMs: 1644825600000,
+          epoch_ms: '1644825600000',
           ask: '100.5',
           bid: '100.3',
           price: '100.4'
         },
         {
-          epochMs: 1644825601000,
+          epoch_ms: '1644825601000',
           ask: '100.6',
           bid: '100.4',
           price: '100.5'
@@ -123,7 +127,7 @@ describe('transformTickData', () => {
 
     const expected = {
       msg_type: 'history',
-      instrumentId: 'R_100',
+      instrument_id: 'R_100',
       history: [
         {
           epoch: 1644825600,
