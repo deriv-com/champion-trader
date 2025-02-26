@@ -52,7 +52,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
 }) => {
   const { trade_type } = useTradeStore()
   // const { isMobile } = useDeviceDetection()
-  const { togglePositionsSidebar } = useMainLayoutStore()
+  const { setSidebar } = useMainLayoutStore()
   const { toast, hideToast } = useToastStore()
   const { currency, isLoggedIn } = useClientStore()
   // const tradeActions = useTradeActions()
@@ -273,7 +273,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                     
                     // Open positions sidebar only in desktop view
                     if (isLandscape) {
-                      togglePositionsSidebar()
+                      setSidebar('positions')
                     }
 
                     // Show trade notification
@@ -386,7 +386,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                     
                     // Open positions sidebar only in desktop view
                     if (isLandscape) {
-                      togglePositionsSidebar()
+                      setSidebar('positions')
                     }
 
                     // Show trade notification
