@@ -7,8 +7,7 @@ import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { SideNav } from "@/components/SideNav"
-import PositionsSidebar from "@/components/PositionsSidebar/PositionsSidebar"
-import MenuSidebar from "@/components/SideNav/MenuSidebar"
+import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar"
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -55,25 +54,25 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="flex flex-1 overflow-hidden">
           {isLandscape ? (
             <div className="flex flex-1">
-              <div
-                className={`${
-                  isSidebarOpen ? "w-[22%]" : "w-0"
-                } transition-all duration-300 flex-shrink-0`}
-              >
-                <PositionsSidebar
-                  isOpen={isSidebarOpen}
-                  onClose={() => setSidebarOpen(false)}
-                />
-              </div>
-              <div
-                className={`${
-                  isMenuOpen ? "w-[22%]" : "w-0"
-                } transition-all duration-300 flex-shrink-0`}
-              >
-                <MenuSidebar
-                  isOpen={isMenuOpen}
-                  onClose={() => setMenuOpen(false)}
-                />
+              <div className="relative z-[50]">
+                {isSidebarOpen && (
+                  <Sidebar
+                    isOpen={isSidebarOpen}
+                    onClose={() => setSidebarOpen(false)}
+                    title="Positions"
+                  >
+                    <PositionsContent />
+                  </Sidebar>
+                )}
+                {isMenuOpen && (
+                  <Sidebar
+                    isOpen={isMenuOpen}
+                    onClose={() => setMenuOpen(false)}
+                    title="Menu"
+                  >
+                    <MenuContent />
+                  </Sidebar>
+                )}
               </div>
               <main className="flex-1 flex flex-row transition-all duration-300">
                 {children}
