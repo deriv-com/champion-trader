@@ -16,8 +16,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile } = useDeviceDetection()
   const { isLandscape, setIsLandscape } = useOrientationStore()
-  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore()
-  const [isMenuOpen, setMenuOpen] = React.useState(false)
+  const { activeSidebar, setSidebar } = useMainLayoutStore()
   const isHeaderVisible = useHeaderStore((state) => state.isVisible)
   const isBottomNavVisible = useBottomNavStore((state) => state.isVisible)
 
@@ -45,34 +44,25 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <div
         className={`flex flex-1 relative ${isLandscape ? "overflow-hidden" : ""}`}
       >
-        {isLandscape && (
-          <SideNav
-            setMenuOpen={setMenuOpen}
-            isMenuOpen={isMenuOpen}
-          />
-        )}
+        {isLandscape && <SideNav />}
         <div className="flex flex-1 overflow-hidden">
           {isLandscape ? (
             <div className="flex flex-1">
               <div className="relative z-[50]">
-                {isSidebarOpen && (
-                  <Sidebar
-                    isOpen={isSidebarOpen}
-                    onClose={() => setSidebarOpen(false)}
-                    title="Positions"
-                  >
-                    <PositionsContent />
-                  </Sidebar>
-                )}
-                {isMenuOpen && (
-                  <Sidebar
-                    isOpen={isMenuOpen}
-                    onClose={() => setMenuOpen(false)}
-                    title="Menu"
-                  >
-                    <MenuContent />
-                  </Sidebar>
-                )}
+                <Sidebar
+                  isOpen={activeSidebar === 'positions'}
+                  onClose={() => setSidebar(null)}
+                  title="Positions"
+                >
+                  <PositionsContent />
+                </Sidebar>
+                <Sidebar
+                  isOpen={activeSidebar === 'menu'}
+                  onClose={() => setSidebar(null)}
+                  title="Menu"
+                >
+                  <MenuContent />
+                </Sidebar>
               </div>
               <main className="flex-1 flex flex-row transition-all duration-300">
                 {children}

@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "../PositionsSidebar/positionsSidebarStub";
 import { useFilteredPositions } from "../PositionsSidebar/hooks/useFilteredPositions";
 import { FilterDropdown } from "../PositionsSidebar/components/FilterDropdown";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 export const PositionsContent: FC = () => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
+  const { setSidebar } = useMainLayoutStore();
   const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
 
   const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
@@ -61,7 +63,10 @@ export const PositionsContent: FC = () => {
             <div 
               key={position.id}
               className="p-3 rounded-lg shadow-sm cursor-pointer"
-              onClick={() => navigate(`/contract/${position.id}`)}
+              onClick={() => {
+                navigate(`/contract/${position.id}`);
+                setSidebar(null);
+              }}
             >
               <div className="flex justify-between text-sm font-medium">
                 <div className="flex flex-col items-start">

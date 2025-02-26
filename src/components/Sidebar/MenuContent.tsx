@@ -2,11 +2,13 @@ import React from "react";
 import { ExternalLink, Home, LogOut, Moon } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { useClientStore } from "@/stores/clientStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 export const MenuContent: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const { isLoggedIn } = useClientStore();
   const logout = useLogout();
+  const { setSidebar } = useMainLayoutStore();
 
   return (
     <div className="p-4 space-y-4">
@@ -15,6 +17,7 @@ export const MenuContent: React.FC = () => {
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-between cursor-pointer py-2"
+        onClick={() => setSidebar(null)}
       >
         <div className="flex items-center gap-3">
           <Home className="w-5 h-5" />
@@ -40,7 +43,10 @@ export const MenuContent: React.FC = () => {
       {isLoggedIn && (
         <button
           className="flex items-center gap-3 cursor-pointer py-2 w-full hover:bg-gray-100"
-          onClick={logout}
+          onClick={() => {
+            logout();
+            setSidebar(null);
+          }}
         >
           <LogOut className="w-5 h-5" />
           <span>Log out</span>
