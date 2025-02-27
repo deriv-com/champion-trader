@@ -1,14 +1,14 @@
-import React from "react"
-import TradeParam from "@/components/TradeFields/TradeParam"
-import { Tooltip } from "@/components/ui/tooltip"
-import { useStakeField } from "./hooks/useStakeField"
-import { cn } from "@/lib/utils"
-import { useOrientationStore } from "@/stores/orientationStore"
+import React from "react";
+import TradeParam from "@/components/TradeFields/TradeParam";
+import { Tooltip } from "@/components/ui/tooltip";
+import { useStakeField } from "./hooks/useStakeField";
+import { cn } from "@/lib/utils";
+import { useOrientationStore } from "@/stores/orientationStore";
 
 interface StakeFieldProps {
-  className?: string
-  onSelect?: (isSelected: boolean) => void
-  onError?: (error: boolean) => void
+  className?: string;
+  onSelect?: (isSelected: boolean) => void;
+  onError?: (error: boolean) => void;
 }
 
 export const StakeField: React.FC<StakeFieldProps> = ({
@@ -16,7 +16,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
   onSelect,
   onError,
 }) => {
-  const { isLandscape } = useOrientationStore()
+  const { isLandscape } = useOrientationStore();
   const {
     stake,
     currency,
@@ -30,7 +30,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     handleIncrement,
     handleDecrement,
     handleMobileClick,
-  } = useStakeField({ onSelect, onError })
+  } = useStakeField({ onSelect, onError });
 
   if (!isLandscape) {
     return (
@@ -56,7 +56,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
           </div>
         )}
       </div>
-    )
+    );
   }
 
   return (
@@ -66,7 +66,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
       onBlur={(e) => {
         // Only blur if we're not clicking inside the component
         if (!e.currentTarget.contains(e.relatedTarget)) {
-          handleSelect(false)
+          handleSelect(false);
         }
       }}
       tabIndex={0}
@@ -88,28 +88,28 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             />
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <button
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-            onClick={handleDecrement}
-            aria-label="Decrease stake"
-          >
-            <span className="text-black text-2xl leading-none flex items-center justify-center">
+        <div className="flex items-center">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+            <button
+              className="flex items-center justify-center text-2xl"
+              onClick={handleDecrement}
+              aria-label="Decrease stake"
+            >
               −
-            </span>
-          </button>
-          <button
-            className="w-8 h-8 rounded-full  flex items-center justify-center transition-colors"
-            onClick={handleIncrement}
-            aria-label="Increase stake"
-          >
-            <span className="text-black text-2xl leading-none flex items-center justify-center">
+            </button>
+          </div>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+            <button
+              className="flex items-center justify-center text-2xl"
+              onClick={handleIncrement}
+              aria-label="Increase stake"
+            >
               +
-            </span>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
       <Tooltip />
     </div>
-  )
-}
+  );
+};

@@ -42,12 +42,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-      {isHeaderVisible && <Header className="sticky top-0 z-50 w-full" />}
+      {isHeaderVisible && <Header className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`} />}
       <div
         className={`flex flex-1 relative ${isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""}`}
       >
         {isLandscape && <SideNav />}
-        <div className={`flex flex-1 ${shouldEnableScrolling ? "" : "overflow-hidden"}`}>
+        <div className={`flex flex-1 ${shouldEnableScrolling ? "overflow-auto" : "overflow-hidden"}`}>
           {isLandscape ? (
             <div className={`flex flex-1 ${shouldEnableScrolling ? "overflow-visible" : ""}`}>
               <div className="relative z-[50]">
