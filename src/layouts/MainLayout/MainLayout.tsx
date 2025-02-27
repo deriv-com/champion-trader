@@ -7,8 +7,7 @@ import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { SideNav } from "@/components/SideNav"
-import PositionsSidebar from "@/components/PositionsSidebar/PositionsSidebar"
-import MenuSidebar from "@/components/SideNav/MenuSidebar"
+import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar"
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -17,8 +16,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isMobile } = useDeviceDetection()
   const { isLandscape, setIsLandscape } = useOrientationStore()
-  const { isSidebarOpen, setSidebarOpen } = useMainLayoutStore()
-  const [isMenuOpen, setMenuOpen] = React.useState(false)
+  const { activeSidebar, setSidebar } = useMainLayoutStore()
   const isHeaderVisible = useHeaderStore((state) => state.isVisible)
   const isBottomNavVisible = useBottomNavStore((state) => state.isVisible)
 
@@ -46,34 +44,25 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <div
         className={`flex flex-1 relative ${isLandscape ? "overflow-hidden" : ""}`}
       >
-        {isLandscape && (
-          <SideNav
-            setMenuOpen={setMenuOpen}
-            isMenuOpen={isMenuOpen}
-          />
-        )}
+        {isLandscape && <SideNav />}
         <div className="flex flex-1 overflow-hidden">
           {isLandscape ? (
             <div className="flex flex-1">
-              <div
-                className={`${
-                  isSidebarOpen ? "w-[22%]" : "w-0"
-                } transition-all duration-300 flex-shrink-0`}
-              >
-                <PositionsSidebar
-                  isOpen={isSidebarOpen}
-                  onClose={() => setSidebarOpen(false)}
-                />
-              </div>
-              <div
-                className={`${
-                  isMenuOpen ? "w-[22%]" : "w-0"
-                } transition-all duration-300 flex-shrink-0`}
-              >
-                <MenuSidebar
-                  isOpen={isMenuOpen}
-                  onClose={() => setMenuOpen(false)}
-                />
+              <div className="relative z-[50]">
+                <Sidebar
+                  isOpen={activeSidebar === 'positions'}
+                  onClose={() => setSidebar(null)}
+                  title="Positions"
+                >
+                  <PositionsContent />
+                </Sidebar>
+                <Sidebar
+                  isOpen={activeSidebar === 'menu'}
+                  onClose={() => setSidebar(null)}
+                  title="Menu"
+                >
+                  <MenuContent />
+                </Sidebar>
               </div>
               <main className="flex-1 flex flex-row transition-all duration-300">
                 {children}

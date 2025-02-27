@@ -48,7 +48,7 @@ export const MarketSidebar: React.FC = () => {
       {/* Backdrop */}
       <div
         className={cn(
-          "fixed inset-0 bg-black/50 z-40",
+          "fixed inset-0 bg-black/50 z-50",
           isOpen ? "animate-in fade-in-0" : "animate-out fade-out-0"
         )}
         aria-hidden="true"

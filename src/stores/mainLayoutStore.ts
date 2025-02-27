@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 
+type SidebarContent = 'positions' | 'menu' | null;
+
 interface MainLayoutStore {
-  // Main sidebar (DOM dragging)
-  isSidebarOpen: boolean;
-  setSidebarOpen: (isOpen: boolean) => void;
-  togglePositionsSidebar: () => void;
+  // Sidebar state
+  activeSidebar: SidebarContent;
+  setSidebar: (content: SidebarContent) => void;
+  toggleSidebar: (content: SidebarContent) => void;
   
   // Overlay sidebar
   isOverlaySidebarOpen: boolean;
@@ -20,15 +22,16 @@ export const useMainLayoutStore = create<MainLayoutStore>((set, get) => ({
   // SideNav state
   isSideNavVisible: true,
   setSideNavVisible: (isVisible) => set({ isSideNavVisible: isVisible }),
-  // Main sidebar state
-  isSidebarOpen: false,
-  setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
-  togglePositionsSidebar: () => {
-    const { isSidebarOpen } = get();
-    if (isSidebarOpen) {
-      set({ isSidebarOpen: false });
+  
+  // Sidebar state
+  activeSidebar: null,
+  setSidebar: (content) => set({ activeSidebar: content }),
+  toggleSidebar: (content) => {
+    const { activeSidebar } = get();
+    if (activeSidebar === content) {
+      set({ activeSidebar: null });
     } else {
-      set({ isSidebarOpen: true });
+      set({ activeSidebar: content });
     }
   },
   

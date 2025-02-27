@@ -5,12 +5,12 @@ import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
-export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpen: boolean }> = ({ setMenuOpen, isMenuOpen }) => {
+export const SideNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
   const { isLandscape } = useOrientationStore();
-  const { isSidebarOpen, setSidebarOpen, isSideNavVisible } = useMainLayoutStore();
+  const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
 
   return (
     <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
@@ -19,40 +19,36 @@ export const SideNav: React.FC<{ setMenuOpen: (open: boolean) => void; isMenuOpe
           <>
             <button
               onClick={() => {
-                if (window.innerWidth >= 1024) {
-                  setMenuOpen(false)
-                  setSidebarOpen(true);
+                if (isLandscape) {
+                  toggleSidebar('positions');
                 } else {
                   navigate('/positions')
                 }
               }}
               className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-primary' : 'text-gray-500'
                 }`}
-              disabled={isSidebarOpen}
             >
-              <div className={`${isSidebarOpen ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
+              <div className={`${activeSidebar === 'positions' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
                 <Clock className="w-5 h-5" />
               </div>
-              <span className={`text-xs ${isSidebarOpen ? "text-black" : ""}`}>Positions</span>
+              <span className={`text-xs ${activeSidebar === 'positions' ? "text-black" : ""}`}>Positions</span>
             </button>
           </>
         )}
         <button
           onClick={() => {
-            if (window.innerWidth >= 1024) {
-              setSidebarOpen(false);
-              setMenuOpen(!isMenuOpen);
+            if (isLandscape) {
+              toggleSidebar('menu');
             } else {
               navigate("/menu");
             }
           }}
-          disabled={isMenuOpen}
           className="flex flex-col items-center text-gray-500"
         >
-          <div className={`${isMenuOpen ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
+          <div className={`${activeSidebar === 'menu' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
             <Menu className="w-5 h-5" />
           </div>
-          <span className={`text-xs ${isMenuOpen ? "text-black" : "text-gray-500"}`}>Menu</span>
+          <span className={`text-xs ${activeSidebar === 'menu' ? "text-black" : "text-gray-500"}`}>Menu</span>
         </button>
       </div>
     </nav>
