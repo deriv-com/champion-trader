@@ -196,7 +196,7 @@ describe('TradePage', () => {
     expect(tradePage.className).toContain('flex-row');
     expect(tradePage.className).toContain('relative');
     expect(tradePage.className).toContain('flex-1');
-    expect(tradePage.className).toContain('h-[calc(100vh-4rem)]');
+    expect(tradePage.className).toContain('flex flex-row relative h-full flex-1');
   });
 
   it('shows "Select Market" when no market is selected', () => {
