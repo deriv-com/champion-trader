@@ -88,7 +88,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             />
           </div>
         </div>
-        <div className="flex items-center space-x-2 ml-4">
+        <div className="flex items-center space-x-2">
           <button
             className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
             onClick={handleDecrement}

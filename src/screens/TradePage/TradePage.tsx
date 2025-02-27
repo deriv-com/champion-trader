@@ -31,15 +31,19 @@ export const TradePage: React.FC = () => {
     }
   }, [isMobile, setBottomSheet, setOverlaySidebar]);
 
+  const shouldEnableScrolling = isLandscape && window.innerHeight < 500;
+
   return (
     <div
       className={`flex ${
-        isLandscape ? "flex-row relative h-[calc(100vh-4rem)]" : "flex-col h-[100dvh]"
+        isLandscape 
+          ? `flex-row relative h-[calc(100vh-4rem)] ${shouldEnableScrolling ? "overflow-y-auto" : ""}`
+          : "flex-col h-[100dvh]"
       } flex-1`}
       data-testid="trade-page"
     >
       <div
-        className={`flex flex-col flex-1 overflow-hidden ${
+        className={`flex flex-col flex-1 ${shouldEnableScrolling ? "" : "overflow-hidden"} ${
           isLandscape ? "mb-2" : ""
         }`}
       >
