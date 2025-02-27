@@ -47,9 +47,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         className={`flex flex-1 relative ${isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""}`}
       >
         {isLandscape && <SideNav />}
-        <div className={`flex flex-1 ${shouldEnableScrolling ? "overflow-auto" : "overflow-hidden"}`}>
+        <div className="flex flex-1 overflow-hidden">
           {isLandscape ? (
-            <div className={`flex flex-1 ${shouldEnableScrolling ? "overflow-visible" : ""}`}>
+            <div className="flex flex-1">
               <div className="relative z-[50]">
                 <Sidebar
                   isOpen={activeSidebar === 'positions'}
@@ -66,7 +66,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MenuContent />
                 </Sidebar>
               </div>
-              <main className={`flex-1 flex flex-row transition-all duration-300 ${shouldEnableScrolling ? "overflow-visible" : ""}`}>
+              <main className="flex-1 flex flex-row transition-all duration-300">
                 {children}
               </main>
             </div>
