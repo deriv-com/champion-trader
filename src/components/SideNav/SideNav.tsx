@@ -13,7 +13,7 @@ export const SideNav: React.FC = () => {
   const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
 
   return (
-    <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} sticky top-[48px] z-[60] flex-col h-auto min-h-[calc(100vh-48px)] w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         {isLoggedIn && (
           <>
