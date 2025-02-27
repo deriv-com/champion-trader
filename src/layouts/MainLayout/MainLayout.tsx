@@ -38,16 +38,18 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [isMobile, isLandscape])
 
+  const shouldEnableScrolling = isLandscape && window.innerHeight < 500;
+
   return (
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
       {isHeaderVisible && <Header className="sticky top-0 z-50 w-full" />}
       <div
-        className={`flex flex-1 relative ${isLandscape ? "overflow-hidden" : ""}`}
+        className={`flex flex-1 relative ${isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""}`}
       >
         {isLandscape && <SideNav />}
-        <div className="flex flex-1 overflow-hidden">
+        <div className={`flex flex-1 ${shouldEnableScrolling ? "" : "overflow-hidden"}`}>
           {isLandscape ? (
-            <div className="flex flex-1">
+            <div className={`flex flex-1 ${shouldEnableScrolling ? "overflow-visible" : ""}`}>
               <div className="relative z-[50]">
                 <Sidebar
                   isOpen={activeSidebar === 'positions'}
@@ -64,7 +66,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MenuContent />
                 </Sidebar>
               </div>
-              <main className="flex-1 flex flex-row transition-all duration-300">
+              <main className={`flex-1 flex flex-row transition-all duration-300 ${shouldEnableScrolling ? "overflow-visible" : ""}`}>
                 {children}
               </main>
             </div>
