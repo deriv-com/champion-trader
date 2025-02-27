@@ -21,7 +21,7 @@ export const TradePage: React.FC = () => {
   const { setBottomSheet } = useBottomSheetStore();
   const { isMobile } = useDeviceDetection();
   const selectedMarket = useMarketStore((state) => state.selectedMarket);
-  const { setOverlaySidebar } = useMainLayoutStore();
+  const { setOverlaySidebar, activeSidebar } = useMainLayoutStore();
 
   const handleMarketSelect = React.useCallback(() => {
     if (isMobile) {
@@ -45,7 +45,7 @@ export const TradePage: React.FC = () => {
       >
         <div className="flex flex-col flex-1 min-h-0">
           {isLandscape && (
-            <div className="absolute top-3 left-4 z-10">
+            <div className={`absolute top-3 ${activeSidebar ? 'left-[calc(320px+16px)]' : 'left-4'} z-10 transition-all duration-300`}>
               <MarketInfo
                 title={selectedMarket?.displayName || "Select Market"}
                 subtitle="Rise/Fall"

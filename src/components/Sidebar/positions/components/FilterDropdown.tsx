@@ -1,7 +1,7 @@
 import { FC, useRef, useEffect, useState } from 'react';
 import { useThemeStore } from "@/stores/themeStore";
 import { ChevronDown } from "lucide-react";
-import { TRADE_TYPES, TIME_PERIODS } from '../positionsSidebarStub';
+import { TRADE_TYPES, TIME_PERIODS } from '../../positions/positionsSidebarStub';
 
 interface FilterDropdownProps {
   isOpenTab: boolean;

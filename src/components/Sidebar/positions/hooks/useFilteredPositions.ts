@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Position } from '../positionsSidebarStub';
+import { Position } from '../../positions/positionsSidebarStub';
 
 interface UseFilteredPositionsProps {
   isOpenTab: boolean;
