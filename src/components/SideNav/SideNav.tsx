@@ -10,7 +10,7 @@ export const SideNav: React.FC = () => {
   const location = useLocation();
   const { isLoggedIn } = useClientStore();
   const { isLandscape } = useOrientationStore();
-  const { activeSidebar, setSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
+  const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
 
   return (
     <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
@@ -20,14 +20,13 @@ export const SideNav: React.FC = () => {
             <button
               onClick={() => {
                 if (isLandscape) {
-                  setSidebar('positions');
+                  toggleSidebar('positions');
                 } else {
                   navigate('/positions')
                 }
               }}
               className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-primary' : 'text-gray-500'
                 }`}
-              disabled={activeSidebar === 'positions'}
             >
               <div className={`${activeSidebar === 'positions' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
                 <Clock className="w-5 h-5" />
@@ -44,7 +43,6 @@ export const SideNav: React.FC = () => {
               navigate("/menu");
             }
           }}
-          disabled={activeSidebar === 'menu'}
           className="flex flex-col items-center text-gray-500"
         >
           <div className={`${activeSidebar === 'menu' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
