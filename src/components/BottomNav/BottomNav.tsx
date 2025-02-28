@@ -14,13 +14,13 @@ export const BottomNav: React.FC = () => {
 
   return (
     <nav
-      className="flex items-center justify-around px-4 py-2 border-t bg-white dark:bg-gray-900"
+      className="flex items-center justify-around px-4 py-2 border-t bg-[var(--background-color)]"
       data-testid="bottom-nav-menu"
     >
       <button
         onClick={() => navigate("/trade")}
         className={`flex flex-col items-center gap-1 ${
-          location.pathname === "/trade" ? "text-primary" : "text-gray-500 dark:text-gray-300"
+          location.pathname === "/trade" ? "text-[var(--primary-color)]" : "text-[var(--text-color)]"
         }`}
       >
         <BarChart2 className="w-5 h-5" />

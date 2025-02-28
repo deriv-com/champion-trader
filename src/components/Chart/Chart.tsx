@@ -1,5 +1,6 @@
 import React, { useRef, useMemo } from "react";
 import { SmartChart } from "./SmartChart";
+import { useThemeStore } from "@/stores/themeStore";
 import { useChartData } from "@/hooks/useChartData";
 import { generateHistoricalCandles, generateHistoricalTicks } from "@/utils/generateHistoricalData";
 import { transformCandleData, transformTickData } from "@/utils/transformChartData";
@@ -34,6 +35,12 @@ export const TradeChart: React.FC = () => {
     durationInSeconds: 0
   });
 
+  const { isDarkMode } = useThemeStore();
+
+  const settings = {
+    theme: isDarkMode ? "dark" : "light",
+  };
+
   return (
     <div style={{ display: "flex", height: "100%", position: "relative" }}>
       <SmartChart
@@ -46,6 +53,7 @@ export const TradeChart: React.FC = () => {
         chartControlsWidgets={null}
         requestSubscribe={() => {}}
         toolbarWidget={() => <></>}
+        settings={settings}
         symbol={"R_10"}
         topWidgets={() => <div />}
         enabledNavigationWidget={false}

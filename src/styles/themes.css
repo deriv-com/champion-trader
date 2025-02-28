@@ -1,0 +1,13 @@
+:root {
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #1e90ff;
+  --card-background: #f8f9fa;
+}
+
+.dark {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #bb86fc;
+  --card-background: #1f2937;
+}

@@ -50,7 +50,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
         </div>
         {error && errorMessage && (
           <div className="mt-1 px-2">
-            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
+            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-[var(--error-color)]">
               {errorMessage}
             </span>
           </div>
