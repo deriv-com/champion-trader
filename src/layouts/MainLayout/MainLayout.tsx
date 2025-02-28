@@ -38,11 +38,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [isMobile, isLandscape])
 
+  const shouldEnableScrolling = isLandscape && window.innerHeight < 500;
+
   return (
     <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-      {isHeaderVisible && <Header className="sticky top-0 z-50 w-full" />}
+      {isHeaderVisible && <Header className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`} />}
       <div
-        className={`flex flex-1 relative ${isLandscape ? "overflow-hidden" : ""}`}
+        className={`flex flex-1 relative ${isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""}`}
       >
         {isLandscape && <SideNav />}
         <div className="flex flex-1 overflow-hidden">
