@@ -40,9 +40,7 @@ export const TradeChart: React.FC = () => {
         ref={ref}
         id="trade-chart"
         barriers={[]}
-        chartStatusListener={(isChartReady: boolean) =>
-          console.log("isChartReady", isChartReady)
-        }
+        chartStatusListener={(isChartReady: boolean) => {}}
         crosshair={0}
         isLive
         chartControlsWidgets={null}
