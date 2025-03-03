@@ -235,11 +235,11 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
       </div>
       {!isLandscape && (
         <div className="w-full py-6 px-3">
-          <PrimaryButton
-            className="rounded-3xl text-[var(--text-color)] dark:text-gray-500 dark:bg-gray-700"
-            onClick={handleSave}
-            disabled={error || debouncedStake === stake}
-          >
+<PrimaryButton
+  className="rounded-3xl text-[var(--text-color)] dark:bg-gray-700"
+  onClick={handleSave}
+  disabled={error || debouncedStake === stake}
+>
             Save
           </PrimaryButton>
         </div>

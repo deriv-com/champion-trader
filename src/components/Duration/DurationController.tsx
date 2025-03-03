@@ -124,7 +124,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
       </div>
       {!isLandscape && (
         <div className="w-full p-3">
-          <PrimaryButton className="rounded-3xl text-[var(--text-color)] dark:text-gray-500 dark:bg-gray-700" onClick={handleSave}>
+          <PrimaryButton className="rounded-3xl text-[var(--text-color)] dark:bg-gray-700" onClick={handleSave}>
             Save
           </PrimaryButton>
         </div>

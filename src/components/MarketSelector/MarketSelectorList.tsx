@@ -145,7 +145,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
               }}
               className="text-text-primary"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-[var(--text-color)]" />
             </button>
           </div>
         </div>

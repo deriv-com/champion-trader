@@ -53,7 +53,7 @@ export const Modal = ({
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
-          "relative bg-white dark:bg-[#111827] rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px]",
+          "relative bg-white dark:bg-[rgb(13,19,31)] rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px]",
           className
         )}
       >
@@ -61,7 +61,7 @@ export const Modal = ({
           {title && <h2 className="text-xl font-bold dark:text-white">{title}</h2>}
           <button
             onClick={onClose}
-            className="p-2 hover:bg-[var(--background-color)] transition-colors"
+            className="p-2 hover:bg-[var(--background-color)] transition-colors text-[var(--text-color)]"
             aria-label="Close modal"
           >
             <X />
@@ -73,7 +73,7 @@ export const Modal = ({
         {actionButton?.show && (
           <div className="pt-4">
             <PrimaryButton
-              className="w-full rounded-3xl"
+              className="w-full rounded-3xl bg-[#1F2937] text-white"
               onClick={actionButton.onClick}
             >
               {actionButton.label}
