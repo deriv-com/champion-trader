@@ -12,12 +12,12 @@ export const MenuPage: React.FC = () => {
 
   console.log("MenuPage rendered");
   return (
-    <div className="flex flex-col flex-1 p-4 bg-[var(--background-color)] text-[var(--text-color)]">
+    <div className="flex flex-col flex-1 p-4 bg-[var(--background)] text-[var(--text-color)]">
       <h1 className="text-2xl font-bold">Menu</h1>
       <div className="flex flex-col gap-4 mt-4">
         <button
           onClick={() => navigate("/trade")}
-          className="text-left p-4 rounded-lg hover:bg-[var(--background-color)] border-b border-[var(--border-color)] flex items-center gap-3"
+          className="text-left p-4 rounded-lg hover:bg-[var(--sidebar-active-dark)] border-b border-[var(--border-color)] flex items-center gap-3"
         >
           <Home className="w-5 h-5" />
           <span className="text-sm">Go to Home</span>
@@ -34,7 +34,7 @@ export const MenuPage: React.FC = () => {
           <>
             <button
               onClick={logout}
-              className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
+              className="text-left p-4 rounded-lg hover:bg-[var(--sidebar-active-dark)] border-b border-gray-200 flex items-center gap-3"
             >
               <LogOut className="w-5 h-5" />
               Log out

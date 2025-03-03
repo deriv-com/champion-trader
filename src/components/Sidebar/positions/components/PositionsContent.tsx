@@ -8,6 +8,7 @@ import {
 import { useFilteredPositions } from "../hooks/useFilteredPositions";
 import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { useThemeStore } from "@/stores/themeStore";
 
 export const PositionsContent: FC = () => {
   const [isOpenTab, setIsOpenTab] = useState(true);
@@ -31,10 +32,12 @@ export const PositionsContent: FC = () => {
       .catch((error) => console.error("Error fetching positions:", error));
   }, []);
 
+  const { isDarkMode } = useThemeStore();
+
   return (
     <div className="flex flex-col h-full">
       <div className="p-6 flex-1 overflow-auto">
-        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+        <div className={`flex gap-2 p-1 rounded-lg ${isDarkMode ? 'bg-[#020817]' : 'bg-gray-100'}`}>
           <button
             className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
               isOpenTab

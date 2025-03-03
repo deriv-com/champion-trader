@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useThemeStore } from "@/stores/themeStore"
 
 interface ScrollableTabsProps {
   tabs: { id: string; label: string }[]
@@ -15,6 +16,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
   onTabChange,
   className,
 }) => {
+  const { isDarkMode } = useThemeStore();
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [showLeftArrow, setShowLeftArrow] = useState(false)
   const [showRightArrow, setShowRightArrow] = useState(false)
@@ -47,12 +49,15 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
     checkScrollButtons()
   }
 
+  const sidebarActiveColor = isDarkMode ? "var(--sidebar-active-dark)" : "var(--sidebar-active-light)";
+
   return (
     <div className={cn("relative group", className)}>
       {showLeftArrow && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
           <ChevronLeft className="w-5 h-5 text-text-primary" />
@@ -90,7 +95,8 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showRightArrow && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
           <ChevronRight className="w-5 h-5 text-text-primary" />

@@ -1,6 +1,7 @@
 import React from "react";
 import TradeParam from "@/components/TradeFields/TradeParam";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useThemeStore } from "@/stores/themeStore";
 import { useStakeField } from "./hooks/useStakeField";
 import { cn } from "@/lib/utils";
 import { useOrientationStore } from "@/stores/orientationStore";
@@ -32,14 +33,18 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     handleMobileClick,
   } = useStakeField({ onSelect, onError });
 
+  const { isDarkMode } = useThemeStore();
+  const stakeFieldBg = isDarkMode ? "#111827" : "rgba(246,247,248,1)";
+
   if (!isLandscape) {
     return (
       <div className="flex flex-col">
         <div
           className={cn(
-            error ? "bg-[rgba(230,25,14,0.08)]" : "bg-[rgba(246,247,248,1)]",
+            error ? "bg-[rgba(230,25,14,0.08)]" : "",
             "rounded-lg"
           )}
+          style={{ backgroundColor: stakeFieldBg }}
         >
           <TradeParam
             label="Stake"

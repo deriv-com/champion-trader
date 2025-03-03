@@ -68,12 +68,12 @@ const PositionsPage: React.FC = () => {
   return (
     <div className="flex flex-col flex-1 h-full bg-white">
       {/* Tabs */}
-      <div className="flex sticky top-0 z-10 px-4 bg-white border-b border-border">
+      <div className="flex sticky top-0 z-10 px-4 bg-background border-b border-border">
         <button
           className={`flex-1 py-3 border-b-2 transition-colors ${
             activeTab === "open"
               ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground"
+              : "border-transparent text-gray-500 dark:text-gray-300"
           }`}
           onClick={() => setActiveTab("open")}
         >
@@ -92,7 +92,7 @@ const PositionsPage: React.FC = () => {
       </div>
 
       {/* Positions List */}
-      <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-gray-100">
+      <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-background">
         {positions
           .filter((position) =>
             activeTab === "open" ? position.isOpen : !position.isOpen

@@ -42,7 +42,7 @@ const TradeParam: React.FC<TradeParamProps> = ({
   }
 
   return (
-    <div className={`${className} text-start dark:bg-gray-900 dark:text-white p-3 rounded-lg`}>
+    <div className={`${className} text-start p-3 rounded-lg`} style={{ backgroundColor: "var(--sidebar-active-dark)", color: "var(--text-color)" }}>
       <span className={labelClasses}>{label}</span>
       <div className="text-left">
         <span className={valueClasses}>{formattedValue}</span>

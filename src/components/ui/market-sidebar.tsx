@@ -1,5 +1,6 @@
 import React from "react"
 import { cn } from "@/lib/utils"
+import { useThemeStore } from "@/stores/themeStore"
 import { useMainLayoutStore } from "@/stores/mainLayoutStore"
 import { marketSidebarConfig } from "@/config/marketSidebarConfig"
 
@@ -39,9 +40,13 @@ export const MarketSidebar: React.FC = () => {
     }
   }, [isOpen])
 
+  const { isDarkMode } = useThemeStore();
+
   if (!isOpen || !key || !marketSidebarConfig[key]) return null
 
   const { body } = marketSidebarConfig[key]
+
+  const sidebarActiveColor = isDarkMode ? "var(--sidebar-active-dark)" : "var(--sidebar-active-light)";
 
   return (
     <>
@@ -58,14 +63,14 @@ export const MarketSidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-[101] h-full w-96 transform bg-[var(--background-color)] text-[var(--text-color)] shadow-lg",
+          "fixed left-0 top-0 z-[101] h-full w-96 transform text-[var(--text-color)] shadow-lg",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "animate-in slide-in-from-left-1/2"
         )}
-      >
+        style={{ backgroundColor: sidebarActiveColor }}>
         {/* Content */}
-        <div className="h-[calc(100%-65px)] overflow-y-auto">{body}</div>
+        <div className="h-[100%] overflow-y-auto">{body}</div>
       </div>
     </>
   )

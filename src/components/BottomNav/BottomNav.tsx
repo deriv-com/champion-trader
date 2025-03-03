@@ -14,7 +14,7 @@ export const BottomNav: React.FC = () => {
 
   return (
     <nav
-      className="flex items-center justify-around px-4 py-2 border-t bg-[var(--background-color)]"
+      className="flex items-center justify-around px-4 py-2 border-t"
       data-testid="bottom-nav-menu"
     >
       <button
