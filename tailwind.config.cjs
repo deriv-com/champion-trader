@@ -16,6 +16,18 @@ module.exports = {
         ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
+        background: {
+          DEFAULT: "#ffffff",
+          dark: "#121212",
+        },
+        text: {
+          DEFAULT: "#000000",
+          dark: "#ffffff",
+        },
+        primary: {
+          DEFAULT: "#007bff",
+          dark: "#1e90ff",
+        },
         error: '#C40000',
         dim: 'rgba(0, 0, 0, 0.24)',
         border: "hsl(var(--border))",
