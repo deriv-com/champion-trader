@@ -9,6 +9,7 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useMarketStore } from "@/stores/marketStore";
 import { MarketInfo } from "@/components/MarketInfo";
+import { TradeTypesListController } from "./components/TradeTypesListController";
 
 const Chart = lazy(() =>
     import("@/components/Chart").then((module) => ({
@@ -63,6 +64,7 @@ export const TradePage: React.FC = () => {
                             />
                         </div>
                     )}
+                    <TradeTypesListController />
                     {!isLandscape && (
                         <MarketInfo
                             title={
