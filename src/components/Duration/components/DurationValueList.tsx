@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollSelect } from "@/components/ui/scroll-select";
 import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
 interface DurationValueListProps {
   selectedValue: number;
@@ -10,18 +11,21 @@ interface DurationValueListProps {
   getDurationValues: (type: keyof DurationRangesResponse) => number[];
 }
 
-const getUnitLabel = (type: keyof DurationRangesResponse, value: number): string => {
+const getUnitLabel = (
+  type: keyof DurationRangesResponse,
+  value: number
+): string => {
   switch (type) {
-    case "tick":
+    case "ticks":
       return value === 1 ? "tick" : "ticks";
-    case "second":
+    case "seconds":
       return value === 1 ? "second" : "seconds";
-    case "minute":
+    case "minutes":
       return value === 1 ? "minute" : "minutes";
-    case "hour":
+    case "hours":
       return value === 1 ? "hour" : "hours";
-    case "day":
-      return "day";
+    case "days":
+      return value === 1 ? "day" : "days";
     default:
       return "";
   }
@@ -32,12 +36,13 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
   durationType,
   onValueSelect,
   onValueClick,
-  getDurationValues
+  getDurationValues,
 }) => {
+  const { isDesktop } = useDeviceDetection();
   const values = getDurationValues(durationType);
-  const options = values.map(value => ({
+  const options = values.map((value) => ({
     value,
-    label: `${value} ${getUnitLabel(durationType, value)}`
+    label: `${value} ${getUnitLabel(durationType, value)}`,
   }));
 
   return (
@@ -46,6 +51,7 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
       selectedValue={selectedValue}
       onValueSelect={onValueSelect}
       onValueClick={onValueClick}
+      enableAutoSelect={!isDesktop} // Enable auto-select for mobile/tablet, disable for desktop
     />
   );
 };

@@ -35,21 +35,11 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
   };
 
   const validateAndUpdateStake = (value: string) => {
-    // Always validate empty field or zero as error
-    if (!value || value === "0") {
-      setError(true);
-      const message = "Please enter an amount";
-      setErrorMessage(message);
-      showError(message);
-      onError?.(true);
-      return false;
-    }
-
-    const amount = parseStakeAmount(value);
+    const amount = parseStakeAmount(value || "0");
     const validation = validateStake({
       amount,
       minStake: STAKE_CONFIG.min,
-      maxPayout: STAKE_CONFIG.max,
+      maxStake: STAKE_CONFIG.max,
       currency,
     });
 
@@ -128,7 +118,7 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
       setErrorMessage(message);
       showError(message);
       onError?.(true);
-      setStake("0");
+      setStake("");
       return;
     }
 

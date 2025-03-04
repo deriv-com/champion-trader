@@ -9,7 +9,7 @@ interface HoursDurationValueProps {
   isInitialRender: MutableRefObject<boolean>;
 }
 
-const getHoursValues = (): number[] => generateDurationValues("hour");
+const getHoursValues = (): number[] => generateDurationValues("hours");
 
 export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
   selectedValue,
@@ -52,7 +52,7 @@ export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
       onValueSelect(`${newHours}:${lastValidMinutes.current}`);
     } else {
       lastValidMinutes.current = 0;
-      onValueSelect(`${newHours}:0`);
+      onValueSelect(`${newHours}:00`);
     }
     scrollToZeroMinutes();
   };
@@ -68,7 +68,7 @@ export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
       onValueClick?.(`${newHours}:${lastValidMinutes.current}`);
     } else {
       lastValidMinutes.current = 0;
-      onValueClick?.(`${newHours}:0`);
+      onValueClick?.(`${newHours}:00`);
     }
     scrollToZeroMinutes();
   };
@@ -87,21 +87,23 @@ export const HoursDurationValue: React.FC<HoursDurationValueProps> = ({
       <div className="flex-1" aria-label="Hours">
         <DurationValueList
           selectedValue={lastValidHours.current || 0}
-          durationType="hour"
+          durationType="hours"
           onValueSelect={handleHoursSelect}
           onValueClick={handleHoursClick}
           getDurationValues={getHoursValues}
         />
       </div>
       <div ref={minutesRef} className="flex-1" aria-label="Minutes">
-          <DurationValueList
-            key={`minutes${getSpecialCaseKey(lastValidHours.current)}`}
-            selectedValue={lastValidMinutes.current || 0}
-            durationType="minute"
-            onValueSelect={handleMinutesSelect}
-            onValueClick={handleMinutesClick}
-            getDurationValues={() => generateDurationValues('minute', lastValidHours.current)}
-          />
+        <DurationValueList
+          key={`minutes${getSpecialCaseKey(lastValidHours.current)}`}
+          selectedValue={lastValidMinutes.current || 0}
+          durationType="minutes"
+          onValueSelect={handleMinutesSelect}
+          onValueClick={handleMinutesClick}
+          getDurationValues={() =>
+            generateDurationValues("minutes", lastValidHours.current)
+          }
+        />
       </div>
     </div>
   );

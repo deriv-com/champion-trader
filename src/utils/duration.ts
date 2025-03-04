@@ -4,22 +4,47 @@ import { DurationRangesResponse } from '@/services/api/rest/duration/types';
  * Duration ranges for different duration types.
  * Will be replaced by API response later.
  */
-export const DURATION_RANGES: DurationRangesResponse = {
-  tick: { min: 1, max: 10 },
-  second: { min: 15, max: 59 },
-  minute: { min: 1, max: 59 },
-  hour: { min: 1, max: 24, step: 1 },
-  day: { min: 1, max: 30 }
+import { ProductConfigResponse } from '@/services/api/rest/product-config/types';
+import { adaptDurationRanges } from './duration-config-adapter';
+
+// Make DURATION_RANGES mutable
+let DURATION_RANGES: DurationRangesResponse = {
+  ticks: { min: 1, max: 10 },
+  seconds: { min: 15, max: 59 },
+  minutes: { min: 1, max: 59 },
+  hours: { min: 1, max: 24, step: 1 },
+  days: { min: 1, max: 30 }
 };
 
-// Pre-computed duration values for better performance
-const DURATION_VALUES_MAP: Record<keyof DurationRangesResponse, number[]> = {
-  tick: Array.from({ length: 10 }, (_, i) => i + 1),
-  second: Array.from({ length: 45 }, (_, i) => i + 15),
-  minute: Array.from({ length: 60 }, (_, i) => i),
-  hour: Array.from({ length: 24 }, (_, i) => i + 1),
-  day: Array.from({ length: 30 }, (_, i) => i + 1)
+// Make DURATION_VALUES_MAP mutable and use plural types
+let DURATION_VALUES_MAP: Record<keyof DurationRangesResponse, number[]> = {
+  ticks: Array.from({ length: 10 }, (_, i) => i + 1),
+  seconds: Array.from({ length: 45 }, (_, i) => i + 15),
+  minutes: Array.from({ length: 60 }, (_, i) => i),
+  hours: Array.from({ length: 24 }, (_, i) => i + 1),
+  days: Array.from({ length: 30 }, (_, i) => i + 1)
 };
+
+/**
+ * Updates duration ranges and pre-computed values from API config
+ */
+export function updateDurationRanges(config: ProductConfigResponse): void {
+  const newRanges = adaptDurationRanges(config);
+  DURATION_RANGES = newRanges;
+  
+  // Update the pre-computed values
+  Object.keys(DURATION_RANGES).forEach(key => {
+    const typedKey = key as keyof DurationRangesResponse;
+    const range = DURATION_RANGES[typedKey];
+    
+    if (range) {
+      DURATION_VALUES_MAP[typedKey] = Array.from(
+        { length: range.max - range.min + 1 }, 
+        (_, i) => i + range.min
+      );
+    }
+  });
+}
 
 // Define special hour cases
 interface SpecialHourCase {
@@ -39,11 +64,11 @@ const ALL_MINUTES: number[] = Array.from({ length: 60 }, (_, i) => i);
 
 // Map duration types to their SSE format
 export const DURATION_FORMAT_MAP: Record<keyof DurationRangesResponse, string> = {
-  tick: 't',
-  second: 's',
-  minute: 'm',
-  hour: 'h',
-  day: 'd'
+  ticks: 't',
+  seconds: 's',
+  minutes: 'm',
+  hours: 'h',
+  days: 'd'
 };
 
 /**
@@ -64,10 +89,18 @@ export function formatDuration(value: number, type: keyof DurationRangesResponse
  * @returns Array of valid duration values
  */
 export function generateDurationValues(type: keyof DurationRangesResponse, hour?: number): number[] {
-  if (type === 'minute' && hour !== undefined) {
+  if (type === 'minutes' && hour !== undefined) {
     return SPECIAL_HOUR_CASES[hour]?.minutes || ALL_MINUTES;
   }
-  return DURATION_VALUES_MAP[type] || [];
+
+  const range = DURATION_RANGES[type];
+  if (!range) return [];
+
+  const { min, max, step = 1 } = range;
+  return Array.from(
+    { length: Math.floor((max - min) / step) + 1 },
+    (_, i) => min + (i * step)
+  );
 }
 
 /**
@@ -100,7 +133,7 @@ export function isValidDuration(type: keyof DurationRangesResponse, value: numbe
 export function getDefaultDuration(type: keyof DurationRangesResponse): number {
   const range = DURATION_RANGES[type];
   if (!range) return 0;
-  return type === "minute" ? 1 : range.min;
+  return type === "minutes" ? 1 : range.min;
 }
 
 /**
@@ -122,10 +155,10 @@ export function parseDuration(duration: string): ParsedDuration {
   let apiDurationValue = value;
   let apiDurationType = type as keyof DurationRangesResponse;
 
-  if (type === 'hour' && value.includes(':')) {
+  if (type === 'hours' && value.includes(':')) {
     apiDurationValue = convertHourToMinutes(value).toString();
-    apiDurationType = "minute";
-  } else if (type === 'hour') {
+    apiDurationType = "minutes";
+  } else if (type === 'hours') {
     apiDurationValue = value.split(":")[0];
   }
 
@@ -148,7 +181,7 @@ export function convertHourToMinutes(hourValue: string): number {
 export const formatDurationDisplay = (duration: string): string => {
   const [value, type] = duration.split(" ");
   
-  if (type === 'hour') {
+  if (type === 'hours') {
     const [hours, minutes] = value.split(':').map(Number);
     const hourText = hours === 1 ? 'hour' : 'hours';
     const minuteText = minutes === 1 ? 'minute' : 'minutes';
@@ -157,14 +190,14 @@ export const formatDurationDisplay = (duration: string): string => {
 
   const numValue = parseInt(value, 10);
   switch (type) {
-    case 'tick':
+    case 'ticks':
       return `${numValue} ${numValue === 1 ? 'tick' : 'ticks'}`;
-    case 'second':
+    case 'seconds':
       return `${numValue} ${numValue === 1 ? 'second' : 'seconds'}`;
-    case 'minute':
+    case 'minutes':
       return `${numValue} ${numValue === 1 ? 'minute' : 'minutes'}`;
-    case 'day':
-      return `${numValue} day`;
+    case 'days':
+      return `${numValue} ${numValue === 1 ? 'day' : 'days'}`;
     default:
       return duration;
   }

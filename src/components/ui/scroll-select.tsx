@@ -12,7 +12,11 @@ export interface ScrollSelectProps<T> {
   onValueClick?: (value: T) => void;
   itemHeight?: number;
   containerHeight?: number;
-  renderOption?: (option: ScrollSelectOption<T>, isSelected: boolean) => React.ReactNode;
+  renderOption?: (
+    option: ScrollSelectOption<T>,
+    isSelected: boolean
+  ) => React.ReactNode;
+  enableAutoSelect?: boolean; // Whether to auto-select values when scrolling
 }
 
 const ITEM_HEIGHT = 48;
@@ -26,7 +30,8 @@ export const ScrollSelect = <T extends React.Key>({
   onValueClick,
   itemHeight = ITEM_HEIGHT,
   containerHeight = CONTAINER_HEIGHT,
-  renderOption
+  renderOption,
+  enableAutoSelect = false,
 }: ScrollSelectProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const intersectionObserverRef = useRef<IntersectionObserver>();
@@ -37,12 +42,14 @@ export const ScrollSelect = <T extends React.Key>({
     } else {
       onValueSelect(value);
     }
-    
-    const clickedItem = containerRef.current?.querySelector(`[data-value="${value}"]`);
+
+    const clickedItem = containerRef.current?.querySelector(
+      `[data-value="${value}"]`
+    );
     if (clickedItem) {
-      clickedItem.scrollIntoView({ 
-        block: 'center',
-        behavior: 'smooth'
+      clickedItem.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
       });
     }
   };
@@ -56,43 +63,50 @@ export const ScrollSelect = <T extends React.Key>({
     const onValueSelectRef = onValueSelect;
 
     // First scroll to selected value
-    const selectedItem = container.querySelector(`[data-value="${selectedValue}"]`);
+    const selectedItem = container.querySelector(
+      `[data-value="${selectedValue}"]`
+    );
     if (selectedItem) {
-      selectedItem.scrollIntoView({ block: 'center', behavior: 'instant' });
+      selectedItem.scrollIntoView({ block: "center", behavior: "instant" });
     }
 
     let observerTimeout: NodeJS.Timeout;
 
-    // Add a small delay before setting up the observer to ensure scroll completes
-    observerTimeout = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const value = entry.target.getAttribute("data-value");
-              if (value !== null) {
-                // Find the option with matching value
-                const option = optionsRef.find(opt => String(opt.value) === value);
-                if (option) {
-                  onValueSelectRef(option.value);
+    // Only set up the observer if auto-select is enabled
+    if (enableAutoSelect) {
+      // Add a small delay before setting up the observer to ensure scroll completes
+      observerTimeout = setTimeout(() => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const value = entry.target.getAttribute("data-value");
+                if (value !== null) {
+                  // Find the option with matching value
+                  const option = optionsRef.find(
+                    (opt) => String(opt.value) === value
+                  );
+                  if (option) {
+                    onValueSelectRef(option.value);
+                  }
                 }
               }
-            }
-          });
-        },
-        {
-          root: container,
-          rootMargin: "-51% 0px -49% 0px",
-          threshold: 0,
-        }
-      );
+            });
+          },
+          {
+            root: container,
+            rootMargin: "-51% 0px -49% 0px",
+            threshold: 0,
+          }
+        );
 
-      const items = container.querySelectorAll(".scroll-select-item");
-      items.forEach((item) => observer.observe(item));
+        const items = container.querySelectorAll(".scroll-select-item");
+        items.forEach((item) => observer.observe(item));
 
-      // Store the observer reference
-      intersectionObserverRef.current = observer;
-    }, 100);
+        // Store the observer reference
+        intersectionObserverRef.current = observer;
+      }, 100);
+    }
 
     // Proper cleanup function
     return () => {
@@ -120,7 +134,8 @@ export const ScrollSelect = <T extends React.Key>({
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none"
         style={{
           height: itemHeight,
-          background: "linear-gradient(rgb(229 231 235 / 0.5), rgb(229 231 235 / 0.5))",
+          background:
+            "linear-gradient(rgb(229 231 235 / 0.5), rgb(229 231 235 / 0.5))",
         }}
       />
 
@@ -132,7 +147,7 @@ export const ScrollSelect = <T extends React.Key>({
           scrollSnapType: "y mandatory",
           overscrollBehavior: "none",
           scrollbarWidth: "none",
-          msOverflowStyle: "none"
+          msOverflowStyle: "none",
         }}
       >
         {/* Top spacer */}
@@ -160,7 +175,11 @@ export const ScrollSelect = <T extends React.Key>({
               <span
                 className={`
                   text-base font-normal leading-6 text-center transition-colors
-                  ${selectedValue === option.value ? "text-black" : "text-gray-300"}
+                  ${
+                    selectedValue === option.value
+                      ? "text-black"
+                      : "text-gray-300"
+                  }
                 `}
               >
                 {option.label}

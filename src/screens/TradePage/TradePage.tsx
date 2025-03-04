@@ -45,7 +45,11 @@ export const TradePage: React.FC = () => {
       >
         <div className="flex flex-col flex-1 min-h-0">
           {isLandscape && (
-            <div className={`absolute top-3 ${activeSidebar ? 'left-[calc(320px+16px)]' : 'left-4'} z-10 transition-all duration-300`}>
+            <div
+              className={`absolute top-3 ${
+                activeSidebar ? "left-[calc(320px+16px)]" : "left-4"
+              } z-10 transition-all duration-300`}
+            >
               <MarketInfo
                 title={selectedMarket?.displayName || "Select Market"}
                 subtitle="Rise/Fall"
