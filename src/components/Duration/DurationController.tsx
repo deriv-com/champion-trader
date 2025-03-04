@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useMemo } from "react";
+import { Loader } from "@/components/ui/loader";
 import { TabList, Tab } from "@/components/ui/tab-list";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
 import { DurationValueList } from "./components/DurationValueList";
@@ -151,9 +152,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
           }`}
         >
           {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
+            <Loader />
           ) : selectedTabType === "hours" ? (
             <HoursDurationValue
               selectedValue={selectedValue?.toString() || ""}
