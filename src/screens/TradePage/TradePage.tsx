@@ -39,12 +39,13 @@ export const TradePage: React.FC = () => {
             } flex-1 py-4`}
             data-testid="trade-page"
         >
-            <div
-                className={`flex flex-col flex-1 overflow-hidden ${
-                    isLandscape ? "mb-2" : ""
-                }`}
-            >
-                <div className="flex flex-col flex-1 min-h-0">
+            <div className="flex flex-col flex-1 min-h-0">
+                <TradeTypesListController />
+                <div
+                    className={`relative flex flex-col flex-1 overflow-hidden ${
+                        isLandscape ? "mb-2" : ""
+                    }`}
+                >
                     {isLandscape && (
                         <div
                             className={`absolute top-3 ${
@@ -64,7 +65,6 @@ export const TradePage: React.FC = () => {
                             />
                         </div>
                     )}
-                    <TradeTypesListController />
                     {!isLandscape && (
                         <MarketInfo
                             title={
