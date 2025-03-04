@@ -1,5 +1,4 @@
 import React from "react";
-import { useOrientationStore } from "@/stores/orientationStore";
 import { useClientStore } from "@/stores/clientStore";
 // import { AccountSwitcher } from "@/components/AccountSwitcher";
 import { BalanceDisplay } from "@/components/BalanceDisplay";

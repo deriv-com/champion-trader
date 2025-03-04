@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
-import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { Footer } from "./Footer";
@@ -17,7 +16,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const { isMobile } = useDeviceDetection();
     const { isLandscape, setIsLandscape } = useOrientationStore();
     const { activeSidebar, setSidebar } = useMainLayoutStore();
-    const isHeaderVisible = useHeaderStore((state) => state.isVisible);
     const isBottomNavVisible = useBottomNavStore((state) => state.isVisible);
 
     useEffect(() => {
