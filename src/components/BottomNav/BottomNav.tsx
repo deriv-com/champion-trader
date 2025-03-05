@@ -14,14 +14,14 @@ export const BottomNav: React.FC = () => {
 
   return (
     <nav
-      className="flex items-center justify-around px-4 py-2 border-t bg-white"
+      className="flex items-center justify-around px-4 py-2 border-t"
       data-testid="bottom-nav-menu"
     >
       <button
         onClick={() => navigate("/trade")}
-        className={`flex flex-col items-center gap-1 ${
-          location.pathname === "/trade" ? "text-primary" : "text-gray-500"
-        }`}
+className={`flex flex-col items-center gap-1 ${
+  location.pathname === "/trade" ? "font-bold text-white" : "text-white"
+}`}
       >
         <BarChart2 className="w-5 h-5" />
         <span className="text-xs">Trade</span>
@@ -30,9 +30,7 @@ export const BottomNav: React.FC = () => {
         <button
           onClick={() => navigate("/positions")}
           className={`flex flex-col items-center gap-1 ${
-            location.pathname === "/positions"
-              ? "text-primary"
-              : "text-gray-500"
+            location.pathname === "/positions" ? "font-bold text-white" : "text-white"
           }`}
         >
           <Clock className="w-5 h-5" />
@@ -42,7 +40,7 @@ export const BottomNav: React.FC = () => {
       <button
         onClick={handleMenuClick}
         className={`flex flex-col items-center gap-1 ${
-          location.pathname === "/menu" ? "text-primary" : "text-gray-500"
+          location.pathname === "/menu" ? "font-bold text-white" : "text-white"
         }`}
       >
         <Menu className="w-5 h-5" />

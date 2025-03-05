@@ -79,11 +79,11 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
         <div className="flex items-center gap-2">
           <span className="text-base font-medium">{displayName}</span>
           {isClosed && (
-            <span className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 rounded-full text-rose-500">
+            <span className="text-[10px] px-1.5 py-0.5 bg-[var(--error-background)] rounded-full text-[var(--text-error)]">
               Closed
             </span>
           )}
-          <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          <ChevronDown className="w-5 h-5 text-white bg-black p-1 rounded" />
         </div>
         <span className="text-lg font-semibold">{price}</span>
       </div>

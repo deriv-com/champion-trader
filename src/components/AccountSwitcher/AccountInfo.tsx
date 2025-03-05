@@ -4,7 +4,6 @@ import { LogOut } from "lucide-react"
 import { useAccount } from "@/hooks/useAccount"
 import { CurrencyIcon } from "@/components/Currency/CurrencyIcon"
 import { useLogout } from "@/hooks/useLogout"
-import * as Popover from "@radix-ui/react-popover"
 
 interface AccountInfoProps {
   onSelect: () => void
@@ -21,14 +20,16 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
   } = useAccount()
   const logout = useLogout()
 
+  console.log("AccountInfo render", accountType)
+
   return (
-    <div className="w-full min-w-[280px]">
+    <div className="w-full min-w-[280px] bg-white  bg-background-dark">
       <div className="flex border-b border-gray-200 text-sm">
         <button
           className={`flex-1 py-2 text-center ${
             accountType === "real"
-              ? "font-semibold border-b-2 border-black"
-              : "text-gray-500"
+              ? "font-semibold border-b-2 border-black border-light"
+              : "text-gray-500 text-secondary"
           }`}
           onClick={() => switchAccountType("real")}
         >
@@ -48,13 +49,14 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
 
       <div className="p-4">
         <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-semibold">Trading account</h3>
-          <div className="flex flex-col gap-2">
-            {getAvailableAccounts().map((account) => (
-              <Popover.Close key={account.id} asChild>
+          <h3 className="text-sm font-semibold text-black text-primary">Trading account</h3>
+          {accountType === "real" || accountType === "demo" ? (
+            <div className="flex flex-col gap-2">
+              {getAvailableAccounts().map((account) => (
                 <button
-                  className={`flex items-center p-2 rounded hover:bg-gray-100 ${
-                    selectedAccountId === account.id ? "bg-gray-200" : ""
+                  key={account.id}
+                  className={`flex items-center p-3 rounded-lg border border-transparent hover:border-gray-400  hover:border-light ${
+                    selectedAccountId === account.id ? "bg-gray-100 bg-background-dark border-gray-400 border-light" : "border-gray-200 border-secondary"
                   }`}
                   onClick={() => {
                     selectAccount(account.id)
@@ -68,17 +70,17 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                     />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold">
+                    <p className="text-sm font-semibold text-black text-primary">
                       {account.displayName}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 text-secondary leading-tight">
                       {account.accountNumber}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     {selectedAccountId === account.id && account.isDemo ? (
                       <button
-                        className="px-2 py-1 text-xs border border-gray-400 rounded hover:bg-gray-300"
+                        className="px-2 py-1 text-xs border border-gray-400 border-light bg-white bg-background-dark text-black text-primary rounded-lg hover:bg-gray-200 hover:bg-hover-dark"
                         onClick={(e) => {
                           e.stopPropagation()
                           setBalance("10000", "USD")
@@ -87,18 +89,18 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                         Reset balance
                       </button>
                     ) : (
-                      <p className="text-sm">
-                        {accountType === "demo" ? "10,000" : balance}{" "}
+                      <p className="text-sm text-primary">
+                        {account.isDemo ? "10,000" : balance}{" "}
                         {account.currency}
                       </p>
                     )}
                   </div>
                 </button>
-              </Popover.Close>
-            ))}
-          </div>
-
-          <div className="w-full h-1 bg-gray-100"></div>
+              ))}
+            </div>
+          ) : null}
+          
+          <div className="w-full h-1 bg-gray-100 bg-background-dark"></div>
           <div>
             <div className="flex items-center gap-2 justify-between pb-2">
               <p className="text-sm text-gray-500">Total assets</p>
@@ -114,10 +116,10 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
           <div className="w-full h-1 bg-gray-100"></div>
           <div className="flex justify-end text-sm">
             <button
-              className="flex items-center gap-2 text-gray-700"
+              className="flex items-center gap-2 text-gray-700 text-secondary"
               onClick={logout}
             >
-              <span>Log out</span>
+              <span className="text-black">Log out</span>
               <LogOut className="w-5 h-5" />
             </button>
           </div>

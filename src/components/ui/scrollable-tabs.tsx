@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useThemeStore } from "@/stores/themeStore"
 
 interface ScrollableTabsProps {
   tabs: { id: string; label: string }[]
@@ -15,6 +16,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
   onTabChange,
   className,
 }) => {
+  const { isDarkMode } = useThemeStore();
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [showLeftArrow, setShowLeftArrow] = useState(false)
   const [showRightArrow, setShowRightArrow] = useState(false)
@@ -47,18 +49,21 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
     checkScrollButtons()
   }
 
+  const sidebarActiveColor = isDarkMode ? "bg-red-600" : "bg-border-light";
+
   return (
     <div className={cn("relative group", className)}>
       {showLeftArrow && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
-          aria-label="Scroll left"
+          className="bg-background-light absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          style={{ backgroundColor: sidebarActiveColor }}
+          aria-label="Scroll right"
         >
-          <ChevronLeft className="w-5 h-5 text-text-primary" />
+          <ChevronLeft className="w-5 h-5 text-primary" />
         </button>
       )}
-      
+
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
@@ -66,8 +71,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
         style={{
           msOverflowStyle: "none",
           scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
+                  }}
       >
         <div className="flex min-w-max px-4">
           {tabs.map((tab) => (
@@ -77,8 +81,8 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
               className={cn(
                 "px-4 py-3 font-ibm text-base font-normal leading-6 whitespace-nowrap transition-colors relative",
                 activeTab === tab.id
-                  ? "text-black after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
-                  : "text-black/72 hover:text-black"
+                    ? "text-[var(--text-color)] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
+                  : "text-[var(--text-color)]/72 hover:text-[var(--text-color)]"
               )}
             >
               {tab.label}
@@ -90,10 +94,11 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showRightArrow && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
+          className="bg-background-light absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
-          <ChevronRight className="w-5 h-5 text-text-primary" />
+          <ChevronRight className="w-5 h-5 text-primary" />
         </button>
       )}
     </div>

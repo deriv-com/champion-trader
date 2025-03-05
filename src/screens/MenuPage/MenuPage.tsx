@@ -10,30 +10,31 @@ export const MenuPage: React.FC = () => {
   const { isLoggedIn } = useClientStore();
   const logout = useLogout();
 
+  console.log("MenuPage rendered");
   return (
-    <div className="flex flex-col flex-1 p-4">
+    <div className="flex flex-col flex-1 p-4 text-primary text-primary">
       <h1 className="text-2xl font-bold">Menu</h1>
       <div className="flex flex-col gap-4 mt-4">
-        <button
-          onClick={() => navigate("/trade")}
-          className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
-        >
+<button
+  onClick={() => navigate("/trade")}
+  className="text-left p-4 rounded-lg hover:bg-background-dark hover:bg-hover-dark border-b border-border-light flex items-center gap-3"
+>
           <Home className="w-5 h-5" />
           <span className="text-sm">Go to Home</span>
           <div className="px-3">
             <ExternalLink className="w-5 h-5" />
           </div>
         </button>
-        <div className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3">
+        <div className="text-left p-4 rounded-lg hover:bg-background-soft hover:bg-hover-dark border-b border-border-light flex items-center gap-3">
           <Moon className="w-5 h-5" />
-          <span className="text-sm">Theme</span>
+          <span className="text-sm peer-checked:text-black">Theme</span>
           <ToggleButton label="" value={false} onChange={() => {}} />
         </div>
         {isLoggedIn && (
           <>
             <button
               onClick={logout}
-              className="text-left p-4 rounded-lg hover:bg-gray-100 border-b border-gray-200 flex items-center gap-3"
+              className="text-left p-4 rounded-lg hover:bg-background-dark border-b border-gray-200 flex items-center gap-3"
             >
               <LogOut className="w-5 h-5" />
               Log out

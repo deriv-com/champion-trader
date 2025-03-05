@@ -15,12 +15,14 @@ import {
 import { MarketIcon } from "./MarketIcon"
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs"
 import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useThemeStore } from "@/stores/themeStore"
 
 interface MarketSelectorListProps {
   onDragDown?: () => void
 }
 
 export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
+  const { isDarkMode } = useThemeStore();
   const { setBottomSheet } = useBottomSheetStore()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
@@ -129,12 +131,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   }, {} as Record<string, MarketInfo[]>)
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className={`flex flex-col h-full ${isDarkMode ? "bg-gray-800" : "bg-background"}`}>
       {/* Header with centered title and close button */}
       {!isMobile && (
         <div className="flex items-center justify-between px-6 py-8">
           <div className="flex-1" />
-          <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">
+          <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-[var(--text-color)]">
             Markets
           </h1>
           <div className="flex-1 flex justify-end">
@@ -143,9 +145,9 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 setBottomSheet(false)
                 setOverlaySidebar(false)
               }}
-              className="text-text-primary"
+              className="text-primary"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-[var(--text-color)] text-primary" />
             </button>
           </div>
         </div>
@@ -153,14 +155,14 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
       {/* Search Bar */}
       <div className="px-6 pb-2">
-        <div className="flex items-center h-8 px-2 gap-2 bg-black/[0.04] rounded-lg">
-          <Search className="w-5 h-5 text-black/[0.24]" />
+        <div className="flex items-center h-8 px-2 gap-2 bg-[var(--background-color)] border border-[var(--border-color)] rounded-lg focus-within:border-blue-500">
+          <Search className="w-5 h-5 text-[var(--text-color)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search markets on Rise/Fall"
-            className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-black/[0.72] placeholder:text-black/[0.24] overflow-hidden text-ellipsis"
+            className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-[var(--text-color)] placeholder-[var(--text-color)] overflow-hidden text-ellipsis"
           />
           {searchQuery && (
             <button
@@ -174,11 +176,11 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
       </div>
 
       {/* Market Categories */}
-      <ScrollableTabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        className="mb-4"
+        <ScrollableTabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          className="mb-4 text-[var(--text-color)] text-primary"
       />
 
       {/* Market List */}
@@ -187,12 +189,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         <div>
           {Object.entries(groupedInstruments).map(([marketName, markets]) => (
             <div key={marketName} className="mb-6">
-              <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
+              <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-[var(--text-color)] mb-2">
                 {marketTitles[marketName]}
               </h2>
               <div>
                 {marketName === "synthetic_index" && (
-                  <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
+                  <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-[var(--text-color)] mb-3">
                     Continuous Indices
                   </h3>
                 )}
@@ -203,7 +205,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                       market.isClosed
                         ? "cursor-not-allowed"
                         : selectedMarket?.symbol === market.symbol
-                        ? "bg-black text-white"
+                        ? "bg-[var(--border-color)] text-[var(--text-color)]"
                         : "cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
                     }`}
                     onClick={() =>
@@ -233,10 +235,10 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                       className={`
                               ${
                                 favorites.has(market.symbol)
-                                  ? "text-yellow-400"
-                                  : selectedMarket?.symbol === market.symbol
-                                  ? "text-white"
-                                  : "text-text-tertiary"
+                              ? "text-yellow-400"
+                              : selectedMarket?.symbol === market.symbol
+                              ? "text-[var(--text-color)]"
+                              : "text-[var(--border-color)]"
                               }
                             `}
                     >
@@ -258,7 +260,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         </div>
 
         {searchQuery && filteredInstruments.length === 0 && (
-          <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
+          <div className="p-4 text-center text-secondary font-ibm-plex-sans text-sm">
             No markets found matching "{searchQuery}"
           </div>
         )}

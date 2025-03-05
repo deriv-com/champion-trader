@@ -1,6 +1,7 @@
 import React from "react";
 import TradeParam from "@/components/TradeFields/TradeParam";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useThemeStore } from "@/stores/themeStore";
 import { useStakeField } from "./hooks/useStakeField";
 import { cn } from "@/lib/utils";
 import { useOrientationStore } from "@/stores/orientationStore";
@@ -32,14 +33,18 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     handleMobileClick,
   } = useStakeField({ onSelect, onError });
 
+  const { isDarkMode } = useThemeStore();
+  const stakeFieldBg = isDarkMode ? "#111827" : "rgba(246,247,248,1)";
+
   if (!isLandscape) {
     return (
       <div className="flex flex-col">
         <div
           className={cn(
-            error ? "bg-[rgba(230,25,14,0.08)]" : "bg-[rgba(246,247,248,1)]",
+            error ? "bg-[rgba(230,25,14,0.08)]" : "",
             "rounded-lg"
           )}
+          style={{ backgroundColor: stakeFieldBg }}
         >
           <TradeParam
             label="Stake"
@@ -50,7 +55,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
         </div>
         {error && errorMessage && (
           <div className="mt-1 px-2">
-            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
+            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-[var(--text-error)]">
               {errorMessage}
             </span>
           </div>
@@ -83,7 +88,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
               value={`${localValue}`}
               onChange={handleChange}
               onFocus={() => handleSelect(true)}
-              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
+              className={`text-left font-ibm-plex text-base leading-6 font-normal w-24 outline-none ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-100 text-black"} text-primary`}
               aria-label="Stake amount"
             />
           </div>

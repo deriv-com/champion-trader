@@ -1,6 +1,7 @@
 import React from "react";
 import { Clock, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useThemeStore } from "@/stores/themeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
@@ -12,8 +13,12 @@ export const SideNav: React.FC = () => {
   const { isLandscape } = useOrientationStore();
   const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
 
+  const { isDarkMode } = useThemeStore();
+
+  const sidebarActiveColor = isDarkMode ? "var(--sidebar-active-dark)" : "var(--sidebar-active-light)";
+
   return (
-    <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r bg-white overflow-y-auto`}>
+    <nav className={`${isLandscape && isSideNavVisible ? 'flex' : 'hidden'} fixed z-[60] flex-col h-[100dvh] sticky top-0 w-16 border-r overflow-y-auto`}>
       <div className="flex flex-col items-center gap-6 py-6">
         {isLoggedIn && (
           <>
@@ -22,16 +27,15 @@ export const SideNav: React.FC = () => {
                 if (isLandscape) {
                   toggleSidebar('positions');
                 } else {
-                  navigate('/positions')
+                  navigate('/positions');
                 }
               }}
-              className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-primary' : 'text-gray-500'
-                }`}
+              className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-[var(--primary)]' : 'text-[var(--text-color)]'}`}
             >
-              <div className={`${activeSidebar === 'positions' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
+              <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'positions' ? sidebarActiveColor : "transparent" }}>
                 <Clock className="w-5 h-5" />
               </div>
-              <span className={`text-xs ${activeSidebar === 'positions' ? "text-black" : ""}`}>Positions</span>
+              <span className={`text-xs ${activeSidebar === 'positions' ? "font-bold text-white" : "text-[var(--text-color)]"}`}>Positions</span>
             </button>
           </>
         )}
@@ -43,12 +47,12 @@ export const SideNav: React.FC = () => {
               navigate("/menu");
             }
           }}
-          className="flex flex-col items-center text-gray-500"
+          className="flex flex-col items-center text-[var(--text-color)]"
         >
-          <div className={`${activeSidebar === 'menu' ? "bg-gray-200 rounded-lg p-2" : "p-2"}`}>
+          <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'menu' ? sidebarActiveColor : "transparent" }}>
             <Menu className="w-5 h-5" />
           </div>
-          <span className={`text-xs ${activeSidebar === 'menu' ? "text-black" : "text-gray-500"}`}>Menu</span>
+          <span className={`text-xs ${activeSidebar === 'menu' ? "font-bold text-white" : "text-white text-secondary"}`}>Menu</span>
         </button>
       </div>
     </nav>

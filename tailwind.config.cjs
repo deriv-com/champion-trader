@@ -11,11 +11,42 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        "deep-blue": "#2f3f4f",
+        "success-green": "#008832",
+        "market-dark": "#111827",
+        "dark-gray": "#1F2937",
+        "alert-red": "#F12937",
+      },
       fontFamily: {
         ibm: ["IBM Plex Sans", "sans-serif"],
         ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
+        text: {
+          primary: "#1E293B",
+          secondary: "#64748B",
+          highlight: "#10B981",
+          error: "#DC2626",
+        },
+        background: {
+          DEFAULT: "#ffffff",
+          dark: "#121212",
+          deep: "#0F172A",
+        },
+        sidebar: "#0E1A2B",
+        border: {
+          light: "#E5E7EB",
+          dark: "#ccc",
+        },
+        order: {
+          details: "#4B5563",
+          "entry-exit": "#6B7280",
+        },
+        primary: {
+          DEFAULT: "#007bff",
+          dark: "#1e90ff",
+        },
         error: '#C40000',
         dim: 'rgba(0, 0, 0, 0.24)',
         border: "hsl(var(--border))",
@@ -25,9 +56,8 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         hover: "rgba(0, 0, 0, 0.08)",
         active: "rgba(0, 0, 0, 0.16)",
-        market: {
-          DEFAULT: "#f6f7f8",
-        },
+        market: "#f6f7f8",
+        "market-dark": "#111827",
         text: {
           primary: "rgba(0, 0, 0, 0.72)",
           secondary: "rgba(0, 0, 0, 0.48)",

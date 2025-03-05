@@ -176,7 +176,7 @@ export const BottomSheet = () => {
         {actionButton?.show && (
           <div className="sticky bottom-0 w-full p-4">
             <PrimaryButton
-              className="w-full rounded-3xl"
+              className="w-full rounded-3xl bg-custom-darkGray text-white"
               onClick={actionButton.onClick}
             >
               {actionButton.label}

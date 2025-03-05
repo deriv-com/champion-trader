@@ -6,7 +6,7 @@ import { useClientStore } from "@/stores/clientStore";
 import { useToastStore } from "@/stores/toastStore";
 
 export const LoginPage: React.FC = () => {
-  const { showToast } = useToastStore();
+  const { toast } = useToastStore();
   const [accountId, setAccountId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,11 +37,11 @@ export const LoginPage: React.FC = () => {
       setToken(token);
       navigate("/trade");
     } catch (err) {
-      showToast(
-        err instanceof Error ? err.message : "Server failed to Login",
-        "error"
-      );
-      setError("Soemthing went wrong! Please try again.");
+      toast({
+        content: err instanceof Error ? err.message : "Server failed to Login",
+        variant: "error"
+      });
+      setError("Something went wrong! Please try again.");
     }
   };
 
@@ -50,10 +50,10 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-gray-50">
+    <div className="w-screen h-screen flex items-center justify-center bg-background-soft">
       <div className="max-w-md w-full space-y-8 px-4 sm:px-6 md:px-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-primary">
             Log in to your account
           </h2>
         </div>
@@ -68,7 +68,7 @@ export const LoginPage: React.FC = () => {
                 name="account-id"
                 type="text"
                 required
-                className="appearance-none block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-4 py-3 border border-border-light placeholder-text-primary text-primary rounded-md bg-background-soft shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 sm:text-sm"
                 placeholder="Account ID"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
@@ -92,7 +92,7 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            <div className="text-error text-sm text-center">{error}</div>
           )}
 
           <div className="flex gap-4 mx-2">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDurationDisplay } from '@/utils/duration';
+import { useThemeStore } from "@/stores/themeStore";
 
 interface TradeParamProps {
   label: string;
@@ -16,9 +17,10 @@ const TradeParam: React.FC<TradeParamProps> = ({
 }) => {
   const formattedValue = label === "Duration" ? formatDurationDisplay(value) : value;
 
-  const labelClasses = "text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary";
-  const valueClasses = "text-left font-ibm-plex text-base leading-6 font-normal text-gray-900";
-
+  const { isDarkMode } = useThemeStore();
+  const labelClasses = `text-left font-ibm-plex text-xs leading-[18px] font-normal ${isDarkMode ? "text-gray-300" : "text-gray-700"}`;
+  const valueClasses = `text-left font-ibm-plex text-base leading-6 font-normal ${isDarkMode ? "text-gray-200" : "text-black"}`;
+  
   if (onClick) {
     return (
       <button
@@ -42,7 +44,7 @@ const TradeParam: React.FC<TradeParamProps> = ({
   }
 
   return (
-    <div className={`${className} text-start`}>
+    <div className={`${className} text-start p-3 rounded-lg`} style={{ backgroundColor: "background-dark", color: "text-primary" }}>
       <span className={labelClasses}>{label}</span>
       <div className="text-left">
         <span className={valueClasses}>{formattedValue}</span>
