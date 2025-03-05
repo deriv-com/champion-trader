@@ -27,12 +27,12 @@ const MobileContractDetailsPage: React.FC = () => {
   }, [setHeaderVisible, setBottomNavVisible]);
 
   return (
-    <div className="w-full bg-[var(--card-background)] text-[var(--text-color)] h-screen flex flex-col overflow-y-auto">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 text-textPrimaryColor dark:text-white h-screen flex flex-col overflow-y-auto">
       <Header />
       <div className="overflow-y-auto w-full lg:w-3/5 mx-auto">
         <div className="p-2 pb-[72px]">
           <ContractSummary />
-          <div className="min-h-[400px] mt-4 bg-[var(--card-background)] rounded-lg border-b border-[var(--border-color)]">
+          <div className="min-h-[400px] mt-4 bg-backgroundLight rounded-lg border-b border-borderLight">
             <ContractDetailsChart />
           </div>
           <OrderDetails />

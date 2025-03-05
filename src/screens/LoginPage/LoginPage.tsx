@@ -41,7 +41,7 @@ export const LoginPage: React.FC = () => {
         content: err instanceof Error ? err.message : "Server failed to Login",
         variant: "error"
       });
-      setError("Soemthing went wrong! Please try again.");
+      setError("Something went wrong! Please try again.");
     }
   };
 
@@ -50,10 +50,10 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-[var(--background-color)]">
+    <div className="w-screen h-screen flex items-center justify-center bg-backgroundSoft">
       <div className="max-w-md w-full space-y-8 px-4 sm:px-6 md:px-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-[var(--text-color)]">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-textPrimaryColor">
             Log in to your account
           </h2>
         </div>
@@ -68,7 +68,7 @@ export const LoginPage: React.FC = () => {
                 name="account-id"
                 type="text"
                 required
-                className="appearance-none block w-full px-4 py-3 border border-[var(--border-color)] placeholder-[var(--text-color)] text-[var(--text-color)] rounded-md bg-[var(--background-color)] shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-4 py-3 border border-borderLight placeholder-textPrimaryColor text-textPrimaryColor rounded-md bg-backgroundSoft shadow-sm focus:outline-none focus:ring-2 focus:ring-primaryColor focus:border-primaryColor transition-all duration-200 sm:text-sm"
                 placeholder="Account ID"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
@@ -92,7 +92,7 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-[var(--error-color)] text-sm text-center">{error}</div>
+            <div className="text-errorColor text-sm text-center">{error}</div>
           )}
 
           <div className="flex gap-4 mx-2">

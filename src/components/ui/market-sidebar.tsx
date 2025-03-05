@@ -46,7 +46,7 @@ export const MarketSidebar: React.FC = () => {
 
   const { body } = marketSidebarConfig[key]
 
-  const sidebarActiveColor = isDarkMode ? "var(--sidebar-active-dark)" : "var(--sidebar-active-light)";
+  const sidebarActiveColor = isDarkMode ? "bg-backgroundDark" : "bg-borderLight";
 
   return (
     <>
@@ -63,12 +63,11 @@ export const MarketSidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-[101] h-full w-96 transform text-[var(--text-color)] shadow-lg",
+          "fixed left-0 top-0 z-[101] h-full w-96 transform text-textPrimaryColor dark:text-white shadow-lg",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "animate-in slide-in-from-left-1/2"
-        )}
-        style={{ backgroundColor: sidebarActiveColor }}>
+          sidebarActiveColor
+        )}>
         {/* Content */}
         <div className="h-[100%] overflow-y-auto">{body}</div>
       </div>

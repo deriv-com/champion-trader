@@ -13,8 +13,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           duration: config.duration,
           className: config.className,
           style: {
-            background: 'var(--notification-bg)',
-            color: 'var(--notification-text-color)',
+            background: 'backgroundLight',
+            color: 'textPrimaryColor',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
           },
         }}

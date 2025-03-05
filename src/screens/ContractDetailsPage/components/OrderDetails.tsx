@@ -19,11 +19,11 @@ export const OrderDetails: React.FC = () => {
   ];
 
   return (
-    <div className="mt-4 p-4 bg-[var(--card-background)] text-[var(--text-color)] rounded-lg shadow-md">
+    <div className="w-full mt-4 p-4  dark:bg-gray-800 text-textPrimaryColor dark:text-white rounded-lg shadow-md">
       <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-[rgba(0,0,0,0.72)] dark:text-white mb-4">Order details</h2>
       {details.map((detail, index) => (
-        <div key={index} className="col-span-2 flex justify-between border-b border-gray-300 py-2">
-          <span className="text-[var(--text-color)] font-ibm-plex text-[14px] leading-[22px] font-normal">{detail.label}</span>
+        <div key={index} className="w-full flex justify-between items-center border-b border-gray-300 py-2">
+          <span className="text-orderDetailsTextColor dark:text-white font-ibm-plex text-[14px] leading-[22px] font-normal">{detail.label}</span>
           <span className="text-gray-900 dark:text-white font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{detail.value}</span>
         </div>
       ))}

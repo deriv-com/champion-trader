@@ -10,7 +10,7 @@ export const Payout: React.FC = () => {
   }
 
   return (
-    <div className="mt-4 p-4 bg-[var(--card-background)] text-[var(--text-color)] rounded-lg shadow-md">
+    <div className="mt-4 p-4 bg-backgroundLight text-textPrimaryColor rounded-lg shadow-md">
     </div>
   );
 };

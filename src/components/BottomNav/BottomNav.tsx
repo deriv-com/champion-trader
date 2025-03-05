@@ -19,9 +19,9 @@ export const BottomNav: React.FC = () => {
     >
       <button
         onClick={() => navigate("/trade")}
-        className={`flex flex-col items-center gap-1 ${
-          location.pathname === "/trade" ? "text-[var(--primary-color)]" : "text-[var(--text-color)]"
-        }`}
+className={`flex flex-col items-center gap-1 ${
+  location.pathname === "/trade" ? "text-primaryColor" : "text-textPrimaryColor dark:text-white"
+}`}
       >
         <BarChart2 className="w-5 h-5" />
         <span className="text-xs">Trade</span>
@@ -30,7 +30,7 @@ export const BottomNav: React.FC = () => {
         <button
           onClick={() => navigate("/positions")}
           className={`flex flex-col items-center gap-1 ${
-            location.pathname === "/positions" ? "text-primary" : "text-gray-500 dark:text-gray-300"
+            location.pathname === "/positions" ? "text-primaryColor" : "text-gray-500 dark:text-gray-300"
           }`}
         >
           <Clock className="w-5 h-5" />
@@ -40,7 +40,7 @@ export const BottomNav: React.FC = () => {
       <button
         onClick={handleMenuClick}
         className={`flex flex-col items-center gap-1 ${
-          location.pathname === "/menu" ? "text-primary" : "text-gray-500 dark:text-gray-300"
+          location.pathname === "/menu" ? "text-primaryColor" : "text-gray-500 dark:text-gray-300"
         }`}
       >
         <Menu className="w-5 h-5" />

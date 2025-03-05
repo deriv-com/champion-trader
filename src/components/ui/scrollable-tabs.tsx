@@ -49,7 +49,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
     checkScrollButtons()
   }
 
-  const sidebarActiveColor = isDarkMode ? "var(--sidebar-active-dark)" : "var(--sidebar-active-light)";
+  const sidebarActiveColor = isDarkMode ? "bg-red-600" : "bg-borderLight";
 
   return (
     <div className={cn("relative group", className)}>
@@ -82,7 +82,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
               className={cn(
                 "px-4 py-3 font-ibm text-base font-normal leading-6 whitespace-nowrap transition-colors relative",
                 activeTab === tab.id
-                  ? "text-[var(--text-color)] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
+                    ? "text-[var(--text-color)] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
                   : "text-[var(--text-color)]/72 hover:text-[var(--text-color)]"
               )}
             >

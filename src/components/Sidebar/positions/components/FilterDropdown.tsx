@@ -49,11 +49,11 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
         </span>
       </button>
       {dropdownOpen && (
-        <ul className={`absolute text-sm left-0 w-full border rounded-lg shadow-md mt-1 ${isDarkMode ? "bg-black text-gray-300 border-gray-700" : "bg-white text-black border-gray-300"}`} onMouseDown={(event) => event.stopPropagation()}>
+        <ul className={`absolute text-sm left-0 w-full border rounded-lg shadow-md mt-1 ${isDarkMode ? "bg-backgroundDark text-white border-gray-700" : "bg-white text-black border-gray-300"}`} onMouseDown={(event) => event.stopPropagation()}>
           {isOpenTab ? (
             <>
               <li 
-                className={`p-2 cursor-pointer ${isDarkMode ? "hover:bg-gray-800 hover:text-white" : "hover:bg-gray-100"}`}
+                className={`p-2 cursor-pointer ${isDarkMode ? "hover:bg-gray-800 hover:text-white text-white" : "hover:bg-gray-100"}`}
                 onClick={() => handleSelect("Trade types")}
               >
                 Trade types

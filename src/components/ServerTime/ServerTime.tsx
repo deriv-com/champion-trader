@@ -17,7 +17,7 @@ export const ServerTime: React.FC = () => {
   }, [setServerTime]);
 
   return (
-    <div className="text-xs text-[var(--text-color)] flex justify-between items-center">
+    <div className="text-xs text-textPrimaryColor flex justify-between items-center">
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-[#008832]"></div>
         {serverTime.getDate().toString().padStart(2, '0')} {' '}

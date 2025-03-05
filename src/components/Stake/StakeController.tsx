@@ -22,7 +22,7 @@ interface ButtonState {
 
 type ButtonStates = Record<string, ButtonState>;
 
-interface StakeControllerProps {}
+interface StakeControllerProps { }
 
 export const StakeController: React.FC<StakeControllerProps> = () => {
   const { stake, setStake, trade_type, duration, payouts, setPayouts } = useTradeStore();
@@ -235,12 +235,12 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
       </div>
       {!isLandscape && (
         <div className="w-full py-6 px-3">
-<PrimaryButton
-  className="rounded-3xl text-[var(--text-color)] dark:bg-gray-700"
-  onClick={handleSave}
-  disabled={error || debouncedStake === stake}
->
-            Save
+          <PrimaryButton
+            className="rounded-3xl text-[var(--text-color)] bg-[#f2f3f4] dark:bg-gray-700"
+            onClick={handleSave}
+            disabled={error || debouncedStake === stake}
+          >
+            <span>Save</span>
           </PrimaryButton>
         </div>
       )}
@@ -249,7 +249,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
 
   if (isLandscape) {
     return (
-        <div className="w-[480px]">{content}</div>
+      <div className="w-[480px]">{content}</div>
     );
   }
 
