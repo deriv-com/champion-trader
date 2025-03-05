@@ -56,7 +56,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showLeftArrow && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          className="bg-backgroundLight absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
@@ -95,7 +95,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showRightArrow && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          className="bg-backgroundLight absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
