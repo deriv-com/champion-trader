@@ -16,16 +16,30 @@ module.exports = {
         ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
-        "text-primary-color": "#1E293B",
-        "background-light": "#F3F4F6",
-        "background-dark": "#1F2937",
-        "border-light": "#E5E7EB",
-        "background-soft": "#F9FAFB",
-        "error-color": "#DC2626",
-        "primary-color": "#2563EB",
-        "highlight-color": "#10B981",
-        "order-details-text-color": "#4B5563",
-        "entry-exit-details-text-color": "#6B7280",
+        colors: {
+          text: {
+            primary: "#1E293B",
+            secondary: "#64748B",
+            highlight: "#10B981",
+            error: "#DC2626",
+          },
+          background: {
+            light: "#F3F4F6",
+            dark: "#1F2937",
+            soft: "#F9FAFB",
+          },
+          border: {
+            light: "#E5E7EB",
+          },
+          primary: {
+            DEFAULT: "#2563EB",
+            dark: "#1e90ff",
+          },
+          order: {
+            details: "#4B5563",
+           "entry-exit": "#6B7280",
+          },
+        },
         background: {
           DEFAULT: "#ffffff",
           dark: "#121212",

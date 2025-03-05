@@ -53,7 +53,7 @@ export const LoginPage: React.FC = () => {
     <div className="w-screen h-screen flex items-center justify-center bg-background-soft">
       <div className="max-w-md w-full space-y-8 px-4 sm:px-6 md:px-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-text-primary-color">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-text-primary">
             Log in to your account
           </h2>
         </div>
@@ -68,7 +68,7 @@ export const LoginPage: React.FC = () => {
                 name="account-id"
                 type="text"
                 required
-                className="appearance-none block w-full px-4 py-3 border border-border-light placeholder-text-primary-color text-text-primary-color rounded-md bg-background-soft shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-color focus:border-primary-color transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-4 py-3 border border-border-light placeholder-text-primary text-text-primary rounded-md bg-background-soft shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 sm:text-sm"
                 placeholder="Account ID"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
@@ -92,7 +92,7 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-error-color text-sm text-center">{error}</div>
+            <div className="text-text-error text-sm text-center">{error}</div>
           )}
 
           <div className="flex gap-4 mx-2">

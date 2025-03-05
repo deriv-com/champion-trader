@@ -87,7 +87,7 @@ describe('MarketSelectorButton', () => {
     // Check closed indicator
     const closedBadge = screen.getByText('Closed');
     expect(closedBadge).toBeInTheDocument();
-    expect(closedBadge).toHaveClass('text-[10px] px-1.5 py-0.5 bg-[var(--error-background)] rounded-full text-[var(--error-color)]');
+    expect(closedBadge).toHaveClass('text-[10px] px-1.5 py-0.5 bg-[var(--error-background)] rounded-full text-[var(--text-error)]');
   });
 
   it('applies hover styles to button', () => {

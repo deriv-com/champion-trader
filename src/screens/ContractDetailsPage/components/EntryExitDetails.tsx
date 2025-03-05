@@ -26,7 +26,7 @@ export const EntryExitDetails: React.FC = () => {
   ];
 
   return (
-    <div className="w-full mt-4 p-4 bg-background-light dark:bg-background-dark text-text-primary-color dark:text-white rounded-lg shadow-md">
+    <div className="w-full mt-4 p-4 bg-background-light dark:bg-background-dark text-text-primary dark:text-white rounded-lg shadow-md">
       <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-[rgba(0,0,0,0.72)] dark:text-white mb-4">Entry & exit details</h2>
       {details.map((detail, index) => (
         <div key={index} className="w-full flex justify-between items-center border-b border-gray-300 py-2">

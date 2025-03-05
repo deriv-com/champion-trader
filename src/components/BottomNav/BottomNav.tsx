@@ -20,7 +20,7 @@ export const BottomNav: React.FC = () => {
       <button
         onClick={() => navigate("/trade")}
 className={`flex flex-col items-center gap-1 ${
-  location.pathname === "/trade" ? "font-bold text-white" : "text-text-primary-color dark:text-white"
+  location.pathname === "/trade" ? "font-bold text-white" : "text-text-primary dark:text-white"
 }`}
       >
         <BarChart2 className="w-5 h-5" />

@@ -30,7 +30,7 @@ export const SideNav: React.FC = () => {
                   navigate('/positions');
                 }
               }}
-              className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-[var(--primary-color)]' : 'text-[var(--text-color)]'}`}
+              className={`flex flex-col items-center ${(location.pathname === '/positions') ? 'text-[var(--primary)]' : 'text-[var(--text-color)]'}`}
             >
               <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'positions' ? sidebarActiveColor : "transparent" }}>
                 <Clock className="w-5 h-5" />

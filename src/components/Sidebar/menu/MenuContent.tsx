@@ -38,7 +38,7 @@ export const MenuContent: React.FC = () => {
             checked={isDarkMode}
             onChange={toggleTheme}
           />
-          <div className="w-11 h-6 bg-[var(--background-color)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--primary-color)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-[var(--text-color)] after:border-[var(--text-color)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary-color)] border border-[var(--text-color)]"></div>
+          <div className="w-11 h-6 bg-[var(--background-color)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--primary)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-[var(--text-color)] after:border-[var(--text-color)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)] border border-[var(--text-color)]"></div>
         </label>
       </div>
       {isLoggedIn && (
