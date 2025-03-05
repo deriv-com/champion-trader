@@ -15,32 +15,32 @@ import type { ProductConfigResponse } from "@/services/api/rest/product-config/t
 describe("duration utils", () => {
   // Default config for tests
   const defaultConfig: ProductConfigResponse = {
-      data: {
-        defaults: {
-          id: "test",
-          duration: 5,
-          duration_unit: "minutes",
-          allow_equals: true,
-          stake: 10
+    data: {
+      defaults: {
+        id: "test",
+        duration: 5,
+        duration_units: "minutes",
+        allow_equals: true,
+        stake: 10,
+      },
+      validations: {
+        durations: {
+          supported_units: ["ticks", "seconds", "minutes", "hours", "days"],
+          ticks: { min: 1, max: 10 },
+          seconds: { min: 15, max: 120 },
+          days: { min: 1, max: 30 },
         },
-        validations: {
-          durations: {
-            supported_units: ["ticks", "seconds", "minutes", "hours", "days"],
-            ticks: { min: 1, max: 10 },
-            seconds: { min: 15, max: 120 },
-            days: { min: 1, max: 30 }
-          },
-          stake: {
-            min: "1",
-            max: "100"
-          },
-          payout: {
-            min: "1",
-            max: "100"
-          }
-        }
-      }
-    };
+        stake: {
+          min: "1",
+          max: "100",
+        },
+        payout: {
+          min: "1",
+          max: "100",
+        },
+      },
+    },
+  };
 
   // Reset duration ranges before each test
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe("duration utils", () => {
       // Verify initial ranges from beforeEach
       expect(generateDurationValues("ticks")).toHaveLength(10);
       expect(generateDurationValues("seconds")).toHaveLength(45); // 59 - 15 + 1 = 45 values (max capped at 59)
-      
+
       // Update with different ranges
       updateDurationRanges({
         ...defaultConfig,
@@ -63,10 +63,10 @@ describe("duration utils", () => {
             durations: {
               ...defaultConfig.data.validations.durations,
               ticks: { min: 1, max: 5 },
-              seconds: { min: 10, max: 30 }
-            }
-          }
-        }
+              seconds: { min: 10, max: 30 },
+            },
+          },
+        },
       });
 
       // Verify ranges were updated
@@ -90,10 +90,10 @@ describe("duration utils", () => {
       // Since minutes are derived from seconds range (15-120)
       // Minutes should be 1-2 since 120 seconds = 2 minutes
       expect(generateDurationValues("minutes")).toHaveLength(2);
-      
+
       // Ticks are directly from config
       expect(generateDurationValues("ticks")).toHaveLength(10);
-      
+
       // Seconds are capped at 59 by duration-config-adapter
       expect(generateDurationValues("seconds")).toHaveLength(45); // 59 - 15 + 1 = 45 values
     });
@@ -117,7 +117,7 @@ describe("duration utils", () => {
     it("is used in generateDurationValues", () => {
       // When hour is 24, only 0 minutes should be available
       expect(generateDurationValues("minutes", 24)).toEqual([0]);
-      
+
       // For other hours, all minutes should be available
       expect(generateDurationValues("minutes", 1)).toHaveLength(60);
     });
@@ -141,7 +141,7 @@ describe("duration utils", () => {
       expect(isValidDuration("minutes", 1)).toBe(true);
       expect(isValidDuration("minutes", 2)).toBe(true);
       expect(isValidDuration("minutes", 3)).toBe(false);
-      
+
       // Hours are not available since max seconds is 120
       expect(isValidDuration("hours", 1)).toBe(false);
       expect(isValidDuration("hours", 24)).toBe(false);
@@ -156,11 +156,11 @@ describe("duration utils", () => {
     it("returns default duration for each type", () => {
       // Ticks are directly from config
       expect(getDefaultDuration("ticks")).toBe(1);
-      
+
       // Minutes and hours are derived from seconds (15-120)
       // 1-2 minutes are available
       expect(getDefaultDuration("minutes")).toBe(1);
-      
+
       // Hours are not available since max seconds is 120
       expect(getDefaultDuration("hours")).toBe(0);
     });

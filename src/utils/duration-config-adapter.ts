@@ -1,5 +1,5 @@
-import { DurationRangesResponse } from '@/services/api/rest/duration/types';
-import { ProductConfigResponse } from '@/services/api/rest/product-config/types';
+import { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 
 /**
  * Converts seconds to appropriate duration ranges for each type
@@ -9,91 +9,92 @@ export const convertSecondsToDurationRanges = (
   maxSeconds: number
 ): Partial<DurationRangesResponse> => {
   const result: Partial<DurationRangesResponse> = {};
-  
+
   // Handle seconds (1-59)
   if (minSeconds < 60) {
     result.seconds = {
       min: minSeconds,
-      max: Math.min(59, maxSeconds)
+      max: Math.min(59, maxSeconds),
     };
   }
-  
+
   // Handle minutes (1-59)
   if (maxSeconds >= 60) {
     result.minutes = {
       min: 1,
-      max: Math.min(59, Math.floor(maxSeconds / 60))
+      max: Math.min(59, Math.floor(maxSeconds / 60)),
     };
   }
-  
+
   // Handle hours (1-24)
   if (maxSeconds >= 3600) {
     result.hours = {
       min: 1,
       max: Math.min(24, Math.floor(maxSeconds / 3600)),
-      step: 1
+      step: 1,
     };
   }
 
-  
   return result;
 };
 
 /**
  * Converts product config response to internal duration ranges format
  */
-export const adaptDurationRanges = (config: ProductConfigResponse): DurationRangesResponse => {
+export const adaptDurationRanges = (
+  config: ProductConfigResponse
+): DurationRangesResponse => {
   const { durations } = config.data.validations;
   const result: Partial<DurationRangesResponse> = {};
-  
+
   // Process each supported unit
-  durations.supported_units.forEach(unit => {
+  durations.supported_units.forEach((unit) => {
     // Handle ticks separately as they're not time-based
-    if (unit === 'ticks' && durations.ticks) {
+    if (unit === "ticks" && durations.ticks) {
       result.ticks = {
         min: durations.ticks.min,
-        max: durations.ticks.max
+        max: durations.ticks.max,
       };
     }
-    
+
     // Handle seconds-based units (seconds, minutes, hours)
-    if (unit === 'seconds' && durations.seconds) {
+    if (unit === "seconds" && durations.seconds) {
       // Convert seconds range to appropriate ranges for each duration type
       const secondsRanges = convertSecondsToDurationRanges(
         durations.seconds.min,
         durations.seconds.max
       );
-      
+
       // Merge the converted ranges
       Object.assign(result, secondsRanges);
     }
 
     // Handle days directly from API
-    if (unit === 'days' && durations.days) {
+    if (unit === "days" && durations.days) {
       result.days = {
         min: durations.days.min,
-        max: durations.days.max
+        max: durations.days.max,
       };
     }
   });
-  
+
   // Only include duration types that are supported by the API
   // and have valid ranges from the conversion
   const finalResult: DurationRangesResponse = {} as DurationRangesResponse;
-  
+
   // Add each duration type only if it has a valid range
   if (result.ticks) finalResult.ticks = result.ticks;
   if (result.seconds) finalResult.seconds = result.seconds;
   if (result.minutes) finalResult.minutes = result.minutes;
   if (result.hours) finalResult.hours = result.hours;
   if (result.days) finalResult.days = result.days;
-  
+
   // Ensure at least one duration type is available
   if (Object.keys(finalResult).length === 0) {
     // Use ticks as fallback if no valid ranges
     finalResult.ticks = { min: 1, max: 10 };
   }
-  
+
   return finalResult;
 };
 
@@ -101,26 +102,28 @@ export const adaptDurationRanges = (config: ProductConfigResponse): DurationRang
  * Converts API default duration to internal format
  */
 export const adaptDefaultDuration = (config: ProductConfigResponse): string => {
-  const { duration, duration_unit } = config.data.defaults;
-  
+  const { duration, duration_units } = config.data.defaults;
+
   // If the default duration is in seconds, convert to the most appropriate unit
-  if (duration_unit === 'seconds') {
-    if (duration >= 3600) { // 1 hour in seconds
+  if (duration_units === "seconds") {
+    if (duration >= 3600) {
+      // 1 hour in seconds
       const hours = Math.floor(duration / 3600);
       const minutes = Math.floor((duration % 3600) / 60);
-      return `${hours}:${minutes.toString().padStart(2, '0')} hours`;
+      return `${hours}:${minutes.toString().padStart(2, "0")} hours`;
     }
-    if (duration >= 60) { // 1 minute in seconds
+    if (duration >= 60) {
+      // 1 minute in seconds
       return `${Math.floor(duration / 60)} minutes`;
     }
     return `${duration} seconds`;
   }
-  
+
   // For other units, use as is
-  if (duration_unit === 'hours') {
+  if (duration_units === "hours") {
     // For hours, use the HH:MM format
     return `${duration}:00 hours`;
   }
-  
-  return `${duration} ${duration_unit}`;
+
+  return `${duration} ${duration_units}`;
 };

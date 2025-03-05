@@ -52,11 +52,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
 }) => {
   const { trade_type, instrument } = useTradeStore();
   const { fetchProductConfig } = useProductConfig();
-
-  // Fetch product config when trade_type changes
-  useEffect(() => {
-    fetchProductConfig(trade_type, instrument);
-  }, [trade_type, instrument, fetchProductConfig]);
   const { setSidebar } = useMainLayoutStore();
   const { toast, hideToast } = useToastStore();
   const { currency, isLoggedIn } = useClientStore();
@@ -79,6 +74,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     return initialStates;
   });
 
+  // Fetch product config when trade_type changes
+  useEffect(() => {
+    fetchProductConfig(trade_type, instrument);
+  }, [trade_type, instrument, fetchProductConfig]);
   // Commented out API calls for now
   // useEffect(() => {
   //   // Create SSE connections for each button's contract type
