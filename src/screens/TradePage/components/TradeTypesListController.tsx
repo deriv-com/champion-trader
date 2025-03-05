@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getProducts } from "@/services/api/rest/product/service";
-import { TradeTypesList } from "@/components/TradeTypes";
+import { TabList, Tab } from "@/components/ui/tab-list";
 import { useTradeStore } from "@/stores/tradeStore";
 import { TradeType } from "@/config/tradeTypes";
 
@@ -23,17 +23,16 @@ export const TradeTypesListController: React.FC = () => {
                 setIsLoading(true);
                 const response = await getProducts();
                 setTradeTypes(response.data.products);
+                // setTradeTypes([
+                //     { id: "rise_fall", display_name: "Rise/Fall" },
+                //     { id: "high_low", display_name: "Higher/Lower" },
+                //     { id: "touch", display_name: "Touch/No Touch" },
+                //     { id: "multiplier", display_name: "Multiplier" },
+                // ]);
                 setError(null);
             } catch (err) {
                 setError("Failed to load trade types");
                 console.error(err);
-                // Fallback to default trade types if API fails
-                setTradeTypes([
-                    { id: "rise_fall", display_name: "Rise/Fall" },
-                    { id: "high_low", display_name: "Higher/Lower" },
-                    { id: "touch", display_name: "Touch/No Touch" },
-                    { id: "multiplier", display_name: "Multiplier" },
-                ]);
             } finally {
                 setIsLoading(false);
             }
@@ -56,12 +55,19 @@ export const TradeTypesListController: React.FC = () => {
         return <div>Error: {error}</div>;
     }
 
-    // Render TradeTypesList component
+    // Transform products into the format expected by TabList
+    const tabs: Tab[] = tradeTypes.map((product) => ({
+        label: product.display_name,
+        value: product.id,
+    }));
+
+    // Render TabList component directly
     return (
-        <TradeTypesList
-            selectedProductId={trade_type}
-            products={tradeTypes}
-            onProductSelect={handleTradeTypeSelect}
+        <TabList
+            variant="chip"
+            tabs={tabs}
+            selectedValue={trade_type}
+            onSelect={handleTradeTypeSelect}
         />
     );
 };

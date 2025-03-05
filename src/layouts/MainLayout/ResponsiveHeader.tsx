@@ -27,7 +27,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
             {showLogo && (
                 <a href="/">
                     <img
-                        src="/logo.png"
+                        src="/logo.svg"
                         alt="Champion Trader Logo"
                         className="w-8 h-8 rounded-full"
                     />
