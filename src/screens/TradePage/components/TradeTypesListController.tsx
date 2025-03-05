@@ -63,11 +63,13 @@ export const TradeTypesListController: React.FC = () => {
 
     // Render TabList component directly
     return (
-        <TabList
-            variant="chip"
-            tabs={tabs}
-            selectedValue={trade_type}
-            onSelect={handleTradeTypeSelect}
-        />
+        <div className="py-2">
+            <TabList
+                variant="chip"
+                tabs={tabs}
+                selectedValue={trade_type}
+                onSelect={handleTradeTypeSelect}
+            />
+        </div>
     );
 };
