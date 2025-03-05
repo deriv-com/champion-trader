@@ -16,12 +16,12 @@ describe("HowToTrade", () => {
     });
 
     it("renders correctly", () => {
-        render(<HowToTrade tradeType="Rise/Fall" />);
+        render(<HowToTrade tradeType="rise_fall" />);
         expect(screen.getByText("How to trade Rise/Fall?")).toBeInTheDocument();
     });
 
     it("opens bottom sheet when clicked", () => {
-        render(<HowToTrade tradeType="Rise/Fall" />);
+        render(<HowToTrade tradeType="rise_fall" />);
         fireEvent.click(screen.getByText("How to trade Rise/Fall?"));
 
         const call = mockSetBottomSheet.mock.calls[0];
