@@ -23,12 +23,7 @@ export const TradeTypesListController: React.FC = () => {
                 setIsLoading(true);
                 const response = await getProducts();
                 setTradeTypes(response.data.products);
-                // setTradeTypes([
-                //     { id: "rise_fall", display_name: "Rise/Fall" },
-                //     { id: "high_low", display_name: "Higher/Lower" },
-                //     { id: "touch", display_name: "Touch/No Touch" },
-                //     { id: "multiplier", display_name: "Multiplier" },
-                // ]);
+                setTradeType(response.data.products[0].id);
                 setError(null);
             } catch (err) {
                 setError("Failed to load trade types");
@@ -42,8 +37,8 @@ export const TradeTypesListController: React.FC = () => {
     }, []);
 
     // Handle trade type selection
-    const handleTradeTypeSelect = (tradeTypeId: string) => {
-        setTradeType(tradeTypeId as TradeType);
+    const handleTradeTypeSelect = (tradeTypeId: TradeType) => {
+        setTradeType(tradeTypeId);
     };
 
     // Show loading state or error

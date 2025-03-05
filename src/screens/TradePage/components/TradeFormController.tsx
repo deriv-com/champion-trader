@@ -61,9 +61,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     const config = tradeTypeConfigs[trade_type];
     const [isStakeSelected, setIsStakeSelected] = useState(false);
     const [stakeError, setStakeError] = useState(false);
-    const howToTradeProductName = config.buttons
-        .map((item) => item.title)
-        .join("/");
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -228,7 +225,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 className={isLandscape ? "pb-2" : "pt-1 px-4"}
                 id="how-to-trade"
             >
-                <HowToTrade productName={howToTradeProductName} />
+                <HowToTrade tradeType={trade_type} />
             </div>
             {isLandscape ? (
                 // Desktop layout
