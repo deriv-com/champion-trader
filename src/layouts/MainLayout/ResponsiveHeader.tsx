@@ -21,7 +21,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
 
     return (
         <header
-            className={`flex items-center gap-4 px-4 py-3 border-b border-opacity-10 bg-white ${className}`}
+            className={`flex items-center gap-4 px-4 py-3 lg:border-b lg:border-opacity-10 bg-white ${className}`}
             id="header"
         >
             {showLogo && (

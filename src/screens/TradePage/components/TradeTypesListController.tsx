@@ -49,14 +49,18 @@ export const TradeTypesListController: React.FC = () => {
     // Show loading state or error
     if (isLoading) {
         return (
-            <div className="min-h-14 flex items-center">
+            <div className="min-h-fit lg:min-h-14 flex items-center">
                 Loading trade types...
             </div>
         );
     }
 
     if (error && tradeTypes.length === 0) {
-        return <div className="min-h-14 flex items-center">Error: {error}</div>;
+        return (
+            <div className="min-h-fit lg:min-h-14 flex items-center">
+                Error: {error}
+            </div>
+        );
     }
 
     // Transform products into the format expected by TabList
@@ -67,7 +71,7 @@ export const TradeTypesListController: React.FC = () => {
 
     // Render TabList component directly
     return (
-        <div className="min-h-14 flex items-center mx-4">
+        <div className="min-h-fit lg:min-h-14 flex items-center mx-4">
             <TabList
                 variant="chip"
                 tabs={tabs}
