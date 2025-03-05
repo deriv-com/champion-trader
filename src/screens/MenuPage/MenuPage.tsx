@@ -12,7 +12,7 @@ export const MenuPage: React.FC = () => {
 
   console.log("MenuPage rendered");
   return (
-    <div className="flex flex-col flex-1 p-4 bg-backgroundSoft dark:bg-gray-900 text-textPrimaryColor dark:text-white">
+    <div className="flex flex-col flex-1 p-4 text-textPrimaryColor dark:text-white">
       <h1 className="text-2xl font-bold">Menu</h1>
       <div className="flex flex-col gap-4 mt-4">
 <button

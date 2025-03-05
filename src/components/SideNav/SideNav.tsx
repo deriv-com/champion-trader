@@ -35,7 +35,7 @@ export const SideNav: React.FC = () => {
               <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'positions' ? sidebarActiveColor : "transparent" }}>
                 <Clock className="w-5 h-5" />
               </div>
-              <span className={`text-xs ${activeSidebar === 'positions' ? "text-[var(--text-color)]" : "text-[var(--text-color)]"}`}>Positions</span>
+              <span className={`text-xs ${activeSidebar === 'positions' ? "font-bold text-white" : "text-[var(--text-color)]"}`}>Positions</span>
             </button>
           </>
         )}
@@ -52,7 +52,7 @@ export const SideNav: React.FC = () => {
           <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'menu' ? sidebarActiveColor : "transparent" }}>
             <Menu className="w-5 h-5" />
           </div>
-          <span className={`text-xs ${activeSidebar === 'menu' ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-300"}`}>Menu</span>
+          <span className={`text-xs ${activeSidebar === 'menu' ? "font-bold text-white" : "text-gray-500 dark:text-gray-300"}`}>Menu</span>
         </button>
       </div>
     </nav>

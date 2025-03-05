@@ -44,7 +44,7 @@ const MobileContractDetailsPage: React.FC = () => {
           <div className="mx-2 my-2 text-center">
             <button
               onClick={() => navigate(-1)}
-              className="text-white bg-black max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+              className="text-white bg-black dark:text-gray-300 dark:bg-gray-700 max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
             >
               Close
             </button>
