@@ -4,42 +4,46 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { GuideModal } from "./GuideModal";
 import { ChevronRight } from "lucide-react";
 
-export const HowToTrade: React.FC = () => {
-  const { setBottomSheet } = useBottomSheetStore();
-  const { isDesktop } = useDeviceDetection();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+type HowToTradeProps = {
+    productName: string;
+};
 
-  const handleClick = () => {
-    if (isDesktop) {
-      setIsModalOpen(true);
-    } else {
-      setBottomSheet(true, "how-to-trade", "80%", {
-        show: true,
-        label: "Got it",
-        onClick: () => setBottomSheet(false)
-      });
-    }
-  };
+export const HowToTrade: React.FC<HowToTradeProps> = ({ productName }) => {
+    const { setBottomSheet } = useBottomSheetStore();
+    const { isDesktop } = useDeviceDetection();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
-    <>
-      <button
-        onClick={handleClick}
-        className="text-gray-500 hover:text-gray-600 text-sm flex items-center gap-1"
-      >
-        How to trade Rise/Fall?
-        <ChevronRight className="w-4 h-4" />
-      </button>
+    const handleClick = () => {
+        if (isDesktop) {
+            setIsModalOpen(true);
+        } else {
+            setBottomSheet(true, "how-to-trade", "80%", {
+                show: true,
+                label: "Got it",
+                onClick: () => setBottomSheet(false),
+            });
+        }
+    };
 
-      {isDesktop && (
-        <GuideModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          type="rise-fall"
-        />
-      )}
-    </>
-  );
+    return (
+        <>
+            <button
+                onClick={handleClick}
+                className="text-gray-500 hover:text-gray-600 text-sm flex items-center gap-1"
+            >
+                How to trade {productName}?
+                <ChevronRight className="w-4 h-4" />
+            </button>
+
+            {isDesktop && (
+                <GuideModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    type="rise-fall"
+                />
+            )}
+        </>
+    );
 };
 
 export default HowToTrade;

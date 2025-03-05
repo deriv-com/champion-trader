@@ -1,7 +1,7 @@
 import React from "react";
 import { useClientStore } from "@/stores/clientStore";
-// import { AccountSwitcher } from "@/components/AccountSwitcher";
-import { BalanceDisplay } from "@/components/BalanceDisplay";
+import { AccountSwitcher } from "@/components/AccountSwitcher";
+// import { BalanceDisplay } from "@/components/BalanceDisplay";
 
 interface HeaderProps {
     className?: string;
@@ -37,8 +37,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
                 <div className="flex-1">
                     {isLoggedIn && (
                         <div>
-                            {/* <AccountSwitcher /> */}
-                            <BalanceDisplay />
+                            <AccountSwitcher />
                         </div>
                     )}
                 </div>

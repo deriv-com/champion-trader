@@ -7,6 +7,7 @@ import { Footer } from "./Footer";
 import { ResponsiveHeader } from "./ResponsiveHeader";
 import { SideNav } from "@/components/SideNav";
 import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar";
+import { useLocation } from "react-router-dom";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -17,6 +18,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const { isLandscape, setIsLandscape } = useOrientationStore();
     const { activeSidebar, setSidebar } = useMainLayoutStore();
     const isBottomNavVisible = useBottomNavStore((state) => state.isVisible);
+    const location = useLocation();
+    const isResponsiveHeaderVisible =
+        isMobile && !location.pathname.includes("/contract/");
 
     useEffect(() => {
         const handleOrientationChange = () => {
@@ -43,7 +47,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     return (
         <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-            {isMobile && (
+            {isResponsiveHeaderVisible && (
                 <ResponsiveHeader
                     className={`${
                         shouldEnableScrolling ? "" : "sticky top-0"
