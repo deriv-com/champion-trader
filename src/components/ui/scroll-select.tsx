@@ -16,7 +16,6 @@ export interface ScrollSelectProps<T> {
     option: ScrollSelectOption<T>,
     isSelected: boolean
   ) => React.ReactNode;
-  enableAutoSelect?: boolean; // Whether to auto-select values when scrolling
 }
 
 const ITEM_HEIGHT = 48;
@@ -31,7 +30,6 @@ export const ScrollSelect = <T extends React.Key>({
   itemHeight = ITEM_HEIGHT,
   containerHeight = CONTAINER_HEIGHT,
   renderOption,
-  enableAutoSelect = false,
 }: ScrollSelectProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const intersectionObserverRef = useRef<IntersectionObserver>();
@@ -72,41 +70,38 @@ export const ScrollSelect = <T extends React.Key>({
 
     let observerTimeout: NodeJS.Timeout;
 
-    // Only set up the observer if auto-select is enabled
-    if (enableAutoSelect) {
-      // Add a small delay before setting up the observer to ensure scroll completes
-      observerTimeout = setTimeout(() => {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                const value = entry.target.getAttribute("data-value");
-                if (value !== null) {
-                  // Find the option with matching value
-                  const option = optionsRef.find(
-                    (opt) => String(opt.value) === value
-                  );
-                  if (option) {
-                    onValueSelectRef(option.value);
-                  }
+    // Add a small delay before setting up the observer to ensure scroll completes
+    observerTimeout = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const value = entry.target.getAttribute("data-value");
+              if (value !== null) {
+                // Find the option with matching value
+                const option = optionsRef.find(
+                  (opt) => String(opt.value) === value
+                );
+                if (option) {
+                  onValueSelectRef(option.value);
                 }
               }
-            });
-          },
-          {
-            root: container,
-            rootMargin: "-51% 0px -49% 0px",
-            threshold: 0,
-          }
-        );
+            }
+          });
+        },
+        {
+          root: container,
+          rootMargin: "-51% 0px -49% 0px",
+          threshold: 0,
+        }
+      );
 
-        const items = container.querySelectorAll(".scroll-select-item");
-        items.forEach((item) => observer.observe(item));
+      const items = container.querySelectorAll(".scroll-select-item");
+      items.forEach((item) => observer.observe(item));
 
-        // Store the observer reference
-        intersectionObserverRef.current = observer;
-      }, 100);
-    }
+      // Store the observer reference
+      intersectionObserverRef.current = observer;
+    }, 100);
 
     // Proper cleanup function
     return () => {

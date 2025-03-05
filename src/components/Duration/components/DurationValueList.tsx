@@ -1,7 +1,6 @@
 import React from "react";
 import { ScrollSelect } from "@/components/ui/scroll-select";
 import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
 interface DurationValueListProps {
   selectedValue: number;
@@ -38,7 +37,6 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
   onValueClick,
   getDurationValues,
 }) => {
-  const { isDesktop } = useDeviceDetection();
   const values = getDurationValues(durationType);
   const options = values.map((value) => ({
     value,
@@ -51,7 +49,6 @@ export const DurationValueList: React.FC<DurationValueListProps> = ({
       selectedValue={selectedValue}
       onValueSelect={onValueSelect}
       onValueClick={onValueClick}
-      enableAutoSelect={!isDesktop} // Enable auto-select for mobile/tablet, disable for desktop
     />
   );
 };
