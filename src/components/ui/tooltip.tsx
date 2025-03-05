@@ -36,8 +36,8 @@ export const Tooltip = () => {
         "after:content-[''] after:absolute after:top-1/2 after:-right-2",
         "after:w-4 after:h-4 after:-translate-y-1/2 after:rotate-45",
         {
-          "bg-errorColor text-white after:bg-errorColor": type === "error",
-          "bg-primaryColor text-white after:bg-primaryColor": type === "info",
+          "bg-error-color text-white after:bg-error-color": type === "error",
+          "bg-primary-color text-white after:bg-primary-color": type === "info",
           "bg-yellow-500 text-white after:bg-yellow-500": type === "warning",
           "bg-green-500 text-white after:bg-green-500": type === "success",
         }

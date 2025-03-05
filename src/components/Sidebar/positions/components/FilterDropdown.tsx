@@ -49,7 +49,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
         </span>
       </button>
       {dropdownOpen && (
-        <ul className={`absolute text-sm left-0 w-full border rounded-lg shadow-md mt-1 ${isDarkMode ? "bg-backgroundDark text-white border-gray-700" : "bg-white text-black border-gray-300"}`} onMouseDown={(event) => event.stopPropagation()}>
+        <ul className={`absolute text-sm left-0 w-full border rounded-lg shadow-md mt-1 ${isDarkMode ? "bg-background-dark text-white border-gray-700" : "bg-white text-black border-gray-300"}`} onMouseDown={(event) => event.stopPropagation()}>
           {isOpenTab ? (
             <>
               <li 

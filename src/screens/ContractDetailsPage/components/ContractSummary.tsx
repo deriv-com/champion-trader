@@ -25,7 +25,7 @@ export const ContractSummary: React.FC = () => {
         <div className="text-right">
           <div className="text-gray-600 dark:text-gray-300 font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-gray-100 dark:bg-gray-700 px-2 rounded-md mb-1 py-0.5 inline-block">0/10 ticks</div>
           <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.48)] dark:text-gray-300 mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>
-          <div className="text-highlightColor font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
+          <div className="text-highlight-color font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@ export const MarketSidebar: React.FC = () => {
 
   const { body } = marketSidebarConfig[key]
 
-  const sidebarActiveColor = isDarkMode ? "bg-backgroundDark" : "bg-borderLight";
+  const sidebarActiveColor = isDarkMode ? "bg-background-dark" : "bg-border-light";
 
   return (
     <>
@@ -63,7 +63,7 @@ export const MarketSidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-[101] h-full w-96 transform text-textPrimaryColor dark:text-white shadow-lg",
+          "fixed left-0 top-0 z-[101] h-full w-96 transform text-text-primary-color dark:text-white shadow-lg",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           sidebarActiveColor

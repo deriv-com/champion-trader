@@ -49,14 +49,14 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
     checkScrollButtons()
   }
 
-  const sidebarActiveColor = isDarkMode ? "bg-red-600" : "bg-borderLight";
+  const sidebarActiveColor = isDarkMode ? "bg-red-600" : "bg-border-light";
 
   return (
     <div className={cn("relative group", className)}>
       {showLeftArrow && (
         <button
           onClick={() => scroll('left')}
-          className="bg-backgroundLight absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          className="bg-background-light absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2"
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
@@ -95,7 +95,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
       {showRightArrow && (
         <button
           onClick={() => scroll('right')}
-          className="bg-backgroundLight absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
+          className="bg-background-light absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2"
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
