@@ -2,6 +2,7 @@ import React from "react"
 import { MarketIcon } from "@/components/MarketSelector/MarketIcon"
 import { useMarketStore } from "@/stores/marketStore"
 import { ChevronDown } from "lucide-react"
+import { useThemeStore } from "@/stores/themeStore";
 
 interface MarketInfoProps {
   title: string
@@ -18,6 +19,9 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
 }) => {
   const selectedMarket = useMarketStore((state) => state.selectedMarket)
 
+  const { isDarkMode } = useThemeStore();
+  const backgroundColor = isDarkMode ? "bg-sidebar" : "bg-gray-100";
+
   if (isMobile) {
     return (
       <div
@@ -25,7 +29,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         data-id="market-info"
         onClick={onClick}
       >
-        <div className="flex items-center gap-4 px-4 py-3 bg-black/[0.04] dark:bg-gray-800 rounded-lg">
+        <div className={`flex items-center gap-4 px-4 py-3 rounded-lg ${isDarkMode ? "bg-market-dark" : "bg-gray-100"}`}>
           {selectedMarket && (
             <div className="w-8 h-8 flex items-center justify-center">
               <MarketIcon
@@ -37,10 +41,10 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <div className="text-base font-bold text-black/[0.72] dark:text-gray-300 leading-6 font-ibm-plex-sans truncate">{title}</div>
-              <ChevronDown className="w-4 h-6 text-black/[0.72] dark:text-gray-300 flex-shrink-0 stroke-[1.5]" />
+              <div className={`text-base font-bold ${isDarkMode ? "text-white" : "text-black/[0.72]"} text-secondary leading-6 font-ibm-plex-sans truncate`}>{title}</div>
+              <ChevronDown className={`w-4 h-6 ${isDarkMode ? "text-white" : "text-black/[0.72]"} text-secondary flex-shrink-0 stroke-[1.5]"`} />
             </div>
-            <div className="text-sm text-black/[0.48] dark:text-gray-400 leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
+            <div className={`text-sm ${isDarkMode ? "text-white" : "text-black/[0.48]"} text-secondary leading-5 font-ibm-plex-sans truncate`}>{subtitle}</div>
           </div>
         </div>
       </div>
@@ -49,7 +53,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
 
   return (
     <div
-      className="inline-flex cursor-pointer bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg transition-colors"
+      className={`inline-flex cursor-pointer ${backgroundColor} active:bg-gray-200 active:bg-active-dark rounded-lg transition-colors`}
       data-id="market-info"
       onClick={onClick}
     >
@@ -65,10 +69,10 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         )}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <div className="text-base font-bold text-[var(--market-title-color)] dark:text-gray-300 leading-6 font-ibm-plex-sans truncate">{title}</div>
-            <ChevronDown className="w-5 text-[var(--market-title-color)] dark:text-gray-300 flex-shrink-0 stroke-[1.5]" />
+            <div className={`text-base font-bold ${isDarkMode ? "text-white" : "text-black"} leading-6 font-ibm-plex-sans truncate`}>{title}</div>
+            <ChevronDown className={`w-5 ${isDarkMode ? "text-white" : "text-black"} flex-shrink-0 stroke-[1.5]"`} />
           </div>
-          <div className="text-sm text-[var(--market-subtitle-color)] dark:text-gray-400 leading-5 font-ibm-plex-sans truncate">{subtitle}</div>
+          <div className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"} leading-5 font-ibm-plex-sans truncate`}>{subtitle}</div>
         </div>
       </div>
     </div>

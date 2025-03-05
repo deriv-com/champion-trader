@@ -88,7 +88,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
               value={`${localValue}`}
               onChange={handleChange}
               onFocus={() => handleSelect(true)}
-              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-black dark:text-white"
+              className={`text-left font-ibm-plex text-base leading-6 font-normal w-24 outline-none ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-100 text-black"} text-primary`}
               aria-label="Stake amount"
             />
           </div>

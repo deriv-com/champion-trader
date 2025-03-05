@@ -1,5 +1,8 @@
 import React from "react";
 
+import { useThemeStore } from "@/stores/themeStore";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+
 export interface Tab {
   label: string;
   value: string;
@@ -20,6 +23,9 @@ const ChipTabList: React.FC<BaseTabListProps> = ({
   selectedValue,
   onSelect,
 }) => {
+  const { isDarkMode } = useThemeStore();
+  const { isMobile } = useDeviceDetection();
+
   return (
     <div
       className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
@@ -35,9 +41,9 @@ const ChipTabList: React.FC<BaseTabListProps> = ({
               onClick={() => onSelect(value)}
               className={`
                 px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${selectedValue === value
-                  ? "bg-gray-900 text-white dark:bg-gray-800 dark:text-white rounded-3xl"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-black dark:bg-gray-700 dark:text-gray-300 hover:dark:bg-gray-600 hover:dark:text-gray-200"
+${selectedValue === value
+                  ? (isDarkMode ? (isMobile ? "bg-gray-700 text-white" : "bg-blue-600 text-white") : "bg-white text-black")
+                  : (isDarkMode ? "text-white" : "bg-sidebar text-white bg-white text-black rounded-3xl")
                 }
               `}
             >
@@ -55,8 +61,9 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({
   selectedValue,
   onSelect,
 }) => {
+  const { isDarkMode } = useThemeStore();
   return (
-    <div className="w-28 bg-white dark:bg-gray-900">
+    <div className={`w-28 ${isDarkMode ? "bg-sidebar" : "bg-white"}`}>
       {tabs.map(({ label, value }) => (
         <button
           key={value}
@@ -65,10 +72,10 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({
             relative w-full text-left py-3 px-6 transition-colors font-ibm-plex text-base leading-6 font-normal
             text-primary cursor-pointer
             before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[4px]
-            dark:bg-gray-900 dark:text-white
+             bg-background-dark text-primary
             ${selectedValue === value
-              ? "text-left dark:bg-gray-700 dark:text-white border-r-2 border-gray-500 dark:border-gray-300 dark:scroll-select-item flex items-center justify-center snap-center cursor-pointer"
-              : "bg-white text-black text-gray-500 hover:border-r-2 hover:border-gray-400 dark:bg-gray-900 dark:text-gray-400 dark:hover:text-white dark:hover:border-r-2 dark:hover:border-gray-500"
+              ? " text-left bg-background-dark border-r-2 border-gray-400 scroll-select-item flex items-center justify-center snap-center cursor-pointer"
+              : "hover:border-r-2 hover:border-gray-200  bg-background-dark hover:text-primary hover:border-light  hover:border-light"
             }
           `}
         >

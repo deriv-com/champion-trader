@@ -92,7 +92,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     <>
 <div className={`${isLandscape ? "flex" : ""} shadow-md`}>
         {!isLandscape && <BottomSheetHeader title="Duration" />}
-        <div className={`${isDarkMode ? "bg-[var(--background)] text-gray-500" : "bg-white text-black"} rounded-lg dark:bg-[var(--background)] dark:text-gray-500`}>
+        <div className={`${isDarkMode ? "text-white" : "bg-white text-black"} rounded-lg text-gray-500`}>
           <TabList
             tabs={DURATION_TYPES}
             selectedValue={selectedType}
@@ -100,7 +100,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
             variant={isLandscape ? "vertical" : "chip"}
           />
         </div>
-        <div className={`flex-1 relative ${isDarkMode ? "bg-[var(--background)] text-gray-500" : "bg-white text-black"} ${isLandscape ? "px-2" : "px-8"}  dark:bg-[var(--background)]`}>
+        <div className={`flex-1 relative ${isDarkMode ? "text-white" : "bg-white text-black"} ${isLandscape ? "px-2" : "px-8"}`}>
           {selectedType === "hour" ? (
             <HoursDurationValue
               selectedValue={selectedValue.toString()}
@@ -124,7 +124,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
       </div>
       {!isLandscape && (
         <div className="w-full p-3">
-          <PrimaryButton className="rounded-3xl text-[var(--text-color)] bg-[#f2f3f4] dark:bg-gray-700" onClick={handleSave}>
+          <PrimaryButton className={`rounded-3xl text-[var(--text-color)] ${isDarkMode ? "bg-gray-700" : "bg-dark-gray bg-background-dark"}`} onClick={handleSave}>
             <span>Save</span>
           </PrimaryButton>
         </div>
@@ -134,7 +134,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
 
     if (isLandscape) {
     return (
-    <DesktopTradeFieldCard className={`p-0 ${isDarkMode ? "bg-[var(--background)] text-gray-500" : "bg-white text-black"}`}>
+    <DesktopTradeFieldCard className={`p-0 ${isDarkMode ? "bg-sidebar text-white" : "bg-white text-black"}`}>
       <div className="w-[368px]">{content}</div>
     </DesktopTradeFieldCard>
     );

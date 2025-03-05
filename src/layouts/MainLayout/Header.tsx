@@ -22,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   const showLogo = isLandscape || !isLoggedIn;
 
   return (
-    <header className={`flex items-center gap-4 px-4 py-2 border-b border-opacity-10 text-text-primary ${className}`} id="header">
+    <header className={`flex items-center gap-4 px-4 py-2 border-b border-opacity-10 text-primary ${className}`} id="header">
       {showLogo && (
         <a href="/">
           <img

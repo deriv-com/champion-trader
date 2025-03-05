@@ -52,7 +52,7 @@ export const SideNav: React.FC = () => {
           <div className="rounded-lg p-2" style={{ backgroundColor: activeSidebar === 'menu' ? sidebarActiveColor : "transparent" }}>
             <Menu className="w-5 h-5" />
           </div>
-          <span className={`text-xs ${activeSidebar === 'menu' ? "font-bold text-white" : "text-gray-500 dark:text-gray-300"}`}>Menu</span>
+          <span className={`text-xs ${activeSidebar === 'menu' ? "font-bold text-white" : "text-white text-secondary"}`}>Menu</span>
         </button>
       </div>
     </nav>

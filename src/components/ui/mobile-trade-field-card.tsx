@@ -16,7 +16,7 @@ export const MobileTradeFieldCard = ({ children, className, onClick }: MobileTra
       onClick={onClick}
       className={cn(
         "h-auto text-[var(--text-color)] rounded-lg py-2 px-4 cursor-pointer",
-        { "bg-[#111827]": isDarkMode, "bg-black/[0.04]": !isDarkMode },
+        { "bg-market-dark": isDarkMode, "bg-black/[0.04]": !isDarkMode },
         className
       )}
     >

@@ -175,10 +175,10 @@ export const BottomSheet = () => {
         <div className="flex-1 overflow-y-auto">{body}</div>
         {actionButton?.show && (
           <div className="sticky bottom-0 w-full p-4">
-<PrimaryButton
-  className="w-full rounded-3xl bg-[#1F2937] text-white"
-  onClick={actionButton.onClick}
->
+            <PrimaryButton
+              className="w-full rounded-3xl bg-custom-darkGray text-white"
+              onClick={actionButton.onClick}
+            >
               {actionButton.label}
             </PrimaryButton>
           </div>

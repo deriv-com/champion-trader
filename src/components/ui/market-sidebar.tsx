@@ -63,7 +63,7 @@ export const MarketSidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-[101] h-full w-96 transform text-text-primary dark:text-white shadow-lg",
+          "fixed left-0 top-0 z-[101] h-full w-96 transform text-primary text-primary shadow-lg",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full",
           sidebarActiveColor

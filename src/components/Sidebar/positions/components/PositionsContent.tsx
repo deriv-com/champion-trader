@@ -35,9 +35,9 @@ export const PositionsContent: FC = () => {
   const { isDarkMode } = useThemeStore();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className={`flex flex-col h-full ${isDarkMode ? 'bg-sidebar' : 'bg-white'}`}>
       <div className="p-6 flex-1 overflow-auto">
-        <div className={`flex gap-2 p-1 rounded-lg ${isDarkMode ? 'bg-[#020817]' : 'bg-gray-100'}`}>
+        <div className={`flex gap-2 p-1 rounded-lg ${isDarkMode ? 'bg-background-deep' : 'bg-gray-100'}`}>
           <button
             className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
               isOpenTab
@@ -119,7 +119,7 @@ export const PositionsContent: FC = () => {
                 </div>
               </div>
               {isOpenTab && (
-                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8] no-hover">
+                <button className={`w-full h-6 flex items-center justify-center py-2 border text-xs font-bold rounded-[8] no-hover ${isDarkMode ? "border-2 border-white" : "border-black"}`}>
                   Close {position.stake}
                 </button>
               )}

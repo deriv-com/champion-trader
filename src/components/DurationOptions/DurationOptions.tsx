@@ -14,14 +14,14 @@ export const DurationOptions: React.FC<DurationOptionsProps> = ({ className = ''
         <div className='w-0.5 h-5 bg-gray-100'></div>
       </div>
       <div className="flex items-center gap-4">
-        <button className="text-sm font-medium text-primary dark:text-white">1t</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">1m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">2m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">3m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">5m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">10m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">15m</button>
-        <button className="text-sm font-medium text-gray-500 dark:text-gray-300">30m</button>
+        <button className="text-sm font-medium text-primary text-primary">1t</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">1m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">2m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">3m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">5m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">10m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">15m</button>
+        <button className="text-sm font-medium text-gray-500 text-secondary">30m</button>
       </div>
     </div>
   );

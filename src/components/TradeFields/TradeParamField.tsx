@@ -59,7 +59,7 @@ export const TradeParamField: React.FC<TradeParamFieldProps> = ({
   label={label}
   value={value}
   onClick={handleClick}
-  className={`${className} text-black dark:text-white`}
+  className={`${className} text-black text-primary`}
 />
 
       {isLandscape && showPopover && (

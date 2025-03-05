@@ -25,8 +25,8 @@ const DesktopContractDetailsPage: React.FC = () => {
   const { isDarkMode } = useThemeStore();
 
   return (
-    <div className={`flex flex-col w-full ${isDarkMode ? "bg-[rgb(2,8,23)] text-white" : "bg-gray-50 text-black"}`} data-testid="desktop-contract-details">
-      <div className="flex justify-between items-center p-4 bg-white dark:bg-[rgb(2,8,23)] border-b border-opacity-10">
+    <div className={`flex flex-col w-full ${isDarkMode ? "bg-background-dark text-white" : "bg-gray-50 text-black"}`} data-testid="desktop-contract-details">
+      <div className="flex justify-between items-center p-4 bg-background-dark border-b border-opacity-10">
         <h1 className="text-xl font-bold mx-auto">Contract details</h1>
         <button onClick={() => navigate(-1)} className="text-gray-600">
           <X className="w-6 h-6" />
@@ -35,7 +35,7 @@ const DesktopContractDetailsPage: React.FC = () => {
 
       <div className="flex flex-1 overflow-hidden relative m-4">
         <div className={`w-[320px] border-r flex flex-col ${isDarkMode ? "bg-[rgb(2,8,23)] text-white border-none" : "bg-white text-black"}`} data-testid="left-panel">
-          <div className={`flex-1 overflow-y-auto pb-20 space-y-4 ${isDarkMode ? "bg-[rgb(2,8,23)] text-white" : "bg-gray-50 text-black"}`} data-testid="content-area">
+          <div className={`flex-1 overflow-y-auto pb-20 space-y-4 ${isDarkMode ? "bg-[rgb(2,8,23)] text-white" : "bg-white text-black"}`} data-testid="content-area">
             <ContractSummary />
             <OrderDetails />
             <EntryExitDetails />
@@ -44,7 +44,7 @@ const DesktopContractDetailsPage: React.FC = () => {
             <div className="max-w-[1200px] mx-auto">
               <button
                 onClick={() => navigate(-1)}
-                className="w-full bg-black text-white py-4 rounded-lg dark:text-gray-300 dark:bg-gray-700"
+                className={`w-full bg-black text-white py-4 rounded-lg text-secondary ${isDarkMode ? "bg-gray-800 text-white" : "bg-black text-gray-500"}`}
               >
                 Close
               </button>

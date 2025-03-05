@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useThemeStore } from "@/stores/themeStore";
 import { ContractSummary } from "../ContractDetailsPage/components";
 
 const positions = [
@@ -65,15 +66,17 @@ const PositionsPage: React.FC = () => {
     };
   }, [swipedCard]);
 
+  const { isDarkMode } = useThemeStore();
+
   return (
-    <div className="flex flex-col flex-1 h-full bg-white">
+    <div className={`flex flex-col flex-1 h-full ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
       {/* Tabs */}
       <div className="flex sticky top-0 z-10 px-4 bg-background border-b border-border">
         <button
           className={`flex-1 py-3 border-b-2 transition-colors ${
             activeTab === "open"
               ? "border-primary text-primary"
-              : "border-transparent text-gray-500 dark:text-gray-300"
+              : "border-transparent text-gray-800"
           }`}
           onClick={() => setActiveTab("open")}
         >
@@ -83,7 +86,7 @@ const PositionsPage: React.FC = () => {
           className={`flex-1 py-3 border-b-2 transition-colors ${
             activeTab === "closed"
               ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground"
+              : "border-transparent text-gray-800"
           }`}
           onClick={() => setActiveTab("closed")}
         >

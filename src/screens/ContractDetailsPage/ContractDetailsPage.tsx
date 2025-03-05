@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useThemeStore } from "@/stores/themeStore";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
@@ -26,8 +27,10 @@ const MobileContractDetailsPage: React.FC = () => {
     };
   }, [setHeaderVisible, setBottomNavVisible]);
 
+  const { isDarkMode } = useThemeStore();
+
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 text-text-primary dark:text-white h-screen flex flex-col overflow-y-auto">
+    <div className={`w-full h-screen flex flex-col overflow-y-auto ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-primary"}`}>
       <Header />
       <div className="overflow-y-auto w-full lg:w-3/5 mx-auto">
         <div className="p-2 pb-[72px]">
@@ -44,7 +47,7 @@ const MobileContractDetailsPage: React.FC = () => {
           <div className="mx-2 my-2 text-center">
             <button
               onClick={() => navigate(-1)}
-              className="text-white bg-black dark:text-gray-300 dark:bg-gray-700 max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+              className={`text-primary max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md ${isDarkMode ? "bg-gray-400" : "bg-gray-100"}`}
             >
               Close
             </button>

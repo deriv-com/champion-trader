@@ -15,12 +15,14 @@ import {
 import { MarketIcon } from "./MarketIcon"
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs"
 import { useDeviceDetection } from "@/hooks/useDeviceDetection"
+import { useThemeStore } from "@/stores/themeStore"
 
 interface MarketSelectorListProps {
   onDragDown?: () => void
 }
 
 export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
+  const { isDarkMode } = useThemeStore();
   const { setBottomSheet } = useBottomSheetStore()
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
@@ -129,7 +131,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   }, {} as Record<string, MarketInfo[]>)
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className={`flex flex-col h-full ${isDarkMode ? "bg-gray-800" : "bg-background"}`}>
       {/* Header with centered title and close button */}
       {!isMobile && (
         <div className="flex items-center justify-between px-6 py-8">
@@ -143,9 +145,9 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 setBottomSheet(false)
                 setOverlaySidebar(false)
               }}
-              className="text-text-primary"
+              className="text-primary"
             >
-              <X className="w-5 h-5 text-[var(--text-color)] dark:text-white" />
+              <X className="w-5 h-5 text-[var(--text-color)] text-primary" />
             </button>
           </div>
         </div>
@@ -178,7 +180,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
           tabs={tabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          className="mb-4 text-[var(--text-color)] dark:text-white"
+          className="mb-4 text-[var(--text-color)] text-primary"
       />
 
       {/* Market List */}
@@ -258,7 +260,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         </div>
 
         {searchQuery && filteredInstruments.length === 0 && (
-          <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
+          <div className="p-4 text-center text-secondary font-ibm-plex-sans text-sm">
             No markets found matching "{searchQuery}"
           </div>
         )}

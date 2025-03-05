@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { PrimaryButton } from "./primary-button";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface ModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export const Modal = ({
   className,
   actionButton,
 }: ModalProps) => {
+  const { isDarkMode } = useThemeStore();
   if (!isOpen) return null;
 
   // Handle ESC key press to close modal
@@ -53,12 +55,12 @@ export const Modal = ({
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
-          "relative bg-white dark:bg-[rgb(13,19,31)] rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px]",
+          "relative bg-white bg-background-dark rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px]",
           className
         )}
       >
         <div className="flex items-center justify-between pb-6">
-          {title && <h2 className="text-xl font-bold dark:text-white">{title}</h2>}
+          {title && <h2 className="text-xl font-bold text-primary">{title}</h2>}
           <button
             onClick={onClose}
             className="p-2 hover:bg-[var(--background-color)] transition-colors text-[var(--text-color)]"
@@ -73,7 +75,7 @@ export const Modal = ({
         {actionButton?.show && (
           <div className="pt-4">
             <PrimaryButton
-              className="w-full rounded-3xl bg-[#1F2937] text-white"
+              className={`w-full rounded-3xl ${isDarkMode ? "bg-gray-700 text-white" : "bg-dark-gray text-white"}`}
               onClick={actionButton.onClick}
             >
               {actionButton.label}

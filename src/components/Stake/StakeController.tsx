@@ -12,6 +12,7 @@ import { parseDuration, formatDuration } from "@/utils/duration";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface ButtonState {
   loading: boolean;
@@ -25,6 +26,7 @@ type ButtonStates = Record<string, ButtonState>;
 interface StakeControllerProps { }
 
 export const StakeController: React.FC<StakeControllerProps> = () => {
+  const { isDarkMode } = useThemeStore();
   const { stake, setStake, trade_type, duration, payouts, setPayouts } = useTradeStore();
   const { currency, token } = useClientStore();
   const { isLandscape } = useOrientationStore();
@@ -236,7 +238,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
       {!isLandscape && (
         <div className="w-full py-6 px-3">
           <PrimaryButton
-            className="rounded-3xl text-[var(--text-color)] bg-[#f2f3f4] dark:bg-gray-700"
+            className={`rounded-3xl text-[var(--text-color)] ${isDarkMode ? "bg-gray-700" : "bg-dark-gray bg-background-dark"}`}
             onClick={handleSave}
             disabled={error || debouncedStake === stake}
           >

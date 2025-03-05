@@ -60,7 +60,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
-          <ChevronLeft className="w-5 h-5 text-text-primary" />
+          <ChevronLeft className="w-5 h-5 text-primary" />
         </button>
       )}
 
@@ -98,7 +98,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
           style={{ backgroundColor: sidebarActiveColor }}
           aria-label="Scroll right"
         >
-          <ChevronRight className="w-5 h-5 text-text-primary" />
+          <ChevronRight className="w-5 h-5 text-primary" />
         </button>
       )}
     </div>

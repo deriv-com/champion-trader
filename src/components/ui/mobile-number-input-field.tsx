@@ -46,7 +46,7 @@ export const MobileNumberInputField = React.forwardRef<
         <div
           className={cn(
             "flex items-center w-full h-[56px]",
-            "rounded-lg bg-background-soft dark:bg-gray-700",
+            "rounded-lg bg-background-soft bg-background-dark",
             isSelected && !error && "border border-black",
             error && "border border-red-500 bg-[rgba(230,25,14,0.08)]",
             className
@@ -62,13 +62,13 @@ export const MobileNumberInputField = React.forwardRef<
           </Button>
           <div className="flex items-center justify-center w-full">
             {prefix && (
-              <span className="font-ibm-plex text-base font-normal leading-6 text-text-primary dark:text-white">
+              <span className="font-ibm-plex text-base font-normal leading-6 text-primary text-primary">
                 {prefix}
               </span>
             )}
             <input
               ref={ref}
-              className="w-full bg-transparent ml-[-32px] focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-text-primary dark:text-white"
+              className="w-full bg-transparent ml-[-32px] focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-primary text-primary"
               inputMode="decimal"
               onFocus={handleFocus}
               onBlur={handleBlur}

@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface DesktopTradeFieldCardProps {
   children: React.ReactNode;
@@ -9,10 +10,13 @@ interface DesktopTradeFieldCardProps {
 }
 
 export const DesktopTradeFieldCard = ({ children, className, isSelected, error }: DesktopTradeFieldCardProps) => {
+  const { isDarkMode } = useThemeStore();
+  const backgroundColor = isDarkMode ? "bg-gray-800" : "bg-gray-100";
+
   return (
       <div 
         className={cn(
-          "bg-[rgba(246,247,248,1)] dark:bg-gray-900 dark:text-white rounded-lg p-2 border border-transparent",
+          `${backgroundColor} text-primary rounded-lg p-2 border border-transparent`,
           isSelected && "border-primary",
           error && "border-red-500 bg-[rgba(230,25,14,0.08)]",
           className
