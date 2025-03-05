@@ -71,8 +71,7 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
         style={{
           msOverflowStyle: "none",
           scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
+                  }}
       >
         <div className="flex min-w-max px-4">
           {tabs.map((tab) => (
