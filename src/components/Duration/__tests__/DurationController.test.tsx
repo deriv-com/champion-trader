@@ -54,7 +54,10 @@ jest.mock("@/components/ui/tab-list", () => ({
 
 jest.mock("../components/DurationValueList", () => ({
   DurationValueList: ({ selectedValue, onValueSelect, onValueClick }: any) => (
-    <div data-testid="mock-duration-value-list">
+    <div
+      data-testid="mock-duration-value-list"
+      data-selected-value={selectedValue}
+    >
       <button
         data-testid="value-select"
         onClick={() => {
@@ -178,6 +181,35 @@ describe("DurationController", () => {
 
     // Should update duration in store
     expect(mockSetDuration).toHaveBeenCalledWith("2 minutes");
+  });
+
+  it("uses default duration value when switching to new tab", () => {
+    (
+      useTradeStore as jest.MockedFunction<typeof useTradeStore>
+    ).mockReturnValue({
+      duration: "1 minutes",
+      isConfigLoading: false,
+      setDuration: mockSetDuration,
+      productConfig: {
+        data: {
+          validations: {
+            durations: {
+              supported_units: ["ticks", "seconds", "minutes", "hours", "days"],
+              ticks: { min: 1, max: 10 },
+            },
+          },
+        },
+      },
+    });
+
+    render(<DurationController />);
+
+    // Switch to ticks tab
+    fireEvent.click(screen.getByTestId("tab-ticks"));
+
+    // Should use min value (1) from duration range as default
+    const valueList = screen.getByTestId("mock-duration-value-list");
+    expect(valueList).toHaveAttribute("data-selected-value", "1");
   });
 
   it("handles hours duration selection", () => {

@@ -6,7 +6,10 @@ import { DurationValueList } from "./components/DurationValueList";
 import { HoursDurationValue } from "./components/HoursDurationValue";
 import { useTradeStore } from "@/stores/tradeStore";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { generateDurationValues as getDurationValues } from "@/utils/duration";
+import {
+  generateDurationValues as getDurationValues,
+  getDefaultDuration,
+} from "@/utils/duration";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
@@ -165,7 +168,9 @@ export const DurationController: React.FC<DurationControllerProps> = ({
           ) : (
             <DurationValueList
               key={selectedTabType}
-              selectedValue={(selectedValue as number) || 0}
+              selectedValue={
+                (selectedValue as number) ?? getDefaultDuration(selectedTabType)
+              }
               durationType={selectedTabType}
               onValueSelect={handleValueSelect}
               onValueClick={handleValueClick}
