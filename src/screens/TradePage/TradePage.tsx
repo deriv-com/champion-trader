@@ -36,7 +36,7 @@ export const TradePage: React.FC = () => {
         <div
             className={`flex ${
                 isLandscape ? "flex-row relative h-full" : "flex-col h-[100dvh]"
-            } flex-1 py-4`}
+            } flex-1 lg:py-4`}
             data-testid="trade-page"
         >
             <div className="flex flex-col flex-1 min-h-0 gap-2">
