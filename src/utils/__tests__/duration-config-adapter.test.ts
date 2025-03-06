@@ -33,7 +33,7 @@ describe("getAvailableDurationTypes", () => {
           durations: {
             supported_units: ["ticks", "seconds"],
             ticks: { min: 1, max: 10 },
-            seconds: { min: 15, max: 60 },
+            seconds: { min: 15, max: 3600 }, // 1 hour in seconds
           },
           stake: { min: "0.35", max: "100000" },
           payout: { min: "0", max: "100000" },
@@ -43,13 +43,18 @@ describe("getAvailableDurationTypes", () => {
 
     const result = getAvailableDurationTypes(mockConfig, mockDurationTypes);
 
-    // Should include ticks, seconds, minutes, hours (derived from seconds)
-    expect(result).toHaveLength(4);
-    expect(result.map((t) => t.value)).toContain("ticks");
-    expect(result.map((t) => t.value)).toContain("seconds");
-    expect(result.map((t) => t.value)).toContain("minutes");
-    expect(result.map((t) => t.value)).toContain("hours");
-    expect(result.map((t) => t.value)).not.toContain("days");
+    // Should include:
+    // - ticks (directly supported)
+    // - seconds (directly supported, 15-59s)
+    // - minutes (derived from seconds, 1-59m)
+    // - hours (derived from seconds, max 3600s = 1h)
+    expect(result).toHaveLength(4); // ticks, seconds, minutes, hours
+    const values = result.map((t) => t.value);
+    expect(values).toContain("ticks");
+    expect(values).toContain("seconds");
+    expect(values).toContain("minutes");
+    expect(values).toContain("hours");
+    expect(values).not.toContain("days");
   });
 
   it("handles empty supported units", () => {
@@ -99,10 +104,17 @@ describe("getAvailableDurationTypes", () => {
 
     const result = getAvailableDurationTypes(mockConfig, mockDurationTypes);
 
-    // Should include seconds, minutes, hours (all derived from seconds)
-    expect(result.map((t) => t.value)).toContain("seconds");
-    expect(result.map((t) => t.value)).toContain("minutes");
-    expect(result.map((t) => t.value)).toContain("hours");
+    // Should include:
+    // - seconds (directly supported, 15-59s)
+    // - minutes (derived from seconds, 1-59m)
+    // - hours (derived from seconds, max 3600s = 1h)
+    expect(result).toHaveLength(3); // seconds, minutes, hours
+    const values = result.map((t) => t.value);
+    expect(values).toContain("seconds");
+    expect(values).toContain("minutes");
+    expect(values).toContain("hours");
+    expect(values).not.toContain("ticks");
+    expect(values).not.toContain("days");
   });
 });
 
