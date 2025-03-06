@@ -57,8 +57,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
   const { currency, isLoggedIn } = useClientStore();
   // const tradeActions = useTradeActions()
   const config = tradeTypeConfigs[trade_type];
-  const [isStakeSelected, setIsStakeSelected] = useState(false);
-  const [stakeError, setStakeError] = useState(false);
 
   const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
     // Initialize states for all buttons in the current trade type
@@ -222,18 +220,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
               )}
               {config.fields.stake && (
                 <Suspense fallback={<div>Loading stake field...</div>}>
-                  <div className="bg-white rounded-lg">
-                    <DesktopTradeFieldCard
-                      isSelected={isStakeSelected}
-                      error={stakeError}
-                    >
-                      <StakeField
-                        className="w-full"
-                        onSelect={(selected) => setIsStakeSelected(selected)}
-                        onError={(error) => setStakeError(error)}
-                      />
-                    </DesktopTradeFieldCard>
-                  </div>
+                  <StakeField className="w-full" />
                 </Suspense>
               )}
             </div>

@@ -1,6 +1,5 @@
-import React from 'react';
-import { formatDurationDisplay } from '@/utils/duration';
-
+import React from "react";
+import { formatDurationDisplay } from "@/utils/duration";
 interface TradeParamProps {
   label: string;
   value: string;
@@ -8,16 +7,19 @@ interface TradeParamProps {
   className?: string;
 }
 
-const TradeParam: React.FC<TradeParamProps> = ({ 
-  label, 
-  value, 
-  onClick, 
-  className
+const TradeParam: React.FC<TradeParamProps> = ({
+  label,
+  value,
+  onClick,
+  className,
 }) => {
-  const formattedValue = label === "Duration" ? formatDurationDisplay(value) : value;
+  const formattedValue =
+    label === "Duration" ? formatDurationDisplay(value) : value;
 
-  const labelClasses = "text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary";
-  const valueClasses = "text-left font-ibm-plex text-base leading-6 font-normal text-gray-900";
+  const labelClasses =
+    "text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary";
+  const valueClasses =
+    "text-left font-ibm-plex text-base leading-6 font-normal text-gray-900";
 
   if (onClick) {
     return (
@@ -25,7 +27,7 @@ const TradeParam: React.FC<TradeParamProps> = ({
         type="button"
         onClick={onClick}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             onClick();
           }
@@ -35,7 +37,11 @@ const TradeParam: React.FC<TradeParamProps> = ({
       >
         <span className={labelClasses}>{label}</span>
         <div className="text-left">
-          <span className={valueClasses}>{formattedValue}</span>
+          {typeof formattedValue === "string" ? (
+            <span className={valueClasses}>{formattedValue}</span>
+          ) : (
+            formattedValue
+          )}
         </div>
       </button>
     );
@@ -45,7 +51,11 @@ const TradeParam: React.FC<TradeParamProps> = ({
     <div className={`${className} text-start`}>
       <span className={labelClasses}>{label}</span>
       <div className="text-left">
-        <span className={valueClasses}>{formattedValue}</span>
+        {typeof formattedValue === "string" ? (
+          <span className={valueClasses}>{formattedValue}</span>
+        ) : (
+          formattedValue
+        )}
       </div>
     </div>
   );

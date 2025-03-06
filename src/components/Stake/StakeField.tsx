@@ -4,18 +4,13 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { useStakeField } from "./hooks/useStakeField";
 import { cn } from "@/lib/utils";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 
 interface StakeFieldProps {
   className?: string;
-  onSelect?: (isSelected: boolean) => void;
-  onError?: (error: boolean) => void;
 }
 
-export const StakeField: React.FC<StakeFieldProps> = ({
-  className,
-  onSelect,
-  onError,
-}) => {
+export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
   const { isLandscape } = useOrientationStore();
   const {
     stake,
@@ -30,7 +25,20 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     handleIncrement,
     handleDecrement,
     handleMobileClick,
-  } = useStakeField({ onSelect, onError });
+    isConfigLoading,
+    isStakeSelected,
+  } = useStakeField();
+
+  if (isConfigLoading) {
+    return (
+      <div className={`${className} relative`}>
+        <div
+          data-testid="stake-field-skeleton"
+          className="h-[66px] bg-gray-200 rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent"
+        />
+      </div>
+    );
+  }
 
   if (!isLandscape) {
     return (
@@ -60,56 +68,60 @@ export const StakeField: React.FC<StakeFieldProps> = ({
   }
 
   return (
-    <div
-      className={`flex flex-col ${className}`}
-      onClick={() => handleSelect(true)}
-      onBlur={(e) => {
-        // Only blur if we're not clicking inside the component
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-          handleSelect(false);
-        }
-      }}
-      tabIndex={0}
-    >
-      <div ref={containerRef} className="flex rounded-lg h-[48px]">
-        <div className="flex flex-col flex-1 justify-between">
-          <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
-            Stake ({currency})
-          </span>
-          <div className="relative">
-            <input
-              ref={inputRef}
-              type="text"
-              value={`${localValue}`}
-              onChange={handleChange}
-              onFocus={() => handleSelect(true)}
-              className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
-              aria-label="Stake amount"
-            />
+    <div className="bg-white rounded-lg">
+      <DesktopTradeFieldCard isSelected={isStakeSelected} error={error}>
+        <div
+          className={`flex flex-col ${className}`}
+          onClick={() => handleSelect(true)}
+          onBlur={(e) => {
+            // Only blur if we're not clicking inside the component
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+              handleSelect(false);
+            }
+          }}
+          tabIndex={0}
+        >
+          <div ref={containerRef} className="flex rounded-lg h-[48px]">
+            <div className="flex flex-col flex-1 justify-between">
+              <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
+                Stake ({currency})
+              </span>
+              <div className="relative">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={`${localValue}`}
+                  onChange={handleChange}
+                  onFocus={() => handleSelect(true)}
+                  className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
+                  aria-label="Stake amount"
+                />
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <button
+                  className="flex items-center justify-center text-2xl"
+                  onClick={handleDecrement}
+                  aria-label="Decrease stake"
+                >
+                  −
+                </button>
+              </div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <button
+                  className="flex items-center justify-center text-2xl"
+                  onClick={handleIncrement}
+                  aria-label="Increase stake"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </div>
+          <Tooltip />
         </div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-            <button
-              className="flex items-center justify-center text-2xl"
-              onClick={handleDecrement}
-              aria-label="Decrease stake"
-            >
-              −
-            </button>
-          </div>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-            <button
-              className="flex items-center justify-center text-2xl"
-              onClick={handleIncrement}
-              aria-label="Increase stake"
-            >
-              +
-            </button>
-          </div>
-        </div>
-      </div>
-      <Tooltip />
+      </DesktopTradeFieldCard>
     </div>
   );
 };

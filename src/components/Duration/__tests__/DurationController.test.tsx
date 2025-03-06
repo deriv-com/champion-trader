@@ -4,12 +4,10 @@ import { DurationController } from "../DurationController";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
-import { adaptDurationRanges } from "@/utils/duration-config-adapter";
-
-// Mock Loader component
-jest.mock("@/components/ui/loader", () => ({
-  Loader: () => <div data-testid="loading-spinner" role="status" />,
-}));
+import {
+  adaptDurationRanges,
+  getAvailableDurationTypes,
+} from "@/utils/duration-config-adapter";
 
 // Mock the store modules themselves, not the hooks
 jest.mock("@/stores/tradeStore", () => ({
@@ -35,9 +33,9 @@ jest.mock("@/hooks/useDebounce", () => ({
 
 // Mock child components
 jest.mock("@/components/ui/tab-list", () => ({
-  TabList: ({ tabs, selectedValue, onSelect }: any) => (
+  TabList: ({ tabs = [], selectedValue, onSelect }: any) => (
     <div data-testid="mock-tab-list">
-      {tabs.map((tab: any) => (
+      {tabs?.map((tab: any) => (
         <button
           key={tab.value}
           data-testid={`tab-${tab.value}`}
@@ -100,7 +98,6 @@ describe("DurationController", () => {
       useTradeStore as jest.MockedFunction<typeof useTradeStore>
     ).mockReturnValue({
       duration: "1 minutes",
-      isConfigLoading: false,
       setDuration: mockSetDuration,
       productConfig: {
         data: {
@@ -125,6 +122,7 @@ describe("DurationController", () => {
       setBottomSheet: mockSetBottomSheet,
     });
 
+    // Mock adaptDurationRanges
     (adaptDurationRanges as jest.Mock).mockReturnValue({
       ticks: [1, 2],
       seconds: [1, 2],
@@ -132,6 +130,15 @@ describe("DurationController", () => {
       hours: [1, 2],
       days: [1, 2],
     });
+
+    // Mock getAvailableDurationTypes to return all duration types by default
+    (getAvailableDurationTypes as jest.Mock).mockReturnValue([
+      { label: "Ticks", value: "ticks" },
+      { label: "Seconds", value: "seconds" },
+      { label: "Minutes", value: "minutes" },
+      { label: "Hours", value: "hours" },
+      { label: "Days", value: "days" },
+    ]);
   });
 
   it("handles duration value selection", () => {
@@ -149,7 +156,6 @@ describe("DurationController", () => {
       useTradeStore as jest.MockedFunction<typeof useTradeStore>
     ).mockReturnValue({
       duration: "1 minutes",
-      isConfigLoading: false,
       setDuration: mockSetDuration,
       productConfig: {
         data: {
@@ -184,21 +190,6 @@ describe("DurationController", () => {
 
     // Should update duration in store
     expect(mockSetDuration).toHaveBeenCalledWith("3:00 hours");
-  });
-
-  it("shows loading state", () => {
-    (
-      useTradeStore as jest.MockedFunction<typeof useTradeStore>
-    ).mockReturnValue({
-      duration: "1 minutes",
-      isConfigLoading: true,
-      setDuration: mockSetDuration,
-      productConfig: null,
-    });
-
-    render(<DurationController />);
-
-    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("handles save in portrait mode", () => {

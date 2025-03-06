@@ -1,22 +1,22 @@
 import { useState, useRef, useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
-import { incrementStake, decrementStake, parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
+import {
+  incrementStake,
+  decrementStake,
+  parseStakeAmount,
+  STAKE_CONFIG,
+} from "@/config/stake";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTooltipStore } from "@/stores/tooltipStore";
 import { validateStake } from "../utils/validation";
 
-interface UseStakeFieldProps {
-  onSelect?: (isSelected: boolean) => void;
-  onError?: (error: boolean) => void;
-}
-
-export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
-  const { stake, setStake } = useTradeStore();
+export const useStakeField = () => {
+  const { stake, setStake, isConfigLoading } = useTradeStore();
   const { currency } = useClientStore();
   const { setBottomSheet } = useBottomSheetStore();
   const { showTooltip, hideTooltip } = useTooltipStore();
-  const [isSelected, setIsSelected] = useState(false);
+  const [isStakeSelected, setIsStakeSelected] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [localValue, setLocalValue] = useState(stake);
@@ -30,7 +30,11 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
   const showError = (message: string) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      showTooltip(message, { x: rect.left-8 , y: rect.top + rect.height / 2 }, "error");
+      showTooltip(
+        message,
+        { x: rect.left - 8, y: rect.top + rect.height / 2 },
+        "error"
+      );
     }
   };
 
@@ -48,7 +52,6 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
     if (validation.error && validation.message) {
       showError(validation.message);
     }
-    onError?.(validation.error);
     return !validation.error;
   };
 
@@ -69,9 +72,8 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
   };
 
   const handleSelect = (selected: boolean) => {
-    setIsSelected(selected);
-    onSelect?.(selected);
-    
+    setIsStakeSelected(selected);
+
     // Show error tooltip if there's an error
     if (error && errorMessage) {
       showError(errorMessage);
@@ -81,33 +83,33 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Get cursor position before update
     const cursorPosition = e.target.selectionStart;
-    
+
     // Extract only the number part
     let value = e.target.value;
-    
+
     // If backspace was pressed and we're at the currency part, ignore it
     if (value.length < localValue.length && value.endsWith(currency)) {
       return;
     }
-    
+
     // Remove currency and any non-numeric characters except decimal point
-    value = value.replace(new RegExp(`\\s*${currency}$`), '').trim();
-    value = value.replace(/[^\d.]/g, '');
-    
+    value = value.replace(new RegExp(`\\s*${currency}$`), "").trim();
+    value = value.replace(/[^\d.]/g, "");
+
     // Ensure only one decimal point
-    const parts = value.split('.');
+    const parts = value.split(".");
     if (parts.length > 2) {
-      value = parts[0] + '.' + parts.slice(1).join('');
+      value = parts[0] + "." + parts.slice(1).join("");
     }
 
     // Remove leading zeros unless it's just "0"
     if (value !== "0") {
-      value = value.replace(/^0+/, '');
+      value = value.replace(/^0+/, "");
     }
 
     // If it starts with a decimal, add leading zero
-    if (value.startsWith('.')) {
-      value = '0' + value;
+    if (value.startsWith(".")) {
+      value = "0" + value;
     }
 
     setLocalValue(value);
@@ -117,7 +119,6 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
       const message = "Please enter an amount";
       setErrorMessage(message);
       showError(message);
-      onError?.(true);
       setStake("");
       return;
     }
@@ -128,7 +129,7 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
         setStake(value);
         hideTooltip();
       }
-      
+
       // Restore cursor position after React updates the input
       setTimeout(() => {
         if (inputRef.current && cursorPosition !== null) {
@@ -146,7 +147,8 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
   return {
     stake,
     currency,
-    isSelected,
+    isStakeSelected,
+    isConfigLoading,
     error,
     errorMessage,
     localValue,

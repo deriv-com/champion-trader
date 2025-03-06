@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useMemo } from "react";
-import { Loader } from "@/components/ui/loader";
 import { TabList, Tab } from "@/components/ui/tab-list";
 import { BottomSheetHeader } from "@/components/ui/bottom-sheet-header";
 import { DurationValueList } from "./components/DurationValueList";
@@ -34,12 +33,7 @@ interface DurationControllerProps {
 export const DurationController: React.FC<DurationControllerProps> = ({
   onClose,
 }) => {
-  const {
-    productConfig: config,
-    duration,
-    isConfigLoading: isLoading,
-    setDuration,
-  } = useTradeStore();
+  const { productConfig: config, duration, setDuration } = useTradeStore();
   const { isLandscape } = useOrientationStore();
   const { setBottomSheet } = useBottomSheetStore();
   const isInitialRender = useRef(true);
@@ -137,9 +131,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({
             isLandscape ? "px-2" : "px-8"
           }`}
         >
-          {isLoading ? (
-            <Loader />
-          ) : selectedTabType === "hours" ? (
+          {selectedTabType === "hours" ? (
             <HoursDurationValue
               selectedValue={selectedValue?.toString() || ""}
               onValueSelect={(value) => {
