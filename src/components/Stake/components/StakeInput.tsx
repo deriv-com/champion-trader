@@ -67,7 +67,7 @@ export const StakeInput: React.FC<StakeInputProps> = ({
     <div className="flex flex-col">
       {isDesktop ? (
         <>
-          <DesktopNumberInputField
+          <DesktopNumberInputField className="border border-gray-400 rounded-md"
             ref={inputRef}
             value={amount}
             onChange={handleChange}
@@ -101,7 +101,7 @@ export const StakeInput: React.FC<StakeInputProps> = ({
           />
         </>
       ) : (
-        <MobileNumberInputField
+        <MobileNumberInputField className="border border-gray-400 rounded-md"
           ref={inputRef}
           value={amount}
           onChange={handleChange}

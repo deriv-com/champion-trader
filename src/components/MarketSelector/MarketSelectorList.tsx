@@ -131,7 +131,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
   }, {} as Record<string, MarketInfo[]>)
 
   return (
-    <div className={`flex flex-col h-full ${isDarkMode ? "bg-gray-800" : "bg-background"}`}>
+    <div className={`flex flex-col h-full ${isDarkMode ? "bg-sidebar" : "bg-background"}`}>
       {/* Header with centered title and close button */}
       {!isMobile && (
         <div className="flex items-center justify-between px-6 py-8">
