@@ -2,6 +2,35 @@ import { DurationRangesResponse } from "@/services/api/rest/duration/types";
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 
 /**
+ * Filters duration types based on API configuration
+ *
+ * @param config - Product configuration from API
+ * @param allDurationTypes - All available duration types
+ * @returns Filtered duration types based on API support and valid ranges
+ */
+export function getAvailableDurationTypes<
+  T extends { value: string; label: string }
+>(config: ProductConfigResponse | null, allDurationTypes: T[]): T[] {
+  if (!config?.data?.validations?.durations) {
+    return allDurationTypes;
+  }
+
+  const { durations } = config.data.validations;
+  const ranges = adaptDurationRanges(config);
+
+  // Only show duration types that have valid ranges
+  return allDurationTypes.filter((type) => {
+    const hasRange = ranges[type.value as keyof DurationRangesResponse];
+    const isTimeBasedType = type.value === "minutes" || type.value === "hours";
+    const isSupported = isTimeBasedType
+      ? durations.supported_units.includes("seconds") // minutes and hours are derived from seconds
+      : durations.supported_units.includes(type.value);
+
+    return isSupported && hasRange;
+  });
+}
+
+/**
  * Converts seconds to appropriate duration ranges for each type
  */
 export const convertSecondsToDurationRanges = (

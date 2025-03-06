@@ -15,7 +15,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
 import { useOrientationStore } from "@/stores/orientationStore";
-import { adaptDurationRanges } from "@/utils/duration-config-adapter";
+import { getAvailableDurationTypes } from "@/utils/duration-config-adapter";
 
 const DURATION_TYPES: Tab[] = [
   { label: "Ticks", value: "ticks" },
@@ -51,28 +51,11 @@ export const DurationController: React.FC<DurationControllerProps> = ({
     };
   }, []);
 
-  // Filter duration types based on supported units and ranges from API
-  const availableDurationTypes = useMemo(() => {
-    if (!config?.data?.validations?.durations) {
-      return DURATION_TYPES;
-    }
-
-    const { durations } = config.data.validations;
-    const ranges = adaptDurationRanges(config);
-
-    // Only show duration types that have valid ranges
-    const filteredTypes = DURATION_TYPES.filter((type) => {
-      const hasRange = ranges[type.value as keyof DurationRangesResponse];
-      const isTimeBasedType =
-        type.value === "minutes" || type.value === "hours";
-      const isSupported = isTimeBasedType
-        ? durations.supported_units.includes("seconds") // minutes and hours are derived from seconds
-        : durations.supported_units.includes(type.value);
-
-      return isSupported && hasRange;
-    });
-    return filteredTypes;
-  }, [config]);
+  // Get available duration types using utility function
+  const availableDurationTypes = useMemo(
+    () => getAvailableDurationTypes(config, DURATION_TYPES),
+    [config]
+  );
 
   // Initialize local states
   const [localDuration, setLocalDuration] = React.useState(duration);

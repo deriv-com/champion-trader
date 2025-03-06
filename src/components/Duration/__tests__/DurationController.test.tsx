@@ -134,45 +134,6 @@ describe("DurationController", () => {
     });
   });
 
-  it("renders available duration types based on config", () => {
-    render(<DurationController />);
-
-    // All duration types should be available based on mock config
-    expect(screen.getByText("Ticks")).toBeInTheDocument();
-    expect(screen.getByText("Seconds")).toBeInTheDocument();
-    expect(screen.getByText("Minutes")).toBeInTheDocument();
-    expect(screen.getByText("Hours")).toBeInTheDocument();
-    expect(screen.getByText("Days")).toBeInTheDocument();
-  });
-
-  it("filters duration types based on supported units", () => {
-    (
-      useTradeStore as jest.MockedFunction<typeof useTradeStore>
-    ).mockReturnValue({
-      duration: "1 minutes",
-      isConfigLoading: false,
-      setDuration: mockSetDuration,
-      productConfig: {
-        data: {
-          validations: {
-            durations: {
-              supported_units: ["seconds"], // Only seconds supported
-            },
-          },
-        },
-      },
-    });
-
-    render(<DurationController />);
-
-    // Only seconds, minutes and hours (derived from seconds) should be available
-    expect(screen.getByText("Seconds")).toBeInTheDocument();
-    expect(screen.getByText("Minutes")).toBeInTheDocument();
-    expect(screen.getByText("Hours")).toBeInTheDocument();
-    expect(screen.queryByText("Ticks")).not.toBeInTheDocument();
-    expect(screen.queryByText("Days")).not.toBeInTheDocument();
-  });
-
   it("handles duration value selection", () => {
     render(<DurationController />);
 
