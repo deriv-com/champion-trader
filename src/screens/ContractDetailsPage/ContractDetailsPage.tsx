@@ -57,10 +57,10 @@ const MobileContractDetailsPage: React.FC = () => {
 
 const ContractDetailsPage: React.FC = () => {
   const { isLandscape } = useOrientationStore();
-  return !isLandscape ? (
-    <MobileContractDetailsPage />
-  ) : (
+  return isLandscape ? (
     <DesktopContractDetailsPage />
+  ) : (
+    <MobileContractDetailsPage />
   );
 };
 

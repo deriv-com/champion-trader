@@ -1,6 +1,6 @@
-import { create } from "zustand"
-import { TradeType, tradeTypeConfigs, TradeButton } from "@/config/tradeTypes"
-import { ContractDetails, contractDetailsStub } from "@/screens/ContractDetailsPage/contractDetailsStub"
+import { create } from "zustand";
+import { TradeType, tradeTypeConfigs, TradeButton } from "@/config/tradeTypes";
+import { ContractDetails } from "@/screens/ContractDetailsPage/contractDetailsStub";
 
 /**
  * Trade Store
@@ -21,8 +21,8 @@ import { ContractDetails, contractDetailsStub } from "@/screens/ContractDetailsP
  * Payout values for trade buttons
  */
 interface Payouts {
-  max: number
-  values: Record<string, number> // Map button actionName to payout value
+  max: number;
+  values: Record<string, number>; // Map button actionName to payout value
 }
 
 /**
@@ -31,40 +31,40 @@ interface Payouts {
 export interface TradeState {
   // State
   /** Current stake amount (numeric value only) */
-  stake: string
+  stake: string;
   /** Duration value with unit */
-  duration: string
+  duration: string;
   /** Whether equals option is enabled */
-  allowEquals: boolean
+  allowEquals: boolean;
   /** Current trade type (from trade type configuration) */
-  trade_type: TradeType
+  trade_type: TradeType;
   /** Current trading instrument */
-  instrument: string
+  instrument: string;
   /** Payout values for each button */
-  payouts: Payouts
+  payouts: Payouts;
 
   // Actions
   /** Set the stake amount */
-  setStake: (stake: string) => void
+  setStake: (stake: string) => void;
   /** Set the duration value */
-  setDuration: (duration: string) => void
+  setDuration: (duration: string) => void;
   /** Toggle the equals option */
-  toggleAllowEquals: () => void
+  toggleAllowEquals: () => void;
   /** Update all payout values */
-  setPayouts: (payouts: Payouts) => void
+  setPayouts: (payouts: Payouts) => void;
   /** Set the current trading instrument */
-  setInstrument: (instrument: string) => void
+  setInstrument: (instrument: string) => void;
   /**
    * Set the current trade type
    * This will update the form fields and buttons based on the trade type configuration
    *
    * @param trade_type - Trade type from configuration
    */
-  setTradeType: (trade_type: TradeType) => void
+  setTradeType: (trade_type: TradeType) => void;
   /** Current contract details */
-  contractDetails: ContractDetails | null
+  contractDetails: ContractDetails | null;
   /** Set contract details */
-  setContractDetails: (details: ContractDetails | null) => void
+  setContractDetails: (details: ContractDetails | null) => void;
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
@@ -94,13 +94,13 @@ export const useTradeStore = create<TradeState>((set) => ({
         max: state.payouts.max,
         values: tradeTypeConfigs[trade_type].buttons.reduce(
           (acc: Record<string, number>, button: TradeButton) => {
-            acc[button.actionName] = 0
-            return acc
+            acc[button.actionName] = 0;
+            return acc;
           },
           {}
         ),
       },
     })),
-  contractDetails: contractDetailsStub, // Initialize with stub data
+  contractDetails: null,
   setContractDetails: (details) => set({ contractDetails: details }),
-}))
+}));
