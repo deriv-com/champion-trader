@@ -3,16 +3,13 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { GuideModal } from "./GuideModal";
 import { ChevronRight } from "lucide-react";
-import { TradeType, tradeTypeConfigs } from "@/config/tradeTypes";
+import { useTradeStore } from "@/stores/tradeStore";
 
-type HowToTradeProps = {
-    tradeType: TradeType;
-};
-
-export const HowToTrade: React.FC<HowToTradeProps> = ({ tradeType }) => {
+export const HowToTrade: React.FC = () => {
     const { setBottomSheet } = useBottomSheetStore();
     const { isDesktop } = useDeviceDetection();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { tradeTypeDisplayName } = useTradeStore();
 
     const handleClick = () => {
         if (isDesktop) {
@@ -32,10 +29,7 @@ export const HowToTrade: React.FC<HowToTradeProps> = ({ tradeType }) => {
                 onClick={handleClick}
                 className="text-gray-500 hover:text-gray-600 text-sm flex items-center gap-1"
             >
-                How to trade{" "}
-                {tradeTypeConfigs[tradeType].buttons
-                    .map((item) => item.title)
-                    .join("/")}
+                How to trade {tradeTypeDisplayName}
                 ?
                 <ChevronRight className="w-4 h-4" />
             </button>

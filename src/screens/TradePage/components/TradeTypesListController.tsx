@@ -24,7 +24,9 @@ export const TradeTypesListController: React.FC = () => {
                 setIsLoading(true);
                 const response = await getProducts();
                 setTradeTypes(response.data.products);
-                setTradeType(response.data.products[0].id);
+                // Set initial trade type with its display name
+                const initialProduct = response.data.products[0];
+                setTradeType(initialProduct.id, initialProduct.display_name);
                 setError(null);
             } catch (err) {
                 setError("Failed to load trade types");
@@ -39,7 +41,12 @@ export const TradeTypesListController: React.FC = () => {
 
     // Handle trade type selection
     const handleTradeTypeSelect = (tradeTypeId: TradeType) => {
-        setTradeType(tradeTypeId);
+        // Find the selected product to get its display name
+        const selectedProduct = tradeTypes.find(
+            (product) => product.id === tradeTypeId
+        );
+        // Pass both the trade type ID and display name to setTradeType
+        setTradeType(tradeTypeId, selectedProduct?.display_name);
     };
 
     // Show loading state or error

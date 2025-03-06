@@ -9,7 +9,7 @@ import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
-import { useTradeActions } from "@/hooks/useTradeActions";
+// import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
 import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
@@ -52,7 +52,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
     isLandscape,
 }) => {
     const { isDesktop } = useDeviceDetection();
-    const { trade_type } = useTradeStore();
+    const { trade_type, tradeTypeDisplayName } = useTradeStore();
     // const { isMobile } = useDeviceDetection()
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
@@ -225,7 +225,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                 className={isLandscape ? "pb-2" : "pt-1 px-4"}
                 id="how-to-trade"
             >
-                <HowToTrade tradeType={trade_type} />
+                <HowToTrade />
             </div>
             {isLandscape ? (
                 // Desktop layout

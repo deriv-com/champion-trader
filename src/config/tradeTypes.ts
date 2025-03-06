@@ -10,6 +10,7 @@ export interface TradeButton {
 }
 
 export interface TradeTypeConfig {
+    displayName?: string; // Optional default display name for the trade type
     fields: {
         duration: boolean;
         stake: boolean;

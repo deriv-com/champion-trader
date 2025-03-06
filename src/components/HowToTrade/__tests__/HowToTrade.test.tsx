@@ -10,18 +10,22 @@ jest.mock("@/stores/bottomSheetStore", () => ({
     }),
 }));
 
+jest.mock("@/stores/tradeStore", () => ({
+    useTradeStore: jest.fn(() => ({ tradeTypeDisplayName: "Rise/Fall" })),
+}));
+
 describe("HowToTrade", () => {
     beforeEach(() => {
         mockSetBottomSheet.mockClear();
     });
 
     it("renders correctly", () => {
-        render(<HowToTrade tradeType="rise_fall" />);
+        render(<HowToTrade />);
         expect(screen.getByText("How to trade Rise/Fall?")).toBeInTheDocument();
     });
 
     it("opens bottom sheet when clicked", () => {
-        render(<HowToTrade tradeType="rise_fall" />);
+        render(<HowToTrade />);
         fireEvent.click(screen.getByText("How to trade Rise/Fall?"));
 
         const call = mockSetBottomSheet.mock.calls[0];
