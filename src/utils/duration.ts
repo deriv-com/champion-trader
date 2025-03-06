@@ -1,44 +1,69 @@
 import { DurationRangesResponse } from "@/services/api/rest/duration/types";
-
-/**
- * Duration ranges for different duration types.
- * Will be replaced by API response later.
- */
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 import { adaptDurationRanges } from "@/adapters/duration-config-adapter";
 
-// Make DURATION_RANGES mutable
-let DURATION_RANGES: DurationRangesResponse = {
-  ticks: { min: 1, max: 10 },
-  seconds: { min: 15, max: 59 },
-  minutes: { min: 1, max: 59 },
-  hours: { min: 1, max: 24, step: 1 },
-  days: { min: 1, max: 30 },
+/**
+ * Interface for centralized duration configuration
+ */
+interface DurationConfig {
+  ranges: DurationRangesResponse;
+  valuesMap: Record<keyof DurationRangesResponse, number[]>;
+}
+
+/**
+ * Centralized duration configuration object
+ * Contains all mutable state related to duration ranges and values
+ */
+const durationConfig: DurationConfig = {
+  ranges: {
+    ticks: { min: 1, max: 10 },
+    seconds: { min: 15, max: 59 },
+    minutes: { min: 1, max: 59 },
+    hours: { min: 1, max: 24, step: 1 },
+    days: { min: 1, max: 30 },
+  },
+  valuesMap: {
+    ticks: Array.from({ length: 10 }, (_, i) => i + 1),
+    seconds: Array.from({ length: 45 }, (_, i) => i + 15),
+    minutes: Array.from({ length: 60 }, (_, i) => i),
+    hours: Array.from({ length: 24 }, (_, i) => i + 1),
+    days: Array.from({ length: 30 }, (_, i) => i + 1),
+  },
 };
 
-// Make DURATION_VALUES_MAP mutable and use plural types
-let DURATION_VALUES_MAP: Record<keyof DurationRangesResponse, number[]> = {
-  ticks: Array.from({ length: 10 }, (_, i) => i + 1),
-  seconds: Array.from({ length: 45 }, (_, i) => i + 15),
-  minutes: Array.from({ length: 60 }, (_, i) => i),
-  hours: Array.from({ length: 24 }, (_, i) => i + 1),
-  days: Array.from({ length: 30 }, (_, i) => i + 1),
-};
+/**
+ * Gets a copy of the current duration ranges
+ * @returns Current duration ranges configuration
+ */
+export function getDurationRanges(): DurationRangesResponse {
+  return { ...durationConfig.ranges };
+}
+
+/**
+ * Gets a copy of the current duration values map
+ * @returns Current duration values map
+ */
+export function getDurationValuesMap(): Record<
+  keyof DurationRangesResponse,
+  number[]
+> {
+  return { ...durationConfig.valuesMap };
+}
 
 /**
  * Updates duration ranges and pre-computed values from API config
  */
 export function updateDurationRanges(config: ProductConfigResponse): void {
   const newRanges = adaptDurationRanges(config);
-  DURATION_RANGES = newRanges;
+  durationConfig.ranges = newRanges;
 
   // Update the pre-computed values
-  Object.keys(DURATION_RANGES).forEach((key) => {
+  Object.keys(durationConfig.ranges).forEach((key) => {
     const typedKey = key as keyof DurationRangesResponse;
-    const range = DURATION_RANGES[typedKey];
+    const range = durationConfig.ranges[typedKey];
 
     if (range) {
-      DURATION_VALUES_MAP[typedKey] = Array.from(
+      durationConfig.valuesMap[typedKey] = Array.from(
         { length: range.max - range.min + 1 },
         (_, i) => i + range.min
       );
@@ -100,7 +125,7 @@ export function generateDurationValues(
     return SPECIAL_HOUR_CASES[hour]?.minutes || ALL_MINUTES;
   }
 
-  const range = DURATION_RANGES[type];
+  const range = durationConfig.ranges[type];
   if (!range) return [];
 
   const { min, max, step = 1 } = range;
@@ -130,7 +155,7 @@ export function isValidDuration(
   type: keyof DurationRangesResponse,
   value: number
 ): boolean {
-  const range = DURATION_RANGES[type];
+  const range = durationConfig.ranges[type];
   if (!range) return false;
   return value >= range.min && value <= range.max;
 }
@@ -141,7 +166,7 @@ export function isValidDuration(
  * @returns Default duration value for the type
  */
 export function getDefaultDuration(type: keyof DurationRangesResponse): number {
-  const range = DURATION_RANGES[type];
+  const range = durationConfig.ranges[type];
   if (!range) return 0;
   return type === "minutes" ? 1 : range.min;
 }
