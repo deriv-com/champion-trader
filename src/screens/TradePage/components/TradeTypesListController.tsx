@@ -3,6 +3,7 @@ import { getProducts } from "@/services/api/rest/product/service";
 import { TabList, Tab } from "@/components/ui/tab-list";
 import { useTradeStore } from "@/stores/tradeStore";
 import { TradeType } from "@/config/tradeTypes";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const TradeTypesListController: React.FC = () => {
     // Get trade_type and setTradeType from tradeStore
@@ -44,8 +45,14 @@ export const TradeTypesListController: React.FC = () => {
     // Show loading state or error
     if (isLoading) {
         return (
-            <div className="min-h-fit lg:min-h-14 flex items-center">
-                Loading trade types...
+            <div className="min-h-fit lg:min-h-14 flex items-center mx-4">
+                <div className="max-w-full flex gap-4">
+                    {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="shrink-0">
+                            <Skeleton className="h-9 w-20 rounded-full" />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }
