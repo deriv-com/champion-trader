@@ -1,6 +1,5 @@
 import React from "react";
 import { useTradeStore } from "@/stores/tradeStore";
-import { formatDate, formatGMTTime } from "@/utils/dateUtils";
 
 export const EntryExitDetails: React.FC = () => {
   const contractDetails = useTradeStore((state) => state.contractDetails);
