@@ -4,10 +4,7 @@ import { DurationController } from "../DurationController";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
-import {
-  adaptDurationRanges,
-  getAvailableDurationTypes,
-} from "@/utils/duration-config-adapter";
+import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 
 // Mock the store modules themselves, not the hooks
 jest.mock("@/stores/tradeStore", () => ({
@@ -22,7 +19,34 @@ jest.mock("@/stores/bottomSheetStore", () => ({
   useBottomSheetStore: jest.fn(),
 }));
 
-jest.mock("@/utils/duration-config-adapter");
+jest.mock("@/adapters/duration-config-adapter", () => ({
+  getAvailableDurationTypes: jest
+    .fn()
+    .mockImplementation(
+      (
+        config: ProductConfigResponse | null,
+        allTypes: { value: string; label: string }[]
+      ) => {
+        // If no config is provided, return all types
+        if (!config?.data?.validations?.durations) {
+          return allTypes;
+        }
+
+        // Return types based on supported_units in the config
+        const { supported_units = [] } = config.data.validations.durations;
+
+        return allTypes.filter((type: { value: string; label: string }) => {
+          // For minutes and hours, check if seconds is supported
+          if (type.value === "minutes" || type.value === "hours") {
+            return supported_units.includes("seconds");
+          }
+          // For other types, check direct support
+          return supported_units.includes(type.value);
+        });
+      }
+    ),
+}));
+
 jest.mock("@/hooks/useDebounce", () => ({
   useDebounce: (value: any, callback: any) => {
     React.useEffect(() => {
@@ -121,24 +145,6 @@ describe("DurationController", () => {
     ).mockReturnValue({
       setBottomSheet: mockSetBottomSheet,
     });
-
-    // Mock adaptDurationRanges
-    (adaptDurationRanges as jest.Mock).mockReturnValue({
-      ticks: [1, 2],
-      seconds: [1, 2],
-      minutes: [1, 2],
-      hours: [1, 2],
-      days: [1, 2],
-    });
-
-    // Mock getAvailableDurationTypes to return all duration types by default
-    (getAvailableDurationTypes as jest.Mock).mockReturnValue([
-      { label: "Ticks", value: "ticks" },
-      { label: "Seconds", value: "seconds" },
-      { label: "Minutes", value: "minutes" },
-      { label: "Hours", value: "hours" },
-      { label: "Days", value: "days" },
-    ]);
   });
 
   it("handles duration value selection", () => {

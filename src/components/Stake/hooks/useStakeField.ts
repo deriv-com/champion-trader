@@ -5,8 +5,8 @@ import {
   incrementStake,
   decrementStake,
   parseStakeAmount,
-  STAKE_CONFIG,
-} from "@/config/stake";
+} from "@/utils/stake";
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTooltipStore } from "@/stores/tooltipStore";
 import { validateStake } from "../utils/validation";
@@ -42,8 +42,8 @@ export const useStakeField = () => {
     const amount = parseStakeAmount(value || "0");
     const validation = validateStake({
       amount,
-      minStake: STAKE_CONFIG.min,
-      maxStake: STAKE_CONFIG.max,
+      minStake: getStakeConfig().min,
+      maxStake: getStakeConfig().max,
       currency,
     });
 

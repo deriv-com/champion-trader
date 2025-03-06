@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DesktopNumberInputField } from "@/components/ui/desktop-number-input-field";
 import { MobileNumberInputField } from "@/components/ui/mobile-number-input-field";
-import { incrementStake, decrementStake } from "@/config/stake";
+import { incrementStake, decrementStake } from "@/utils/stake";
 import { useClientStore } from "@/stores/clientStore";
 
 interface StakeInputProps {
@@ -40,7 +40,12 @@ export const StakeInput: React.FC<StakeInputProps> = ({
     const amount = parseFloat(numericValue);
 
     // Only prevent adding more numbers if there's a max error
-    if (error && maxPayout && amount > maxPayout && e.target.value.length > currentAmount.length) {
+    if (
+      error &&
+      maxPayout &&
+      amount > maxPayout &&
+      e.target.value.length > currentAmount.length
+    ) {
       return;
     }
 
@@ -82,7 +87,9 @@ export const StakeInput: React.FC<StakeInputProps> = ({
                 onClick={handleDecrement}
                 aria-label="Decrease stake"
               >
-                <span className="text-black text-[1.125rem] sm:text-[1rem]">−</span>
+                <span className="text-black text-[1.125rem] sm:text-[1rem]">
+                  −
+                </span>
               </Button>
             }
             rightIcon={
@@ -92,7 +99,9 @@ export const StakeInput: React.FC<StakeInputProps> = ({
                 onClick={handleIncrement}
                 aria-label="Increase stake"
               >
-                <span className="text-black text-[1.125rem] sm:text-[1rem]">+</span>
+                <span className="text-black text-[1.125rem] sm:text-[1rem]">
+                  +
+                </span>
               </Button>
             }
             type="text"

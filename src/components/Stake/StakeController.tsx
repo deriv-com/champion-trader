@@ -6,7 +6,8 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { StakeInputLayout } from "./components/StakeInputLayout";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
+import { parseStakeAmount } from "@/utils/stake";
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { validateStake } from "./utils/validation";
 import { parseDuration, formatDuration } from "@/utils/duration";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
@@ -25,7 +26,8 @@ type ButtonStates = Record<string, ButtonState>;
 interface StakeControllerProps {}
 
 export const StakeController: React.FC<StakeControllerProps> = () => {
-  const { stake, setStake, trade_type, duration, payouts, setPayouts } = useTradeStore();
+  const { stake, setStake, trade_type, duration, payouts, setPayouts } =
+    useTradeStore();
   const { currency, token } = useClientStore();
   const { isLandscape } = useOrientationStore();
   const { setBottomSheet } = useBottomSheetStore();
@@ -48,7 +50,8 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   });
 
   // Parse duration for API call
-  const { value: apiDurationValue, type: apiDurationType } = parseDuration(duration);
+  const { value: apiDurationValue, type: apiDurationType } =
+    parseDuration(duration);
 
   // Debounce stake updates
   useDebounce(localStake, setDebouncedStake, 500);
@@ -140,8 +143,8 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     const amount = parseStakeAmount(value);
     const validation = validateStake({
       amount,
-      minStake: STAKE_CONFIG.min,
-      maxPayout: payouts.max,
+      minStake: getStakeConfig().min,
+      maxStake: payouts.max,
       currency,
     });
 
@@ -161,8 +164,8 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     const amount = parseStakeAmount(value);
     const validation = validateStake({
       amount,
-      minStake: STAKE_CONFIG.min,
-      maxPayout: payouts.max,
+      minStake: getStakeConfig().min,
+      maxStake: payouts.max,
       currency,
     });
 
@@ -226,11 +229,14 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
           maxPayout={payouts.max}
           payoutValues={payouts.values}
           isDesktop={isLandscape}
-          loading={Object.values(buttonStates).some(state => state.loading)}
-          loadingStates={Object.keys(buttonStates).reduce((acc, key) => ({
-            ...acc,
-            [key]: buttonStates[key].loading
-          }), {})}
+          loading={Object.values(buttonStates).some((state) => state.loading)}
+          loadingStates={Object.keys(buttonStates).reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: buttonStates[key].loading,
+            }),
+            {}
+          )}
         />
       </div>
       {!isLandscape && (
@@ -248,9 +254,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
   );
 
   if (isLandscape) {
-    return (
-        <div className="w-[480px]">{content}</div>
-    );
+    return <div className="w-[480px]">{content}</div>;
   }
 
   return <div className="flex flex-col h-full">{content}</div>;

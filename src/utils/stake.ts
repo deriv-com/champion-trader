@@ -1,14 +1,4 @@
-interface StakeConfig {
-  min: number;
-  max: number;
-  step: number;
-}
-
-export const STAKE_CONFIG: StakeConfig = {
-  min: 1,
-  max: 50000,
-  step: 1
-};
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 
 export const parseStakeAmount = (stake: string): number => {
   // Handle both numeric strings and "amount currency" format
@@ -16,15 +6,18 @@ export const parseStakeAmount = (stake: string): number => {
 };
 
 export const validateStakeAmount = (amount: number): boolean => {
-  return amount >= STAKE_CONFIG.min && amount <= STAKE_CONFIG.max;
+  const config = getStakeConfig();
+  return amount >= config.min && amount <= config.max;
 };
 
 export const incrementStake = (currentStake: string): string => {
   const amount = parseStakeAmount(currentStake);
-  return String(Math.min(amount + STAKE_CONFIG.step, STAKE_CONFIG.max));
+  const config = getStakeConfig();
+  return String(Math.min(amount + config.step, config.max));
 };
 
 export const decrementStake = (currentStake: string): string => {
   const amount = parseStakeAmount(currentStake);
-  return String(Math.max(amount - STAKE_CONFIG.step, STAKE_CONFIG.min));
+  const config = getStakeConfig();
+  return String(Math.max(amount - config.step, config.min));
 };

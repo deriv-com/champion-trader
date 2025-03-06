@@ -14,7 +14,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
 import { useOrientationStore } from "@/stores/orientationStore";
-import { getAvailableDurationTypes } from "@/utils/duration-config-adapter";
+import { getAvailableDurationTypes } from "@/adapters/duration-config-adapter";
 
 const DURATION_TYPES: Tab[] = [
   { label: "Ticks", value: "ticks" },

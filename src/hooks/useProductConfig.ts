@@ -4,8 +4,12 @@ import { useToastStore } from "@/stores/toastStore";
 import { getProductConfig } from "@/services/api/rest/product-config/service";
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 import { updateDurationRanges } from "@/utils/duration";
-import { adaptDefaultDuration } from "@/utils/duration-config-adapter";
-import { STAKE_CONFIG } from "@/config/stake";
+import { adaptDefaultDuration } from "@/adapters/duration-config-adapter";
+import {
+  adaptStakeConfig,
+  updateStakeConfig,
+  adaptDefaultStake,
+} from "@/adapters/stake-config-adapter";
 
 // Default configuration to use as fallback
 const DEFAULT_CONFIG: ProductConfigResponse = {
@@ -59,15 +63,13 @@ export const useProductConfig = () => {
       const defaultDuration = adaptDefaultDuration(config);
       setDuration(defaultDuration);
 
-      // Update stake configuration and set default value
-      const { stake: stakeValidation } = config.data.validations;
-      const currentStep = STAKE_CONFIG.step; // Preserve step value
-      Object.assign(STAKE_CONFIG, {
-        min: parseFloat(stakeValidation.min),
-        max: parseFloat(stakeValidation.max),
-        step: currentStep,
-      });
-      setStake(config.data.defaults.stake.toString());
+      // Update stake configuration using the adapter
+      const stakeConfig = adaptStakeConfig(config);
+      updateStakeConfig(stakeConfig);
+
+      // Set default stake value
+      const defaultStake = adaptDefaultStake(config);
+      setStake(defaultStake);
       setAllowEquals(config.data.defaults.allow_equals);
     },
     [setDuration, setStake, setAllowEquals]
