@@ -6,6 +6,7 @@ export interface ContractDetails {
   duration: string;
   barrier: string;
   payout: string;
+  referenceId: string;
   startTime: string;
   startTimeGMT: string;
   entrySpot: string;
@@ -23,6 +24,7 @@ export const contractDetailsStub: ContractDetails = {
   duration: "5 minutes",
   barrier: "329879.6438",
   payout: "11.00",
+  referenceId: "547294814948",
   startTime: "01 Jan 2024",
   startTimeGMT: "16:00:02 GMT",
   entrySpot: "238972.7174",
