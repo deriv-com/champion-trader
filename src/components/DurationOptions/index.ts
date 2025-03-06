@@ -1,1 +1,1 @@
-export { DurationOptions } from './DurationOptions';
+export { DurationOptions } from "./DurationOptions";

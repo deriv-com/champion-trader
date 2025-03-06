@@ -5,30 +5,28 @@ import { StakeController } from "@/components/Stake";
 import { guideConfig } from "./guideConfig";
 
 export interface BottomSheetConfig {
-  [key: string]: {
-    body: ReactNode;
-    height?: string;
-  };
+    [key: string]: {
+        body: ReactNode;
+        height?: string;
+    };
 }
 
 export const bottomSheetConfig: BottomSheetConfig = {
-  "market-info": {
-    body: <MarketSelectorList />,
-  },
-  stake: {
-    body: <StakeController />,
-  },
-  duration: {
-    body: <DurationController />,
-  },
-  "how-to-trade": {
-    body: (
-      <div className="flex flex-col h-full px-6 pt-6">
-        {guideConfig["rise-fall"].header}
-        <div className="flex-1 overflow-y-auto">
-          {guideConfig["rise-fall"].body}
-        </div>
-      </div>
-    ),
-  },
+    "market-info": {
+        body: <MarketSelectorList />,
+    },
+    stake: {
+        body: <StakeController />,
+    },
+    duration: {
+        body: <DurationController />,
+    },
+    "how-to-trade": {
+        body: (
+            <div className="flex flex-col h-full px-6 pt-6">
+                {guideConfig["rise-fall"].header}
+                <div className="flex-1 overflow-y-auto">{guideConfig["rise-fall"].body}</div>
+            </div>
+        ),
+    },
 };

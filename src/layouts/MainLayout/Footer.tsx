@@ -2,14 +2,13 @@ import React from "react";
 import { BottomNav } from "@/components/BottomNav";
 
 interface FooterProps {
-  className?: string;
+    className?: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
-
-  return (
-    <footer className={`border-t ${className}`}>
-      <BottomNav />
-    </footer>
-  );
+export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
+    return (
+        <footer className={`border-t ${className}`}>
+            <BottomNav />
+        </footer>
+    );
 };

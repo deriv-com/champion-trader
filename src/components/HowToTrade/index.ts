@@ -1,2 +1,2 @@
-export * from './HowToTrade';
-export * from './GuideModal';
+export * from "./HowToTrade";
+export * from "./GuideModal";
