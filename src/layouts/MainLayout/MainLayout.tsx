@@ -8,6 +8,7 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { SideNav } from "@/components/SideNav";
 import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar";
+import { OfflineIndicator } from "@/components/ui/offline-indicator";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -42,6 +43,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     return (
         <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
+            <OfflineIndicator />
             {isHeaderVisible && (
                 <Header className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`} />
             )}

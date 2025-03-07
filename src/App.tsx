@@ -4,6 +4,7 @@ import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
 import { BalanceHandler } from "@/components/BalanceHandler";
 import { ToastProvider } from "@/stores/toastStore";
+import { PWAProvider } from "@/components/PWA";
 
 const TradePage = lazy(() =>
     import("@/screens/TradePage").then((module) => ({
@@ -98,8 +99,10 @@ export const App = () => {
 
     return (
         <BrowserRouter>
-            <ToastProvider />
-            <AppContent />
+            <PWAProvider>
+                <ToastProvider />
+                <AppContent />
+            </PWAProvider>
         </BrowserRouter>
     );
 };
