@@ -12,6 +12,7 @@ A React-based trading application for options trading, built with Test-Driven De
 - Atomic component architecture
 - Test-driven development methodology
 - State management with Zustand
+- Progressive Web App (PWA) support with offline capabilities
 
 ## Getting Started
 
@@ -279,6 +280,24 @@ RSBUILD_REST_URL=https://api.example.com
 RSBUILD_SSE_PUBLIC_PATH=/sse
 RSBUILD_SSE_PROTECTED_PATH=/sse
 ```
+
+## Progressive Web App (PWA)
+
+Champion Trader is enabled as a Progressive Web App, providing:
+
+- Offline functionality
+- Install prompts for adding to home screen
+- Background synchronization for offline trades
+- Push notifications support
+- Cache-first strategy for static assets
+- Fallback offline page
+
+### Offline Support
+- Automatic detection of online/offline status with visual indicators
+- Queuing of trades when offline for later processing
+- IndexedDB storage for pending operations
+- Background sync when connection is restored
+- Customized offline experience
 
 ## Contributing
 

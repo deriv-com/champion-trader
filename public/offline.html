@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Champion Trader - Offline</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0033ff">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .container {
+      text-align: center;
+      padding: 2rem;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 90%;
+      width: 400px;
+    }
+    
+    h1 {
+      margin-top: 0;
+      color: #0033ff;
+    }
+    
+    .icon {
+      font-size: 64px;
+      margin-bottom: 1rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #0033ff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .pending-trades {
+      margin-top: 2rem;
+      text-align: left;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+    
+    .trade-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #eee;
+      }
+      
+      .container {
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+      
+      h1 {
+        color: #4d8cff;
+      }
+      
+      .btn {
+        background-color: #4d8cff;
+      }
+      
+      .pending-trades {
+        border-top: 1px solid #333;
+      }
+      
+      .trade-item {
+        border-bottom: 1px solid #333;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📡</div>
+    <h1>You're offline</h1>
+    <p>Champion Trader can't connect to the internet right now. Some features may be unavailable until you're back online.</p>
+    
+    <button class="btn" id="refresh-btn">Try Again</button>
+    
+    <div class="pending-trades" id="pending-trades" style="display: none;">
+      <h2>Pending Trades</h2>
+      <div id="pending-trades-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // Check if the browser is online
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        document.querySelector('.container p').textContent = 'Connected! Refreshing...';
+        // Reload the page
+        window.location.reload();
+      }
+    }
+
+    // Try again button
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+      document.querySelector('.container p').textContent = 'Checking connection...';
+      updateOnlineStatus();
+    });
+
+    // Listen for online event
+    window.addEventListener('online', updateOnlineStatus);
+
+    // Try to load the pending trades from IndexedDB
+    if ('indexedDB' in window) {
+      const request = indexedDB.open('ChampionTraderDB', 1);
+      
+      request.onsuccess = (event) => {
+        const db = event.target.result;
+        
+        if (db.objectStoreNames.contains('pendingTrades')) {
+          const transaction = db.transaction('pendingTrades', 'readonly');
+          const store = transaction.objectStore('pendingTrades');
+          const getAll = store.getAll();
+          
+          getAll.onsuccess = () => {
+            const pendingTrades = getAll.result;
+            
+            if (pendingTrades && pendingTrades.length > 0) {
+              document.getElementById('pending-trades').style.display = 'block';
+              const list = document.getElementById('pending-trades-list');
+              
+              pendingTrades.forEach(trade => {
+                const item = document.createElement('div');
+                item.className = 'trade-item';
+                item.textContent = `${trade.type} trade - ${trade.instrument} (${new Date(trade.timestamp).toLocaleString()})`;
+                list.appendChild(item);
+              });
+            }
+          };
+        }
+      };
+    }
+  </script>
+</body>
+</html>

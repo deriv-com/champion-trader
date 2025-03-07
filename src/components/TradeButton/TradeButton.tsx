@@ -1,5 +1,6 @@
 import React from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useOfflineStore } from "@/stores/offlineStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { WebSocketError } from "@/services/api/websocket/types";
@@ -29,6 +30,27 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
     error,
 }) => {
     const { isLandscape } = useOrientationStore();
+    const { isOnline, addPendingTrade } = useOfflineStore();
+
+    const handleClick = () => {
+        if (!isOnline) {
+            // Store trade for later synchronization
+            addPendingTrade({
+                type: title,
+                instrument: label,
+                value: value,
+                timestamp: new Date().toISOString(),
+            });
+
+            // Show a notification that the trade will be processed when online
+            // This would typically be handled by a notification system
+            alert("You are offline. Your trade will be processed when you are back online.");
+            return;
+        }
+
+        // Process trade normally when online
+        if (onClick) onClick();
+    };
 
     return (
         <Tooltip.Provider>
@@ -41,7 +63,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                             className
                         )}
                         variant="default"
-                        onClick={onClick}
+                        onClick={handleClick}
                         disabled={disabled || loading}
                     >
                         <div
