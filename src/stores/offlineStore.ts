@@ -36,11 +36,17 @@ if (typeof window !== "undefined") {
         // Attempt to sync pending trades when coming back online
         if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
             navigator.serviceWorker.ready.then((registration) => {
-                // Trigger background sync
-                registration.sync
-                    .register("sync-trades")
-                    .then(() => console.log("Background sync registered"))
-                    .catch((err) => console.error("Background sync registration failed:", err));
+                // Trigger background sync if available
+                if ("sync" in registration) {
+                    (registration as any).sync
+                        .register("sync-trades")
+                        .then(() => console.log("Background sync registered"))
+                        .catch((err: Error) =>
+                            console.error("Background sync registration failed:", err)
+                        );
+                } else {
+                    console.log("Background sync not supported");
+                }
             });
         }
     });
