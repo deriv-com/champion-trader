@@ -1,10 +1,10 @@
 declare namespace NodeJS {
-  interface ProcessEnv {
-    RSBUILD_WS_URL: string;
-    RSBUILD_WS_PUBLIC_PATH: string;
-    RSBUILD_WS_PROTECTED_PATH: string;
-    MODE: string;
-  }
+    interface ProcessEnv {
+        RSBUILD_WS_URL: string;
+        RSBUILD_WS_PUBLIC_PATH: string;
+        RSBUILD_WS_PROTECTED_PATH: string;
+        MODE: string;
+    }
 }
 
 export {};

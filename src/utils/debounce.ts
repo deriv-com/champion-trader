@@ -18,20 +18,20 @@
  * // Only the last call with "test3" will be executed after 300ms
  */
 export function debounce<T extends (...args: any[]) => void>(
-  callback: T,
-  delay: number = 500
+    callback: T,
+    delay: number = 500
 ): (...args: Parameters<T>) => () => void {
-  let timeoutId: NodeJS.Timeout;
+    let timeoutId: NodeJS.Timeout;
 
-  return (...args: Parameters<T>): (() => void) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      callback(...args);
-    }, delay);
-    
-    // Return cleanup function
-    return () => {
-      clearTimeout(timeoutId);
+    return (...args: Parameters<T>): (() => void) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            callback(...args);
+        }, delay);
+
+        // Return cleanup function
+        return () => {
+            clearTimeout(timeoutId);
+        };
     };
-  };
 }

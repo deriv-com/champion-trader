@@ -84,8 +84,8 @@ import {
     MarketDerivedVolatility25Icon,
     MarketDerivedVolatility50Icon,
     MarketDerivedVolatility75Icon,
-} from '@deriv/quill-icons';
-import type { IconTypes } from '@deriv/quill-icons';
+} from "@deriv/quill-icons";
+import type { IconTypes } from "@deriv/quill-icons";
 
 export const marketIcons: {
     [key: string]: IconTypes;
@@ -128,13 +128,13 @@ export const marketIcons: {
     stpRNG4: MarketDerivedStepIndices400Icon,
     stpRNG5: MarketDerivedStepIndices500Icon,
     WLDUSD: MarketDerivedUsdBasketIcon,
-    '1HZ10V': MarketDerivedVolatility101sIcon,
-    '1HZ100V': MarketDerivedVolatility1001sIcon,
-    '1HZ150V': MarketDerivedVolatility1501sIcon,
-    '1HZ250V': MarketDerivedVolatility2501sIcon,
-    '1HZ25V': MarketDerivedVolatility251sIcon,
-    '1HZ50V': MarketDerivedVolatility501sIcon,
-    '1HZ75V': MarketDerivedVolatility751sIcon,
+    "1HZ10V": MarketDerivedVolatility101sIcon,
+    "1HZ100V": MarketDerivedVolatility1001sIcon,
+    "1HZ150V": MarketDerivedVolatility1501sIcon,
+    "1HZ250V": MarketDerivedVolatility2501sIcon,
+    "1HZ25V": MarketDerivedVolatility251sIcon,
+    "1HZ50V": MarketDerivedVolatility501sIcon,
+    "1HZ75V": MarketDerivedVolatility751sIcon,
     frxEURAUD: MarketForexEuraudIcon,
     frxEURCAD: MarketForexEurcadIcon,
     frxEURCHF: MarketForexEurchfIcon,
