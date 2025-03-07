@@ -1,1 +1,1 @@
-export * from './TradePage';
+export * from "./TradePage";

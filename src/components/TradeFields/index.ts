@@ -1,1 +1,1 @@
-export { default as TradeParam } from './TradeParam';
+export { default as TradeParam } from "./TradeParam";

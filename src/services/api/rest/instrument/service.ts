@@ -1,8 +1,5 @@
-import { apiClient } from '../../axios_interceptor';
-import {
-  AvailableInstrumentsRequest,
-  AvailableInstrumentsResponse,
-} from '../types';
+import { apiClient } from "../../axios_interceptor";
+import { AvailableInstrumentsRequest, AvailableInstrumentsResponse } from "../types";
 
 /**
  * Fetches available trading instruments
@@ -11,11 +8,11 @@ import {
  * @throws AxiosError with ErrorResponse data on validation or server errors
  */
 export const getAvailableInstruments = async (
-  request: AvailableInstrumentsRequest
+    request: AvailableInstrumentsRequest
 ): Promise<AvailableInstrumentsResponse> => {
-  const response = await apiClient.post<AvailableInstrumentsResponse>(
-    '/available_instruments',
-    request
-  );
-  return response.data;
+    const response = await apiClient.post<AvailableInstrumentsResponse>(
+        "/available_instruments",
+        request
+    );
+    return response.data;
 };

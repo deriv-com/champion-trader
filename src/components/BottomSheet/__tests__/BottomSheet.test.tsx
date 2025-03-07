@@ -8,220 +8,220 @@ const mockUseBottomSheetStore = useBottomSheetStore as unknown as jest.Mock;
 const mockUseDeviceDetection = useDeviceDetection as jest.Mock;
 
 jest.mock("@/stores/bottomSheetStore", () => ({
-  useBottomSheetStore: jest.fn()
+    useBottomSheetStore: jest.fn(),
 }));
 
 jest.mock("@/hooks/useDeviceDetection", () => ({
-  useDeviceDetection: jest.fn()
+    useDeviceDetection: jest.fn(),
 }));
 
 // Mock the config
 jest.mock("@/config/bottomSheetConfig", () => ({
-  bottomSheetConfig: {
-    'test-key': {
-      body: <div>Test Body Content</div>
-    }
-  }
+    bottomSheetConfig: {
+        "test-key": {
+            body: <div>Test Body Content</div>,
+        },
+    },
 }));
 
 describe("BottomSheet", () => {
-  const mockSetBottomSheet = jest.fn();
+    const mockSetBottomSheet = jest.fn();
 
-  beforeEach(() => {
-    // Reset mocks
-    jest.clearAllMocks();
-    mockUseDeviceDetection.mockReturnValue({ isDesktop: false });
-    // Mock requestAnimationFrame
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => setTimeout(cb, 0));
-  });
-
-  afterEach(() => {
-    (window.requestAnimationFrame as jest.Mock).mockRestore();
-  });
-
-  it("renders body content when showBottomSheet is true", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
+    beforeEach(() => {
+        // Reset mocks
+        jest.clearAllMocks();
+        mockUseDeviceDetection.mockReturnValue({ isDesktop: false });
+        // Mock requestAnimationFrame
+        jest.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => setTimeout(cb, 0));
     });
 
-    render(<BottomSheet />);
-
-    expect(screen.getByText("Test Body Content")).toBeInTheDocument();
-  });
-
-  it("does not render when showBottomSheet is false", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: false,
-      key: null,
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
+    afterEach(() => {
+        (window.requestAnimationFrame as jest.Mock).mockRestore();
     });
 
-    render(<BottomSheet />);
+    it("renders body content when showBottomSheet is true", () => {
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    expect(screen.queryByText("Test Body Content")).not.toBeInTheDocument();
-  });
+        render(<BottomSheet />);
 
-  it("applies custom height from store", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '50%',
-      setBottomSheet: mockSetBottomSheet
+        expect(screen.getByText("Test Body Content")).toBeInTheDocument();
     });
 
-    const { container } = render(<BottomSheet />);
+    it("does not render when showBottomSheet is false", () => {
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: false,
+            key: null,
+            height: "380px",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const bottomSheet = container.querySelector('[class*="fixed bottom-0"]');
-    expect(bottomSheet).toHaveStyle({ height: '50vh' });
-  });
+        render(<BottomSheet />);
 
-  it("handles touch drag to dismiss, prevents default, and calls onDragDown", () => {
-    const mockOnDragDown = jest.fn();
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      onDragDown: mockOnDragDown,
-      setBottomSheet: mockSetBottomSheet
+        expect(screen.queryByText("Test Body Content")).not.toBeInTheDocument();
     });
 
-    const { container } = render(<BottomSheet />);
+    it("applies custom height from store", () => {
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "50%",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
-    expect(handleBar).toBeInTheDocument();
+        const { container } = render(<BottomSheet />);
 
-    // Create a mock event with preventDefault
-    const mockPreventDefault = jest.fn();
-    const touchStartEvent = { touches: [{ clientY: 0 }] };
-    const touchMoveEvent = new TouchEvent('touchmove', {
-      touches: [{ clientY: 150 } as Touch],
-      bubbles: true,
-      cancelable: true
-    });
-    Object.defineProperty(touchMoveEvent, 'preventDefault', {
-      value: mockPreventDefault
+        const bottomSheet = container.querySelector('[class*="fixed bottom-0"]');
+        expect(bottomSheet).toHaveStyle({ height: "50vh" });
     });
 
-    // Simulate drag down
-    fireEvent.touchStart(handleBar!, touchStartEvent);
-    document.dispatchEvent(touchMoveEvent);
-    fireEvent.touchEnd(document);
+    it("handles touch drag to dismiss, prevents default, and calls onDragDown", () => {
+        const mockOnDragDown = jest.fn();
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            onDragDown: mockOnDragDown,
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    // Verify preventDefault was called
-    expect(mockPreventDefault).toHaveBeenCalled();
-    expect(mockOnDragDown).toHaveBeenCalled();
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-  });
+        const { container } = render(<BottomSheet />);
 
-  it("applies animation classes when shown", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
+        const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
+        expect(handleBar).toBeInTheDocument();
+
+        // Create a mock event with preventDefault
+        const mockPreventDefault = jest.fn();
+        const touchStartEvent = { touches: [{ clientY: 0 }] };
+        const touchMoveEvent = new TouchEvent("touchmove", {
+            touches: [{ clientY: 150 } as Touch],
+            bubbles: true,
+            cancelable: true,
+        });
+        Object.defineProperty(touchMoveEvent, "preventDefault", {
+            value: mockPreventDefault,
+        });
+
+        // Simulate drag down
+        fireEvent.touchStart(handleBar!, touchStartEvent);
+        document.dispatchEvent(touchMoveEvent);
+        fireEvent.touchEnd(document);
+
+        // Verify preventDefault was called
+        expect(mockPreventDefault).toHaveBeenCalled();
+        expect(mockOnDragDown).toHaveBeenCalled();
+        expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
     });
 
-    const { container } = render(<BottomSheet />);
+    it("applies animation classes when shown", () => {
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const overlay = container.querySelector('[class*="fixed inset-0"]');
-    const sheet = container.querySelector('[class*="fixed bottom-0"]');
+        const { container } = render(<BottomSheet />);
 
-    expect(overlay?.className).toContain('animate-in fade-in-0');
-    expect(sheet?.className).toContain('animate-in fade-in-0 slide-in-from-bottom');
-    expect(sheet?.className).toContain('duration-300');
-  });
+        const overlay = container.querySelector('[class*="fixed inset-0"]');
+        const sheet = container.querySelector('[class*="fixed bottom-0"]');
 
-  it("calls onDragDown when clicking overlay", () => {
-    const mockOnDragDown = jest.fn();
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      onDragDown: mockOnDragDown,
-      setBottomSheet: mockSetBottomSheet
+        expect(overlay?.className).toContain("animate-in fade-in-0");
+        expect(sheet?.className).toContain("animate-in fade-in-0 slide-in-from-bottom");
+        expect(sheet?.className).toContain("duration-300");
     });
 
-    const { container } = render(<BottomSheet />);
+    it("calls onDragDown when clicking overlay", () => {
+        const mockOnDragDown = jest.fn();
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            onDragDown: mockOnDragDown,
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const overlay = container.querySelector('[class*="fixed inset-0"]');
-    expect(overlay).toBeInTheDocument();
-    fireEvent.click(overlay!);
+        const { container } = render(<BottomSheet />);
 
-    expect(mockOnDragDown).toHaveBeenCalled();
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-  });
+        const overlay = container.querySelector('[class*="fixed inset-0"]');
+        expect(overlay).toBeInTheDocument();
+        fireEvent.click(overlay!);
 
-  it("does not close bottom sheet when clicking handle bar on mobile", () => {
-    mockUseDeviceDetection.mockReturnValue({ isDesktop: false });
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
+        expect(mockOnDragDown).toHaveBeenCalled();
+        expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
     });
 
-    const { container } = render(<BottomSheet />);
+    it("does not close bottom sheet when clicking handle bar on mobile", () => {
+        mockUseDeviceDetection.mockReturnValue({ isDesktop: false });
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
-    expect(handleBar).toBeInTheDocument();
-    fireEvent.click(handleBar!);
+        const { container } = render(<BottomSheet />);
 
-    expect(mockSetBottomSheet).not.toHaveBeenCalled();
-  });
+        const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
+        expect(handleBar).toBeInTheDocument();
+        fireEvent.click(handleBar!);
 
-  it("handles mouse drag to dismiss and calls onDragDown", async () => {
-    const mockOnDragDown = jest.fn();
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      onDragDown: mockOnDragDown,
-      setBottomSheet: mockSetBottomSheet
+        expect(mockSetBottomSheet).not.toHaveBeenCalled();
     });
 
-    const { container } = render(<BottomSheet />);
+    it("handles mouse drag to dismiss and calls onDragDown", async () => {
+        const mockOnDragDown = jest.fn();
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            onDragDown: mockOnDragDown,
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
-    expect(handleBar).toBeInTheDocument();
+        const { container } = render(<BottomSheet />);
 
-    // Simulate mouse drag down
-    fireEvent.mouseDown(handleBar!, { clientY: 0 });
-    
-    await act(async () => {
-      const mouseMoveEvent = new MouseEvent('mousemove', {
-        clientY: 150,
-        bubbles: true,
-        cancelable: true
-      });
-      document.dispatchEvent(mouseMoveEvent);
-      // Wait for requestAnimationFrame
-      await new Promise(resolve => setTimeout(resolve, 0));
+        const handleBar = container.querySelector('[class*="flex flex-col items-center"]');
+        expect(handleBar).toBeInTheDocument();
+
+        // Simulate mouse drag down
+        fireEvent.mouseDown(handleBar!, { clientY: 0 });
+
+        await act(async () => {
+            const mouseMoveEvent = new MouseEvent("mousemove", {
+                clientY: 150,
+                bubbles: true,
+                cancelable: true,
+            });
+            document.dispatchEvent(mouseMoveEvent);
+            // Wait for requestAnimationFrame
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        });
+
+        fireEvent.mouseUp(document);
+
+        expect(mockOnDragDown).toHaveBeenCalled();
+        expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
     });
 
-    fireEvent.mouseUp(document);
+    it("should close when clicking overlay", () => {
+        mockUseBottomSheetStore.mockReturnValue({
+            showBottomSheet: true,
+            key: "test-key",
+            height: "380px",
+            setBottomSheet: mockSetBottomSheet,
+        });
 
-    expect(mockOnDragDown).toHaveBeenCalled();
-    expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
-  });
+        const { container } = render(<BottomSheet />);
 
-  it("should close when clicking overlay", () => {
-    mockUseBottomSheetStore.mockReturnValue({
-      showBottomSheet: true,
-      key: 'test-key',
-      height: '380px',
-      setBottomSheet: mockSetBottomSheet
+        const overlay = container.querySelector('[class*="fixed inset-0"]');
+        expect(overlay).toBeInTheDocument();
+        fireEvent.click(overlay!);
+
+        expect(mockSetBottomSheet).toHaveBeenCalled();
     });
-
-    const { container } = render(<BottomSheet />);
-
-    const overlay = container.querySelector('[class*="fixed inset-0"]');
-    expect(overlay).toBeInTheDocument();
-    fireEvent.click(overlay!);
-
-    expect(mockSetBottomSheet).toHaveBeenCalled();
-  });
 });
