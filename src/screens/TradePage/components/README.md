@@ -1,134 +1,51 @@
-# Trade Page Components
+# TradeTypesListController Component
 
-## TradeFormController
+A controller component that fetches and displays available trade types as a tab list, allowing users to select different trading modes.
 
-The TradeFormController is a dynamic form component that renders trade fields and buttons based on the current trade type configuration.
+## Features
 
-### Features
+- Fetches available trade types from the API
+- Displays trade types as selectable tabs
+- Manages selection state through Zustand store
+- Handles loading and error states with skeleton UI
+- Updates global trade type state on selection
 
-- Config-driven rendering of trade fields and buttons
-- Responsive layout support (mobile/desktop)
-- Lazy loading of form components
-- Integrated with trade actions and store
-
-### Usage
+## Usage
 
 ```tsx
-import { TradeFormController } from "./components/TradeFormController";
+import { TradeTypesListController } from '@/screens/TradePage/components/TradeTypesListController';
 
-// In your component:
-<TradeFormController isLandscape={isLandscape} />
-```
-
-### Architecture
-
-The component follows these key principles:
-
-1. **Configuration-Driven**
-   - Uses trade type configuration from `src/config/tradeTypes.ts`
-   - Dynamically renders fields and buttons based on config
-   - Supports different layouts per trade type
-
-2. **Lazy Loading**
-   - Components are lazy loaded using React.lazy
-   - Suspense boundaries handle loading states
-   - Preloading based on metadata configuration
-
-3. **Store Integration**
-   - Uses useTradeStore for trade type and form values
-   - Uses useTradeActions for button click handlers
-   - Maintains reactive updates to store changes
-
-### Component Structure
-
-```typescript
-interface TradeFormControllerProps {
-  isLandscape: boolean;  // Controls desktop/mobile layout
+function TradePage() {
+  return (
+    <div className="trade-page">
+      <TradeTypesListController />
+      {/* Other trade components */}
+    </div>
+  );
 }
-
-// Lazy loaded components
-const DurationField = lazy(() => import("@/components/Duration"));
-const StakeField = lazy(() => import("@/components/Stake"));
-const EqualTradeController = lazy(() => import("@/components/EqualTrade"));
-
-export const TradeFormController: React.FC<TradeFormControllerProps>
 ```
 
-### Layout Modes
+## State Management
 
-1. **Desktop Layout (isLandscape: true)**
-   - Vertical stack of fields
-   - Full-width trade buttons
-   - Fixed width sidebar
+The component uses Zustand for state management:
+- Trade type selection state via `useTradeStore`
+- Local loading and error states
 
-2. **Mobile Layout (isLandscape: false)**
-   - Grid layout for fields
-   - Bottom-aligned trade buttons
-   - Full-width container
+## Loading State
 
-### Adding New Fields
+When loading, the component displays skeleton loaders to indicate content is being fetched:
+- Uses the `Skeleton` component with rounded styling
+- Displays multiple skeleton items to represent the tab list
 
-To add a new field type:
+## Error Handling
 
-1. Create the field component
-2. Add it to the lazy loaded components
-3. Update the trade type configuration
-4. Add rendering logic in the controller
+Provides user feedback when trade types cannot be loaded:
+- Displays error message
+- Logs detailed error information to console
 
-Example:
-```typescript
-// 1. Create component
-const NewField = lazy(() => import("@/components/NewField"));
+## Dependencies
 
-// 2. Update config
-{
-  fields: {
-    newField: true
-  }
-}
-
-// 3. Add rendering
-{config.fields.newField && (
-  <Suspense fallback={<div>Loading...</div>}>
-    <NewField />
-  </Suspense>
-)}
-```
-
-### Testing
-
-The component should be tested for:
-
-1. **Configuration Changes**
-   - Different trade types render correctly
-   - Fields appear/disappear as expected
-   - Buttons update properly
-
-2. **Interactions**
-   - Field interactions work
-   - Button clicks trigger correct actions
-   - Loading states display properly
-
-3. **Responsive Behavior**
-   - Desktop layout renders correctly
-   - Mobile layout renders correctly
-   - Transitions between layouts work
-
-4. **Performance**
-   - Lazy loading works as expected
-   - Preloading triggers correctly
-   - No unnecessary re-renders
-
-Example test:
-```typescript
-describe('TradeFormController', () => {
-  it('renders correct fields for trade type', () => {
-    const { setTradeType } = useTradeStore();
-    setTradeType('rise_fall');
-    
-    render(<TradeFormController isLandscape={true} />);
-    
-    expect(screen.getByTestId('duration-field')).toBeInTheDocument();
-    expect(screen.getByTestId('stake-field')).toBeInTheDocument();
-  });
-});
+- `@/services/api/rest/product/service` - For fetching trade products
+- `@/components/ui/tab-list` - For rendering the tab interface
+- `@/stores/tradeStore` - For managing selected trade type
+- `@/components/ui/skeleton` - For loading state visualization

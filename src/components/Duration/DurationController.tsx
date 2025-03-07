@@ -26,7 +26,9 @@ interface DurationControllerProps {
     onClose?: () => void;
 }
 
-export const DurationController: React.FC<DurationControllerProps> = ({ onClose }) => {
+export const DurationController: React.FC<DurationControllerProps> = ({
+    onClose,
+}) => {
     const { duration, setDuration } = useTradeStore();
     const { isLandscape } = useOrientationStore();
     const { setBottomSheet } = useBottomSheetStore();
@@ -43,7 +45,8 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
     const [localDuration, setLocalDuration] = React.useState(duration);
     const [value, type] = localDuration.split(" ");
     const selectedType = type as DurationType;
-    const selectedValue: string | number = type === "hour" ? value : parseInt(value, 10);
+    const selectedValue: string | number =
+        type === "hour" ? value : parseInt(value, 10);
 
     // Use debounced updates for desktop scroll
     useDebounce(
@@ -57,7 +60,10 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
     );
 
     const handleTypeSelect = (type: DurationType) => {
-        const newDuration = type === "hour" ? "1:0 hour" : `${getDurationValues(type)[0]} ${type}`;
+        const newDuration =
+            type === "hour"
+                ? "1:0 hour"
+                : `${getDurationValues(type)[0]} ${type}`;
         setLocalDuration(newDuration);
     };
 
@@ -88,13 +94,19 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
         <>
             <div className={isLandscape ? "flex" : ""}>
                 {!isLandscape && <BottomSheetHeader title="Duration" />}
-                <TabList
-                    tabs={DURATION_TYPES}
-                    selectedValue={selectedType}
-                    onSelect={handleTypeSelect as (value: string) => void}
-                    variant={isLandscape ? "vertical" : "chip"}
-                />
-                <div className={`flex-1 relative bg-white ${isLandscape ? "px-2" : "px-8"}`}>
+                <div className="mx-4">
+                    <TabList
+                        tabs={DURATION_TYPES}
+                        selectedValue={selectedType}
+                        onSelect={handleTypeSelect as (value: string) => void}
+                        variant={isLandscape ? "vertical" : "chip"}
+                    />
+                </div>
+                <div
+                    className={`flex-1 relative bg-white ${
+                        isLandscape ? "px-2" : "px-8"
+                    }`}
+                >
                     {selectedType === "hour" ? (
                         <HoursDurationValue
                             selectedValue={selectedValue.toString()}

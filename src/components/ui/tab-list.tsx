@@ -15,7 +15,11 @@ interface TabListProps extends BaseTabListProps {
     variant: "chip" | "vertical";
 }
 
-const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
+const ChipTabList: React.FC<BaseTabListProps> = ({
+    tabs,
+    selectedValue,
+    onSelect,
+}) => {
     return (
         <div
             className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
@@ -24,7 +28,7 @@ const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect
                 msOverflowStyle: "none",
             }}
         >
-            <div className="flex gap-4 min-w-min">
+            <div className="max-w-full flex gap-4">
                 {tabs.map(({ label, value }) => (
                     <div key={value} className="shrink-0">
                         <button
@@ -33,8 +37,8 @@ const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect
                 px-4 py-2 rounded-full text-sm font-medium transition-colors
                 ${
                     selectedValue === value
-                        ? "bg-gray-900 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-gray-900 text-white border border-transparent"
+                        : "bg-inherit border border-[rgba(24,28,37,0.16)] text-[#181C25] hover:bg-gray-200"
                 }
               `}
                         >
@@ -47,7 +51,11 @@ const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect
     );
 };
 
-const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
+const VerticalTabList: React.FC<BaseTabListProps> = ({
+    tabs,
+    selectedValue,
+    onSelect,
+}) => {
     return (
         <div className="w-28 bg-[#F6F7F8]">
             {tabs.map(({ label, value }) => (
@@ -73,5 +81,9 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSe
 };
 
 export const TabList: React.FC<TabListProps> = ({ variant, ...props }) => {
-    return variant === "chip" ? <ChipTabList {...props} /> : <VerticalTabList {...props} />;
+    return variant === "chip" ? (
+        <ChipTabList {...props} />
+    ) : (
+        <VerticalTabList {...props} />
+    );
 };

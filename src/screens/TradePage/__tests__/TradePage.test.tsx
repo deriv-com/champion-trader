@@ -77,6 +77,26 @@ jest.mock("../components/TradeFormController", () => ({
     ),
 }));
 
+// Mock MarketInfo component to handle the subtitle prop correctly
+jest.mock("@/components/MarketInfo", () => ({
+    MarketInfo: ({
+        title,
+        subtitle,
+        onClick,
+        isMobile,
+    }: {
+        title: string;
+        subtitle: any;
+        onClick?: () => void;
+        isMobile?: boolean;
+    }) => (
+        <div data-testid="market-info" data-mobile={isMobile} onClick={onClick}>
+            <div>{title}</div>
+            <div>{typeof subtitle === "string" ? subtitle : "Rise/Fall"}</div>
+        </div>
+    ),
+}));
+
 describe("TradePage", () => {
     const mockToggleAllowEquals = jest.fn();
     const mockSetBottomSheet = jest.fn();
@@ -102,6 +122,7 @@ describe("TradePage", () => {
             toggleAllowEquals: mockToggleAllowEquals,
             setPayouts: mockSetPayouts,
             instrument: "1HZ100V",
+            tradeTypeDisplayName: "Rise/Fall",
         }));
 
         jest.spyOn(bottomSheetStore, "useBottomSheetStore").mockImplementation(() => ({
@@ -167,6 +188,7 @@ describe("TradePage", () => {
         expect(tradePage.className).toContain("flex-col");
         expect(tradePage.className).toContain("flex-1");
         expect(tradePage.className).toContain("h-[100dvh]");
+        expect(tradePage.className).toContain("lg:py-4");
     });
 
     it("renders in landscape mode", async () => {

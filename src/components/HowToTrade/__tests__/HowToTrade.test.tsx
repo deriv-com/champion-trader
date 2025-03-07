@@ -10,6 +10,10 @@ jest.mock("@/stores/bottomSheetStore", () => ({
     }),
 }));
 
+jest.mock("@/stores/tradeStore", () => ({
+    useTradeStore: jest.fn(() => ({ tradeTypeDisplayName: "Rise/Fall" })),
+}));
+
 describe("HowToTrade", () => {
     beforeEach(() => {
         mockSetBottomSheet.mockClear();
