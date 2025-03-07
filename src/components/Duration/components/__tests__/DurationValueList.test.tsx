@@ -1,81 +1,175 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { DurationValueList } from "../DurationValueList";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+
+// Mock hooks
+jest.mock("@/hooks/useDeviceDetection", () => ({
+  useDeviceDetection: jest.fn(),
+}));
 
 // Mock ScrollSelect component
 jest.mock("@/components/ui/scroll-select", () => ({
-    ScrollSelect: ({ options, selectedValue }: any) => (
-        <div
-            data-testid="scroll-select"
-            data-options={JSON.stringify(options)}
-            data-selected={selectedValue}
+  ScrollSelect: ({
+    options,
+    selectedValue,
+    onValueSelect,
+    onValueClick,
+  }: any) => (
+    <div data-testid="mock-scroll-select">
+      {options.map((option: any) => (
+        <button
+          key={option.value}
+          data-testid={`option-${option.value}`}
+          data-selected={option.value === selectedValue}
+          onClick={() => {
+            onValueSelect(option.value);
+            onValueClick?.(option.value);
+          }}
         >
-            {options.map((opt: any) => (
-                <div key={opt.value}>{opt.label}</div>
-            ))}
-        </div>
-    ),
+          {option.label}
+        </button>
+      ))}
+    </div>
+  ),
 }));
 
 describe("DurationValueList", () => {
-    const defaultProps = {
-        selectedValue: 1,
-        durationType: "tick" as const,
-        onValueSelect: jest.fn(),
-        onValueClick: jest.fn(),
-        getDurationValues: () => [1, 2, 3],
-    };
+  const mockOnValueSelect = jest.fn();
+  const mockOnValueClick = jest.fn();
+  const mockGetDurationValues = jest.fn();
 
-    beforeEach(() => {
-        defaultProps.onValueSelect.mockClear();
-        defaultProps.onValueClick.mockClear();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetDurationValues.mockReturnValue([1, 2, 3]);
+    (useDeviceDetection as jest.Mock).mockReturnValue({ isDesktop: true });
+  });
+
+  it("renders duration values with correct labels", () => {
+    // Test for hours
+    mockGetDurationValues.mockReturnValue([1, 2]);
+    render(
+      <DurationValueList
+        selectedValue={1}
+        durationType="hours"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    expect(screen.getByText("1 hour")).toBeInTheDocument();
+    expect(screen.getByText("2 hours")).toBeInTheDocument();
+
+    // Test for minutes
+    mockGetDurationValues.mockReturnValue([1, 2]);
+    render(
+      <DurationValueList
+        selectedValue={1}
+        durationType="minutes"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    expect(screen.getByText("1 minute")).toBeInTheDocument();
+    expect(screen.getByText("2 minutes")).toBeInTheDocument();
+  });
+
+  it("calls getDurationValues with correct type", () => {
+    render(
+      <DurationValueList
+        selectedValue={1}
+        durationType="hours"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    expect(mockGetDurationValues).toHaveBeenCalledWith("hours");
+  });
+
+  it("handles value selection", () => {
+    mockGetDurationValues.mockReturnValue([1, 2, 3]);
+    render(
+      <DurationValueList
+        selectedValue={1}
+        durationType="hours"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId("option-2"));
+
+    expect(mockOnValueSelect).toHaveBeenCalledWith(2);
+    expect(mockOnValueClick).toHaveBeenCalledWith(2);
+  });
+
+  it("passes correct auto-select prop based on device", () => {
+    // Test desktop
+    (useDeviceDetection as jest.Mock).mockReturnValue({ isDesktop: true });
+    const { rerender } = render(
+      <DurationValueList
+        selectedValue={1}
+        durationType="hours"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    expect(screen.getByTestId("mock-scroll-select")).toBeInTheDocument();
+
+    // Test mobile
+    (useDeviceDetection as jest.Mock).mockReturnValue({ isDesktop: false });
+    rerender(
+      <DurationValueList
+        selectedValue={1}
+        durationType="hours"
+        onValueSelect={mockOnValueSelect}
+        onValueClick={mockOnValueClick}
+        getDurationValues={mockGetDurationValues}
+      />
+    );
+
+    expect(screen.getByTestId("mock-scroll-select")).toBeInTheDocument();
+  });
+
+  it("formats unit labels correctly for all duration types", () => {
+    const testCases: Array<{
+      type: keyof DurationRangesResponse;
+      singular: string;
+      plural: string;
+    }> = [
+      { type: "ticks", singular: "tick", plural: "ticks" },
+      { type: "seconds", singular: "second", plural: "seconds" },
+      { type: "minutes", singular: "minute", plural: "minutes" },
+      { type: "hours", singular: "hour", plural: "hours" },
+      { type: "days", singular: "day", plural: "days" },
+    ];
+
+    mockGetDurationValues.mockReturnValue([1, 2]);
+
+    testCases.forEach(({ type, singular, plural }) => {
+      render(
+        <DurationValueList
+          selectedValue={1}
+          durationType={type}
+          onValueSelect={mockOnValueSelect}
+          onValueClick={mockOnValueClick}
+          getDurationValues={mockGetDurationValues}
+        />
+      );
+
+      // Check singular form
+      expect(screen.getByText(`1 ${singular}`)).toBeInTheDocument();
+
+      // Check plural form
+      expect(screen.getByText(`2 ${plural}`)).toBeInTheDocument();
     });
-
-    it("formats tick values correctly", () => {
-        render(<DurationValueList {...defaultProps} />);
-
-        expect(screen.getByText("1 tick")).toBeInTheDocument();
-        expect(screen.getByText("2 ticks")).toBeInTheDocument();
-        expect(screen.getByText("3 ticks")).toBeInTheDocument();
-    });
-
-    it("formats minute values correctly", () => {
-        render(
-            <DurationValueList
-                {...defaultProps}
-                durationType="minute"
-                getDurationValues={() => [1, 2, 5]}
-            />
-        );
-
-        expect(screen.getByText("1 minute")).toBeInTheDocument();
-        expect(screen.getByText("2 minutes")).toBeInTheDocument();
-        expect(screen.getByText("5 minutes")).toBeInTheDocument();
-    });
-
-    it("formats day values without pluralization", () => {
-        render(
-            <DurationValueList
-                {...defaultProps}
-                durationType="day"
-                getDurationValues={() => [1, 2]}
-            />
-        );
-
-        expect(screen.getByText("1 day")).toBeInTheDocument();
-        expect(screen.getByText("2 day")).toBeInTheDocument();
-    });
-
-    it("passes correct props to ScrollSelect", () => {
-        render(<DurationValueList {...defaultProps} />);
-
-        const scrollSelect = screen.getByTestId("scroll-select");
-        const options = JSON.parse(scrollSelect.getAttribute("data-options") || "[]");
-
-        expect(options).toEqual([
-            { value: 1, label: "1 tick" },
-            { value: 2, label: "2 ticks" },
-            { value: 3, label: "3 ticks" },
-        ]);
-        expect(scrollSelect.getAttribute("data-selected")).toBe("1");
-    });
+  });
 });

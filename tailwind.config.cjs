@@ -16,8 +16,8 @@ module.exports = {
         ubuntu: ["Ubuntu", "sans-serif"],
       },
       colors: {
-        error: '#C40000',
-        dim: 'rgba(0, 0, 0, 0.24)',
+        error: "#C40000",
+        dim: "rgba(0, 0, 0, 0.24)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -92,12 +92,18 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        shimmer: {
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
