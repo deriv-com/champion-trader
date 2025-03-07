@@ -47,8 +47,8 @@ import {
     CurrencyXmrIcon,
     CurrencyXtzIcon,
     CurrencyZecIcon,
-} from '@deriv/quill-icons';
-import type { IconTypes } from '@deriv/quill-icons';
+} from "@deriv/quill-icons";
+import type { IconTypes } from "@deriv/quill-icons";
 
 export const currencyIcons: { [key: string]: IconTypes } = {
     aud: CurrencyAudIcon,
@@ -58,7 +58,7 @@ export const currencyIcons: { [key: string]: IconTypes } = {
     dai: CurrencyDaiIcon,
     eth: CurrencyEthIcon,
     eur: CurrencyEurIcon,
-    'eur-check': CurrencyEurIcon,
+    "eur-check": CurrencyEurIcon,
     eurs: CurrencyEursIcon,
     eusdt: CurrencyUsdtIcon,
     gbp: CurrencyGbpIcon,
@@ -112,7 +112,8 @@ interface CurrencyIconProps {
 export const CurrencyIcon = ({ currency, isVirtual }: CurrencyIconProps) => {
     const Icon = isVirtual
         ? currencyIcons.virtual
-        : currencyIcons[currency?.toLowerCase() as keyof typeof currencyIcons] || currencyIcons.unknown;
+        : currencyIcons[currency?.toLowerCase() as keyof typeof currencyIcons] ||
+          currencyIcons.unknown;
 
-    return <Icon iconSize='sm' />;
+    return <Icon iconSize="sm" />;
 };

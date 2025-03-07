@@ -1,2 +1,2 @@
-export { TradeButton } from './TradeButton'
-export type { TradeButtonProps } from './TradeButton'
+export { TradeButton } from "./TradeButton";
+export type { TradeButtonProps } from "./TradeButton";

@@ -1,1 +1,1 @@
-export { MarketInfo } from "./MarketInfo"
+export { MarketInfo } from "./MarketInfo";

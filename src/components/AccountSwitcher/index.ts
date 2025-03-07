@@ -1,2 +1,2 @@
-export { AccountSwitcher } from './AccountSwitcher';
-export { AccountInfo } from './AccountInfo';
+export { AccountSwitcher } from "./AccountSwitcher";
+export { AccountInfo } from "./AccountInfo";
