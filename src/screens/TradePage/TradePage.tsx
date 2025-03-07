@@ -8,6 +8,7 @@ import { MarketSelector } from "@/components/MarketSelector";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useMarketStore } from "@/stores/marketStore";
+import { useTradeStore } from "@/stores/tradeStore";
 import { MarketInfo } from "@/components/MarketInfo";
 import { TradeTypesListController } from "./components/TradeTypesListController";
 
@@ -23,6 +24,7 @@ export const TradePage: React.FC = () => {
     const { isMobile } = useDeviceDetection();
     const selectedMarket = useMarketStore((state) => state.selectedMarket);
     const { setOverlaySidebar, activeSidebar } = useMainLayoutStore();
+    const tradeTypeDisplayName = useTradeStore((state) => state.tradeTypeDisplayName);
 
     const handleMarketSelect = React.useCallback(() => {
         if (isMobile) {
@@ -49,17 +51,12 @@ export const TradePage: React.FC = () => {
                     {isLandscape && (
                         <div
                             className={`absolute top-3 ${
-                                activeSidebar
-                                    ? "left-[calc(320px+16px)]"
-                                    : "left-4"
+                                activeSidebar ? "left-[calc(320px+16px)]" : "left-4"
                             } z-10 transition-all duration-300`}
                         >
                             <MarketInfo
-                                title={
-                                    selectedMarket?.displayName ||
-                                    "Select Market"
-                                }
-                                subtitle="Rise/Fall"
+                                title={selectedMarket?.displayName || "Select Market"}
+                                subtitle={tradeTypeDisplayName}
                                 onClick={handleMarketSelect}
                                 isMobile={false}
                             />
@@ -67,10 +64,8 @@ export const TradePage: React.FC = () => {
                     )}
                     {!isLandscape && (
                         <MarketInfo
-                            title={
-                                selectedMarket?.displayName || "Select Market"
-                            }
-                            subtitle="Rise/Fall"
+                            title={selectedMarket?.displayName || "Select Market"}
+                            subtitle={tradeTypeDisplayName}
                             onClick={handleMarketSelect}
                             isMobile={true}
                         />

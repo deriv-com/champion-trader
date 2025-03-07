@@ -96,15 +96,14 @@ export const useTradeStore = create<TradeState>((set) => ({
     },
     setStake: (stake) => set({ stake }),
     setDuration: (duration) => set({ duration }),
-    toggleAllowEquals: () =>
-        set((state) => ({ allowEquals: !state.allowEquals })),
+    toggleAllowEquals: () => set((state) => ({ allowEquals: !state.allowEquals })),
     setPayouts: (payouts) => set({ payouts }),
     setInstrument: (instrument: string) => set({ instrument }),
     setTradeType: (trade_type: TradeType, display_name?: string) =>
         set((state) => ({
             trade_type,
-            // Set display name based on priority: provided display_name > config displayName > formatted trade_type
-            tradeTypeDisplayName: display_name,
+            // Set display name if passed else use default value from config
+            tradeTypeDisplayName: display_name || tradeTypeConfigs[trade_type].displayName,
             // Reset payouts for the new trade type with default values
             payouts: {
                 max: state.payouts.max,
@@ -117,8 +116,7 @@ export const useTradeStore = create<TradeState>((set) => ({
                 ),
             },
         })),
-    setTradeTypeDisplayName: (displayName: string) =>
-        set({ tradeTypeDisplayName: displayName }),
+    setTradeTypeDisplayName: (displayName: string) => set({ tradeTypeDisplayName: displayName }),
     contractDetails: contractDetailsStub, // Initialize with stub data
     setContractDetails: (details) => set({ contractDetails: details }),
 }));

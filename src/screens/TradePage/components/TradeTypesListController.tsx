@@ -11,9 +11,7 @@ export const TradeTypesListController: React.FC = () => {
     const setTradeType = useTradeStore((state) => state.setTradeType);
 
     // State for trade types
-    const [tradeTypes, setTradeTypes] = useState<
-        Array<{ id: string; display_name: string }>
-    >([]);
+    const [tradeTypes, setTradeTypes] = useState<Array<{ id: string; display_name: string }>>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -42,9 +40,7 @@ export const TradeTypesListController: React.FC = () => {
     // Handle trade type selection
     const handleTradeTypeSelect = (tradeTypeId: TradeType) => {
         // Find the selected product to get its display name
-        const selectedProduct = tradeTypes.find(
-            (product) => product.id === tradeTypeId
-        );
+        const selectedProduct = tradeTypes.find((product) => product.id === tradeTypeId);
         // Pass both the trade type ID and display name to setTradeType
         setTradeType(tradeTypeId, selectedProduct?.display_name);
     };
@@ -65,11 +61,7 @@ export const TradeTypesListController: React.FC = () => {
     }
 
     if (error && tradeTypes.length === 0) {
-        return (
-            <div className="min-h-fit lg:min-h-14 flex items-center">
-                Error: {error}
-            </div>
-        );
+        return <div className="min-h-fit lg:min-h-14 flex items-center">Error: {error}</div>;
     }
 
     // Transform products into the format expected by TabList
