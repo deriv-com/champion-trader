@@ -50,7 +50,7 @@ export const TradePage: React.FC = () => {
                 >
                     {isLandscape && (
                         <div
-                            className={`absolute top-3 ${
+                            className={`absolute ${
                                 activeSidebar ? "left-[calc(320px+16px)]" : "left-4"
                             } z-10 transition-all duration-300`}
                         >
