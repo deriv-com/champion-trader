@@ -1,6 +1,5 @@
 import React from "react";
 import { formatDurationDisplay } from "@/utils/duration";
-
 interface TradeParamProps {
     label: string;
     value: string;
@@ -30,7 +29,11 @@ const TradeParam: React.FC<TradeParamProps> = ({ label, value, onClick, classNam
             >
                 <span className={labelClasses}>{label}</span>
                 <div className="text-left">
-                    <span className={valueClasses}>{formattedValue}</span>
+                    {typeof formattedValue === "string" ? (
+                        <span className={valueClasses}>{formattedValue}</span>
+                    ) : (
+                        formattedValue
+                    )}
                 </div>
             </button>
         );
@@ -40,7 +43,11 @@ const TradeParam: React.FC<TradeParamProps> = ({ label, value, onClick, classNam
         <div className={`${className} text-start`}>
             <span className={labelClasses}>{label}</span>
             <div className="text-left">
-                <span className={valueClasses}>{formattedValue}</span>
+                {typeof formattedValue === "string" ? (
+                    <span className={valueClasses}>{formattedValue}</span>
+                ) : (
+                    formattedValue
+                )}
             </div>
         </div>
     );

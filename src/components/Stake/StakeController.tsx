@@ -6,7 +6,8 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { StakeInputLayout } from "./components/StakeInputLayout";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
+import { parseStakeAmount } from "@/utils/stake";
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { validateStake } from "./utils/validation";
 import { parseDuration, formatDuration } from "@/utils/duration";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
@@ -138,8 +139,8 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         const amount = parseStakeAmount(value);
         const validation = validateStake({
             amount,
-            minStake: STAKE_CONFIG.min,
-            maxPayout: payouts.max,
+            minStake: getStakeConfig().min,
+            maxStake: payouts.max,
             currency,
         });
 
@@ -159,8 +160,8 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         const amount = parseStakeAmount(value);
         const validation = validateStake({
             amount,
-            minStake: STAKE_CONFIG.min,
-            maxPayout: payouts.max,
+            minStake: getStakeConfig().min,
+            maxStake: payouts.max,
             currency,
         });
 

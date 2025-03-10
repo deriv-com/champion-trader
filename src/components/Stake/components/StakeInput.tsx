@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DesktopNumberInputField } from "@/components/ui/desktop-number-input-field";
 import { MobileNumberInputField } from "@/components/ui/mobile-number-input-field";
-import { incrementStake, decrementStake } from "@/config/stake";
+import { incrementStake, decrementStake } from "@/utils/stake";
 import { useClientStore } from "@/stores/clientStore";
 
 interface StakeInputProps {

@@ -12,7 +12,7 @@ interface DurationFieldProps {
 }
 
 export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
-    const { duration } = useTradeStore();
+    const { duration, isConfigLoading } = useTradeStore();
     const { setBottomSheet } = useBottomSheetStore();
     const { isLandscape } = useOrientationStore();
     const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +36,17 @@ export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
             popoverRef.current.isClosing = false;
         }, 300); // 300ms should be enough for the animation to complete
     };
+
+    if (isConfigLoading) {
+        return (
+            <div className={`${className} relative`}>
+                <div
+                    data-testid="duration-field-skeleton"
+                    className="h-[66px] bg-gray-200 rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent"
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="relative">

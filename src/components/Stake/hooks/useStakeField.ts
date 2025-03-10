@@ -1,22 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
-import { incrementStake, decrementStake, parseStakeAmount, STAKE_CONFIG } from "@/config/stake";
+import { incrementStake, decrementStake, parseStakeAmount } from "@/utils/stake";
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTooltipStore } from "@/stores/tooltipStore";
 import { validateStake } from "../utils/validation";
 
-interface UseStakeFieldProps {
-    onSelect?: (isSelected: boolean) => void;
-    onError?: (error: boolean) => void;
-}
-
-export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
-    const { stake, setStake } = useTradeStore();
+export const useStakeField = () => {
+    const { stake, setStake, isConfigLoading } = useTradeStore();
     const { currency } = useClientStore();
     const { setBottomSheet } = useBottomSheetStore();
     const { showTooltip, hideTooltip } = useTooltipStore();
-    const [isSelected, setIsSelected] = useState(false);
+    const [isStakeSelected, setIsStakeSelected] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string>();
     const [localValue, setLocalValue] = useState(stake);
@@ -35,21 +31,11 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
     };
 
     const validateAndUpdateStake = (value: string) => {
-        // Always validate empty field or zero as error
-        if (!value || value === "0") {
-            setError(true);
-            const message = "Please enter an amount";
-            setErrorMessage(message);
-            showError(message);
-            onError?.(true);
-            return false;
-        }
-
-        const amount = parseStakeAmount(value);
+        const amount = parseStakeAmount(value || "0");
         const validation = validateStake({
             amount,
-            minStake: STAKE_CONFIG.min,
-            maxPayout: STAKE_CONFIG.max,
+            minStake: getStakeConfig().min,
+            maxStake: getStakeConfig().max,
             currency,
         });
 
@@ -58,7 +44,6 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
         if (validation.error && validation.message) {
             showError(validation.message);
         }
-        onError?.(validation.error);
         return !validation.error;
     };
 
@@ -79,8 +64,7 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
     };
 
     const handleSelect = (selected: boolean) => {
-        setIsSelected(selected);
-        onSelect?.(selected);
+        setIsStakeSelected(selected);
 
         // Show error tooltip if there's an error
         if (error && errorMessage) {
@@ -127,8 +111,7 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
             const message = "Please enter an amount";
             setErrorMessage(message);
             showError(message);
-            onError?.(true);
-            setStake("0");
+            setStake("");
             return;
         }
 
@@ -156,7 +139,8 @@ export const useStakeField = ({ onSelect, onError }: UseStakeFieldProps) => {
     return {
         stake,
         currency,
-        isSelected,
+        isStakeSelected,
+        isConfigLoading,
         error,
         errorMessage,
         localValue,

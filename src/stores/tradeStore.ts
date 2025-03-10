@@ -4,16 +4,17 @@ import {
     ContractDetails,
     contractDetailsStub,
 } from "@/screens/ContractDetailsPage/contractDetailsStub";
+import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 
 /**
  * Trade Store
  *
  * Manages the state for trade parameters and configuration.
- * Integrates with the trade type configuration system.
+ * Integrates with the trade type configuration system and product configuration.
  *
  * @example
  * ```typescript
- * const { trade_type, setTradeType } = useTradeStore();
+ * const { trade_type, setTradeType, productConfig } = useTradeStore();
  *
  * // Change trade type
  * setTradeType('rise_fall');
@@ -78,6 +79,26 @@ export interface TradeState {
     contractDetails: ContractDetails | null;
     /** Set contract details */
     setContractDetails: (details: ContractDetails | null) => void;
+
+    // Product Config State
+    /** Product configuration from API */
+    productConfig: ProductConfigResponse | null;
+    /** Loading state for product config */
+    isConfigLoading: boolean;
+    /** Error state for product config */
+    configError: Error | null;
+    /** Cache for product config responses */
+    configCache: Record<string, ProductConfigResponse>;
+
+    // Product Config State Actions
+    /** Set the product configuration */
+    setProductConfig: (config: ProductConfigResponse | null) => void;
+    /** Set the loading state */
+    setConfigLoading: (loading: boolean) => void;
+    /** Set the error state */
+    setConfigError: (error: Error | null) => void;
+    /** Set the config cache */
+    setConfigCache: (cache: Record<string, ProductConfigResponse>) => void;
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
@@ -119,4 +140,19 @@ export const useTradeStore = create<TradeState>((set) => ({
     setTradeTypeDisplayName: (displayName: string) => set({ tradeTypeDisplayName: displayName }),
     contractDetails: contractDetailsStub, // Initialize with stub data
     setContractDetails: (details) => set({ contractDetails: details }),
+
+    // Product Config State
+    productConfig: null,
+    isConfigLoading: false,
+    configError: null,
+    configCache: {},
+
+    // Trade Actions
+    setAllowEquals: (allowEquals: boolean) => set({ allowEquals }),
+
+    // Product Config Actions
+    setProductConfig: (config: ProductConfigResponse | null) => set({ productConfig: config }),
+    setConfigLoading: (loading: boolean) => set({ isConfigLoading: loading }),
+    setConfigError: (error: Error | null) => set({ configError: error }),
+    setConfigCache: (cache: Record<string, ProductConfigResponse>) => set({ configCache: cache }),
 }));

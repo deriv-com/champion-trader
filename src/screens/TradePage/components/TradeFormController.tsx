@@ -1,12 +1,10 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
 import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
 import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
-import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 // import { useTradeActions } from "@/hooks/useTradeActions";
@@ -15,6 +13,7 @@ import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
+import { useProductConfig } from "@/hooks/useProductConfig";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -48,19 +47,14 @@ interface ButtonState {
 
 type ButtonStates = Record<string, ButtonState>;
 
-export const TradeFormController: React.FC<TradeFormControllerProps> = ({
-    isLandscape,
-}) => {
-    const { isDesktop } = useDeviceDetection();
-    const { trade_type, tradeTypeDisplayName } = useTradeStore();
-    // const { isMobile } = useDeviceDetection()
+export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
+    const { trade_type, instrument } = useTradeStore();
+    const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
     // const tradeActions = useTradeActions()
     const config = tradeTypeConfigs[trade_type];
-    const [isStakeSelected, setIsStakeSelected] = useState(false);
-    const [stakeError, setStakeError] = useState(false);
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -76,6 +70,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
         return initialStates;
     });
 
+    // Fetch product config when trade_type changes
+    useEffect(() => {
+        fetchProductConfig(trade_type, instrument);
+    }, [trade_type, instrument, fetchProductConfig]);
     // Commented out API calls for now
     // useEffect(() => {
     //   // Create SSE connections for each button's contract type
@@ -190,17 +188,11 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
         <div
             id="trade-section"
             className={`${
-                isLandscape
-                    ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2"
-                    : ""
+                isLandscape ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2" : ""
             }`}
         >
             {isLandscape ? (
-                <div
-                    className={`flex ${
-                        isLoggedIn ? "justify-between" : "justify-end"
-                    }`}
-                >
+                <div className={`flex ${isLoggedIn ? "justify-between" : "justify-end"}`}>
                     {isLoggedIn && <AccountSwitcher />}
                     {isLoggedIn ? (
                         <button
@@ -221,10 +213,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
             ) : (
                 <></>
             )}
-            <div
-                className={isLandscape ? "pb-2" : "pt-1 px-4"}
-                id="how-to-trade"
-            >
+            <div className={isLandscape ? "pb-2" : "pt-1 px-4"} id="how-to-trade">
                 <HowToTrade />
             </div>
             {isLandscape ? (
@@ -243,49 +232,22 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                     >
                         <div className="flex flex-col gap-2">
                             {config.fields.duration && (
-                                <Suspense
-                                    fallback={
-                                        <div>Loading duration field...</div>
-                                    }
-                                >
+                                <Suspense fallback={<div>Loading duration field...</div>}>
                                     <DurationField className="w-full" />
                                 </Suspense>
                             )}
                             {config.fields.stake && (
-                                <Suspense
-                                    fallback={<div>Loading stake field...</div>}
-                                >
-                                    <div className="bg-white rounded-lg">
-                                        <DesktopTradeFieldCard
-                                            isSelected={isStakeSelected}
-                                            error={stakeError}
-                                        >
-                                            <StakeField
-                                                className="w-full"
-                                                onSelect={(selected) =>
-                                                    setIsStakeSelected(selected)
-                                                }
-                                                onError={(error) =>
-                                                    setStakeError(error)
-                                                }
-                                            />
-                                        </DesktopTradeFieldCard>
-                                    </div>
+                                <Suspense fallback={<div>Loading stake field...</div>}>
+                                    <StakeField className="w-full" />
                                 </Suspense>
                             )}
                         </div>
                         {config.fields.allowEquals && <EqualTradeController />}
                     </div>
 
-                    <div
-                        className="flex flex-col py-2 gap-2"
-                        id="trade-buttons"
-                    >
+                    <div className="flex flex-col py-2 gap-2" id="trade-buttons">
                         {config.buttons.map((button) => (
-                            <Suspense
-                                key={button.actionName}
-                                fallback={<div>Loading...</div>}
-                            >
+                            <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton
                                     className={`${button.className} rounded-[16px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
                                     title={button.title}
@@ -295,9 +257,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                             ? "Loading..."
                                             : `${
                                                   // added for demo proposes will change it to 0 once api is connected
-                                                  buttonStates[
-                                                      button.actionName
-                                                  ]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout || 10
                                               } ${currency}`
                                     }
                                     title_position={button.position}
@@ -311,9 +271,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
-                                    error={
-                                        buttonStates[button.actionName]?.error
-                                    }
+                                    error={buttonStates[button.actionName]?.error}
                                     onClick={() => {
                                         if (!isLoggedIn) return;
                                         // Comment out actual API call but keep the success flow
@@ -336,9 +294,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                             ),
                                             variant: "black",
                                             duration: 3000,
-                                            position: isLandscape
-                                                ? "bottom-left"
-                                                : "top-center",
+                                            position: isLandscape ? "bottom-left" : "top-center",
                                         });
                                     }}
                                 />
@@ -356,21 +312,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                         <div className="p-4">
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
-                                    <Suspense
-                                        fallback={
-                                            <div>Loading duration field...</div>
-                                        }
-                                    >
+                                    <Suspense fallback={<div>Loading duration field...</div>}>
                                         <MobileTradeFieldCard
                                             onClick={() => {
-                                                const durationField =
-                                                    document.querySelector(
-                                                        'button[aria-label^="Duration"]'
-                                                    );
+                                                const durationField = document.querySelector(
+                                                    'button[aria-label^="Duration"]'
+                                                );
                                                 if (durationField) {
-                                                    (
-                                                        durationField as HTMLButtonElement
-                                                    ).click();
+                                                    (durationField as HTMLButtonElement).click();
                                                 }
                                             }}
                                         >
@@ -379,21 +328,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                     </Suspense>
                                 )}
                                 {config.fields.stake && (
-                                    <Suspense
-                                        fallback={
-                                            <div>Loading stake field...</div>
-                                        }
-                                    >
+                                    <Suspense fallback={<div>Loading stake field...</div>}>
                                         <MobileTradeFieldCard
                                             onClick={() => {
-                                                const stakeField =
-                                                    document.querySelector(
-                                                        'button[aria-label^="Stake"]'
-                                                    );
+                                                const stakeField = document.querySelector(
+                                                    'button[aria-label^="Stake"]'
+                                                );
                                                 if (stakeField) {
-                                                    (
-                                                        stakeField as HTMLButtonElement
-                                                    ).click();
+                                                    (stakeField as HTMLButtonElement).click();
                                                 }
                                             }}
                                         >
@@ -403,11 +345,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                 )}
                             </ResponsiveTradeParamLayout>
                             {config.fields.allowEquals && (
-                                <Suspense
-                                    fallback={
-                                        <div>Loading equals controller...</div>
-                                    }
-                                >
+                                <Suspense fallback={<div>Loading equals controller...</div>}>
                                     <div className="mt-4">
                                         <EqualTradeController />
                                     </div>
@@ -418,10 +356,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
 
                     <div className="flex p-4 pt-0 gap-2" id="trade-buttons">
                         {config.buttons.map((button) => (
-                            <Suspense
-                                key={button.actionName}
-                                fallback={<div>Loading...</div>}
-                            >
+                            <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton
                                     className={`${button.className} rounded-[32px]`}
                                     title={button.title}
@@ -430,9 +365,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                         buttonStates[button.actionName]?.loading
                                             ? "Loading..."
                                             : `${
-                                                  buttonStates[
-                                                      button.actionName
-                                                  ]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout || 10
                                               } ${currency}`
                                     }
                                     title_position={button.position}
@@ -448,9 +381,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
-                                    error={
-                                        buttonStates[button.actionName]?.error
-                                    }
+                                    error={buttonStates[button.actionName]?.error}
                                     onClick={() => {
                                         if (!isLoggedIn) return;
                                         // Comment out actual API call but keep the success flow
@@ -473,9 +404,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({
                                             ),
                                             variant: "black",
                                             duration: 3000,
-                                            position: isLandscape
-                                                ? "bottom-left"
-                                                : "top-center",
+                                            position: isLandscape ? "bottom-left" : "top-center",
                                         });
                                     }}
                                 />

@@ -1,7 +1,7 @@
 interface ValidateStakeParams {
     amount: number;
     minStake: number;
-    maxPayout: number;
+    maxStake: number;
     currency: string;
 }
 
@@ -13,7 +13,7 @@ interface ValidationResult {
 export const validateStake = ({
     amount,
     minStake,
-    maxPayout,
+    maxStake,
     currency,
 }: ValidateStakeParams): ValidationResult => {
     if (amount < minStake) {
@@ -23,10 +23,10 @@ export const validateStake = ({
         };
     }
 
-    if (amount > maxPayout) {
+    if (amount > maxStake) {
         return {
             error: true,
-            message: `Minimum stake of ${minStake} ${currency} and maximum payout of ${maxPayout} ${currency}. Current payout is ${amount} ${currency}.`,
+            message: `Minimum stake of ${minStake} ${currency} and maximum stake of ${maxStake} ${currency}. Current stake is ${amount} ${currency}.`,
         };
     }
 

@@ -12,16 +12,16 @@ interface DurationValueListProps {
 
 const getUnitLabel = (type: keyof DurationRangesResponse, value: number): string => {
     switch (type) {
-        case "tick":
+        case "ticks":
             return value === 1 ? "tick" : "ticks";
-        case "second":
+        case "seconds":
             return value === 1 ? "second" : "seconds";
-        case "minute":
+        case "minutes":
             return value === 1 ? "minute" : "minutes";
-        case "hour":
+        case "hours":
             return value === 1 ? "hour" : "hours";
-        case "day":
-            return "day";
+        case "days":
+            return value === 1 ? "day" : "days";
         default:
             return "";
     }
