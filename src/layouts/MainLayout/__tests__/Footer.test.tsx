@@ -35,6 +35,6 @@ describe('Footer', () => {
     // Assume that the active route for the "Trade" button is "/trade".
     renderWithRouter('/trade');
     const tradeButton = screen.getByText('Trade').closest('button');
-    expect(tradeButton).toHaveClass('flex flex-col items-center gap-1 font-bold text-white');
+    expect(tradeButton).toHaveClass('flex flex-col items-center gap-1 font-bold text-black');
   });
 });
