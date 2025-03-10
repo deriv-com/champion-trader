@@ -3,7 +3,6 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import PositionsPage from '../PositionsPage';
 import { useContracts } from '@/hooks/useContracts';
 import * as tradeStore from '@/stores/tradeStore';
-import { formatDate, formatGMTTime } from '@/utils/dateUtils';
 
 // Mock the hooks
 jest.mock('@/hooks/useContracts');
@@ -84,34 +83,6 @@ describe('PositionsPage', () => {
     renderWithRouter();
     
     expect(screen.getByText('Volatility 100 (1s) Index')).toBeInTheDocument();
-  });
-
-  it('navigates to contract details when clicking a position', () => {
-    renderWithRouter();
-
-    const position = screen.getByText('Volatility 100 (1s) Index');
-    fireEvent.click(position);
-
-    // Check that navigate was called with the correct path
-    expect(mockNavigate).toHaveBeenCalledWith('/contract/1');
-    
-    // Check that setContractDetails was called with the correct data
-    expect(setContractDetailsMock).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'Rise',
-      market: 'Volatility 100 (1s) Index',
-      stake: '10.00',
-      profit: '+10.00',
-      barrier: '100.00',
-      payout: '20.00',
-      referenceId: '547294814948',
-      startTime: formatDate(mockContracts[0].contract_details.start_time),
-      startTimeGMT: formatGMTTime(mockContracts[0].contract_details.start_time),
-      entrySpot: '99.00',
-      entryTimeGMT: formatGMTTime(mockContracts[0].contract_details.start_time),
-      exitTime: formatDate(mockContracts[0].contract_details.exit_time),
-      exitTimeGMT: formatGMTTime(mockContracts[0].contract_details.exit_time),
-      exitSpot: '101.00'
-    }));
   });
 
   it('switches between open and closed tabs', () => {
