@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProcessedContracts } from "@/hooks/useProcessedContracts";
-import { useTradeStore } from "@/stores/tradeStore";
-import { formatDate, formatGMTTime } from "@/utils/dateUtils";
 import { ContractCard } from "@/components/ContractCard";
 
 const PositionsPage: React.FC = () => {
@@ -10,7 +8,6 @@ const PositionsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
   const [swipedCard, setSwipedCard] = useState<number | null>(null);
   const { openContracts, closedContracts, loading, error } = useProcessedContracts();
-  const { setContractDetails } = useTradeStore();
   
   // Get the contracts based on the active tab
   const displayedContracts = activeTab === "open" ? openContracts : closedContracts;

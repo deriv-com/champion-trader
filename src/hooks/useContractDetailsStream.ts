@@ -3,7 +3,6 @@ import { createSSEConnection } from '@/services/api/sse/createSSEConnection';
 import { Contract } from '@/hooks/useContracts';
 import { useTradeStore } from '@/stores/tradeStore';
 import { transformContractData } from '@/utils/contractUtils';
-import { ProcessedContract } from './useProcessedContracts';
 
 /**
  * Hook to stream contract details for a specific contract
