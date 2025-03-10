@@ -1,12 +1,10 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
 import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
 import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
-import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 import { useTradeActions } from "@/hooks/useTradeActions";
@@ -14,6 +12,7 @@ import { useClientStore } from "@/stores/clientStore";
 import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
+import { useProductConfig } from "@/hooks/useProductConfig";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -48,15 +47,13 @@ interface ButtonState {
 type ButtonStates = Record<string, ButtonState>;
 
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type } = useTradeStore();
-    // const { isMobile } = useDeviceDetection()
+    const { trade_type, instrument } = useTradeStore();
+    const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
     // const tradeActions = useTradeActions()
     const config = tradeTypeConfigs[trade_type];
-    const [isStakeSelected, setIsStakeSelected] = useState(false);
-    const [stakeError, setStakeError] = useState(false);
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -72,6 +69,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         return initialStates;
     });
 
+    // Fetch product config when trade_type changes
+    useEffect(() => {
+        fetchProductConfig(trade_type, instrument);
+    }, [trade_type, instrument, fetchProductConfig]);
     // Commented out API calls for now
     // useEffect(() => {
     //   // Create SSE connections for each button's contract type
@@ -214,20 +215,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                             )}
                             {config.fields.stake && (
                                 <Suspense fallback={<div>Loading stake field...</div>}>
-                                    <div className="bg-white rounded-lg">
-                                        <DesktopTradeFieldCard
-                                            isSelected={isStakeSelected}
-                                            error={stakeError}
-                                        >
-                                            <StakeField
-                                                className="w-full"
-                                                onSelect={(selected) =>
-                                                    setIsStakeSelected(selected)
-                                                }
-                                                onError={(error) => setStakeError(error)}
-                                            />
-                                        </DesktopTradeFieldCard>
-                                    </div>
+                                    <StakeField className="w-full" />
                                 </Suspense>
                             )}
                         </div>
