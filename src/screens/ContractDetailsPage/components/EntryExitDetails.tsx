@@ -8,14 +8,15 @@ export const EntryExitDetails: React.FC = () => {
     return null;
   }
 
+  // Use optional chaining and default values for potentially undefined fields
   const {
-    startTime,
-    startTimeGMT,
-    entrySpot,
-    entryTimeGMT,
-    exitTime,
-    exitTimeGMT,
-    exitSpot,
+    startTime = "",
+    startTimeGMT = "",
+    entrySpot = "",
+    entryTimeGMT = "",
+    exitTime = "",
+    exitTimeGMT = "",
+    exitSpot = "",
   } = contractDetails;
 
   const details = [

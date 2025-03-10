@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { TradeType, tradeTypeConfigs, TradeButton } from "@/config/tradeTypes";
-import { ContractDetails } from "@/screens/ContractDetailsPage/contractDetailsStub";
+import { ProcessedContract } from "@/hooks/useProcessedContracts";
 
 /**
  * Trade Store
@@ -62,9 +62,9 @@ export interface TradeState {
    */
   setTradeType: (trade_type: TradeType) => void;
   /** Current contract details */
-  contractDetails: ContractDetails | null;
+  contractDetails: ProcessedContract | null;
   /** Set contract details */
-  setContractDetails: (details: ContractDetails | null) => void;
+  setContractDetails: (details: ProcessedContract | null) => void;
 }
 
 export const useTradeStore = create<TradeState>((set) => ({

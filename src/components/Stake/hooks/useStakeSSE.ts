@@ -52,15 +52,19 @@ export const useStakeSSE = (params: UseStakeSSEParams) => {
           strike: params.stake || "0"
         },
         headers: params.token ? { 'Authorization': `Bearer ${params.token}` } : undefined,
-        onMessage: (priceData: ContractPriceResponse) => {
-          setLoadingStates(prev => ({ ...prev, [button.actionName]: false }));
-          setPayouts(prev => ({
-            ...prev,
-            values: {
-              ...prev.values,
-              [button.actionName]: Number(priceData.price)
-            }
-          }));
+        onMessage: (data) => {
+          // Ensure we're handling ContractPriceResponse type
+          if ('price' in data) {
+            const priceData = data as ContractPriceResponse;
+            setLoadingStates(prev => ({ ...prev, [button.actionName]: false }));
+            setPayouts(prev => ({
+              ...prev,
+              values: {
+                ...prev.values,
+                [button.actionName]: Number(priceData.price)
+              }
+            }));
+          }
         },
         onError: () => setLoadingStates(prev => ({ ...prev, [button.actionName]: false })),
         onOpen: () => setLoadingStates(prev => ({ ...prev, [button.actionName]: true }))

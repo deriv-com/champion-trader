@@ -1,15 +1,17 @@
 import { CustomEventSource } from './custom-event-source';
 import { ContractPriceResponse } from './types';
+import { Contract } from '@/hooks/useContracts';
 import { apiConfig } from '@/config/api';
 
 interface SSEOptions {
   params: Record<string, string>;
   headers?: Record<string, string>;
-  onMessage: (data: ContractPriceResponse) => void;
+  onMessage: (data: ContractPriceResponse | Contract) => void;
   onError?: (error: any) => void;
   onOpen?: () => void;
   reconnectAttempts?: number;
   reconnectInterval?: number;
+  endpoint?: string; // New parameter for custom endpoints
 }
 
 export const createSSEConnection = (options: SSEOptions) => {
@@ -34,10 +36,14 @@ export const createSSEConnection = (options: SSEOptions) => {
     const baseUrl = apiConfig.sse.baseUrl;
     const sseUrl = new URL(baseUrl);
     
-    // Use protected or public path based on token presence
-    sseUrl.pathname = headers?.['Authorization'] 
-      ? apiConfig.sse.protectedPath 
-      : apiConfig.sse.publicPath;
+    // Use custom endpoint if provided, otherwise use protected or public path
+    if (options.endpoint) {
+      sseUrl.pathname = options.endpoint;
+    } else {
+      sseUrl.pathname = headers?.['Authorization'] 
+        ? apiConfig.sse.protectedPath 
+        : apiConfig.sse.publicPath;
+    }
       
     // Add query parameters
     sseUrl.search = new URLSearchParams(params).toString();
@@ -58,7 +64,7 @@ export const createSSEConnection = (options: SSEOptions) => {
           jsonString = dataLine.replace("data: ", "").trim();
         }
 
-        const data = JSON.parse(jsonString) as ContractPriceResponse;
+        const data = JSON.parse(jsonString);
         onMessage(data);
         attemptCount = 0; // Reset attempt count on successful message
       } catch (error) {

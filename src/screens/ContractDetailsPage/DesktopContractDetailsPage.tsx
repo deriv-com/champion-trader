@@ -1,17 +1,28 @@
 import React, { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useMainLayoutStore } from "@/stores/mainLayoutStore"
+import { useContractDetailsStream } from "@/hooks/useContractDetailsStream"
+import { useContractDetailsRest } from "@/hooks/useContractDetailsRest"
+import { useTradeStore } from "@/stores/tradeStore"
 import { X } from "lucide-react"
 import {
-  ContractSummary,
   EntryExitDetails,
   OrderDetails,
 } from "./components"
+import { ContractCard } from "@/components/ContractCard"
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart"
 
 const DesktopContractDetailsPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { setSideNavVisible } = useMainLayoutStore()
+  const { loading: streamLoading, error: streamError } = useContractDetailsStream(id)
+  const { loading: fallbackLoading, error: fallbackError } = useContractDetailsRest(id)
+  const contractDetails = useTradeStore((state) => state.contractDetails)
+  
+  // Combine loading and error states from both hooks
+  const loading = streamLoading || fallbackLoading
+  const error = streamError || fallbackError
 
   useEffect(() => {
     // Hide SideNav when component mounts
@@ -20,6 +31,34 @@ const DesktopContractDetailsPage: React.FC = () => {
     // Show SideNav when component unmounts
     return () => setSideNavVisible(true)
   }, [setSideNavVisible])
+
+  // Show loading state
+  if (loading && !contractDetails) {
+    return (
+      <div className="flex flex-col bg-gray-50 w-full h-screen items-center justify-center" data-testid="desktop-contract-details-loading">
+        <div className="text-center">
+          <p>Loading contract details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error && !contractDetails) {
+    return (
+      <div className="flex flex-col bg-gray-50 w-full h-screen items-center justify-center" data-testid="desktop-contract-details-error">
+        <div className="text-center text-red-500">
+          <p>{error}</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="mt-4 text-white bg-black px-4 py-2 rounded-xl"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col bg-gray-50 w-full" data-testid="desktop-contract-details">
@@ -33,7 +72,12 @@ const DesktopContractDetailsPage: React.FC = () => {
       <div className="flex flex-1 overflow-hidden relative m-4">
         <div className="w-[320px] bg-white flex flex-col" data-testid="left-panel">
           <div className="flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50" data-testid="content-area">
-            <ContractSummary />
+            {contractDetails && (
+              <ContractCard 
+                contract={contractDetails}
+                variant="mobile"
+              />
+            )}
             <OrderDetails />
             <EntryExitDetails />
           </div>

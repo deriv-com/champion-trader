@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Position } from '../../positions/positionsSidebarStub';
+import { useState, useEffect } from "react";
+import { ProcessedContract } from "@/hooks/useProcessedContracts";
 
 interface UseFilteredPositionsProps {
   isOpenTab: boolean;
-  allPositions: Position[];
-  closedPositions: Position[];
+  allPositions: ProcessedContract[];
+  closedPositions: ProcessedContract[];
 }
 
 interface UseFilteredPositionsReturn {
-  filteredPositions: Position[];
+  filteredPositions: ProcessedContract[];
   selectedFilter: string;
   handleFilterSelect: (filter: string) => void;
 }
@@ -18,8 +18,10 @@ export const useFilteredPositions = ({
   allPositions,
   closedPositions,
 }: UseFilteredPositionsProps): UseFilteredPositionsReturn => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
-  const [filteredPositions, setFilteredPositions] = useState<Position[]>(allPositions);
+  const [selectedFilter, setSelectedFilter] =
+    useState<string>("All trade types");
+  const [filteredPositions, setFilteredPositions] =
+    useState<ProcessedContract[]>(allPositions);
 
   useEffect(() => {
     if (!isOpenTab) {
@@ -43,7 +45,9 @@ export const useFilteredPositions = ({
       // For now, just showing all positions
       setFilteredPositions(positions);
     } else {
-      setFilteredPositions(positions.filter(position => position.type === filter));
+      setFilteredPositions(
+        positions.filter((position) => position.type === filter)
+      );
     }
   };
 

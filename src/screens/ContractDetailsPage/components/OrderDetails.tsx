@@ -8,7 +8,14 @@ export const OrderDetails: React.FC = () => {
     return null;
   }
 
-  const { duration, barrier, stake, payout, referenceId } = contractDetails;
+  // Use optional chaining and default values for potentially undefined fields
+  const { 
+    duration = "", 
+    barrier = "", 
+    stake = "", 
+    payout = "", 
+    referenceId = ""
+  } = contractDetails;
   const details = [
     {
       label: "Reference ID",

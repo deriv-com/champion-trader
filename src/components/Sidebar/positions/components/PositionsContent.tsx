@@ -1,35 +1,34 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  OPEN_POSITIONS,
-  CLOSED_POSITIONS,
-  Position,
-} from "../positionsSidebarStub";
+import { useProcessedContracts } from "@/hooks/useProcessedContracts";
 import { useFilteredPositions } from "../hooks/useFilteredPositions";
 import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { ContractCard } from "@/components/ContractCard";
 
 export const PositionsContent: FC = () => {
   const [isOpenTab, setIsOpenTab] = useState(true);
   const navigate = useNavigate();
   const { setSidebar } = useMainLayoutStore();
-  const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
+  const { 
+    openContracts, 
+    closedContracts, 
+    loading, 
+    error, 
+    calculateTotalProfit 
+  } = useProcessedContracts();
 
   const { filteredPositions, selectedFilter, handleFilterSelect } =
     useFilteredPositions({
       isOpenTab,
-      allPositions,
-      closedPositions: CLOSED_POSITIONS,
+      allPositions: openContracts,
+      closedPositions: closedContracts,
     });
 
-  useEffect(() => {
-    fetch("/api/positions")
-      .then((response) => response.json())
-      .then((data) => {
-        setAllPositions(data);
-      })
-      .catch((error) => console.error("Error fetching positions:", error));
-  }, []);
+  const handleContractSelect = (contractId: string) => {
+    navigate(`/contract/${contractId}`);
+    setSidebar(null);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -63,70 +62,38 @@ export const PositionsContent: FC = () => {
             onFilterSelect={handleFilterSelect}
           />
         </div>
-        <div className="mt-4 space-y-4">
-          {filteredPositions.map((position) => (
-            <div
-              key={position.id}
-              className="p-3 rounded-lg shadow-sm cursor-pointer"
-              onClick={() => {
-                navigate(`/contract/${position.id}`);
-                setSidebar(null);
-              }}
-            >
-              <div className="flex justify-between text-sm font-medium">
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/market icon.svg"
-                      alt="Market Icon"
-                      className="w-5 h-8 mb-1"
-                    />
-                  </div>
-                  <span className="mb-[5] font-light text-black-400">
-                    {position.type}
-                  </span>
-                  <span className="text-s font-light text-gray-500 mb-4">
-                    {position.market}
-                  </span>
-                </div>
-                <div>
-                  <div className="flex flex-col items-end">
-                    {isOpenTab ? (
-                      <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
-                        <span className="mr-2">⏳</span> {position.ticks}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium mb-3">
-                        Closed
-                      </span>
-                    )}
-                    <span className="text-s font-light text-gray-400 mb-[2]">
-                      {position.stake}
-                    </span>
-                    <span
-                      className={`text-sm ${
-                        position.profit.startsWith("+")
-                          ? "text-[#008832]"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {position.profit}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              {isOpenTab && (
-                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
-                  Close {position.stake}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="mt-4 flex justify-center">
+            <p>Loading positions...</p>
+          </div>
+        ) : error ? (
+          <div className="mt-4 text-red-500 text-center">
+            <p>Error loading positions</p>
+          </div>
+        ) : filteredPositions.length === 0 ? (
+          <div className="mt-4 text-center">
+            <p>No {isOpenTab ? 'open' : 'closed'} positions found</p>
+          </div>
+        ) : (
+          <div className="mt-4 space-y-4">
+            {filteredPositions.map((contract) => (
+              <ContractCard
+                key={contract.id}
+                contract={contract}
+                onClick={handleContractSelect}
+                variant="desktop"
+                showCloseButton={isOpenTab}
+                onClose={(id) => console.log("Close contract", id)}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div className="p-4 font-bold border-t flex justify-between mt-auto">
         <span className="text-black-300">Total profit/loss: </span>
-        <span className="text-[#008832]">+2.00 USD</span>
+        <span className={`${calculateTotalProfit(filteredPositions) >= 0 ? 'text-[#008832]' : 'text-red-500'}`}>
+          {calculateTotalProfit(filteredPositions) >= 0 ? '+' : ''}{calculateTotalProfit(filteredPositions).toFixed(2)} USD
+        </span>
       </div>
     </div>
   );
