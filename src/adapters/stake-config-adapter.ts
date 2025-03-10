@@ -1,16 +1,16 @@
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 
 export interface StakeConfig {
-  min: number;
-  max: number;
-  step: number;
+    min: number;
+    max: number;
+    step: number;
 }
 
 // Default stake configuration
 let STAKE_CONFIG: StakeConfig = {
-  min: 1,
-  max: 50000,
-  step: 1,
+    min: 1,
+    max: 50000,
+    step: 1,
 };
 
 /**
@@ -19,16 +19,14 @@ let STAKE_CONFIG: StakeConfig = {
  * @param config - Product configuration from API
  * @returns Adapted stake configuration
  */
-export const adaptStakeConfig = (
-  config: ProductConfigResponse
-): StakeConfig => {
-  const { stake: stakeValidation } = config.data.validations;
+export const adaptStakeConfig = (config: ProductConfigResponse): StakeConfig => {
+    const { stake: stakeValidation } = config.data.validations;
 
-  return {
-    min: parseFloat(stakeValidation.min),
-    max: parseFloat(stakeValidation.max),
-    step: STAKE_CONFIG.step, // Preserve step value
-  };
+    return {
+        min: parseFloat(stakeValidation.min),
+        max: parseFloat(stakeValidation.max),
+        step: STAKE_CONFIG.step, // Preserve step value
+    };
 };
 
 /**
@@ -37,7 +35,7 @@ export const adaptStakeConfig = (
  * @param config - New stake configuration
  */
 export const updateStakeConfig = (config: StakeConfig): void => {
-  STAKE_CONFIG = config;
+    Object.assign(STAKE_CONFIG, config);
 };
 
 /**
@@ -46,7 +44,7 @@ export const updateStakeConfig = (config: StakeConfig): void => {
  * @returns Current stake configuration (copy to prevent mutations)
  */
 export const getStakeConfig = (): StakeConfig => {
-  return { ...STAKE_CONFIG };
+    return { ...STAKE_CONFIG };
 };
 
 /**
@@ -56,5 +54,5 @@ export const getStakeConfig = (): StakeConfig => {
  * @returns Default stake value as string
  */
 export const adaptDefaultStake = (config: ProductConfigResponse): string => {
-  return config.data.defaults.stake.toString();
+    return config.data.defaults.stake.toString();
 };
