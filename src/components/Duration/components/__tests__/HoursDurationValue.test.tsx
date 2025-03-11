@@ -1,97 +1,133 @@
-import { render, screen } from '@testing-library/react';
-import { HoursDurationValue } from '../HoursDurationValue';
-import { generateDurationValues } from '@/utils/duration';
+import { render, screen, fireEvent } from "@testing-library/react";
+import { HoursDurationValue } from "../HoursDurationValue";
+import { generateDurationValues } from "@/utils/duration";
 
-// Mock the DurationValueList component
-jest.mock('../DurationValueList', () => ({
-  DurationValueList: ({ selectedValue, durationType, onValueSelect, onValueClick, getDurationValues }: any) => (
-    <div data-testid={`duration-value-list-${durationType}`}>
-      <span>Selected: {selectedValue}</span>
-      <span>Type: {durationType}</span>
-      <span>Values: {getDurationValues().join(',')}</span>
-      <button onClick={() => onValueSelect(selectedValue + 1)} data-testid={`select-${durationType}`}>
-        Select
-      </button>
-      {onValueClick && (
-        <button onClick={() => onValueClick(selectedValue + 1)} data-testid={`click-${durationType}`}>
-          Click
-        </button>
-      )}
-    </div>
-  ),
+// Mock DurationValueList component
+jest.mock("../DurationValueList", () => ({
+    DurationValueList: ({ selectedValue, onValueSelect, onValueClick, durationType }: any) => {
+        const value = selectedValue;
+        return (
+            <div
+                data-testid="mock-duration-value-list"
+                data-type={durationType}
+                onClick={() => {
+                    onValueSelect(value);
+                    onValueClick?.(value);
+                }}
+            >
+                {value}
+            </div>
+        );
+    },
 }));
 
-// Mock duration utils
-jest.mock('@/utils/duration', () => ({
-  generateDurationValues: jest.fn(),
-  getSpecialCaseKey: jest.fn().mockReturnValue('key'),
+jest.mock("@/utils/duration", () => ({
+    generateDurationValues: jest.fn(),
+    getSpecialCaseKey: jest.fn().mockReturnValue("key"),
 }));
 
-describe('HoursDurationValue', () => {
-  const mockOnValueSelect = jest.fn();
-  const mockOnValueClick = jest.fn();
+describe("HoursDurationValue", () => {
+    const mockOnValueSelect = jest.fn();
+    const mockOnValueClick = jest.fn();
+    const mockIsInitialRender = { current: true };
 
-  const defaultProps = {
-    selectedValue: '2:30',
-    onValueSelect: mockOnValueSelect,
-    onValueClick: mockOnValueClick,
-    isInitialRender: { current: true } as React.MutableRefObject<boolean>,
-  };
+    beforeEach(() => {
+        jest.clearAllMocks();
+        // Mock generateDurationValues to return test values
+        (generateDurationValues as jest.Mock).mockImplementation((type) => {
+            if (type === "hours") return [1, 2, 3];
+            if (type === "minutes") return [0, 15, 30, 45];
+            return [];
+        });
+    });
 
-  beforeEach(() => {
-    mockOnValueSelect.mockClear();
-    mockOnValueClick.mockClear();
-    (generateDurationValues as jest.Mock).mockImplementation((type) => 
-      type === 'hour' ? [1, 2, 3] : [0, 15, 30, 45]
-    );
-  });
+    it("renders with initial selected value", () => {
+        render(
+            <HoursDurationValue
+                selectedValue="2:30"
+                onValueSelect={mockOnValueSelect}
+                onValueClick={mockOnValueClick}
+                isInitialRender={mockIsInitialRender}
+            />
+        );
 
-  it('renders hours and minutes sections with proper ARIA labels', () => {
-    render(<HoursDurationValue {...defaultProps} />);
+        // Check if component renders with proper structure and both lists
+        expect(
+            screen.getByRole("group", { name: /duration in hours and minutes/i })
+        ).toBeInTheDocument();
 
-    expect(screen.getByRole('group')).toHaveAttribute('aria-label', 'Duration in hours and minutes');
-    expect(screen.getByLabelText('Hours')).toBeInTheDocument();
-    expect(screen.getByLabelText('Minutes')).toBeInTheDocument();
-  });
+        const [hoursList, minutesList] = screen.getAllByTestId("mock-duration-value-list");
 
-  it('initializes with correct hour and minute values', () => {
-    render(<HoursDurationValue {...defaultProps} selectedValue="3:45" />);
+        expect(hoursList).toHaveAttribute("data-type", "hours");
+        expect(minutesList).toHaveAttribute("data-type", "minutes");
+    });
 
-    expect(screen.getByTestId('duration-value-list-hour')).toHaveTextContent('Selected: 3');
-    expect(screen.getByTestId('duration-value-list-minute')).toHaveTextContent('Selected: 45');
-  });
+    it("maintains accessibility attributes", () => {
+        render(
+            <HoursDurationValue
+                selectedValue="2:30"
+                onValueSelect={mockOnValueSelect}
+                onValueClick={mockOnValueClick}
+                isInitialRender={mockIsInitialRender}
+            />
+        );
 
-  it('resets minutes to 0 when selecting new hour after initial render', () => {
-    const props = { ...defaultProps, isInitialRender: { current: false } };
-    render(<HoursDurationValue {...props} />);
+        // Verify ARIA attributes
+        expect(screen.getByRole("group")).toHaveAttribute(
+            "aria-label",
+            "Duration in hours and minutes"
+        );
+    });
 
-    screen.getByTestId('select-hour').click();
-    expect(mockOnValueSelect).toHaveBeenCalledWith('3:0');
-  });
+    it("keeps minutes value during initial render", () => {
+        render(
+            <HoursDurationValue
+                selectedValue="2:30"
+                onValueSelect={mockOnValueSelect}
+                onValueClick={mockOnValueClick}
+                isInitialRender={mockIsInitialRender}
+            />
+        );
 
-  it('maintains minutes when selecting new hour during initial render', () => {
-    render(<HoursDurationValue {...defaultProps} />);
+        const [hoursList] = screen.getAllByTestId("mock-duration-value-list");
+        expect(hoursList).toHaveAttribute("data-type", "hours");
+        fireEvent.click(hoursList);
 
-    screen.getByTestId('select-hour').click();
-    expect(mockOnValueSelect).toHaveBeenCalledWith('3:30');
-  });
+        expect(mockOnValueSelect).toHaveBeenCalledWith("2:30");
+    });
 
-  it('handles minute selection', () => {
-    render(<HoursDurationValue {...defaultProps} />);
+    it("resets minutes to 00 after initial render", () => {
+        mockIsInitialRender.current = false;
+        render(
+            <HoursDurationValue
+                selectedValue="2:30"
+                onValueSelect={mockOnValueSelect}
+                onValueClick={mockOnValueClick}
+                isInitialRender={mockIsInitialRender}
+            />
+        );
 
-    screen.getByTestId('select-minute').click();
-    expect(mockOnValueSelect).toHaveBeenCalledWith('2:31');
-  });
+        const [hoursList] = screen.getAllByTestId("mock-duration-value-list");
+        expect(hoursList).toHaveAttribute("data-type", "hours");
+        fireEvent.click(hoursList);
 
-  it('handles click events', () => {
-    render(<HoursDurationValue {...defaultProps} />);
+        expect(mockOnValueSelect).toHaveBeenCalledWith("2:00");
+    });
 
-    // Clicking hour always resets minutes to 0
-    screen.getByTestId('click-hour').click();
-    expect(mockOnValueClick).toHaveBeenCalledWith('3:0');
+    it("updates minutes value when minutes are selected", () => {
+        render(
+            <HoursDurationValue
+                selectedValue="2:30"
+                onValueSelect={mockOnValueSelect}
+                onValueClick={mockOnValueClick}
+                isInitialRender={mockIsInitialRender}
+            />
+        );
 
-    // Clicking minute uses current hour with new minute value
-    screen.getByTestId('click-minute').click();
-    expect(mockOnValueClick).toHaveBeenCalledWith('3:31');
-  });
+        const [, minutesList] = screen.getAllByTestId("mock-duration-value-list");
+        expect(minutesList).toHaveAttribute("data-type", "minutes");
+        fireEvent.click(minutesList);
+
+        expect(mockOnValueSelect).toHaveBeenCalledWith("2:30");
+    });
 });

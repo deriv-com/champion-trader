@@ -1,1 +1,1 @@
-export { BalanceDisplay } from './BalanceDisplay';
+export { BalanceDisplay } from "./BalanceDisplay";
