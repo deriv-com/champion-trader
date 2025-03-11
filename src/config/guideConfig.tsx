@@ -9,7 +9,7 @@ export interface GuideConfig {
 }
 
 export const guideConfig: GuideConfig = {
-    "rise-fall": {
+    rise_fall: {
         header: <h2 className="text-lg font-bold pb-4">Rise/Fall</h2>,
         body: (
             <div className="space-y-4 text-sm">

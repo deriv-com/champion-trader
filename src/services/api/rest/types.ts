@@ -40,3 +40,12 @@ export interface BuyResponse {
     price: number;
     trade_type: string;
 }
+
+export interface ProductsResponse {
+    data: {
+        products: Array<{
+            id: string;
+            display_name: string;
+        }>;
+    };
+}

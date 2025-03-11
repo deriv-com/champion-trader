@@ -3,11 +3,13 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { GuideModal } from "./GuideModal";
 import { ChevronRight } from "lucide-react";
+import { useTradeStore } from "@/stores/tradeStore";
 
 export const HowToTrade: React.FC = () => {
     const { setBottomSheet } = useBottomSheetStore();
     const { isDesktop } = useDeviceDetection();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { tradeTypeDisplayName } = useTradeStore();
 
     const handleClick = () => {
         if (isDesktop) {
@@ -27,7 +29,8 @@ export const HowToTrade: React.FC = () => {
                 onClick={handleClick}
                 className="text-gray-500 hover:text-gray-600 text-sm flex items-center gap-1"
             >
-                How to trade Rise/Fall?
+                How to trade {tradeTypeDisplayName}
+                ?
                 <ChevronRight className="w-4 h-4" />
             </button>
 
@@ -35,7 +38,7 @@ export const HowToTrade: React.FC = () => {
                 <GuideModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    type="rise-fall"
+                    type="rise_fall"
                 />
             )}
         </>

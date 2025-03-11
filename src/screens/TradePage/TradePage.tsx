@@ -8,7 +8,9 @@ import { MarketSelector } from "@/components/MarketSelector";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useMarketStore } from "@/stores/marketStore";
+import { useTradeStore } from "@/stores/tradeStore";
 import { MarketInfo } from "@/components/MarketInfo";
+import { TradeTypesListController } from "./components/TradeTypesListController";
 
 const Chart = lazy(() =>
     import("@/components/Chart").then((module) => ({
@@ -22,6 +24,7 @@ export const TradePage: React.FC = () => {
     const { isMobile } = useDeviceDetection();
     const selectedMarket = useMarketStore((state) => state.selectedMarket);
     const { setOverlaySidebar, activeSidebar } = useMainLayoutStore();
+    const tradeTypeDisplayName = useTradeStore((state) => state.tradeTypeDisplayName);
 
     const handleMarketSelect = React.useCallback(() => {
         if (isMobile) {
@@ -35,20 +38,25 @@ export const TradePage: React.FC = () => {
         <div
             className={`flex ${
                 isLandscape ? "flex-row relative h-full" : "flex-col h-[100dvh]"
-            } flex-1`}
+            } flex-1 lg:py-4`}
             data-testid="trade-page"
         >
-            <div className={`flex flex-col flex-1 overflow-hidden ${isLandscape ? "mb-2" : ""}`}>
-                <div className="flex flex-col flex-1 min-h-0">
+            <div className="flex flex-col flex-1 min-h-0 gap-2">
+                <TradeTypesListController />
+                <div
+                    className={`relative flex flex-col flex-1 overflow-hidden ${
+                        isLandscape ? "mb-2" : ""
+                    }`}
+                >
                     {isLandscape && (
                         <div
-                            className={`absolute top-3 ${
+                            className={`absolute ${
                                 activeSidebar ? "left-[calc(320px+16px)]" : "left-4"
                             } z-10 transition-all duration-300`}
                         >
                             <MarketInfo
                                 title={selectedMarket?.displayName || "Select Market"}
-                                subtitle="Rise/Fall"
+                                subtitle={tradeTypeDisplayName}
                                 onClick={handleMarketSelect}
                                 isMobile={false}
                             />
@@ -57,7 +65,7 @@ export const TradePage: React.FC = () => {
                     {!isLandscape && (
                         <MarketInfo
                             title={selectedMarket?.displayName || "Select Market"}
-                            subtitle="Rise/Fall"
+                            subtitle={tradeTypeDisplayName}
                             onClick={handleMarketSelect}
                             isMobile={true}
                         />

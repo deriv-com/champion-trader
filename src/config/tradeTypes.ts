@@ -10,6 +10,7 @@ export interface TradeButton {
 }
 
 export interface TradeTypeConfig {
+    displayName: string; // default display name for the trade type
     fields: {
         duration: boolean;
         stake: boolean;
@@ -28,6 +29,7 @@ export interface TradeTypeConfig {
 
 export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
     rise_fall: {
+        displayName: "Rise/Fall",
         fields: {
             duration: true,
             stake: true,
@@ -64,6 +66,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
         ],
     },
     high_low: {
+        displayName: "Higher/Lower",
         fields: {
             duration: true,
             stake: true,
@@ -99,6 +102,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
         ],
     },
     touch: {
+        displayName: "Touch/No Touch",
         fields: {
             duration: true,
             stake: true,
@@ -134,6 +138,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
         ],
     },
     multiplier: {
+        displayName: "Multipliers",
         fields: {
             duration: true,
             stake: true,

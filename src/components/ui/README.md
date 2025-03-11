@@ -56,6 +56,68 @@ The component uses TailwindCSS with:
 
 ## Components
 
+### Skeleton Component
+
+A reusable UI component that provides a visual placeholder while content is loading, using a background-only pulse animation to avoid unwanted border effects.
+
+#### Features
+- Background-only pulse animation
+- Customizable via className props (TailwindCSS)
+- Dark mode support
+- Configurable animation colors via CSS variables
+- No unwanted border effects
+
+#### Props
+```typescript
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+```
+
+The component accepts all standard HTML div attributes plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| className | string | TailwindCSS classes for styling |
+| style | React.CSSProperties | Additional inline styles |
+| [other div props] | any | Any standard HTML div attributes |
+
+#### Usage
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Basic usage
+<Skeleton className="h-4 w-full rounded-md" />
+
+// Circle skeleton (e.g., for avatars)
+<Skeleton className="h-12 w-12 rounded-full" />
+
+// Card with multiple skeletons
+<div className="p-4 border rounded-lg">
+  <Skeleton className="h-6 w-3/4 rounded-md mb-4" />
+  <Skeleton className="h-4 w-full rounded-md mb-2" />
+  <Skeleton className="h-4 w-full rounded-md mb-2" />
+  <Skeleton className="h-4 w-2/3 rounded-md mb-4" />
+</div>
+```
+
+#### Customization
+
+The component uses CSS variables for animation colors:
+
+```tsx
+// Custom colors
+<Skeleton 
+  className="h-4 w-full rounded-md"
+  style={{
+    "--skeleton-bg-from": "rgb(200, 200, 200)",
+    "--skeleton-bg-to": "rgb(160, 160, 160)"
+  }}
+/>
+```
+
+#### Animation
+
+Uses a custom `animate-pulse-bg` animation that only affects the background color, preventing unwanted border or glow effects.
+
 ### Chip Component
 
 A reusable chip/tag component that supports selection states and click interactions.

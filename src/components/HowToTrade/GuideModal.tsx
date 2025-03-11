@@ -1,16 +1,17 @@
 import { Modal } from "@/components/ui/modal";
 import { guideConfig } from "@/config/guideConfig";
 import { TabList } from "../ui/tab-list";
+import { TradeType } from "@/config/tradeTypes";
 
 interface GuideProps {
     isOpen: boolean;
     onClose: () => void;
-    type?: string;
+    type?: TradeType;
 }
 
-const Guides = [{ label: "Rise/Fall", value: "rise-fall" }];
+const Guides = [{ label: "Rise/Fall", value: "rise_fall" }];
 
-export const GuideModal = ({ isOpen, onClose, type = "rise-fall" }: GuideProps) => {
+export const GuideModal = ({ isOpen, onClose, type = "rise_fall" }: GuideProps) => {
     const content = guideConfig[type]?.body;
 
     if (!content) {
@@ -26,7 +27,7 @@ export const GuideModal = ({ isOpen, onClose, type = "rise-fall" }: GuideProps) 
                 <TabList
                     variant={"chip"}
                     tabs={Guides}
-                    selectedValue={"rise-fall"}
+                    selectedValue={"rise_fall"}
                     onSelect={(value) => value}
                 />
             }

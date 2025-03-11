@@ -42,6 +42,8 @@ interface TradeState {
     allowEquals: boolean;
     /** Current trade type (from trade type configuration) */
     trade_type: TradeType;
+    /** Display name for the current trade type */
+    tradeTypeDisplayName: string;
     /** Current trading instrument */
     instrument: string;
     /** Payout values for each button */
@@ -72,8 +74,21 @@ interface TradeState {
     setPayouts: (payouts: Payouts) => void;
     /** Set the current trading instrument */
     setInstrument: (instrument: string) => void;
-    /** Set the current trade type */
-    setTradeType: (trade_type: TradeType) => void;
+    /**
+     * Set the current trade type
+     * This will update the form fields and buttons based on the trade type configuration
+     * and set the display name if provided
+     *
+     * @param trade_type - Trade type from configuration
+     * @param display_name - Optional display name to override the default
+     */
+    setTradeType: (trade_type: TradeType, display_name?: string) => void;
+    /**
+     * Set the display name for the current trade type
+     *
+     * @param displayName - The display name to set
+     */
+    setTradeTypeDisplayName: (displayName: string) => void;
     /** Set contract details */
     setContractDetails: (details: ContractDetails | null) => void;
 
@@ -93,8 +108,9 @@ export const useTradeStore = create<TradeState>((set) => ({
     stake: "10",
     duration: "5 minutes",
     allowEquals: false,
-    trade_type: "rise_fall",
-    instrument: "R_100",
+    trade_type: "rise_fall", // Default to rise_fall trade type
+    tradeTypeDisplayName: "", // Initialize with empty string
+    instrument: "R_100", // Default to R_100
     payouts: {
         max: 50000,
         values: {
@@ -102,7 +118,7 @@ export const useTradeStore = create<TradeState>((set) => ({
             buy_fall: 19.5,
         },
     },
-    contractDetails: contractDetailsStub,
+    contractDetails: contractDetailsStub, // Initialize with stub data
 
     // Product Config State
     productConfig: null,
@@ -117,15 +133,12 @@ export const useTradeStore = create<TradeState>((set) => ({
     setAllowEquals: (allowEquals: boolean) => set({ allowEquals }),
     setPayouts: (payouts) => set({ payouts }),
     setInstrument: (instrument: string) => set({ instrument }),
-
-    // Product Config Actions
-    setProductConfig: (config: ProductConfigResponse | null) => set({ productConfig: config }),
-    setConfigLoading: (loading: boolean) => set({ isConfigLoading: loading }),
-    setConfigError: (error: Error | null) => set({ configError: error }),
-    setConfigCache: (cache: Record<string, ProductConfigResponse>) => set({ configCache: cache }),
-    setTradeType: (trade_type: TradeType) =>
+    setTradeType: (trade_type: TradeType, display_name?: string) =>
         set((state) => ({
             trade_type,
+            // Set display name if passed else use default value from config
+            tradeTypeDisplayName: display_name || tradeTypeConfigs[trade_type].displayName,
+            // Reset payouts for the new trade type with default values
             payouts: {
                 max: state.payouts.max,
                 values: tradeTypeConfigs[trade_type].buttons.reduce(
@@ -137,5 +150,12 @@ export const useTradeStore = create<TradeState>((set) => ({
                 ),
             },
         })),
+    setTradeTypeDisplayName: (displayName: string) => set({ tradeTypeDisplayName: displayName }),
     setContractDetails: (details) => set({ contractDetails: details }),
+
+    // Product Config Actions
+    setProductConfig: (config: ProductConfigResponse | null) => set({ productConfig: config }),
+    setConfigLoading: (loading: boolean) => set({ isConfigLoading: loading }),
+    setConfigError: (error: Error | null) => set({ configError: error }),
+    setConfigCache: (cache: Record<string, ProductConfigResponse>) => set({ configCache: cache }),
 }));

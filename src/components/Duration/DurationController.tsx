@@ -115,12 +115,14 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
         <>
             <div className={isLandscape ? "flex" : ""}>
                 {!isLandscape && <BottomSheetHeader title="Duration" />}
-                <TabList
-                    tabs={availableDurationTypes}
-                    selectedValue={selectedTabType}
-                    onSelect={handleTypeSelect as (value: string) => void}
-                    variant={isLandscape ? "vertical" : "chip"}
-                />
+                <div className="mx-4 w-fit">
+                    <TabList
+                        tabs={availableDurationTypes}
+                        selectedValue={selectedTabType}
+                        onSelect={handleTypeSelect as (value: string) => void}
+                        variant={isLandscape ? "vertical" : "chip"}
+                    />
+                </div>
                 <div className={`flex-1 relative bg-white ${isLandscape ? "px-2" : "px-8"}`}>
                     {selectedTabType === "hours" ? (
                         <HoursDurationValue
