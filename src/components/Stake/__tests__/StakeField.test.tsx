@@ -19,10 +19,24 @@ jest.mock("@/components/ui/desktop-trade-field-card", () => ({
     ),
 }));
 
+jest.mock("@/components/ui/mobile-trade-field-card", () => ({
+    MobileTradeFieldCard: ({ children, onClick }: any) => (
+        <div data-testid="mobile-trade-field-card" onClick={onClick}>
+            {children}
+        </div>
+    ),
+}));
+
 jest.mock("@/components/TradeFields/TradeParam", () => ({
     __esModule: true,
-    default: ({ label, value, onClick }: any) => (
-        <button data-testid="trade-param" data-label={label} data-value={value} onClick={onClick}>
+    default: ({ label, value, onClick, className }: any) => (
+        <button
+            data-testid="trade-param"
+            data-label={label}
+            data-value={value}
+            onClick={onClick}
+            className={className}
+        >
             <span>{value}</span>
         </button>
     ),
@@ -66,6 +80,16 @@ describe("StakeField", () => {
             stake: "100",
             setStake: jest.fn(),
             isConfigLoading: false,
+            productConfig: {
+                data: {
+                    validations: {
+                        stake: {
+                            min: "1",
+                            max: "50000",
+                        },
+                    },
+                },
+            },
         });
 
         (useOrientationStore as jest.MockedFunction<typeof useOrientationStore>).mockReturnValue({
@@ -87,6 +111,7 @@ describe("StakeField", () => {
                 stake: "100",
                 setStake: jest.fn(),
                 isConfigLoading: true,
+                productConfig: null,
             });
 
             render(<StakeField />);
@@ -107,6 +132,58 @@ describe("StakeField", () => {
         });
     });
 
+    describe("Error State", () => {
+        it("should display N/A when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                stake: "100",
+                setStake: jest.fn(),
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<StakeField />);
+
+            const param = screen.getByTestId("trade-param");
+            expect(param).toHaveAttribute("data-value", "N/A");
+            expect(param.className).toContain("opacity-50");
+            expect(param.className).toContain("cursor-not-allowed");
+        });
+
+        it("should not trigger click actions when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                stake: "100",
+                setStake: jest.fn(),
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<StakeField />);
+
+            fireEvent.click(screen.getByTestId("trade-param"));
+            expect(mockSetBottomSheet).not.toHaveBeenCalled();
+        });
+
+        it("should not show increment/decrement buttons when productConfig is null in landscape mode", () => {
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                stake: "100",
+                setStake: jest.fn(),
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<StakeField />);
+
+            expect(screen.queryByLabelText("Increase stake")).not.toBeInTheDocument();
+            expect(screen.queryByLabelText("Decrease stake")).not.toBeInTheDocument();
+            expect(screen.getByText("N/A")).toBeInTheDocument();
+        });
+    });
+
     describe("Portrait Mode", () => {
         beforeEach(() => {
             (
@@ -122,6 +199,13 @@ describe("StakeField", () => {
             fireEvent.click(screen.getByTestId("trade-param"));
 
             expect(mockSetBottomSheet).toHaveBeenCalledWith(true, "stake", "400px");
+        });
+
+        it("should wrap in mobile trade field card", () => {
+            render(<StakeField />);
+
+            expect(screen.getByTestId("mobile-trade-field-card")).toBeInTheDocument();
+            expect(screen.queryByTestId("desktop-trade-field-card")).not.toBeInTheDocument();
         });
     });
 
@@ -163,6 +247,16 @@ describe("StakeField", () => {
                 stake: "100",
                 setStake: mockSetStake,
                 isConfigLoading: false,
+                productConfig: {
+                    data: {
+                        validations: {
+                            stake: {
+                                min: "1",
+                                max: "50000",
+                            },
+                        },
+                    },
+                },
             });
 
             render(<StakeField />);
