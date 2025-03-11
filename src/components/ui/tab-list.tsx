@@ -15,11 +15,7 @@ interface TabListProps extends BaseTabListProps {
     variant: "chip" | "vertical";
 }
 
-const ChipTabList: React.FC<BaseTabListProps> = ({
-    tabs,
-    selectedValue,
-    onSelect,
-}) => {
+const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
     return (
         <div
             className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
@@ -28,7 +24,7 @@ const ChipTabList: React.FC<BaseTabListProps> = ({
                 msOverflowStyle: "none",
             }}
         >
-            <div className="max-w-full flex gap-4">
+            <div className="max-w-full flex gap-2">
                 {tabs.map(({ label, value }) => (
                     <div key={value} className="shrink-0">
                         <button
@@ -51,11 +47,7 @@ const ChipTabList: React.FC<BaseTabListProps> = ({
     );
 };
 
-const VerticalTabList: React.FC<BaseTabListProps> = ({
-    tabs,
-    selectedValue,
-    onSelect,
-}) => {
+const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect }) => {
     return (
         <div className="w-28 bg-[#F6F7F8]">
             {tabs.map(({ label, value }) => (
@@ -81,9 +73,5 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({
 };
 
 export const TabList: React.FC<TabListProps> = ({ variant, ...props }) => {
-    return variant === "chip" ? (
-        <ChipTabList {...props} />
-    ) : (
-        <VerticalTabList {...props} />
-    );
+    return variant === "chip" ? <ChipTabList {...props} /> : <VerticalTabList {...props} />;
 };
