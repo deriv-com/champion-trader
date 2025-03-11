@@ -21,9 +21,7 @@ export const AccountSwitcher: React.FC = () => {
             <AccountPopoverTrigger asChild>
                 <button
                     data-testid="balance-display"
-                    className={`flex flex-col relative ${
-                        isLandscape ? "items-end" : "items-start"
-                    }`}
+                    className="flex flex-col relative"
                 >
                     <div className="flex items-center gap-1">
                         <span
@@ -53,7 +51,7 @@ export const AccountSwitcher: React.FC = () => {
                             />
                         )}
                     </div>
-                    <span className="text-sm font-semibold align-start">
+                    <span className="text-base font-semibold align-start">
                         {selectedAccount?.isDemo ? "10,000" : balance}{" "}
                         {selectedAccount?.currency || "USD"}
                     </span>

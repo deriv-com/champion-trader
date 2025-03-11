@@ -8,11 +8,14 @@ export const fetchBalance = async () => {
     if (!token) return;
 
     try {
-        const response = await axios.get(`${apiConfig.rest.baseUrl}/balance`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axios.get(
+            `${apiConfig.rest.baseUrl}/v1/accounting/balance`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
         const { balance, currency } = response.data;
         useClientStore.getState().setBalance(balance, currency);
     } catch (error) {

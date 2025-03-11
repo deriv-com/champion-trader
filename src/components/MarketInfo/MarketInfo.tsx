@@ -21,11 +21,13 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
     if (isMobile) {
         return (
             <div
-                className="inline-flex cursor-pointer mx-4 mt-3"
+                className="inline-flex cursor-pointer mx-4 lg:mt-3"
                 data-id="market-info"
-                onClick={onClick}
             >
-                <div className="flex items-center gap-4 px-4 py-3 bg-black/[0.04] rounded-lg">
+                <div
+                    className="flex items-center gap-4 px-4 py-3 bg-black/[0.04] rounded-lg"
+                    onClick={onClick}
+                >
                     {selectedMarket && (
                         <div className="w-8 h-8 flex items-center justify-center">
                             <MarketIcon

@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useOrientationStore } from "@/stores/orientationStore";
-import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { Footer } from "./Footer";
-import { Header } from "./Header";
+import { ResponsiveHeader } from "./ResponsiveHeader";
 import { SideNav } from "@/components/SideNav";
 import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar";
+import { useLocation } from "react-router-dom";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -17,8 +17,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const { isMobile } = useDeviceDetection();
     const { isLandscape, setIsLandscape } = useOrientationStore();
     const { activeSidebar, setSidebar } = useMainLayoutStore();
-    const isHeaderVisible = useHeaderStore((state) => state.isVisible);
     const isBottomNavVisible = useBottomNavStore((state) => state.isVisible);
+    const location = useLocation();
+    const isResponsiveHeaderVisible =
+        isMobile && !location.pathname.includes("/contract/");
 
     useEffect(() => {
         const handleOrientationChange = () => {
@@ -33,7 +35,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         window.addEventListener("resize", handleOrientationChange);
 
         return () => {
-            window.removeEventListener("orientationchange", handleOrientationChange);
+            window.removeEventListener(
+                "orientationchange",
+                handleOrientationChange
+            );
             window.removeEventListener("resize", handleOrientationChange);
         };
     }, [isMobile, isLandscape]);
@@ -42,11 +47,19 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     return (
         <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
-            {isHeaderVisible && (
-                <Header className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`} />
+            {isResponsiveHeaderVisible && (
+                <ResponsiveHeader
+                    className={`${
+                        shouldEnableScrolling ? "" : "sticky top-0"
+                    } z-50 w-full`}
+                />
             )}
             <div
-                className={`flex flex-1 relative ${isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""}`}
+                className={`flex flex-1 relative ${
+                    isLandscape && !shouldEnableScrolling
+                        ? "overflow-hidden"
+                        : ""
+                }`}
             >
                 {isLandscape && <SideNav />}
                 <div className="flex flex-1 overflow-hidden">
@@ -73,9 +86,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             </main>
                         </div>
                     ) : (
-                        <main className="flex-1 flex flex-col">
+                        <main className="max-w-full flex-1 flex flex-col">
                             {children}
-                            {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
+                            {isBottomNavVisible && (
+                                <Footer className="sticky bottom-0 z-50" />
+                            )}
                         </main>
                     )}
                 </div>

@@ -1,5 +1,5 @@
-import { apiClient } from '../../axios_interceptor';
-import { ProductConfigResponse, ProductConfigRequest } from './types';
+import { apiClient } from "../../axios_interceptor";
+import { ProductConfigResponse, ProductConfigRequest } from "./types";
 
 /**
  * Fetches product configuration from the API
@@ -7,14 +7,14 @@ import { ProductConfigResponse, ProductConfigRequest } from './types';
  * @returns Promise resolving to product configuration
  */
 export const getProductConfig = async (
-  params: ProductConfigRequest
+    params: ProductConfigRequest
 ): Promise<ProductConfigResponse> => {
-  const { product_type, instrument_id } = params;
-  const response = await apiClient.get<ProductConfigResponse>(
-    `/v1/market/products/${product_type}/config`,
-    {
-      params: { instrument_id }
-    }
-  );
-  return response.data;
+    const { product_type, instrument_id } = params;
+    const response = await apiClient.get<ProductConfigResponse>(
+        `/v1/market/products/${product_type}/config`,
+        {
+            params: { instrument_id },
+        }
+    );
+    return response.data;
 };
