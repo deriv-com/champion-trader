@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useToastStore } from "@/stores/toastStore";
+import { useClientStore } from "@/stores/clientStore";
 import { getProductConfig } from "@/services/api/rest/product-config/service";
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 import { updateDurationRanges } from "@/utils/duration";
@@ -23,6 +24,7 @@ export const useProductConfig = () => {
         setConfigCache,
     } = useTradeStore();
     const { toast } = useToastStore();
+    const { account_uuid } = useClientStore();
 
     // Apply configuration to the app
     const applyConfig = useCallback(
@@ -68,7 +70,7 @@ export const useProductConfig = () => {
                 const config = await getProductConfig({
                     instrument_id,
                     product_id,
-                    account_uuid: "", // TODO - get the actual account_uuid
+                    account_uuid,
                 });
 
                 // Update cache
@@ -93,6 +95,7 @@ export const useProductConfig = () => {
         [
             applyConfig,
             configCache,
+            account_uuid,
             setConfigCache,
             setConfigError,
             setConfigLoading,

@@ -9,12 +9,12 @@ import { ProductConfigResponse, ProductConfigRequest } from "./types";
 export const getProductConfig = async (
     params: ProductConfigRequest
 ): Promise<ProductConfigResponse> => {
-    const { instrument_id, product_id } = params;
+    const { instrument_id, product_id, account_uuid } = params;
     const response = await apiClient.get<ProductConfigResponse>(`/v1/market/products/config`, {
         params: {
             instrument_id,
             product_id,
-            account_uuid: "",
+            account_uuid,
         },
     });
     return response.data;

@@ -4,7 +4,6 @@ import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
 import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
-import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 // import { useTradeActions } from "@/hooks/useTradeActions";

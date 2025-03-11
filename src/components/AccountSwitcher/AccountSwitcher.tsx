@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useClientStore } from "@/stores/clientStore";
 import { useAccount } from "@/hooks/useAccount";
+import { useClientStore } from "@/stores/clientStore";
 import {
     AccountPopover,
     AccountPopoverContent,
@@ -11,8 +11,9 @@ import { AccountInfo } from "./AccountInfo";
 import { useOrientationStore } from "@/stores/orientationStore";
 
 export const AccountSwitcher: React.FC = () => {
-    const { balance } = useClientStore();
-    const { selectedAccount } = useAccount();
+    const { isDemo } = useAccount();
+    const { balance, currency } = useClientStore();
+
     const { isLandscape } = useOrientationStore();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -23,34 +24,27 @@ export const AccountSwitcher: React.FC = () => {
                     <div className="flex items-center gap-1">
                         <span
                             className={`text-sm font-semibold ${
-                                selectedAccount?.isDemo
-                                    ? "text-orange-500"
-                                    : "text-color-solid-glacier-700"
+                                isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
                             }`}
                         >
-                            {selectedAccount?.isDemo ? "Demo" : "Real"}
+                            {isDemo ? "Demo" : "Real"}
                         </span>
                         {isOpen ? (
                             <ChevronUp
                                 className={`h-4 w-4 ${
-                                    selectedAccount?.isDemo
-                                        ? "text-orange-500"
-                                        : "text-color-solid-glacier-700"
+                                    isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
                                 }`}
                             />
                         ) : (
                             <ChevronDown
                                 className={`h-4 w-4 ${
-                                    selectedAccount?.isDemo
-                                        ? "text-orange-500"
-                                        : "text-color-solid-glacier-700"
+                                    isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
                                 }`}
                             />
                         )}
                     </div>
                     <span className="text-base font-semibold align-start">
-                        {selectedAccount?.isDemo ? "10,000" : balance}{" "}
-                        {selectedAccount?.currency || "USD"}
+                        {balance} {currency}
                     </span>
                 </button>
             </AccountPopoverTrigger>

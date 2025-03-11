@@ -44,5 +44,5 @@ export interface ProductConfigResponse {
 export interface ProductConfigRequest {
     instrument_id: string;
     product_id: string;
-    account_uuid: string;
+    account_uuid: string | null;
 }
