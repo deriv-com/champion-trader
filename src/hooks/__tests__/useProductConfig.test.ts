@@ -43,7 +43,7 @@ describe("useProductConfig", () => {
             data: {
                 defaults: {
                     duration: 5,
-                    duration_units: "minutes",
+                    duration_unit: "minutes",
                     stake: 10,
                     allow_equals: true,
                 },
@@ -97,7 +97,7 @@ describe("useProductConfig", () => {
             data: {
                 defaults: {
                     duration: 1,
-                    duration_units: "minutes",
+                    duration_unit: "minutes",
                     stake: 100,
                     allow_equals: false,
                 },

@@ -1,7 +1,7 @@
 export interface ProductConfigDefaults {
     id: string;
     duration: number;
-    duration_units: string;
+    duration_unit: string;
     allow_equals: boolean;
     stake: number;
 }

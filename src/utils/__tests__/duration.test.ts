@@ -19,7 +19,7 @@ describe("duration utils", () => {
             defaults: {
                 id: "test",
                 duration: 5,
-                duration_units: "minutes",
+                duration_unit: "minutes",
                 allow_equals: true,
                 stake: 10,
             },
