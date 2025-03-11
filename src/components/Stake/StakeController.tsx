@@ -69,19 +69,25 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
                 },
                 headers: token ? { Authorization: `Bearer ${token}` } : undefined,
                 onMessage: (priceData) => {
+                    // Check if priceData is ContractPriceResponse or Contract
+                    const price =
+                        "price" in priceData
+                            ? priceData.price
+                            : priceData.contract_details?.potential_payout || "0";
+
                     // Update button state for this specific button
                     setButtonStates((prev) => ({
                         ...prev,
                         [button.actionName]: {
                             loading: false,
                             error: null,
-                            payout: Number(priceData.price),
+                            payout: Number(price),
                             reconnecting: false,
                         },
                     }));
 
                     // Update payouts in store
-                    const payoutValue = Number(priceData.price);
+                    const payoutValue = Number(price);
 
                     // Create a map of button action names to their payout values
                     const payoutValues = Object.keys(buttonStates).reduce(
