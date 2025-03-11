@@ -269,7 +269,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                     onClose={hideToast}
                                                 />
                                             ),
-                                            variant: "black",
+                                            variant: "default",
                                             duration: 3000,
                                             position: isLandscape ? "bottom-left" : "top-center",
                                         });
@@ -290,34 +290,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
                                     <Suspense fallback={<div>Loading duration field...</div>}>
-                                        <MobileTradeFieldCard
-                                            onClick={() => {
-                                                const durationField = document.querySelector(
-                                                    'button[aria-label^="Duration"]'
-                                                );
-                                                if (durationField) {
-                                                    (durationField as HTMLButtonElement).click();
-                                                }
-                                            }}
-                                        >
-                                            <DurationField />
-                                        </MobileTradeFieldCard>
+                                        <DurationField />
                                     </Suspense>
                                 )}
                                 {config.fields.stake && (
                                     <Suspense fallback={<div>Loading stake field...</div>}>
-                                        <MobileTradeFieldCard
-                                            onClick={() => {
-                                                const stakeField = document.querySelector(
-                                                    'button[aria-label^="Stake"]'
-                                                );
-                                                if (stakeField) {
-                                                    (stakeField as HTMLButtonElement).click();
-                                                }
-                                            }}
-                                        >
-                                            <StakeField />
-                                        </MobileTradeFieldCard>
+                                        <StakeField />
                                     </Suspense>
                                 )}
                             </ResponsiveTradeParamLayout>
@@ -379,7 +357,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                     onClose={hideToast}
                                                 />
                                             ),
-                                            variant: "black",
+                                            variant: "default",
                                             duration: 3000,
                                             position: isLandscape ? "bottom-left" : "top-center",
                                         });
