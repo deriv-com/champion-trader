@@ -11,35 +11,6 @@ import {
     adaptDefaultStake,
 } from "@/adapters/stake-config-adapter";
 
-// Default configuration to use as fallback
-const DEFAULT_CONFIG: ProductConfigResponse = {
-    data: {
-        defaults: {
-            id: "rise_fall",
-            duration: 60,
-            duration_units: "seconds",
-            allow_equals: true,
-            stake: 10,
-        },
-        validations: {
-            durations: {
-                supported_units: ["ticks", "seconds", "days"],
-                ticks: { min: 1, max: 10 },
-                seconds: { min: 15, max: 86400 },
-                days: { min: 1, max: 365 },
-            },
-            stake: {
-                min: "1.00",
-                max: "50000.00",
-            },
-            payout: {
-                min: "1.00",
-                max: "50000.00",
-            },
-        },
-    },
-};
-
 export const useProductConfig = () => {
     const {
         setProductConfig,
@@ -117,9 +88,6 @@ export const useProductConfig = () => {
                     variant: "error",
                     duration: 5000,
                 });
-
-                // Apply fallback config
-                applyFallbackConfig();
             }
         },
         [
@@ -140,17 +108,8 @@ export const useProductConfig = () => {
         setConfigError(null);
     }, [setConfigError, setConfigLoading, setProductConfig]);
 
-    // Apply fallback configuration
-    const applyFallbackConfig = useCallback(() => {
-        console.warn("Using fallback product configuration");
-        setProductConfig(DEFAULT_CONFIG);
-        setConfigLoading(false);
-        applyConfig(DEFAULT_CONFIG);
-    }, [applyConfig, setConfigLoading, setProductConfig]);
-
     return {
         fetchProductConfig,
         resetProductConfig,
-        applyFallbackConfig,
     };
 };
