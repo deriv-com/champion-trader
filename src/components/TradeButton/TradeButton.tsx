@@ -2,7 +2,6 @@ import React from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { WebSocketError } from "@/services/api/websocket/types";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 export interface TradeButtonProps {
@@ -14,7 +13,7 @@ export interface TradeButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     loading?: boolean;
-    error?: Event | WebSocketError | null;
+    error?: Event | null;
 }
 
 export const TradeButton: React.FC<TradeButtonProps> = ({

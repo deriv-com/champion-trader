@@ -1,9 +1,8 @@
 # Chart Component
 
-The Chart component displays market data using a WebSocket connection and visualizes it using the lightweight-charts library. It is responsible for:
+The Chart component displays market data using a SSE connection and visualizes it using the lightweight-charts library. It is responsible for:
 
 - **Real-Time Price Updates:** Receiving and displaying live market prices.
-- **Connection Status:** Indicating whether the WebSocket connection is active or disconnected.
 - **Error Handling:** Using an error boundary to gracefully handle chart-related errors.
 - **Data Management:** Ensuring proper sorting and deduplication of price data.
 - **Customization:** Accepting an optional `className` prop for styling.
@@ -29,11 +28,6 @@ function App() {
 | className | string | Optional CSS class for the component. |
 
 ## Implementation Details
-
-### WebSocket Integration
-- Uses the `useMarketWebSocket` hook with a hardcoded instrument ID of `"R_100"`.
-- WebSocket events such as connection, price updates, and errors are logged to the console.
-- The UI displays the current market price and a disconnected message when the connection is lost.
 
 ### Chart Visualization
 - Implements the lightweight-charts library for dynamic price visualization.

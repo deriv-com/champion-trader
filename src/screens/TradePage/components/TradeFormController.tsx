@@ -9,7 +9,6 @@ import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 // import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
-import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
@@ -40,7 +39,7 @@ interface TradeFormControllerProps {
 
 interface ButtonState {
     loading: boolean;
-    error: Event | WebSocketError | null;
+    error: Event | null;
     payout: number;
     reconnecting?: boolean;
 }

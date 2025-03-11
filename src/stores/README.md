@@ -10,7 +10,6 @@ stores/
 ├── clientStore.ts        # Client configuration and settings
 ├── sseStore.ts          # SSE connection and data management
 ├── tradeStore.ts        # Trading-related state management
-├── websocketStore.ts    # Legacy WebSocket state (to be deprecated)
 └── __tests__/          # Store tests with TDD approach
     ├── clientStore.test.ts
     ├── sseStore.test.ts
@@ -183,25 +182,6 @@ const useSSEStore = create<SSEState & SSEActions>((set) => ({
   contractPrices: {},
   // Implementation of actions
 }));
-```
-
-## WebSocket Store (Legacy)
-
-The WebSocket store manages legacy real-time connections (to be deprecated):
-
-```typescript
-interface WebSocketState {
-  isMarketConnected: boolean;
-  isContractConnected: boolean;
-  instrumentPrices: Record<string, Price>;
-  contractPrices: Record<string, ContractPrice>;
-}
-
-interface WebSocketActions {
-  initializeMarketService: () => void;
-  initializeContractService: (authToken: string) => void;
-  // Other actions
-}
 ```
 
 ## Trade Store
