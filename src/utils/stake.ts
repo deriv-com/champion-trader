@@ -5,11 +5,6 @@ export const parseStakeAmount = (stake: string): number => {
     return Number(stake.includes(" ") ? stake.split(" ")[0] : stake);
 };
 
-export const validateStakeAmount = (amount: number): boolean => {
-    const config = getStakeConfig();
-    return amount >= config.min && amount <= config.max;
-};
-
 export const incrementStake = (currentStake: string): string => {
     const amount = parseStakeAmount(currentStake);
     const config = getStakeConfig();

@@ -47,7 +47,7 @@ interface ButtonState {
 type ButtonStates = Record<string, ButtonState>;
 
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type, instrument } = useTradeStore();
+    const { trade_type, instrument, productConfig } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
@@ -255,8 +255,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         buttonStates[button.actionName]?.loading
                                             ? "Loading..."
                                             : `${
-                                                  // added for demo proposes will change it to 0 once api is connected
-                                                  buttonStates[button.actionName]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout ||
+                                                  (productConfig?.data.validations.payout.max
+                                                      ? Number(
+                                                            productConfig.data.validations.payout
+                                                                .max
+                                                        )
+                                                      : 0)
                                               } ${currency}`
                                     }
                                     title_position={button.position}
@@ -342,7 +347,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         buttonStates[button.actionName]?.loading
                                             ? "Loading..."
                                             : `${
-                                                  buttonStates[button.actionName]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout ||
+                                                  (productConfig?.data.validations.payout.max
+                                                      ? Number(
+                                                            productConfig.data.validations.payout
+                                                                .max
+                                                        )
+                                                      : 0)
                                               } ${currency}`
                                     }
                                     title_position={button.position}
