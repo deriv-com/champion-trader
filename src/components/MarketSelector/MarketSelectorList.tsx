@@ -153,7 +153,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search markets on Rise/Fall"
-                        className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-black/[0.72] placeholder:text-black/[0.24] overflow-hidden text-ellipsis"
+                        className="flex-1 bg-transparent outline-none text-sm font-normal leading-[22px] text-black/[0.72] placeholder:text-black/[0.24] overflow-hidden text-ellipsis"
                     />
                     {searchQuery && (
                         <button
@@ -180,12 +180,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
                         <div key={marketName} className="mb-6">
-                            <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
+                            <h2 className="text-sm font-normal leading-[22px] text-text-primary mb-2">
                                 {marketTitles[marketName]}
                             </h2>
                             <div>
                                 {marketName === "synthetic_index" && (
-                                    <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
+                                    <h3 className="text-xs font-normal leading-[18px] text-text-secondary mb-3">
                                         Continuous Indices
                                     </h3>
                                 )}
@@ -208,7 +208,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                 <MarketIcon symbol={market.symbol} />
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <span className="font-ibm-plex-sans text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
+                                                <span className="text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
                                                     {market.displayName}
                                                 </span>
                                                 {market.isClosed && (
@@ -251,7 +251,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 </div>
 
                 {searchQuery && filteredInstruments.length === 0 && (
-                    <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
+                    <div className="p-4 text-center text-text-secondary text-sm">
                         No markets found matching "{searchQuery}"
                     </div>
                 )}
