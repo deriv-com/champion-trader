@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
 import { ToastProvider } from "@/stores/toastStore";
-import { ThemeEffect } from "@/components/ThemeProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAccount } from "@/hooks/useAccount";
 import { useBalance } from "@/hooks/useBalance";
 
@@ -101,7 +101,7 @@ export const App = () => {
 
     return (
         <BrowserRouter>
-            <ThemeEffect />
+            <ThemeProvider />
             <ToastProvider />
             <AppContent />
         </BrowserRouter>

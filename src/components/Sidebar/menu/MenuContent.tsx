@@ -30,7 +30,12 @@ export const MenuContent: React.FC = () => {
                     <Moon className="w-5 h-5" />
                     <span>Theme</span>
                 </div>
-                <ToggleButton label="" value={theme === "dark"} onChange={toggleTheme} />
+                <ToggleButton
+                    label=""
+                    value={theme === "dark"}
+                    onChange={toggleTheme}
+                    aria-label="Toggle dark mode"
+                />
             </div>
             {isLoggedIn && (
                 <button

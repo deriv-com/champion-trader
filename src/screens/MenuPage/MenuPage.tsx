@@ -29,7 +29,12 @@ export const MenuPage: React.FC = () => {
                 <div className="text-left p-4 rounded-lg hover:bg-theme-hover border-b border-theme flex items-center gap-3">
                     <Moon className="w-5 h-5" />
                     <span className="text-sm">Theme</span>
-                    <ToggleButton label="" value={theme === "dark"} onChange={toggleTheme} />
+                    <ToggleButton
+                        label=""
+                        value={theme === "dark"}
+                        onChange={toggleTheme}
+                        aria-label="Toggle dark mode"
+                    />
                 </div>
                 {isLoggedIn && (
                     <>

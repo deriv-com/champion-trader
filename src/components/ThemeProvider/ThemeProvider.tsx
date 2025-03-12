@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
-export const ThemeEffect: React.FC = () => {
+export const ThemeProvider: React.FC = () => {
     const { theme } = useMainLayoutStore();
 
     useEffect(() => {
