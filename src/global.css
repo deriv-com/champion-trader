@@ -6,6 +6,7 @@
 
 @layer base {
     :root {
+        /* Base variables */
         --background: 0 0% 100%;
         --foreground: 222.2 84% 4.9%;
 
@@ -35,9 +36,21 @@
         --ring: 222.2 84% 4.9%;
 
         --radius: 0.5rem;
+
+        /* Custom theme variables - Light Mode */
+        --theme-bg: 0 0% 100%; /* #FFFFFF */
+        --theme-secondary-bg: 0 0% 96%; /* #F5F5F5 */
+        --theme-text: 0 0% 0%; /* #000000 */
+        --theme-border: 0 0% 0% / 0.2; /* rgba(0,0,0,0.2) */
+        --theme-button: 217 91% 60%; /* #3B82F6 */
+        --theme-button-text: 0 0% 100%; /* #FFFFFF */
+        --theme-hover: 0 0% 96%; /* #F5F5F5 - Light mode hover background */
+        --theme-active: 0 0% 90%; /* #E5E5E5 - Light mode active/selected background */
+        --theme-muted: 0 0% 45%; /* #737373 - Light mode muted text */
     }
 
     .dark {
+        /* Base variables */
         --background: 222.2 84% 4.9%;
         --foreground: 210 40% 98%;
 
@@ -65,6 +78,17 @@
         --border: 217.2 32.6% 17.5%;
         --input: 217.2 32.6% 17.5%;
         --ring: 212.7 26.8% 83.9%;
+
+        /* Custom theme variables - Dark Mode */
+        --theme-bg: 220 20% 12%; /* #181C25 */
+        --theme-secondary-bg: 222 18% 15%; /* #20242F */
+        --theme-text: 0 0% 100%; /* #FFFFFF */
+        --theme-border: 0 0% 100% / 0.16; /* #FFFFFF29 */
+        --theme-button: 196 100% 50%; /* #00D0FF */
+        --theme-button-text: 202 100% 18%; /* #00375C */
+        --theme-hover: 220 10% 20%; /* #2A3042 - Dark mode hover background */
+        --theme-active: 220 10% 25%; /* #343B52 - Dark mode active/selected background */
+        --theme-muted: 0 0% 65%; /* #A6A6A6 - Dark mode muted text */
     }
 }
 
@@ -74,5 +98,42 @@
     }
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+/* Add utility classes for the custom theme colors */
+@layer utilities {
+    .bg-theme {
+        background-color: hsl(var(--theme-bg));
+    }
+    .bg-theme-secondary {
+        background-color: hsl(var(--theme-secondary-bg));
+    }
+    .text-theme {
+        color: hsl(var(--theme-text));
+    }
+    .border-theme {
+        border-color: hsl(var(--theme-border));
+    }
+    .bg-theme-button {
+        background-color: hsl(var(--theme-button));
+    }
+    .text-theme-button {
+        color: hsl(var(--theme-button-text));
+    }
+    .bg-theme-hover {
+        background-color: hsl(var(--theme-hover));
+    }
+    .bg-theme-active {
+        background-color: hsl(var(--theme-active));
+    }
+    .text-theme-muted {
+        color: hsl(var(--theme-muted));
+    }
+    .hover\:bg-theme-hover:hover {
+        background-color: hsl(var(--theme-hover));
+    }
+    .hover\:text-theme:hover {
+        color: hsl(var(--theme-text));
     }
 }

@@ -33,6 +33,17 @@ module.exports = {
           secondary: "rgba(0, 0, 0, 0.48)",
           tertiary: "rgba(0, 0, 0, 0.24)",
         },
+        // Theme-specific color references
+        theme: {
+          bg: "hsl(var(--theme-bg))",
+          secondary: "hsl(var(--theme-secondary-bg))",
+          text: "hsl(var(--theme-text))",
+          border: "hsl(var(--theme-border))",
+          button: {
+            DEFAULT: "hsl(var(--theme-button))",
+            text: "hsl(var(--theme-button-text))",
+          },
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

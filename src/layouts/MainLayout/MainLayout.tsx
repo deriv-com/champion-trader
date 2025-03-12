@@ -19,8 +19,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const { activeSidebar, setSidebar } = useMainLayoutStore();
     const isBottomNavVisible = useBottomNavStore((state) => state.isVisible);
     const location = useLocation();
-    const isResponsiveHeaderVisible =
-        isMobile && !location.pathname.includes("/contract/");
+    const isResponsiveHeaderVisible = isMobile && !location.pathname.includes("/contract/");
 
     useEffect(() => {
         const handleOrientationChange = () => {
@@ -35,10 +34,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         window.addEventListener("resize", handleOrientationChange);
 
         return () => {
-            window.removeEventListener(
-                "orientationchange",
-                handleOrientationChange
-            );
+            window.removeEventListener("orientationchange", handleOrientationChange);
             window.removeEventListener("resize", handleOrientationChange);
         };
     }, [isMobile, isLandscape]);
@@ -46,19 +42,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const shouldEnableScrolling = isLandscape && window.innerHeight < 500;
 
     return (
-        <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
+        <div className="min-h-[100dvh] h-[100dvh] flex flex-col bg-theme text-theme">
             {isResponsiveHeaderVisible && (
                 <ResponsiveHeader
-                    className={`${
-                        shouldEnableScrolling ? "" : "sticky top-0"
-                    } z-50 w-full`}
+                    className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`}
                 />
             )}
             <div
                 className={`flex flex-1 relative ${
-                    isLandscape && !shouldEnableScrolling
-                        ? "overflow-hidden"
-                        : ""
+                    isLandscape && !shouldEnableScrolling ? "overflow-hidden" : ""
                 }`}
             >
                 {isLandscape && <SideNav />}
@@ -88,9 +80,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     ) : (
                         <main className="max-w-full flex-1 flex flex-col">
                             {children}
-                            {isBottomNavVisible && (
-                                <Footer className="sticky bottom-0 z-50" />
-                            )}
+                            {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
                         </main>
                     )}
                 </div>

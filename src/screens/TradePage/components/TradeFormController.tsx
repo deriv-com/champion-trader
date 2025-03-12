@@ -188,7 +188,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         <div
             id="trade-section"
             className={`${
-                isLandscape ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2" : ""
+                isLandscape
+                    ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2"
+                    : "bg-theme"
             }`}
         >
             {isLandscape ? (

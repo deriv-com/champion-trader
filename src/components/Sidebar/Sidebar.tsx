@@ -7,24 +7,16 @@ interface SidebarProps {
     children: React.ReactNode;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
-    isOpen,
-    onClose,
-    title,
-    children,
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, title, children }) => {
     return (
         <div
-            className={`absolute h-full w-[320px] bg-white transform transition-transform duration-300 ease-in-out ${
+            className={`absolute h-full w-[320px] bg-theme shadow-lg transform transition-transform duration-300 ease-in-out ${
                 isOpen ? "translate-x-0" : "-translate-x-full"
             } z-[51] flex flex-col overflow-hidden`}
         >
             <div className="p-4 flex justify-between items-center">
                 <h2 className="text-lg font-bold">{title}</h2>
-                <button
-                    onClick={onClose}
-                    className="text-gray-600 hover:text-gray-900"
-                >
+                <button onClick={onClose} className="text-theme-muted hover:text-theme">
                     ✕
                 </button>
             </div>
