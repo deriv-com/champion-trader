@@ -18,7 +18,10 @@ const DesktopContractDetailsPage: React.FC = () => {
     }, [setSideNavVisible]);
 
     return (
-        <div className="flex flex-col bg-theme w-full" data-testid="desktop-contract-details">
+        <div
+            className="flex flex-col bg-theme-secondary w-full"
+            data-testid="desktop-contract-details"
+        >
             <div className="flex justify-between items-center p-4 bg-theme">
                 <h1 className="text-xl font-bold mx-auto">Contract details</h1>
                 <button onClick={() => navigate(-1)} className="text-theme-muted">
@@ -27,9 +30,9 @@ const DesktopContractDetailsPage: React.FC = () => {
             </div>
 
             <div className="flex flex-1 overflow-hidden relative m-4">
-                <div className="w-[320px] bg-theme flex flex-col" data-testid="left-panel">
+                <div className="w-[320px] flex flex-col" data-testid="left-panel">
                     <div
-                        className="flex-1 overflow-y-auto pb-20 space-y-4 bg-theme"
+                        className="flex-1 overflow-y-auto pb-20 space-y-4 bg-theme-secondary"
                         data-testid="content-area"
                     >
                         <ContractSummary />
@@ -51,7 +54,7 @@ const DesktopContractDetailsPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex-1 flex flex-col">
-                    <div className="ml-4 bg-theme rounded-lg border border-theme h-full text-theme-muted">
+                    <div className="ml-4 h-full">
                         <ContractDetailsChart />
                     </div>
                 </div>

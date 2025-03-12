@@ -43,7 +43,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
                 </div>
                 {isLoggedIn ? (
                     <button
-                        className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600 text-sm text-black"
+                        className="px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-sm text-black"
                         onClick={onDeposit}
                     >
                         {depositLabel}
@@ -51,7 +51,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
                 ) : (
                     <a
                         href={loginUrl}
-                        className="px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600 text-sm text-black"
+                        className="px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-sm text-black"
                     >
                         Log in
                     </a>

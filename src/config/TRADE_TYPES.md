@@ -74,7 +74,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
       {
         title: "Button Text",
         label: "Payout",
-        className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+        className: "bg-color-rise-700 hover:bg-color-rise-600",
         position: "right",
         actionName: "buy_action",
         contractType: "CONTRACT_TYPE"
@@ -162,7 +162,7 @@ rise_fall: {
     {
       title: "Rise",
       label: "Payout",
-      className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+      className: "bg-color-rise-700 hover:bg-color-rise-600",
       position: "right",
       actionName: "buy_rise",
       contractType: "CALL"
@@ -170,7 +170,7 @@ rise_fall: {
     {
       title: "Fall",
       label: "Payout",
-      className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600",
+      className: "bg-color-fall-700 hover:bg-color-fall-600",
       position: "left",
       actionName: "buy_fall",
       contractType: "PUT"
@@ -414,10 +414,10 @@ Button styling follows a consistent pattern:
 
 ```typescript
 // Success/Buy/Rise buttons
-className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600"
+className: "bg-color-rise-700 hover:bg-color-rise-600"
 
 // Danger/Sell/Fall buttons
-className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600"
+className: "bg-color-fall-700 hover:bg-color-fall-600"
 ```
 
 ## Best Practices
@@ -491,7 +491,7 @@ in_out: {
     {
       title: "In",
       label: "Payout",
-      className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+      className: "bg-color-rise-700 hover:bg-color-rise-600",
       position: "right",
       actionName: "buy_in",
       contractType: "EXPIN"
@@ -499,7 +499,7 @@ in_out: {
     {
       title: "Out",
       label: "Payout",
-      className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600",
+      className: "bg-color-fall-700 hover:bg-color-fall-600",
       position: "left",
       actionName: "buy_out",
       contractType: "EXPOUT"

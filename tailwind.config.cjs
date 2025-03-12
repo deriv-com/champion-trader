@@ -49,19 +49,17 @@ module.exports = {
           foreground: "hsl(var(--primary-foreground))",
         },
         color: {
-          solid: {
-            emerald: {
-              700: "rgba(0, 195, 144, 1)",
-              600: "rgba(0, 195, 144, 0.8)",
-            },
-            cherry: {
-              700: "rgba(222, 0, 64, 1)",
-              600: "rgba(222, 0, 64, 0.8)",
-            },
-            glacier: {
-              700: "rgba(0, 208, 255, 1)",
-              600: "rgba(0, 208, 255, 0.8)",
-            },
+          rise: {
+            700: "rgba(0, 195, 144, 1)",
+            600: "rgba(0, 195, 144, 0.8)",
+          },
+          fall: {
+            700: "rgba(222, 0, 64, 1)",
+            600: "rgba(222, 0, 64, 0.8)",
+          },
+          brand: {
+            700: "rgba(0, 208, 255, 1)",
+            600: "rgba(0, 208, 255, 0.8)",
           },
         },
         secondary: {

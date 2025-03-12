@@ -19,16 +19,11 @@ export const AccountSwitcher: React.FC = () => {
     return (
         <AccountPopover onOpenChange={setIsOpen}>
             <AccountPopoverTrigger asChild>
-                <button
-                    data-testid="balance-display"
-                    className="flex flex-col relative"
-                >
+                <button data-testid="balance-display" className="flex flex-col relative">
                     <div className="flex items-center gap-1">
                         <span
                             className={`text-sm font-semibold ${
-                                selectedAccount?.isDemo
-                                    ? "text-orange-500"
-                                    : "text-color-solid-glacier-700"
+                                selectedAccount?.isDemo ? "text-orange-500" : "text-color-brand-700"
                             }`}
                         >
                             {selectedAccount?.isDemo ? "Demo" : "Real"}
@@ -38,7 +33,7 @@ export const AccountSwitcher: React.FC = () => {
                                 className={`h-4 w-4 ${
                                     selectedAccount?.isDemo
                                         ? "text-orange-500"
-                                        : "text-color-solid-glacier-700"
+                                        : "text-color-brand-700"
                                 }`}
                             />
                         ) : (
@@ -46,7 +41,7 @@ export const AccountSwitcher: React.FC = () => {
                                 className={`h-4 w-4 ${
                                     selectedAccount?.isDemo
                                         ? "text-orange-500"
-                                        : "text-color-solid-glacier-700"
+                                        : "text-color-brand-700"
                                 }`}
                             />
                         )}

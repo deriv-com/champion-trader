@@ -10,7 +10,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ className = "" }
 
     return (
         <div className={`flex flex-col ${className}`}>
-            <span className="text-sm font-semibold text-color-solid-glacier-700">Real</span>
+            <span className="text-sm font-semibold text-color-brand-700">Real</span>
             <span className="text-sm font-semibold">
                 {/* {balance} {currency} */}
                 10,000 USD

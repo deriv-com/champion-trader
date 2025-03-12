@@ -31,9 +31,9 @@ export const ContractDetailsChart: React.FC = () => {
 
     return (
         <div
-            className={`relative bg-theme shadow-md rounded-lg ${isLandscape ? "h-full" : "h-[400px]"}`}
+            className={`relative bg-theme shadow-md rounded-lg overflow-hidden ${isLandscape ? "h-full" : "h-[400px]"}`}
         >
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
                 <SmartChart
                     ref={ref}
                     id="replay-chart"

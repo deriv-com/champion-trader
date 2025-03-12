@@ -198,7 +198,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     {isLoggedIn && <AccountSwitcher />}
                     {isLoggedIn ? (
                         <button
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600 text-theme-button"
+                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
                             // onClick={}
                         >
                             Deposit
@@ -206,7 +206,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     ) : (
                         <a
                             href="/login"
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600 text-theme-button"
+                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
                         >
                             Log in
                         </a>

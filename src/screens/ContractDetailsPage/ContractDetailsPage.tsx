@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart";
+import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { useOrientationStore } from "@/stores/orientationStore";
 
@@ -27,7 +27,7 @@ const MobileContractDetailsPage: React.FC = () => {
             <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
                 <div className="p-2 pb-[72px]">
                     <ContractSummary />
-                    <div className="min-h-[400px] mt-4 bg-theme rounded-lg border-b border-theme">
+                    <div className="min-h-[400px] mt-4">
                         <ContractDetailsChart />
                     </div>
                     <OrderDetails />
