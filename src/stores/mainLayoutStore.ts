@@ -29,11 +29,7 @@ export const useMainLayoutStore = create<MainLayoutStore>()(
     persist(
         (set, get) => ({
             // Theme state
-            theme:
-                typeof window !== "undefined" &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light",
+            theme: "light", // Default to light theme
             toggleTheme: () =>
                 set((state) => ({
                     theme: state.theme === "light" ? "dark" : "light",

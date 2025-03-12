@@ -43,7 +43,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
                 </div>
                 {isLoggedIn ? (
                     <button
-                        className="px-5 py-2 font-semibold rounded-3xl bg-theme-button text-theme-button"
+                        className="px-5 py-2 font-semibold rounded-3xl bg-theme-button text-sm text-theme-button"
                         onClick={onDeposit}
                     >
                         {depositLabel}
@@ -51,7 +51,7 @@ export const ResponsiveHeader: React.FC<HeaderProps> = ({
                 ) : (
                     <a
                         href={loginUrl}
-                        className="px-5 py-2 font-semibold rounded-3xl bg-theme-button text-theme-button"
+                        className="px-5 py-2 font-semibold rounded-3xl bg-theme-button text-sm text-theme-button"
                     >
                         Log in
                     </a>

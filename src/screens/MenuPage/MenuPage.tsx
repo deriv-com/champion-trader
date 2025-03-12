@@ -28,7 +28,7 @@ export const MenuPage: React.FC = () => {
                 </button>
                 <div className="text-left p-4 rounded-lg hover:bg-theme-hover border-b border-theme flex items-center gap-3">
                     <Moon className="w-5 h-5" />
-                    <span className="text-sm">Dark Mode</span>
+                    <span className="text-sm">Theme</span>
                     <ToggleButton label="" value={theme === "dark"} onChange={toggleTheme} />
                 </div>
                 {isLoggedIn && (

@@ -64,7 +64,7 @@ export const SideNav: React.FC = () => {
                     >
                         <div
                             className={`${
-                                activeSidebar === "menu" ? "bg-gray-200 rounded-lg p-2" : "p-2"
+                                activeSidebar === "menu" ? "bg-theme-active rounded-lg p-2" : "p-2"
                             }`}
                         >
                             <Menu className="w-5 h-5" />
