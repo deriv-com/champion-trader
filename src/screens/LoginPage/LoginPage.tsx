@@ -6,7 +6,7 @@ import { useClientStore } from "@/stores/clientStore";
 import { useToastStore } from "@/stores/toastStore";
 
 export const LoginPage: React.FC = () => {
-    const { showToast } = useToastStore();
+    const { toast } = useToastStore();
     const [accountId, setAccountId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -37,7 +37,10 @@ export const LoginPage: React.FC = () => {
             setToken(token);
             navigate("/trade");
         } catch (err) {
-            showToast(err instanceof Error ? err.message : "Server failed to Login", "error");
+            toast({
+                content: err instanceof Error ? err.message : "Server failed to Login",
+                variant: "error",
+            });
             setError("Soemthing went wrong! Please try again.");
         }
     };

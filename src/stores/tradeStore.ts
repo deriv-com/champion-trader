@@ -32,8 +32,8 @@ interface Payouts {
 /**
  * Trade store state and actions
  */
-export interface TradeState {
-    // State
+interface TradeState {
+    // Trade State
     /** Current stake amount (numeric value only) */
     stake: string;
     /** Duration value with unit */
@@ -48,14 +48,28 @@ export interface TradeState {
     instrument: string;
     /** Payout values for each button */
     payouts: Payouts;
+    /** Current contract details */
+    contractDetails: ContractDetails | null;
 
-    // Actions
+    // Product Config State
+    /** Product configuration from API */
+    productConfig: ProductConfigResponse | null;
+    /** Loading state for product config */
+    isConfigLoading: boolean;
+    /** Error state for product config */
+    configError: Error | null;
+    /** Cache for product config responses */
+    configCache: Record<string, ProductConfigResponse>;
+
+    // Trade Actions
     /** Set the stake amount */
     setStake: (stake: string) => void;
     /** Set the duration value */
     setDuration: (duration: string) => void;
     /** Toggle the equals option */
     toggleAllowEquals: () => void;
+    /** Set the equals option directly */
+    setAllowEquals: (allowEquals: boolean) => void;
     /** Update all payout values */
     setPayouts: (payouts: Payouts) => void;
     /** Set the current trading instrument */
@@ -75,20 +89,8 @@ export interface TradeState {
      * @param displayName - The display name to set
      */
     setTradeTypeDisplayName: (displayName: string) => void;
-    /** Current contract details */
-    contractDetails: ContractDetails | null;
     /** Set contract details */
     setContractDetails: (details: ContractDetails | null) => void;
-
-    // Product Config State
-    /** Product configuration from API */
-    productConfig: ProductConfigResponse | null;
-    /** Loading state for product config */
-    isConfigLoading: boolean;
-    /** Error state for product config */
-    configError: Error | null;
-    /** Cache for product config responses */
-    configCache: Record<string, ProductConfigResponse>;
 
     // Product Config State Actions
     /** Set the product configuration */
@@ -102,8 +104,9 @@ export interface TradeState {
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
+    // Trade State
     stake: "10",
-    duration: "5 minute",
+    duration: "5 minutes",
     allowEquals: false,
     trade_type: "rise_fall", // Default to rise_fall trade type
     tradeTypeDisplayName: "", // Initialize with empty string
@@ -115,9 +118,19 @@ export const useTradeStore = create<TradeState>((set) => ({
             buy_fall: 19.5,
         },
     },
+    contractDetails: contractDetailsStub, // Initialize with stub data
+
+    // Product Config State
+    productConfig: null,
+    isConfigLoading: false,
+    configError: null,
+    configCache: {},
+
+    // Trade Actions
     setStake: (stake) => set({ stake }),
     setDuration: (duration) => set({ duration }),
     toggleAllowEquals: () => set((state) => ({ allowEquals: !state.allowEquals })),
+    setAllowEquals: (allowEquals: boolean) => set({ allowEquals }),
     setPayouts: (payouts) => set({ payouts }),
     setInstrument: (instrument: string) => set({ instrument }),
     setTradeType: (trade_type: TradeType, display_name?: string) =>
@@ -138,17 +151,7 @@ export const useTradeStore = create<TradeState>((set) => ({
             },
         })),
     setTradeTypeDisplayName: (displayName: string) => set({ tradeTypeDisplayName: displayName }),
-    contractDetails: contractDetailsStub, // Initialize with stub data
     setContractDetails: (details) => set({ contractDetails: details }),
-
-    // Product Config State
-    productConfig: null,
-    isConfigLoading: false,
-    configError: null,
-    configCache: {},
-
-    // Trade Actions
-    setAllowEquals: (allowEquals: boolean) => set({ allowEquals }),
 
     // Product Config Actions
     setProductConfig: (config: ProductConfigResponse | null) => set({ productConfig: config }),

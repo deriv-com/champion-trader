@@ -8,7 +8,7 @@ import { useTooltipStore } from "@/stores/tooltipStore";
 import { validateStake } from "../utils/validation";
 
 export const useStakeField = () => {
-    const { stake, setStake, isConfigLoading } = useTradeStore();
+    const { stake, setStake, isConfigLoading, productConfig } = useTradeStore();
     const { currency } = useClientStore();
     const { setBottomSheet } = useBottomSheetStore();
     const { showTooltip, hideTooltip } = useTooltipStore();
@@ -31,6 +31,8 @@ export const useStakeField = () => {
     };
 
     const validateAndUpdateStake = (value: string) => {
+        if (!productConfig) return false;
+
         const amount = parseStakeAmount(value || "0");
         const validation = validateStake({
             amount,
@@ -48,6 +50,8 @@ export const useStakeField = () => {
     };
 
     const handleIncrement = () => {
+        if (!productConfig) return;
+
         const newValue = incrementStake(stake || "0");
         if (validateAndUpdateStake(newValue)) {
             setStake(newValue);
@@ -56,6 +60,8 @@ export const useStakeField = () => {
     };
 
     const handleDecrement = () => {
+        if (!productConfig) return;
+
         const newValue = decrementStake(stake || "0");
         if (validateAndUpdateStake(newValue)) {
             setStake(newValue);
@@ -64,6 +70,8 @@ export const useStakeField = () => {
     };
 
     const handleSelect = (selected: boolean) => {
+        if (!productConfig) return;
+
         setIsStakeSelected(selected);
 
         // Show error tooltip if there's an error
@@ -73,6 +81,8 @@ export const useStakeField = () => {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!productConfig) return;
+
         // Get cursor position before update
         const cursorPosition = e.target.selectionStart;
 
@@ -133,6 +143,7 @@ export const useStakeField = () => {
     };
 
     const handleMobileClick = () => {
+        if (!productConfig) return;
         setBottomSheet(true, "stake", "400px");
     };
 
@@ -151,5 +162,6 @@ export const useStakeField = () => {
         handleIncrement,
         handleDecrement,
         handleMobileClick,
+        productConfig,
     };
 };

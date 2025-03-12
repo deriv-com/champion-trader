@@ -111,7 +111,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
         }
     };
 
-    const content = (
+    const content = config && (
         <>
             <div className={isLandscape ? "flex" : ""}>
                 {!isLandscape && <BottomSheetHeader title="Duration" />}

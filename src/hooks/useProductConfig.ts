@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useToastStore } from "@/stores/toastStore";
+import { useClientStore } from "@/stores/clientStore";
 import { getProductConfig } from "@/services/api/rest/product-config/service";
 import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
 import { updateDurationRanges } from "@/utils/duration";
@@ -10,35 +11,6 @@ import {
     updateStakeConfig,
     adaptDefaultStake,
 } from "@/adapters/stake-config-adapter";
-
-// Default configuration to use as fallback
-const DEFAULT_CONFIG: ProductConfigResponse = {
-    data: {
-        defaults: {
-            id: "rise_fall",
-            duration: 60,
-            duration_units: "seconds",
-            allow_equals: true,
-            stake: 10,
-        },
-        validations: {
-            durations: {
-                supported_units: ["ticks", "seconds", "days"],
-                ticks: { min: 1, max: 10 },
-                seconds: { min: 15, max: 86400 },
-                days: { min: 1, max: 365 },
-            },
-            stake: {
-                min: "1.00",
-                max: "50000.00",
-            },
-            payout: {
-                min: "1.00",
-                max: "50000.00",
-            },
-        },
-    },
-};
 
 export const useProductConfig = () => {
     const {
@@ -52,6 +24,7 @@ export const useProductConfig = () => {
         setConfigCache,
     } = useTradeStore();
     const { toast } = useToastStore();
+    const { account_uuid } = useClientStore();
 
     // Apply configuration to the app
     const applyConfig = useCallback(
@@ -77,12 +50,12 @@ export const useProductConfig = () => {
 
     // Fetch product configuration
     const fetchProductConfig = useCallback(
-        async (product_type: string, instrument_id: string) => {
+        async (product_id: string, instrument_id: string) => {
             setConfigLoading(true);
             setConfigError(null);
 
             // Create a cache key
-            const cacheKey = `${product_type}_${instrument_id}`;
+            const cacheKey = `${product_id}_${instrument_id}`;
 
             // Check if we have a cached response
             if (configCache[cacheKey]) {
@@ -94,7 +67,11 @@ export const useProductConfig = () => {
             }
 
             try {
-                const config = await getProductConfig({ product_type, instrument_id });
+                const config = await getProductConfig({
+                    instrument_id,
+                    product_id,
+                    account_uuid,
+                });
 
                 // Update cache
                 setProductConfig(config);
@@ -113,14 +90,12 @@ export const useProductConfig = () => {
                     variant: "error",
                     duration: 5000,
                 });
-
-                // Apply fallback config
-                applyFallbackConfig();
             }
         },
         [
             applyConfig,
             configCache,
+            account_uuid,
             setConfigCache,
             setConfigError,
             setConfigLoading,
@@ -136,17 +111,8 @@ export const useProductConfig = () => {
         setConfigError(null);
     }, [setConfigError, setConfigLoading, setProductConfig]);
 
-    // Apply fallback configuration
-    const applyFallbackConfig = useCallback(() => {
-        console.warn("Using fallback product configuration");
-        setProductConfig(DEFAULT_CONFIG);
-        setConfigLoading(false);
-        applyConfig(DEFAULT_CONFIG);
-    }, [applyConfig, setConfigLoading, setProductConfig]);
-
     return {
         fetchProductConfig,
         resetProductConfig,
-        applyFallbackConfig,
     };
 };

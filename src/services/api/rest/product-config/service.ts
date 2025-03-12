@@ -3,18 +3,19 @@ import { ProductConfigResponse, ProductConfigRequest } from "./types";
 
 /**
  * Fetches product configuration from the API
- * @param params Request parameters including product_type and instrument_id
+ * @param params Request parameters including product_id, instrument_id and account_uuid
  * @returns Promise resolving to product configuration
  */
 export const getProductConfig = async (
     params: ProductConfigRequest
 ): Promise<ProductConfigResponse> => {
-    const { product_type, instrument_id } = params;
-    const response = await apiClient.get<ProductConfigResponse>(
-        `/v1/market/products/${product_type}/config`,
-        {
-            params: { instrument_id },
-        }
-    );
+    const { instrument_id, product_id, account_uuid } = params;
+    const response = await apiClient.get<ProductConfigResponse>(`/v1/market/products/config`, {
+        params: {
+            instrument_id,
+            product_id,
+            account_uuid,
+        },
+    });
     return response.data;
 };

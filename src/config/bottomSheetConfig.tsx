@@ -25,9 +25,7 @@ export const bottomSheetConfig: BottomSheetConfig = {
         body: (
             <div className="flex flex-col h-full px-6 pt-6">
                 {guideConfig["rise_fall"].header}
-                <div className="flex-1 overflow-y-auto">
-                    {guideConfig["rise_fall"].body}
-                </div>
+                <div className="flex-1 overflow-y-auto">{guideConfig["rise_fall"].body}</div>
             </div>
         ),
     },

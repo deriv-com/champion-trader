@@ -7,8 +7,6 @@ import { ProductsResponse } from "../types";
  * @throws AxiosError with ErrorResponse data on validation or server errors
  */
 export const getProducts = async (): Promise<ProductsResponse> => {
-    const response = await apiClient.get<ProductsResponse>(
-        "/v1/market/products"
-    );
+    const response = await apiClient.get<ProductsResponse>("/v1/market/products");
     return response.data;
 };

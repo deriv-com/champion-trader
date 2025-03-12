@@ -138,6 +138,41 @@ describe("DurationController", () => {
         });
     });
 
+    describe("Error State", () => {
+        it("should handle null productConfig gracefully", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                duration: "1 minutes",
+                setDuration: mockSetDuration,
+                productConfig: null,
+            });
+
+            render(<DurationController />);
+
+            // Should render an empty container when productConfig is null
+            expect(screen.queryByTestId("mock-tab-list")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("mock-duration-value-list")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("mock-hours-duration-value")).not.toBeInTheDocument();
+        });
+
+        it("should not render any UI elements when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                duration: "1 minutes",
+                setDuration: mockSetDuration,
+                productConfig: null,
+            });
+
+            render(<DurationController />);
+
+            // No UI elements should be rendered
+            expect(screen.queryByText("Save")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("tab-ticks")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("value-select")).not.toBeInTheDocument();
+
+            // Duration should not be updated since no UI is rendered
+            expect(mockSetDuration).not.toHaveBeenCalled();
+        });
+    });
+
     it("handles duration value selection", () => {
         render(<DurationController />);
 

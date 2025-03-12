@@ -12,13 +12,9 @@ interface AccountInfoProps {
 
 export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
     const { balance, currency, setBalance } = useClientStore();
-    const {
-        accountType,
-        selectedAccountId,
-        switchAccountType,
-        selectAccount,
-        getAvailableAccounts,
-    } = useAccount();
+
+    const { account_uuid, isDemo, isReal, switchAccountType, selectAccount, getAvailableAccounts } =
+        useAccount();
     const logout = useLogout();
 
     return (
@@ -26,21 +22,21 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
             <div className="flex border-b border-theme text-sm">
                 <button
                     className={`flex-1 py-2 text-center ${
-                        accountType === "real"
-                            ? "font-semibold border-b-2 border-theme-text"
-                            : "text-theme-muted"
+                        isReal ? "font-semibold border-b-2 border-theme-text" : "text-theme-muted"
                     }`}
-                    onClick={() => switchAccountType("real")}
+                    onClick={() => {
+                        switchAccountType("real");
+                    }}
                 >
                     Real
                 </button>
                 <button
                     className={`flex-1 py-2 text-center ${
-                        accountType === "demo"
-                            ? "font-semibold border-b-2 border-theme-text"
-                            : "text-theme-muted"
+                        isDemo ? "font-semibold border-b-2 border-theme-text" : "text-theme-muted"
                     }`}
-                    onClick={() => switchAccountType("demo")}
+                    onClick={() => {
+                        switchAccountType("demo");
+                    }}
                 >
                     Demo
                 </button>
@@ -51,45 +47,45 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                     <h3 className="text-sm font-semibold">Trading account</h3>
                     <div className="flex flex-col gap-2">
                         {getAvailableAccounts().map((account) => (
-                            <Popover.Close key={account.id} asChild>
+                            <Popover.Close key={account.uuid} asChild>
                                 <button
                                     className={`flex items-center p-2 rounded hover:bg-theme-hover ${
-                                        selectedAccountId === account.id ? "bg-theme-secondary" : ""
+                                        account_uuid === account.uuid ? "bg-theme-secondary" : ""
                                     }`}
                                     onClick={() => {
-                                        selectAccount(account.id);
+                                        selectAccount(account.uuid);
                                         onSelect();
                                     }}
                                 >
                                     <div className="w-8 h-8 flex items-center justify-center mr-2">
                                         <CurrencyIcon
-                                            currency={account.id}
-                                            isVirtual={account.isDemo}
+                                            currency={account.currency}
+                                            isVirtual={account.group === "demo"}
                                         />
                                     </div>
                                     <div className="flex-1 text-left">
-                                        <p className="text-sm font-semibold">
-                                            {account.displayName}
-                                        </p>
+                                        <p className="text-sm font-semibold">{account.currency}</p>
                                         <p className="text-xs text-theme-muted">
-                                            {account.accountNumber}
+                                            {account.uuid.substring(0, 8)}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {selectedAccountId === account.id && account.isDemo ? (
+                                        {console.log(account.balance)}
+                                        {account_uuid === account.uuid &&
+                                        account.group === "demo" &&
+                                        account.balance !== "10000.00" ? (
                                             <button
                                                 className="px-2 py-1 text-xs border border-theme rounded hover:bg-theme-hover"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    setBalance("10000", "USD");
+                                                    setBalance("10000.00", "USD");
                                                 }}
                                             >
                                                 Reset balance
                                             </button>
                                         ) : (
                                             <p className="text-sm">
-                                                {accountType === "demo" ? "10,000" : balance}{" "}
-                                                {account.currency}
+                                                {account.balance} {account.currency}
                                             </p>
                                         )}
                                     </div>
@@ -103,7 +99,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                         <div className="flex items-center gap-2 justify-between pb-2">
                             <p className="text-sm text-theme-muted">Total assets</p>
                             <p className="text-sm">
-                                {accountType === "demo" ? "10,000" : balance} {currency}
+                                {balance} {currency}
                             </p>
                         </div>
                         <p className="text-xs text-theme-muted">

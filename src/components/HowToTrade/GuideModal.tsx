@@ -11,11 +11,7 @@ interface GuideProps {
 
 const Guides = [{ label: "Rise/Fall", value: "rise_fall" }];
 
-export const GuideModal = ({
-    isOpen,
-    onClose,
-    type = "rise_fall",
-}: GuideProps) => {
+export const GuideModal = ({ isOpen, onClose, type = "rise_fall" }: GuideProps) => {
     const content = guideConfig[type]?.body;
 
     if (!content) {

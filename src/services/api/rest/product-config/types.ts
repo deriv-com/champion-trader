@@ -1,7 +1,7 @@
 export interface ProductConfigDefaults {
     id: string;
     duration: number;
-    duration_units: string;
+    duration_unit: string;
     allow_equals: boolean;
     stake: number;
 }
@@ -42,6 +42,7 @@ export interface ProductConfigResponse {
 }
 
 export interface ProductConfigRequest {
-    product_type: string;
     instrument_id: string;
+    product_id: string;
+    account_uuid: string | null;
 }

@@ -2,9 +2,10 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
-import { BalanceHandler } from "@/components/BalanceHandler";
 import { ToastProvider } from "@/stores/toastStore";
 import { ThemeEffect } from "@/components/ThemeProvider";
+import { useAccount } from "@/hooks/useAccount";
+import { useBalance } from "@/hooks/useBalance";
 
 const TradePage = lazy(() =>
     import("@/screens/TradePage").then((module) => ({
@@ -32,15 +33,16 @@ const LoginPage = lazy(() =>
 );
 
 const AppContent = () => {
-    const { token, isLoggedIn } = useClientStore();
+    const { isLoggedIn } = useClientStore();
+
+    // Initialize account data
+    useAccount();
+
+    // Initialize balance polling
+    useBalance();
 
     return (
         <MainLayout>
-            {token && (
-                <>
-                    <BalanceHandler token={token} />
-                </>
-            )}
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                     <Route path="/" element={<TradePage />} />
