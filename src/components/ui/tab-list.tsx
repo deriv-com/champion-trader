@@ -30,11 +30,11 @@ const ChipTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSelect
                         <button
                             onClick={() => onSelect(value)}
                             className={`
-                                px-4 py-2 rounded-full text-sm font-medium transition-colors
+                                flex items-center h-8 min-h-8 max-h-8 px-4 rounded-full text-sm font-medium transition-colors gap-2
                                 ${
                                     selectedValue === value
-                                        ? "bg-theme-text text-theme-bg"
-                                        : "bg-theme-secondary text-theme hover:bg-theme-hover"
+                                        ? "bg-theme-text text-theme-bg border border-theme-text"
+                                        : "border border-theme text-theme hover:bg-theme-hover"
                                 }
                             `}
                         >
