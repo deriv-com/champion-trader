@@ -47,6 +47,10 @@
         --theme-hover: 0 0% 96%; /* #F5F5F5 - Light mode hover background */
         --theme-active: 0 0% 90%; /* #E5E5E5 - Light mode active/selected background */
         --theme-muted: 0 0% 45%; /* #737373 - Light mode muted text */
+
+        /* Action button variables - Light Mode */
+        --action-button-bg: 0 0% 0%; /* Black */
+        --action-button-text: 0 0% 100%; /* White */
     }
 
     .dark {
@@ -89,6 +93,10 @@
         --theme-hover: 220 10% 20%; /* #2A3042 - Dark mode hover background */
         --theme-active: 220 10% 25%; /* #343B52 - Dark mode active/selected background */
         --theme-muted: 0 0% 65%; /* #A6A6A6 - Dark mode muted text */
+
+        /* Action button variables - Dark Mode */
+        --action-button-bg: 0 0% 100%; /* White */
+        --action-button-text: 0 0% 0%; /* Black */
     }
 }
 
@@ -135,5 +143,16 @@
     }
     .hover\:text-theme:hover {
         color: hsl(var(--theme-text));
+    }
+
+    /* Action button utility classes */
+    .bg-action-button {
+        background-color: hsl(var(--action-button-bg));
+    }
+    .text-action-button {
+        color: hsl(var(--action-button-text));
+    }
+    .hover\:bg-action-button-hover:hover {
+        background-color: hsl(var(--action-button-bg) / 0.9);
     }
 }

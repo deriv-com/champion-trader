@@ -22,7 +22,7 @@ const MobileContractDetailsPage: React.FC = () => {
     }, [setHeaderVisible, setBottomNavVisible]);
 
     return (
-        <div className="w-full bg-theme h-screen flex flex-col">
+        <div className="w-full bg-theme-secondary h-screen flex flex-col">
             <Header />
             <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
                 <div className="p-2 pb-[72px]">
@@ -39,7 +39,7 @@ const MobileContractDetailsPage: React.FC = () => {
                     <div className="mx-2 my-2 text-center">
                         <button
                             onClick={() => navigate(-1)}
-                            className="text-theme-button bg-theme-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
                         >
                             Close
                         </button>

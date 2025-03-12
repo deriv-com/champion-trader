@@ -215,7 +215,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             ) : (
                 <></>
             )}
-            <div className={isLandscape ? "pb-2" : "pt-1 px-4"} id="how-to-trade">
+            <div className={isLandscape ? "pb-2" : "px-4"} id="how-to-trade">
                 <HowToTrade />
             </div>
             {isLandscape ? (
@@ -311,7 +311,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 // Mobile layout
                 <>
                     <div id="trade-fields" className="flex flex-col">
-                        <div className="p-4">
+                        <div className="px-4 py-3">
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
                                     <Suspense fallback={<div>Loading duration field...</div>}>

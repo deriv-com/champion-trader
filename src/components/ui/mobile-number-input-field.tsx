@@ -67,7 +67,7 @@ export const MobileNumberInputField = React.forwardRef<
                         )}
                         <input
                             ref={ref}
-                            className="w-full bg-transparent ml-[-32px] focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-theme"
+                            className="w-full bg-transparent focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-theme"
                             inputMode="decimal"
                             onFocus={handleFocus}
                             onBlur={handleBlur}

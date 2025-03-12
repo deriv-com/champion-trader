@@ -52,10 +52,10 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
             {showLeftArrow && (
                 <button
                     onClick={() => scroll("left")}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-theme-bg/95"
                     aria-label="Scroll left"
                 >
-                    <ChevronLeft className="w-5 h-5 text-text-primary" />
+                    <ChevronLeft className="w-5 h-5 text-theme-muted" />
                 </button>
             )}
 
@@ -77,8 +77,8 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
                             className={cn(
                                 "px-4 py-3 font-ibm text-base font-normal leading-6 whitespace-nowrap transition-colors relative",
                                 activeTab === tab.id
-                                    ? "text-black after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
-                                    : "text-black/72 hover:text-black"
+                                    ? "text-theme after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-primary"
+                                    : "text-theme-muted hover:text-theme"
                             )}
                         >
                             {tab.label}
@@ -90,10 +90,10 @@ export const ScrollableTabs: React.FC<ScrollableTabsProps> = ({
             {showRightArrow && (
                 <button
                     onClick={() => scroll("right")}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-white/95"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 px-2 bg-theme-bg/95"
                     aria-label="Scroll right"
                 >
-                    <ChevronRight className="w-5 h-5 text-text-primary" />
+                    <ChevronRight className="w-5 h-5 text-theme-muted" />
                 </button>
             )}
         </div>

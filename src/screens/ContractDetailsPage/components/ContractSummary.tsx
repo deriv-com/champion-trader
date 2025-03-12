@@ -12,10 +12,9 @@ export const ContractSummary: React.FC = () => {
     const { type, market, stake, profit } = contractDetails;
     return (
         <div
-            className="h-[104px] w-full p-4 bg-theme-secondary rounded-lg border-b border-theme"
+            className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme"
             style={{
-                boxShadow:
-                    "0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)",
+                boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
             }}
         >
             <div className="flex justify-between">
@@ -33,7 +32,7 @@ export const ContractSummary: React.FC = () => {
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-theme-secondary px-2 rounded-md mb-1 py-0.5 inline-block">
+                    <div className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-theme-secondary/50 px-2 rounded-md mb-1 py-0.5 inline-block">
                         0/10 ticks
                     </div>
                     <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>

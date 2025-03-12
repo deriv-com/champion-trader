@@ -43,7 +43,7 @@ const DesktopContractDetailsPage: React.FC = () => {
                         <div className="max-w-[1200px] mx-auto">
                             <button
                                 onClick={() => navigate(-1)}
-                                className="w-full bg-theme-button text-theme-button py-3 rounded-lg"
+                                className="w-full bg-action-button text-action-button py-3 rounded-lg"
                             >
                                 Close
                             </button>

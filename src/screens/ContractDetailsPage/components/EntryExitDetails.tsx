@@ -20,10 +20,9 @@ export const EntryExitDetails: React.FC = () => {
 
     return (
         <div
-            className="mt-4 p-4 bg-theme-secondary rounded-lg border-b border-theme"
+            className="mt-4 p-4 bg-theme rounded-lg border-b border-theme"
             style={{
-                boxShadow:
-                    "0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)",
+                boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
             }}
         >
             <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-theme mb-4">

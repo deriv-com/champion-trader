@@ -41,7 +41,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                             </div>
                             <ChevronDown className="w-4 h-6 text-theme flex-shrink-0 stroke-[1.5]" />
                         </div>
-                        <div className="text-sm text-theme-muted leading-5 font-ibm-plex-sans truncate">
+                        <div className="text-sm text-theme leading-5 font-ibm-plex-sans truncate">
                             {subtitle}
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                         </div>
                         <ChevronDown className="w-5 text-theme flex-shrink-0 stroke-[1.5]" />
                     </div>
-                    <div className="text-sm text-theme-muted leading-5 font-ibm-plex-sans truncate">
+                    <div className="text-sm text-theme leading-5 font-ibm-plex-sans truncate">
                         {subtitle}
                     </div>
                 </div>
