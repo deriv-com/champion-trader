@@ -17,7 +17,7 @@ export type TradeAction =
 export const useTradeActions = () => {
     const { stake, duration, instrument } = useTradeStore();
     const { currency } = useClientStore();
-    const { showToast } = useToastStore();
+    const { toast } = useToastStore();
 
     // Create a map of action names to their contract types
     const actionContractMap = Object.values(tradeTypeConfigs).reduce(
@@ -45,12 +45,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_fall: async () => {
@@ -67,12 +70,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_higher: async () => {
@@ -89,12 +95,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_lower: async () => {
@@ -111,12 +120,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_touch: async () => {
@@ -133,12 +145,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_no_touch: async () => {
@@ -155,12 +170,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
         buy_multiplier: async () => {
@@ -177,12 +195,15 @@ export const useTradeActions = () => {
                     payout: Number(stake),
                     strike: stake.toString(),
                 });
-                showToast(`Successfully bought ${response.trade_type} contract`, "success");
+                toast({
+                    content: `Successfully bought ${response.trade_type} contract`,
+                    variant: "success",
+                });
             } catch (error) {
-                showToast(
-                    error instanceof Error ? error.message : "Failed to buy contract",
-                    "error"
-                );
+                toast({
+                    content: error instanceof Error ? error.message : "Failed to buy contract",
+                    variant: "error",
+                });
             }
         },
     };

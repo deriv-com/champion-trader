@@ -51,6 +51,12 @@ describe("MainLayout", () => {
         // Reset the logged-in state before each test.
         useClientStore.setState({
             isLoggedIn: false,
+            token: null,
+            balance: null,
+            currency: "USD",
+            group: null,
+            status: null,
+            account_uuid: null,
         });
     });
 

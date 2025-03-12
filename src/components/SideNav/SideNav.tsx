@@ -10,8 +10,7 @@ export const SideNav: React.FC = () => {
     const location = useLocation();
     const { isLoggedIn } = useClientStore();
     const { isLandscape } = useOrientationStore();
-    const { activeSidebar, toggleSidebar, isSideNavVisible } =
-        useMainLayoutStore();
+    const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
 
     return (
         <nav
@@ -54,9 +53,7 @@ export const SideNav: React.FC = () => {
                             </div>
                             <span
                                 className={`text-xs ${
-                                    activeSidebar === "positions"
-                                        ? "text-black"
-                                        : ""
+                                    activeSidebar === "positions" ? "text-black" : ""
                                 }`}
                             >
                                 Positions
@@ -75,18 +72,14 @@ export const SideNav: React.FC = () => {
                     >
                         <div
                             className={`${
-                                activeSidebar === "menu"
-                                    ? "bg-gray-200 rounded-lg p-2"
-                                    : "p-2"
+                                activeSidebar === "menu" ? "bg-gray-200 rounded-lg p-2" : "p-2"
                             }`}
                         >
                             <Menu className="w-5 h-5" />
                         </div>
                         <span
                             className={`text-xs ${
-                                activeSidebar === "menu"
-                                    ? "text-black"
-                                    : "text-gray-500"
+                                activeSidebar === "menu" ? "text-black" : "text-gray-500"
                             }`}
                         >
                             Menu

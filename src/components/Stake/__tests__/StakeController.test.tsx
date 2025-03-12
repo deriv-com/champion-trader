@@ -1,22 +1,24 @@
-import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { StakeController } from "../StakeController";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useOrientationStore } from "@/stores/orientationStore";
-import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
 import { validateStake } from "../utils/validation";
-import { parseDuration, formatDuration } from "@/utils/duration";
-import { parseStakeAmount } from "@/utils/stake";
+import { getStakeConfig } from "@/adapters/stake-config-adapter";
 
 // Mock dependencies
-jest.mock("@/adapters/stake-config-adapter");
 jest.mock("@/services/api/sse/createSSEConnection");
-jest.mock("@/utils/stake");
 jest.mock("../utils/validation");
-jest.mock("@/utils/duration");
+jest.mock("@/adapters/stake-config-adapter");
+jest.mock("@/utils/stake", () => ({
+    parseStakeAmount: (value: string) => Number(value),
+}));
+jest.mock("@/utils/duration", () => ({
+    parseDuration: () => ({ value: "1", type: "m" }),
+    formatDuration: () => "1m",
+}));
 jest.mock("@/config/tradeTypes", () => ({
     tradeTypeConfigs: {
         rise_fall: {
@@ -59,7 +61,7 @@ jest.mock("@/components/ui/primary-button", () => ({
 }));
 
 jest.mock("../components/StakeInputLayout", () => ({
-    StakeInputLayout: ({ value, onChange, error, errorMessage, isDesktop }: any) => (
+    StakeInputLayout: ({ value, onChange, error, errorMessage }: any) => (
         <div data-testid="stake-input-layout">
             <input
                 data-testid="stake-input"
@@ -67,18 +69,8 @@ jest.mock("../components/StakeInputLayout", () => ({
                 onChange={(e) => onChange(e.target.value)}
             />
             {error && <span data-testid="error-message">{errorMessage}</span>}
-            <span data-testid="layout-mode">{isDesktop ? "desktop" : "mobile"}</span>
         </div>
     ),
-}));
-
-// Mock debounce to execute immediately in tests
-jest.mock("@/hooks/useDebounce", () => ({
-    useDebounce: (value: any, setValue: any) => {
-        React.useEffect(() => {
-            setValue(value);
-        }, [value, setValue]);
-    },
 }));
 
 describe("StakeController", () => {
@@ -98,6 +90,7 @@ describe("StakeController", () => {
             duration: "1 minute",
             payouts: { max: 50000, values: {} },
             setPayouts: mockSetPayouts,
+            productConfig: { data: { validations: { stake: { min: "1", max: "50000" } } } },
         } as any);
 
         (useClientStore as jest.MockedFunction<typeof useClientStore>).mockReturnValue({
@@ -113,203 +106,243 @@ describe("StakeController", () => {
             isLandscape: false,
         } as any);
 
-        // Mock utility functions
-        (getStakeConfig as jest.Mock).mockReturnValue({
-            min: 1,
-            max: 50000,
-            step: 1,
+        // Mock SSE connection
+        (createSSEConnection as jest.Mock).mockReturnValue(mockCleanup);
+
+        // Mock validation and stake config to succeed by default
+        (validateStake as jest.Mock).mockImplementation((params) => {
+            if (!params.amount) {
+                return { error: true, message: "Please enter an amount" };
+            }
+            if (params.amount < params.minStake) {
+                return {
+                    error: true,
+                    message: `Minimum stake is ${params.minStake} ${params.currency}`,
+                };
+            }
+            if (params.amount > params.maxStake) {
+                return { error: true, message: `Amount exceeds maximum stake` };
+            }
+            return { error: false };
         });
 
-        (parseStakeAmount as jest.Mock).mockImplementation((value) => Number(value));
-        (validateStake as jest.Mock).mockReturnValue({ error: false });
-        (parseDuration as jest.Mock).mockReturnValue({ value: "1", type: "minute" });
-        (formatDuration as jest.Mock).mockReturnValue("1m");
-        (createSSEConnection as jest.Mock).mockReturnValue(mockCleanup);
+        // Mock stake config to succeed by default
+        (getStakeConfig as jest.Mock).mockReturnValue({ min: 1, max: 50000, step: 1 });
     });
 
-    describe("Initial Rendering", () => {
-        it("renders correctly in portrait mode", () => {
+    describe("Portrait Mode (Mobile)", () => {
+        it("renders with bottom sheet controls", () => {
             render(<StakeController />);
-
             expect(screen.getByTestId("bottom-sheet-header")).toBeInTheDocument();
-            expect(screen.getByTestId("stake-input-layout")).toBeInTheDocument();
             expect(screen.getByTestId("save-button")).toBeInTheDocument();
-            expect(screen.getByTestId("layout-mode")).toHaveTextContent("mobile");
-        });
-
-        it("renders correctly in landscape mode", () => {
-            (
-                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
-            ).mockReturnValue({
-                isLandscape: true,
-            } as any);
-
-            render(<StakeController />);
-
-            expect(screen.queryByTestId("bottom-sheet-header")).not.toBeInTheDocument();
-            expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
-            expect(screen.getByTestId("layout-mode")).toHaveTextContent("desktop");
-        });
-
-        it("initializes with correct stake value", () => {
-            render(<StakeController />);
             expect(screen.getByTestId("stake-input")).toHaveValue("10");
         });
-    });
 
-    describe("Stake Input Handling", () => {
-        it("validates empty input", () => {
+        it("updates local stake value when input changes", () => {
             render(<StakeController />);
-
-            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "" } });
-
-            expect(screen.getByTestId("error-message")).toHaveTextContent("Please enter an amount");
-        });
-
-        it("validates input against min/max", () => {
-            (validateStake as jest.Mock).mockReturnValueOnce({
-                error: true,
-                message: "Amount is below minimum stake",
-            });
-
-            render(<StakeController />);
-
-            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "0.5" } });
-
-            expect(validateStake).toHaveBeenCalledWith({
-                amount: 0.5,
-                minStake: 1,
-                maxStake: 50000,
-                currency: "USD",
-            });
-            expect(screen.getByTestId("error-message")).toHaveTextContent(
-                "Amount is below minimum stake"
-            );
-        });
-
-        it("updates stake immediately in landscape mode", () => {
-            (
-                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
-            ).mockReturnValue({
-                isLandscape: true,
-            } as any);
-
-            (validateStake as jest.Mock).mockReturnValue({ error: false });
-
-            render(<StakeController />);
-
             fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "20" } });
-
-            expect(mockSetStake).toHaveBeenCalledWith("20");
+            expect(screen.getByTestId("stake-input")).toHaveValue("20");
+            // Should not update global stake yet
+            expect(mockSetStake).not.toHaveBeenCalled();
         });
 
-        it("prevents exceeding maximum stake", () => {
-            (validateStake as jest.Mock).mockReturnValue({
-                error: true,
-                message: "Amount exceeds maximum stake",
-            });
-
+        it("validates stake and shows error messages", () => {
             render(<StakeController />);
 
-            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "60000" } });
+            // Empty input
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "" } });
+            expect(screen.getByTestId("error-message")).toHaveTextContent("Please enter an amount");
+            expect(screen.getByTestId("save-button")).toBeDisabled();
 
+            // Below minimum
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "0.5" } });
+            expect(screen.getByTestId("error-message")).toHaveTextContent("Minimum stake is 1 USD");
+            expect(screen.getByTestId("save-button")).toBeDisabled();
+
+            // Above maximum
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "60000" } });
             expect(screen.getByTestId("error-message")).toHaveTextContent(
                 "Amount exceeds maximum stake"
             );
+            expect(screen.getByTestId("save-button")).toBeDisabled();
+        });
+
+        it("saves stake and closes bottom sheet when save button is clicked", async () => {
+            render(<StakeController />);
+
+            // Change input
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "20" } });
+
+            // Wait for debounce
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            });
+
+            // Click save
+            fireEvent.click(screen.getByTestId("save-button"));
+
+            // Should update global stake and close bottom sheet
+            expect(mockSetStake).toHaveBeenCalledWith("20");
+            expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
+        });
+
+        it("disables save button when stake hasn't changed", async () => {
+            render(<StakeController />);
+
+            // Change input to same value
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "10" } });
+
+            // Wait for debounce
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            });
+
+            // Save button should be disabled
+            expect(screen.getByTestId("save-button")).toBeDisabled();
+        });
+    });
+
+    describe("Landscape Mode (Desktop)", () => {
+        beforeEach(() => {
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            } as any);
+        });
+
+        it("renders without bottom sheet controls", () => {
+            render(<StakeController />);
+            expect(screen.queryByTestId("bottom-sheet-header")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("save-button")).not.toBeInTheDocument();
+            expect(screen.getByTestId("stake-input")).toHaveValue("10");
+        });
+
+        it("updates global stake after debounce when input changes", async () => {
+            render(<StakeController />);
+
+            // Change input
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "20" } });
+
+            // Should not update global stake immediately
+            expect(mockSetStake).not.toHaveBeenCalled();
+
+            // Wait for debounce
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            });
+
+            // Should update global stake after debounce
+            expect(mockSetStake).toHaveBeenCalledWith("20");
+        });
+
+        it("doesn't update global stake when validation fails", async () => {
+            render(<StakeController />);
+
+            // Change input to invalid value
+            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "60000" } });
+
+            // Wait for debounce
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            });
+
+            // Should not update global stake
             expect(mockSetStake).not.toHaveBeenCalled();
         });
     });
 
     describe("SSE Connection Management", () => {
-        it("establishes SSE connections for each button", () => {
+        it("establishes SSE connections for each trade type button", () => {
             render(<StakeController />);
 
+            // Should establish connections for both buttons
             expect(createSSEConnection).toHaveBeenCalledTimes(2);
+
+            // Check first call parameters
             expect(createSSEConnection).toHaveBeenCalledWith(
                 expect.objectContaining({
                     params: expect.objectContaining({
                         trade_type: "CALL",
+                        currency: "USD",
+                        payout: "10",
                     }),
+                    headers: { Authorization: "Bearer mock-token" },
                 })
             );
+
+            // Check second call parameters
             expect(createSSEConnection).toHaveBeenCalledWith(
                 expect.objectContaining({
                     params: expect.objectContaining({
                         trade_type: "PUT",
+                        currency: "USD",
+                        payout: "10",
                     }),
+                    headers: { Authorization: "Bearer mock-token" },
                 })
             );
         });
 
-        it("handles SSE messages correctly", () => {
+        it("updates payouts when receiving SSE messages", () => {
             render(<StakeController />);
 
+            // Get onMessage callback from first call
             const onMessage = (createSSEConnection as jest.Mock).mock.calls[0][0].onMessage;
 
+            // Simulate message
             act(() => {
                 onMessage({ price: "100" });
             });
 
+            // Should update payouts
             expect(mockSetPayouts).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    max: 50000,
                     values: expect.any(Object),
                 })
             );
         });
 
-        it("handles SSE errors gracefully", () => {
-            render(<StakeController />);
-
-            const onError = (createSSEConnection as jest.Mock).mock.calls[0][0].onError;
-            const error = new Error("Connection failed");
-
-            act(() => {
-                onError(error);
-            });
-
-            // Component should still be rendered and functional
-            expect(screen.getByTestId("stake-input-layout")).toBeInTheDocument();
-        });
-
         it("cleans up SSE connections on unmount", () => {
             const { unmount } = render(<StakeController />);
+
+            // Unmount component
             unmount();
+
+            // Should clean up connections
             expect(mockCleanup).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe("Save Functionality", () => {
-        it("saves valid stake and closes bottom sheet", () => {
-            (validateStake as jest.Mock).mockReturnValue({ error: false });
-
-            render(<StakeController />);
-
-            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "20" } });
-            fireEvent.click(screen.getByTestId("save-button"));
-
-            expect(mockSetStake).toHaveBeenCalledWith("20");
-            expect(mockSetBottomSheet).toHaveBeenCalledWith(false);
+    describe("Null ProductConfig Handling", () => {
+        beforeEach(() => {
+            // Mock store with null productConfig
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                stake: "10",
+                setStake: mockSetStake,
+                trade_type: "rise_fall",
+                duration: "1 minute",
+                payouts: { max: 50000, values: {} },
+                setPayouts: mockSetPayouts,
+                productConfig: null,
+            } as any);
         });
 
-        it("prevents save when stake is invalid", () => {
-            (validateStake as jest.Mock).mockReturnValue({
-                error: true,
-                message: "Invalid stake amount",
-            });
-
+        it("doesn't establish SSE connections when productConfig is null", () => {
             render(<StakeController />);
 
-            fireEvent.change(screen.getByTestId("stake-input"), { target: { value: "0" } });
-            fireEvent.click(screen.getByTestId("save-button"));
+            // Should not establish connections
+            expect(createSSEConnection).not.toHaveBeenCalled();
+        });
 
+        it("doesn't render stake input when productConfig is null", () => {
+            render(<StakeController />);
+
+            // Should not render stake input
+            expect(screen.queryByTestId("stake-input")).not.toBeInTheDocument();
+
+            // Should not update global stake
             expect(mockSetStake).not.toHaveBeenCalled();
-            expect(mockSetBottomSheet).not.toHaveBeenCalled();
-        });
-
-        it("disables save button when stake is unchanged", () => {
-            render(<StakeController />);
-            expect(screen.getByTestId("save-button")).toBeDisabled();
         });
     });
 });

@@ -211,7 +211,7 @@ describe("MarketSelectorList", () => {
                 );
                 expect(mockToast).toHaveBeenCalledWith(
                     expect.objectContaining({
-                        variant: "black",
+                        variant: "default",
                         duration: 2000,
                         position: "bottom-center",
                     })

@@ -8,10 +8,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
         return (
             <div
                 ref={ref}
-                className={cn(
-                    "animate-pulse-bg bg-gray-200 dark:bg-gray-700",
-                    className
-                )}
+                className={cn("animate-pulse-bg bg-gray-200 dark:bg-gray-700", className)}
                 style={
                     {
                         "--skeleton-bg-from": "rgb(229, 231, 235)",

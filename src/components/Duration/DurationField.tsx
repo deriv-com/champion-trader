@@ -5,6 +5,7 @@ import TradeParam from "@/components/TradeFields/TradeParam";
 import { DurationController } from "./DurationController";
 import { Popover } from "@/components/ui/popover";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
+import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
 import { useOrientationStore } from "@/stores/orientationStore";
 
 interface DurationFieldProps {
@@ -12,13 +13,15 @@ interface DurationFieldProps {
 }
 
 export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
-    const { duration, isConfigLoading } = useTradeStore();
+    const { duration, isConfigLoading, productConfig } = useTradeStore();
     const { setBottomSheet } = useBottomSheetStore();
     const { isLandscape } = useOrientationStore();
     const [isOpen, setIsOpen] = useState(false);
     const popoverRef = useRef<{ isClosing: boolean }>({ isClosing: false });
 
     const handleClick = () => {
+        if (!productConfig) return; // Disable click when no config
+
         if (isLandscape) {
             if (!popoverRef.current.isClosing) {
                 setIsOpen(!isOpen);
@@ -48,24 +51,21 @@ export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
         );
     }
 
+    const tradeParam = (
+        <TradeParam
+            label="Duration"
+            value={productConfig ? duration : "N/A"}
+            onClick={handleClick}
+            className={`${className} ${!productConfig ? "opacity-50 cursor-not-allowed" : ""}`}
+        />
+    );
+
     return (
         <div className="relative">
             {isLandscape ? (
-                <DesktopTradeFieldCard isSelected={isOpen}>
-                    <TradeParam
-                        label="Duration"
-                        value={duration}
-                        onClick={handleClick}
-                        className={className}
-                    />
-                </DesktopTradeFieldCard>
+                <DesktopTradeFieldCard isSelected={isOpen}>{tradeParam}</DesktopTradeFieldCard>
             ) : (
-                <TradeParam
-                    label="Duration"
-                    value={duration}
-                    onClick={handleClick}
-                    className={className}
-                />
+                <MobileTradeFieldCard onClick={handleClick}>{tradeParam}</MobileTradeFieldCard>
             )}
             {isLandscape && isOpen && (
                 <Popover

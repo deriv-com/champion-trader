@@ -13,7 +13,7 @@ describe("adaptStakeConfig", () => {
                 defaults: {
                     id: "CALL",
                     duration: 1,
-                    duration_units: "ticks",
+                    duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
                 },

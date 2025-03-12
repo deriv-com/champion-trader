@@ -48,7 +48,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                             <span className="text-base">Added to favourites</span>
                         </div>
                     ),
-                    variant: "black",
+                    variant: "default",
                     duration: 2000,
                     position: "bottom-center",
                 });
@@ -61,7 +61,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                             <span className="text-base">Removed from favourites</span>
                         </div>
                     ),
-                    variant: "black",
+                    variant: "default",
                     duration: 2000,
                     position: "bottom-center",
                 });
