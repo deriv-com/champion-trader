@@ -92,14 +92,14 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                             className={cn(
                                 "flex items-center w-full px-3",
                                 !isLandscape
-                                    ? title_position === "right"
+                                    ? title_position === "left"
                                         ? "justify-between"
                                         : "justify-between flex-row-reverse"
                                     : "justify-between"
                             )}
                         >
-                            <span className="text- opacity-80">{label}</span>
                             <span className="text-xs">{value}</span>
+                            <span className="text- opacity-80">{label}</span>
                         </div>
                     </Button>
                 </Tooltip.Trigger>

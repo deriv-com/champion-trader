@@ -187,7 +187,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         <div
             id="trade-section"
             className={`${
-                isLandscape ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2" : ""
+                isLandscape
+                    ? "min-w-[240px] max-w-[272px] flex flex-col justify-start mx-4 gap-2"
+                    : ""
             }`}
         >
             {isLandscape ? (
@@ -248,7 +250,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                         {config.buttons.map((button) => (
                             <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton
-                                    className={`${button.className} rounded-[16px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
+                                    className={`${button.className} rounded-[32px] h-[48px] py-2 [&>div]:px-2 px-6 [&_span]:text-sm`}
                                     title={button.title}
                                     label={button.label}
                                     value={
