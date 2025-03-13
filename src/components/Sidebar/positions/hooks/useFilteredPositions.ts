@@ -9,8 +9,8 @@ interface UseFilteredPositionsProps {
 
 interface UseFilteredPositionsReturn {
     filteredPositions: Position[];
-    selectedFilter: string;
-    handleFilterSelect: (filter: string) => void;
+    selectedFilters: string[];
+    handleFiltersChange: (filters: string[]) => void;
 }
 
 export const useFilteredPositions = ({
@@ -18,38 +18,49 @@ export const useFilteredPositions = ({
     allPositions,
     closedPositions,
 }: UseFilteredPositionsProps): UseFilteredPositionsReturn => {
-    const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [filteredPositions, setFilteredPositions] = useState<Position[]>(allPositions);
 
     useEffect(() => {
-        if (!isOpenTab) {
-            setSelectedFilter("All time");
-            setFilteredPositions(closedPositions);
-        } else {
-            setSelectedFilter("Trade types");
-            setFilteredPositions(allPositions);
-        }
+        // Reset filters when tab changes
+        setSelectedFilters([]);
+        setFilteredPositions(isOpenTab ? allPositions : closedPositions);
     }, [isOpenTab, allPositions, closedPositions]);
 
-    const handleFilterSelect = (filter: string) => {
-        setSelectedFilter(filter);
+    const handleFiltersChange = (filters: string[]) => {
+        setSelectedFilters(filters);
 
-        // Filter positions based on selected filter
-        const positions = !isOpenTab ? closedPositions : allPositions;
-        if (filter === "Trade types" || filter === "All time") {
+        // Filter positions based on selected filters
+        const positions = isOpenTab ? allPositions : closedPositions;
+
+        if (filters.length === 0) {
+            // No filters selected, show all positions
             setFilteredPositions(positions);
-        } else if (!isOpenTab) {
+        } else if (isOpenTab) {
+            // Filter by trade types
+            setFilteredPositions(positions.filter((position) => filters.includes(position.type)));
+        } else {
             // Time-based filtering logic would go here
             // For now, just showing all positions
             setFilteredPositions(positions);
-        } else {
-            setFilteredPositions(positions.filter((position) => position.type === filter));
+
+            // Actual implementation would filter based on time periods
+            // Example (pseudocode):
+            // const now = new Date();
+            // setFilteredPositions(positions.filter(position => {
+            //   const positionDate = new Date(position.timestamp);
+            //   return filters.some(filter => {
+            //     if (filter === "Today") return isSameDay(positionDate, now);
+            //     if (filter === "Yesterday") return isYesterday(positionDate);
+            //     // etc.
+            //   });
+            // }));
         }
     };
 
     return {
         filteredPositions,
-        selectedFilter,
-        handleFilterSelect,
+        selectedFilters,
+        handleFiltersChange,
     };
 };

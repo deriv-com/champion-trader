@@ -12,7 +12,7 @@ export const PositionsContent: FC = () => {
     const { setSidebar } = useMainLayoutStore();
     const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
 
-    const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
+    const { filteredPositions, selectedFilters, handleFiltersChange } = useFilteredPositions({
         isOpenTab,
         allPositions,
         closedPositions: CLOSED_POSITIONS,
@@ -54,8 +54,8 @@ export const PositionsContent: FC = () => {
                 </div>
                 <FilterDropdown
                     isOpenTab={isOpenTab}
-                    selectedFilter={selectedFilter}
-                    onFilterSelect={handleFilterSelect}
+                    selectedFilters={selectedFilters}
+                    onFiltersChange={handleFiltersChange}
                 />
                 <div className="flex flex-col">
                     {filteredPositions.map((position) => (
