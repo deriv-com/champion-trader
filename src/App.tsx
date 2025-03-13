@@ -4,7 +4,6 @@ import { MainLayout } from "@/layouts/MainLayout";
 import { useClientStore } from "@/stores/clientStore";
 import { ToastProvider } from "@/stores/toastStore";
 import { useAccount } from "@/hooks/useAccount";
-import { useAccountBalanceStream } from "./hooks";
 
 const TradePage = lazy(() =>
     import("@/screens/TradePage").then((module) => ({
