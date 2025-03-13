@@ -162,7 +162,7 @@ export const ScrollSelect = <T extends React.Key>({
                             <span
                                 className={`
                   text-base font-normal leading-6 text-center transition-colors
-                  ${selectedValue === option.value ? "text-black" : "text-gray-300"}
+                  ${selectedValue === option.value ? "text-theme" : "text-theme-muted"}
                 `}
                             >
                                 {option.label}

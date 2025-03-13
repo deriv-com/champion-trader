@@ -27,7 +27,7 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
         <div className="space-y-1">
             {config.payouts.max && (
                 <div className="flex justify-between">
-                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
+                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-theme-muted">
                         Max payout
                     </span>
                     <span
@@ -36,8 +36,8 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
                             hasError
                                 ? "text-red-500"
                                 : loading
-                                  ? "text-[rgba(0,0,0,0.24)]"
-                                  : "text-[rgba(0,0,0,0.72)]"
+                                  ? "text-theme-muted/50"
+                                  : "text-theme"
                         )}
                     >
                         {loading ? "Loading..." : `${maxPayout} ${currency}`}
@@ -46,7 +46,7 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
             )}
             {config.buttons.map((button) => (
                 <div key={button.actionName} className="flex justify-between">
-                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
+                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-theme-muted">
                         {config.payouts.labels[button.actionName]}
                     </span>
                     <span
@@ -55,8 +55,8 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
                             hasError
                                 ? "text-red-500"
                                 : loadingStates[button.actionName]
-                                  ? "text-[rgba(0,0,0,0.24)]"
-                                  : "text-[rgba(0,0,0,0.72)]"
+                                  ? "text-theme-muted/50"
+                                  : "text-theme"
                         )}
                     >
                         {loadingStates[button.actionName]

@@ -41,25 +41,25 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
             onMouseDown={(event) => event.stopPropagation()}
         >
             <button
-                className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
+                className="text-sm h-9 w-full p-2 border border-theme rounded-full text-theme-muted flex items-center justify-between"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
             >
                 <span>{selectedFilter}</span>
                 <span
                     className={`transform transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
                 >
-                    <ChevronDown className="text-black-400" />
+                    <ChevronDown className="text-theme" />
                 </span>
             </button>
             {dropdownOpen && (
                 <ul
-                    className="absolute text-sm left-0 w-full bg-white border rounded-lg shadow-md mt-1"
+                    className="absolute text-sm left-0 w-full bg-theme border border-theme rounded-lg shadow-md mt-1"
                     onMouseDown={(event) => event.stopPropagation()}
                 >
                     {isOpenTab ? (
                         <>
                             <li
-                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                className="p-2 hover:bg-theme-hover cursor-pointer"
                                 onClick={() => handleSelect("Trade types")}
                             >
                                 Trade types
@@ -67,7 +67,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
                             {TRADE_TYPES.map((type) => (
                                 <li
                                     key={type}
-                                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                                    className="p-2 hover:bg-theme-hover cursor-pointer"
                                     onClick={() => handleSelect(type)}
                                 >
                                     {type}
@@ -78,7 +78,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
                         TIME_PERIODS.map((period) => (
                             <li
                                 key={period}
-                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                className="p-2 hover:bg-theme-hover cursor-pointer"
                                 onClick={() => handleSelect(period)}
                             >
                                 {period}

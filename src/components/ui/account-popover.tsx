@@ -23,7 +23,7 @@ export const AccountPopoverContent = ({
                     align={align}
                     sideOffset={sideOffset}
                     className={cn(
-                        "z-50 rounded-md border bg-white p-0 shadow-md outline-none",
+                        "z-50 rounded-md border border-theme bg-theme p-0 shadow-md outline-none",
                         isLandscape ? "w-80" : "w-[90vw]",
                         "data-[state=open]:animate-in data-[state=closed]:animate-out",
                         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",

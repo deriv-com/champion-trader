@@ -33,24 +33,33 @@ module.exports = {
           secondary: "rgba(0, 0, 0, 0.48)",
           tertiary: "rgba(0, 0, 0, 0.24)",
         },
+        // Theme-specific color references
+        theme: {
+          bg: "hsl(var(--theme-bg))",
+          secondary: "hsl(var(--theme-secondary-bg))",
+          text: "hsl(var(--theme-text))",
+          border: "hsl(var(--theme-border))",
+          button: {
+            DEFAULT: "hsl(var(--theme-button))",
+            text: "hsl(var(--theme-button-text))",
+          },
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         color: {
-          solid: {
-            emerald: {
-              700: "rgba(0, 195, 144, 1)",
-              600: "rgba(0, 195, 144, 0.8)",
-            },
-            cherry: {
-              700: "rgba(222, 0, 64, 1)",
-              600: "rgba(222, 0, 64, 0.8)",
-            },
-            glacier: {
-              700: "rgba(0, 208, 255, 1)",
-              600: "rgba(0, 208, 255, 0.8)",
-            },
+          rise: {
+            700: "rgba(0, 195, 144, 1)",
+            600: "rgba(0, 195, 144, 0.8)",
+          },
+          fall: {
+            700: "rgba(222, 0, 64, 1)",
+            600: "rgba(222, 0, 64, 0.8)",
+          },
+          brand: {
+            700: "rgba(0, 208, 255, 1)",
+            600: "rgba(0, 208, 255, 0.8)",
           },
         },
         secondary: {

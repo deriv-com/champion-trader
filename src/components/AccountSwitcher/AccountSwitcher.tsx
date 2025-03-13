@@ -24,7 +24,7 @@ export const AccountSwitcher: React.FC = () => {
                     <div className="flex items-center gap-1">
                         <span
                             className={`text-sm font-semibold ${
-                                isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
+                                isDemo ? "text-orange-500" : "text-color-brand-700"
                             }`}
                         >
                             {isDemo ? "Demo" : "Real"}
@@ -32,13 +32,13 @@ export const AccountSwitcher: React.FC = () => {
                         {isOpen ? (
                             <ChevronUp
                                 className={`h-4 w-4 ${
-                                    isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
+                                    isDemo ? "text-orange-500" : "text-color-brand-700"
                                 }`}
                             />
                         ) : (
                             <ChevronDown
                                 className={`h-4 w-4 ${
-                                    isDemo ? "text-orange-500" : "text-color-solid-glacier-700"
+                                    isDemo ? "text-orange-500" : "text-color-brand-700"
                                 }`}
                             />
                         )}

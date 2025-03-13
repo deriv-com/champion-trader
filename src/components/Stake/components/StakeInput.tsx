@@ -87,7 +87,7 @@ export const StakeInput: React.FC<StakeInputProps> = ({
                                 onClick={handleDecrement}
                                 aria-label="Decrease stake"
                             >
-                                <span className="text-black text-[1.125rem] sm:text-[1rem]">−</span>
+                                <span className="text-theme text-[1.125rem] sm:text-[1rem]">−</span>
                             </Button>
                         }
                         rightIcon={
@@ -97,7 +97,7 @@ export const StakeInput: React.FC<StakeInputProps> = ({
                                 onClick={handleIncrement}
                                 aria-label="Increase stake"
                             >
-                                <span className="text-black text-[1.125rem] sm:text-[1rem]">+</span>
+                                <span className="text-theme text-[1.125rem] sm:text-[1rem]">+</span>
                             </Button>
                         }
                         type="text"

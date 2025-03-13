@@ -45,7 +45,7 @@ export const DurationField: React.FC<DurationFieldProps> = ({ className }) => {
             <div className={`${className} relative`}>
                 <div
                     data-testid="duration-field-skeleton"
-                    className="h-[66px] bg-gray-200 rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent"
+                    className="h-[66px] bg-theme-secondary rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-theme-hover before:to-transparent"
                 />
             </div>
         );

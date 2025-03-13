@@ -22,7 +22,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         return (
             <div className="inline-flex cursor-pointer mx-4 lg:mt-3" data-id="market-info">
                 <div
-                    className="flex items-center gap-4 px-4 py-3 bg-black/[0.04] rounded-lg"
+                    className="flex items-center gap-4 px-4 py-3 bg-theme-secondary rounded-lg"
                     onClick={onClick}
                 >
                     {selectedMarket && (
@@ -36,12 +36,12 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                     )}
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                            <div className="text-base font-bold text-black/[0.72] leading-6 font-ibm-plex-sans truncate">
+                            <div className="text-base font-bold text-theme leading-6 font-ibm-plex-sans truncate">
                                 {title}
                             </div>
-                            <ChevronDown className="w-4 h-6 text-black/[0.72] flex-shrink-0 stroke-[1.5]" />
+                            <ChevronDown className="w-4 h-6 text-theme flex-shrink-0 stroke-[1.5]" />
                         </div>
-                        <div className="text-sm text-black/[0.48] leading-5 font-ibm-plex-sans truncate">
+                        <div className="text-sm text-theme leading-5 font-ibm-plex-sans truncate">
                             {subtitle}
                         </div>
                     </div>
@@ -52,7 +52,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
 
     return (
         <div
-            className="inline-flex cursor-pointer bg-gray-100 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors"
+            className="inline-flex cursor-pointer bg-theme-secondary hover:bg-theme-hover active:bg-theme-active rounded-lg transition-colors"
             data-id="market-info"
             onClick={onClick}
         >
@@ -68,12 +68,12 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                 )}
                 <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                        <div className="text-base font-bold text-[#4C4C4C] leading-6 font-ibm-plex-sans truncate">
+                        <div className="text-base font-bold text-theme leading-6 font-ibm-plex-sans truncate">
                             {title}
                         </div>
-                        <ChevronDown className="w-5 text-[#4C4C4C] flex-shrink-0 stroke-[1.5]" />
+                        <ChevronDown className="w-5 text-theme flex-shrink-0 stroke-[1.5]" />
                     </div>
-                    <div className="text-sm text-[#808080] leading-5 font-ibm-plex-sans truncate">
+                    <div className="text-sm text-theme leading-5 font-ibm-plex-sans truncate">
                         {subtitle}
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { useChartData } from "@/hooks/useChartData";
 import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
 import { transformTickData } from "@/utils/transformChartData";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 export const ContractDetailsChart: React.FC = () => {
     const ref = useRef<{
@@ -11,6 +12,10 @@ export const ContractDetailsChart: React.FC = () => {
         triggerPopup(arg: () => void): void;
     }>(null);
     const { isLandscape } = useOrientationStore();
+    const { theme } = useMainLayoutStore();
+    const settings = {
+        theme: theme,
+    };
 
     const historicalData = useMemo(() => {
         const data = generateHistoricalTicks("1HZ100V", 100);
@@ -26,9 +31,9 @@ export const ContractDetailsChart: React.FC = () => {
 
     return (
         <div
-            className={`relative bg-white shadow-md rounded-lg ${isLandscape ? "h-full" : "h-[400px]"}`}
+            className={`relative bg-theme shadow-md rounded-lg overflow-hidden ${isLandscape ? "h-full" : "h-[400px]"}`}
         >
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
                 <SmartChart
                     ref={ref}
                     id="replay-chart"
@@ -64,6 +69,7 @@ export const ContractDetailsChart: React.FC = () => {
                     chartType="line"
                     ticksHistory={historicalData}
                     streamingData={streamingData}
+                    settings={settings}
                 />
             </div>
         </div>

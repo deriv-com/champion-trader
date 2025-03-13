@@ -123,7 +123,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
                         variant={isLandscape ? "vertical" : "chip"}
                     />
                 </div>
-                <div className={`flex-1 relative bg-white ${isLandscape ? "px-2" : "px-8"}`}>
+                <div className={`flex-1 relative bg-theme ${isLandscape ? "px-2" : "px-8"}`}>
                     {selectedTabType === "hours" ? (
                         <HoursDurationValue
                             selectedValue={selectedValue?.toString() || ""}

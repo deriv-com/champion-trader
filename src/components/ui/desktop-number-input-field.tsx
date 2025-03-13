@@ -19,14 +19,14 @@ export const DesktopNumberInputField = React.forwardRef<
             <div
                 className={cn(
                     "flex items-center w-full h-[56px] px-4 gap-2",
-                    "bg-white rounded-lg border border-gray-200",
+                    "bg-theme-secondary rounded-lg border border-theme-border",
                     error && "border-red-500",
                     className
                 )}
             >
                 {leftIcon && <div className="flex items-center justify-center">{leftIcon}</div>}
                 {prefix && (
-                    <span className="font-ibm text-[0.75rem] sm:text-[1rem] font-normal leading-[1.125rem] sm:leading-7 text-black/48">
+                    <span className="font-ibm text-[0.75rem] sm:text-[1rem] font-normal leading-[1.125rem] sm:leading-7 text-theme-muted">
                         {prefix}
                     </span>
                 )}
@@ -35,12 +35,12 @@ export const DesktopNumberInputField = React.forwardRef<
                     className={cn(
                         "w-full bg-transparent focus:outline-none text-center",
                         "font-ibm text-[1rem] sm:text-[1rem] font-normal leading-7 sm:leading-6",
-                        "text-black"
+                        "text-theme"
                     )}
                     {...props}
                 />
                 {suffix && (
-                    <span className="font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem] text-black/48">
+                    <span className="font-ibm text-[0.875rem] sm:text-[0.75rem] font-normal leading-[1.25rem] sm:leading-[1.125rem] text-theme-muted">
                         {suffix}
                     </span>
                 )}

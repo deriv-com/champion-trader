@@ -15,7 +15,10 @@ export const MobileTradeFieldCard = ({
     return (
         <div
             onClick={onClick}
-            className={cn("h-auto bg-black/[0.04] rounded-lg py-2 px-4 cursor-pointer", className)}
+            className={cn(
+                "h-auto bg-theme-secondary rounded-lg py-2 px-4 cursor-pointer",
+                className
+            )}
         >
             {children}
         </div>

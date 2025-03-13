@@ -29,12 +29,12 @@ export const PositionsContent: FC = () => {
     return (
         <div className="flex flex-col h-full">
             <div className="p-6 flex-1 overflow-auto">
-                <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                <div className="flex gap-2 p-1 bg-theme-secondary rounded-lg">
                     <button
                         className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
-                                ? "bg-white text-black shadow-sm"
-                                : "text-gray-500 hover:bg-gray-50"
+                                ? "bg-theme text-theme shadow-sm"
+                                : "text-theme-muted hover:bg-theme-hover"
                         }`}
                         onClick={() => setIsOpenTab(true)}
                     >
@@ -43,8 +43,8 @@ export const PositionsContent: FC = () => {
                     <button
                         className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
-                                ? "text-gray-500 hover:bg-gray-50"
-                                : "bg-white text-black shadow-sm"
+                                ? "text-theme-muted hover:bg-theme-hover"
+                                : "bg-theme text-theme shadow-sm"
                         }`}
                         onClick={() => setIsOpenTab(false)}
                     >
@@ -77,17 +77,17 @@ export const PositionsContent: FC = () => {
                                             className="w-5 h-8 mb-1"
                                         />
                                     </div>
-                                    <span className="mb-[5] font-light text-black-400">
+                                    <span className="mb-[5] font-light text-theme">
                                         {position.type}
                                     </span>
-                                    <span className="text-s font-light text-gray-500 mb-4">
+                                    <span className="text-s font-light text-theme-muted mb-4">
                                         {position.market}
                                     </span>
                                 </div>
                                 <div>
                                     <div className="flex flex-col items-end">
                                         {isOpenTab ? (
-                                            <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
+                                            <span className="text-theme-muted w-35 text-xs flex items-center bg-theme-secondary px-2 py-1 rounded-md border border-transparent hover:border-theme mb-3">
                                                 <span className="mr-2">⏳</span> {position.ticks}
                                             </span>
                                         ) : (
@@ -95,7 +95,7 @@ export const PositionsContent: FC = () => {
                                                 Closed
                                             </span>
                                         )}
-                                        <span className="text-s font-light text-gray-400 mb-[2]">
+                                        <span className="text-s font-light text-theme-muted mb-[2]">
                                             {position.stake}
                                         </span>
                                         <span
@@ -111,7 +111,7 @@ export const PositionsContent: FC = () => {
                                 </div>
                             </div>
                             {isOpenTab && (
-                                <button className="w-full h-6 flex items-center justify-center py-2 border border-black text-xs font-bold rounded-[8]">
+                                <button className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8]">
                                     Close {position.stake}
                                 </button>
                             )}
@@ -119,8 +119,8 @@ export const PositionsContent: FC = () => {
                     ))}
                 </div>
             </div>
-            <div className="p-4 font-bold border-t flex justify-between mt-auto">
-                <span className="text-black-300">Total profit/loss: </span>
+            <div className="p-4 font-bold border-t border-theme flex justify-between mt-auto">
+                <span className="text-theme">Total profit/loss: </span>
                 <span className="text-[#008832]">+2.00 USD</span>
             </div>
         </div>
