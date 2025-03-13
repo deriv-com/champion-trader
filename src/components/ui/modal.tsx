@@ -69,7 +69,7 @@ export const Modal = ({
                 </div>
                 {headerContent && <div className="pb-4">{headerContent}</div>}
 
-                <div className="overflow-y-auto flex-1">{children}</div>
+                <div className="overflow-y-auto scrollbar-thin flex-1">{children}</div>
                 {actionButton?.show && (
                     <div className="pt-4">
                         <PrimaryButton

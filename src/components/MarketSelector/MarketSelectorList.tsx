@@ -175,7 +175,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             />
 
             {/* Market List */}
-            <div className="flex-1 overflow-y-auto px-6">
+            <div className="flex-1 overflow-y-auto px-6 scrollbar-thin">
                 {/* Market Groups */}
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
