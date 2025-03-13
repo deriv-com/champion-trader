@@ -1,8 +1,8 @@
 import React, { useRef, useMemo } from "react";
 import { SmartChart } from "./SmartChart";
 import { useChartData } from "@/hooks/useChartData";
-import { generateHistoricalCandles, generateHistoricalTicks } from "@/utils/generateHistoricalData";
-import { transformCandleData, transformTickData } from "@/utils/transformChartData";
+import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
+import { transformTickData } from "@/utils/transformChartData";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 export const TradeChart: React.FC = () => {
@@ -16,22 +16,10 @@ export const TradeChart: React.FC = () => {
         theme: theme,
     };
 
-    const historicalData1 = useMemo(() => {
-        const data = generateHistoricalCandles(100, 60);
-        return transformCandleData(data);
-    }, []);
-
     const historicalData = useMemo(() => {
         const data = generateHistoricalTicks("1HZ100V", 100);
         return transformTickData(data);
     }, []);
-
-    const streamingData1 = useChartData({
-        useMockData: true,
-        instrumentId: "1HZ100V",
-        type: "candle",
-        durationInSeconds: 60,
-    });
 
     const streamingData = useChartData({
         useMockData: true,
