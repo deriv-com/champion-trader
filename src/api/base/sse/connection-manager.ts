@@ -68,10 +68,13 @@ class SSEConnectionManager {
         // Return a wrapped cleanup function that also removes the connection from the manager
         return () => {
             try {
-                // Then call the cleanup function
+                // Call the cleanup function
                 if (cleanup && typeof cleanup === "function") {
                     cleanup();
                 }
+
+                // Remove the connection from the manager
+                this.connections.delete(baseUrl);
             } catch (error) {
                 console.error("Error during connection cleanup:", error);
             }
@@ -83,23 +86,17 @@ class SSEConnectionManager {
      * @param baseUrl Base URL of the connection to close
      */
     public closeExistingConnection(baseUrl: string): void {
-        // Check if the keys match exactly
-        let exactMatch = false;
-        for (const key of this.connections.keys()) {
-            if (key === baseUrl) {
-                exactMatch = true;
-                break;
-            }
-        }
-
         const existingCleanup = this.connections.get(baseUrl);
 
         if (existingCleanup) {
             try {
-                // Then call the cleanup function
+                // Call the cleanup function
                 if (existingCleanup && typeof existingCleanup === "function") {
                     existingCleanup();
                 }
+
+                // Remove the connection from the manager
+                this.connections.delete(baseUrl);
             } catch (error) {
                 console.error("Error during connection cleanup:", error);
             }

@@ -16,11 +16,12 @@ import {
 const DEFAULT_CONFIG: ProductConfigResponse = {
     data: {
         defaults: {
-            id: "rise_fall",
+            product_id: "rise_fall",
             duration: 60,
             duration_unit: "seconds",
             allow_equals: true,
             stake: 10,
+            variants: ["rise", "fall"],
         },
         validations: {
             durations: {
@@ -42,8 +43,9 @@ const DEFAULT_CONFIG: ProductConfigResponse = {
 };
 
 interface ProductConfigParams {
-    product_type: string;
+    product_id: string;
     instrument_id: string;
+    account_uuid?: string | null;
 }
 
 export const useProductConfig = () => {
@@ -96,12 +98,12 @@ export const useProductConfig = () => {
 
     // Handle successful product config fetch
     const handleConfigSuccess = useCallback(
-        (config: ProductConfigResponse, product_type: string, instrument_id: string) => {
+        (config: ProductConfigResponse, product_id: string, instrument_id: string) => {
             setProductConfig(config);
             setConfigLoading(false);
 
             // Create a cache key
-            const cacheKey = `${product_type}_${instrument_id}`;
+            const cacheKey = `${product_id}_${instrument_id}`;
             setConfigCache({ ...configCache, [cacheKey]: config });
 
             // Apply the configuration
@@ -132,7 +134,7 @@ export const useProductConfig = () => {
     // Use mutation hook for product config
     const { mutate, loading, error } = useMutation<ProductConfigResponse, ProductConfigParams>({
         mutationFn: getProductConfig,
-        onSuccess: (config) => {
+        onSuccess: () => {
             // We'll handle this in fetchProductConfig to avoid dependency issues
         },
         onError: handleConfigError,
@@ -140,25 +142,25 @@ export const useProductConfig = () => {
 
     // Fetch product configuration
     const fetchProductConfig = useCallback(
-        async (product_type: string, instrument_id: string) => {
+        async (product_id: string, instrument_id: string, account_uuid?: string | null) => {
             setConfigLoading(true);
             setConfigError(null);
 
             // Create a cache key
-            const cacheKey = `${product_type}_${instrument_id}`;
+            const cacheKey = `${product_id}_${instrument_id}`;
 
             // Check if we have a cached response
             if (configCache[cacheKey]) {
                 const cachedConfig = configCache[cacheKey];
-                handleConfigSuccess(cachedConfig, product_type, instrument_id);
+                handleConfigSuccess(cachedConfig, product_id, instrument_id);
                 return;
             }
 
             try {
-                // Call the mutation function
-                const result = await mutate({ product_type, instrument_id });
+                // Call the mutation function with updated parameter names
+                const result = await mutate({ product_id, instrument_id, account_uuid });
                 if (result) {
-                    handleConfigSuccess(result, product_type, instrument_id);
+                    handleConfigSuccess(result, product_id, instrument_id);
                 }
             } catch (error) {
                 // Error is handled by onError callback

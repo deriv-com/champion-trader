@@ -17,11 +17,12 @@ describe("duration utils", () => {
     const defaultConfig: ProductConfigResponse = {
         data: {
             defaults: {
-                id: "test",
+                product_id: "test",
                 duration: 5,
                 duration_unit: "minutes",
                 allow_equals: true,
                 stake: 10,
+                variants: ["rise", "fall"],
             },
             validations: {
                 durations: {

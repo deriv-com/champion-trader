@@ -34,11 +34,12 @@ export interface ProductsResponse {
  * Product configuration defaults
  */
 export interface ProductConfigDefaults {
-    id: string;
+    product_id: string;
     duration: number;
     duration_unit: string;
     allow_equals: boolean;
     stake: number;
+    variants: string[];
 }
 
 /**
@@ -98,6 +99,7 @@ export interface ProductConfigResponse {
  * Request for product configuration API
  */
 export interface ProductConfigRequest {
-    product_type: string;
     instrument_id: string;
+    product_id: string;
+    account_uuid?: string | null;
 }

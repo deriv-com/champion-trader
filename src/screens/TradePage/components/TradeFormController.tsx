@@ -4,7 +4,6 @@ import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
 import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
-import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 // import { useTradeActions } from "@/hooks/useTradeActions";
@@ -291,7 +290,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                     onClose={hideToast}
                                                 />
                                             ),
-                                            variant: "black",
+                                            variant: "default",
                                             duration: 3000,
                                             position: isLandscape ? "bottom-left" : "top-center",
                                         });
@@ -312,34 +311,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
                                     <Suspense fallback={<div>Loading duration field...</div>}>
-                                        <MobileTradeFieldCard
-                                            onClick={() => {
-                                                const durationField = document.querySelector(
-                                                    'button[aria-label^="Duration"]'
-                                                );
-                                                if (durationField) {
-                                                    (durationField as HTMLButtonElement).click();
-                                                }
-                                            }}
-                                        >
-                                            <DurationField />
-                                        </MobileTradeFieldCard>
+                                        <DurationField />
                                     </Suspense>
                                 )}
                                 {config.fields.stake && (
                                     <Suspense fallback={<div>Loading stake field...</div>}>
-                                        <MobileTradeFieldCard
-                                            onClick={() => {
-                                                const stakeField = document.querySelector(
-                                                    'button[aria-label^="Stake"]'
-                                                );
-                                                if (stakeField) {
-                                                    (stakeField as HTMLButtonElement).click();
-                                                }
-                                            }}
-                                        >
-                                            <StakeField />
-                                        </MobileTradeFieldCard>
+                                        <StakeField />
                                     </Suspense>
                                 )}
                             </ResponsiveTradeParamLayout>
@@ -401,7 +378,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                     onClose={hideToast}
                                                 />
                                             ),
-                                            variant: "black",
+                                            variant: "default",
                                             duration: 3000,
                                             position: isLandscape ? "bottom-left" : "top-center",
                                         });

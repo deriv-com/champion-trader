@@ -19,9 +19,9 @@ export const getProducts = async (): Promise<ProductsResponse> => {
 export const getProductConfig = async (
     params: ProductConfigRequest
 ): Promise<ProductConfigResponse> => {
-    const { product_type, instrument_id } = params;
+    const { product_id, instrument_id, account_uuid } = params;
     const response = await apiClient.get<ProductConfigResponse>(`/v1/market/products/config`, {
-        params: { instrument_id, product_id: product_type },
+        params: { instrument_id, product_id, account_uuid },
     });
     return response.data;
 };

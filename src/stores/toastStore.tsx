@@ -4,10 +4,11 @@ import { type FC } from "react";
 import { type JSX } from "react/jsx-runtime";
 
 type ToastPosition = "bottom-left" | "bottom-center" | "bottom-right" | "top-center";
+type ToastVariant = "success" | "error" | "warning" | "info" | "default";
 
 interface ToastOptions {
     content: React.ReactNode;
-    variant?: "success" | "error" | "black";
+    variant?: ToastVariant;
     duration?: number;
     position?: ToastPosition;
 }

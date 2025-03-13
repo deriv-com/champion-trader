@@ -26,7 +26,15 @@ type ButtonStates = Record<string, ButtonState>;
 interface StakeControllerProps {}
 
 export const StakeController: React.FC<StakeControllerProps> = () => {
-    const { stake, setStake, trade_type, duration, payouts, setPayouts } = useTradeStore();
+    const {
+        stake,
+        setStake,
+        trade_type,
+        duration,
+        payouts,
+        setPayouts,
+        productConfig: config,
+    } = useTradeStore();
     const { currency, token } = useClientStore();
     const { isLandscape } = useOrientationStore();
     const { setBottomSheet } = useBottomSheetStore();
@@ -55,6 +63,9 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     useDebounce(localStake, setDebouncedStake, 500);
 
     useEffect(() => {
+        // Only create SSE connections if productConfig exists
+        if (!config) return;
+
         // Create SSE connections for each button's contract type
         const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map((button) => {
             return createSSEConnection({
@@ -127,7 +138,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         return () => {
             cleanupFunctions.forEach((cleanup) => cleanup());
         };
-    }, [duration, stake, currency, token]);
+    }, [duration, stake, currency, token, config]);
 
     const validateAndUpdateStake = (value: string) => {
         if (!value) {
@@ -213,7 +224,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         setBottomSheet(false);
     };
 
-    const content = (
+    const content = config && (
         <>
             {!isLandscape && <BottomSheetHeader title="Stake" />}
             <div className="flex flex-col justify-between flex-grow px-6">

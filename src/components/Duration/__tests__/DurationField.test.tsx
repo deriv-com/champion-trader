@@ -7,8 +7,14 @@ import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 // Mock components
 jest.mock("@/components/TradeFields/TradeParam", () => ({
     __esModule: true,
-    default: ({ label, value, onClick }: any) => (
-        <button data-testid="trade-param" data-label={label} data-value={value} onClick={onClick}>
+    default: ({ label, value, onClick, className }: any) => (
+        <button
+            data-testid="trade-param"
+            data-label={label}
+            data-value={value}
+            onClick={onClick}
+            className={className}
+        >
             <span>{value}</span>
         </button>
     ),
@@ -17,6 +23,14 @@ jest.mock("@/components/TradeFields/TradeParam", () => ({
 jest.mock("@/components/ui/desktop-trade-field-card", () => ({
     DesktopTradeFieldCard: ({ children, isSelected }: any) => (
         <div data-testid="desktop-trade-field-card" data-selected={isSelected}>
+            {children}
+        </div>
+    ),
+}));
+
+jest.mock("@/components/ui/mobile-trade-field-card", () => ({
+    MobileTradeFieldCard: ({ children, onClick }: any) => (
+        <div data-testid="mobile-trade-field-card" onClick={onClick}>
             {children}
         </div>
     ),
@@ -60,6 +74,15 @@ describe("DurationField", () => {
         (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
             duration: "1 minutes",
             isConfigLoading: false,
+            productConfig: {
+                data: {
+                    validations: {
+                        durations: {
+                            supported_units: ["ticks", "seconds", "minutes", "hours", "days"],
+                        },
+                    },
+                },
+            },
         });
 
         (useOrientationStore as jest.MockedFunction<typeof useOrientationStore>).mockReturnValue({
@@ -80,6 +103,7 @@ describe("DurationField", () => {
             (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
                 duration: "1 minutes",
                 isConfigLoading: true,
+                productConfig: null,
             });
 
             render(<DurationField />);
@@ -97,6 +121,36 @@ describe("DurationField", () => {
             expect(param).toHaveAttribute("data-label", "Duration");
             expect(param).toHaveAttribute("data-value", "1 minutes");
             expect(screen.queryByTestId("duration-field-skeleton")).not.toBeInTheDocument();
+        });
+    });
+
+    describe("Error State", () => {
+        it("should display N/A when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                duration: "1 minutes",
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<DurationField />);
+
+            const param = screen.getByTestId("trade-param");
+            expect(param).toHaveAttribute("data-value", "N/A");
+            expect(param.className).toContain("opacity-50");
+            expect(param.className).toContain("cursor-not-allowed");
+        });
+
+        it("should not trigger click actions when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                duration: "1 minutes",
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<DurationField />);
+
+            fireEvent.click(screen.getByTestId("trade-param"));
+            expect(mockSetBottomSheet).not.toHaveBeenCalled();
         });
     });
 
@@ -125,9 +179,10 @@ describe("DurationField", () => {
             expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
         });
 
-        it("should not wrap in desktop trade field card", () => {
+        it("should wrap in mobile trade field card", () => {
             render(<DurationField />);
 
+            expect(screen.getByTestId("mobile-trade-field-card")).toBeInTheDocument();
             expect(screen.queryByTestId("desktop-trade-field-card")).not.toBeInTheDocument();
         });
     });
@@ -205,6 +260,19 @@ describe("DurationField", () => {
             fireEvent.click(screen.getByTestId("trade-param"));
             expect(screen.getByTestId("popover")).toBeInTheDocument();
             expect(screen.getByTestId("duration-controller")).toBeInTheDocument();
+        });
+
+        it("should not show popover when productConfig is null", () => {
+            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
+                duration: "1 minutes",
+                isConfigLoading: false,
+                productConfig: null,
+            });
+
+            render(<DurationField />);
+
+            fireEvent.click(screen.getByTestId("trade-param"));
+            expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
         });
     });
 });

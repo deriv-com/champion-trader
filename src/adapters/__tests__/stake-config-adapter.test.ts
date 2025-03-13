@@ -11,11 +11,12 @@ describe("adaptStakeConfig", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 1,
                     duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
@@ -65,6 +66,7 @@ describe("updateStakeConfig and getStakeConfig", () => {
             data: {
                 defaults: {
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     stake: { min: "5.00", max: "50.00" },
@@ -85,7 +87,9 @@ describe("adaptDefaultStake", () => {
         const mockConfig = {
             data: {
                 defaults: {
+                    product_id: "CALL",
                     stake: 25,
+                    variants: ["call"],
                 },
             },
         } as ProductConfigResponse;
@@ -98,7 +102,9 @@ describe("adaptDefaultStake", () => {
         const mockConfig = {
             data: {
                 defaults: {
+                    product_id: "CALL",
                     stake: 10.5,
+                    variants: ["call"],
                 },
             },
         } as ProductConfigResponse;

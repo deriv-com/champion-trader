@@ -23,11 +23,12 @@ describe("getAvailableDurationTypes", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 1,
                     duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
@@ -61,11 +62,12 @@ describe("getAvailableDurationTypes", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 1,
                     duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
@@ -85,11 +87,12 @@ describe("getAvailableDurationTypes", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 15,
                     duration_unit: "seconds",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
@@ -149,11 +152,12 @@ describe("adaptDurationRanges", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 1,
                     duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
@@ -179,11 +183,12 @@ describe("adaptDurationRanges", () => {
         const mockConfig = {
             data: {
                 defaults: {
-                    id: "CALL",
+                    product_id: "CALL",
                     duration: 1,
                     duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
+                    variants: ["call"],
                 },
                 validations: {
                     durations: {
