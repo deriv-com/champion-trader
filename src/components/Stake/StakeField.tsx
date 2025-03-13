@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
+import { LabelPairedMinusSmRegularIcon, LabelPairedPlusSmRegularIcon } from "@deriv/quill-icons";
 
 interface StakeFieldProps {
     className?: string;
@@ -116,7 +117,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                                         onClick={handleDecrement}
                                         aria-label="Decrease stake"
                                     >
-                                        −
+                                        <LabelPairedMinusSmRegularIcon />
                                     </button>
                                 </div>
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
@@ -125,7 +126,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                                         onClick={handleIncrement}
                                         aria-label="Increase stake"
                                     >
-                                        +
+                                        <LabelPairedPlusSmRegularIcon />
                                     </button>
                                 </div>
                             </div>

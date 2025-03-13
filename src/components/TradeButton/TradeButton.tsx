@@ -98,8 +98,8 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                                     : "justify-between"
                             )}
                         >
-                            <span className="text-xs">{value}</span>
-                            <span className="text- opacity-80">{label}</span>
+                            <span className="text-[12px]">{value}</span>
+                            <span className="text-[12px]">{label}</span>
                         </div>
                     </Button>
                 </Tooltip.Trigger>

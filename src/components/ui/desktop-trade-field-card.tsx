@@ -17,7 +17,7 @@ export const DesktopTradeFieldCard = ({
     return (
         <div
             className={cn(
-                "flex h-[56px] bg-[rgba(246,247,248,1)] rounded-lg px-4 border border-transparent",
+                "flex items-center h-[56px] bg-[rgba(246,247,248,1)] rounded-lg px-4 border border-transparent",
                 isSelected && "border-primary",
                 error && "border-red-500 bg-[rgba(230,25,14,0.08)]",
                 className
