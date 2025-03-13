@@ -13,8 +13,10 @@ This document outlines both communication methods, their implementation, and int
 The platform uses Server-Sent Events (SSE) for real-time data streaming. This provides efficient unidirectional communication for market price updates, contract price streaming, and position updates.
 
 ### Connection Management
-The SSE implementation is based on the `createSSEConnection` function in `src/services/api/sse/createSSEConnection.ts`. This function:
+The SSE implementation is based on the `createSSEConnection` function in `src/api/base/sse/client.ts` and managed by the `connectionManager` in `src/api/base/sse/connection-manager.ts`. This architecture:
 - Creates and manages EventSource connections
+- Ensures only one connection exists per endpoint
+- Automatically closes existing connections when new ones are created
 - Handles connection lifecycle (open, message, error, close)
 - Provides a clean teardown mechanism
 - Supports both protected and public endpoints
@@ -24,7 +26,7 @@ SSE messages follow a standard format:
 - Messages are sent as JSON strings
 - Each message contains a data payload with price information
 - Messages are parsed and typed using TypeScript interfaces
-- The `ContractPriceResponse` interface defines the structure of price updates
+- Service-specific interfaces define the structure for different types of updates
 
 ### Reconnection Strategy
 The SSE implementation includes a robust reconnection strategy:
@@ -62,23 +64,25 @@ The platform uses a custom EventSource implementation (`custom-event-source.ts`)
 - Provides better cross-browser compatibility
 
 ### SSE Integration Examples
-Example of using SSE for market price updates:
+Example of using SSE for proposal updates using hooks:
 ```typescript
-import { useMarketSSE } from '@/hooks/sse';
+import { useProposal } from '@/hooks/proposal';
 
-function MarketPrice({ instrumentId }: { instrumentId: string }) {
-  const { price, isConnected } = useMarketSSE(instrumentId, {
-    onPrice: (price) => {
-      console.log('New price:', price);
-    }
+function ProposalPrice({ instrumentId }: { instrumentId: string }) {
+  const { data: proposal, error } = useProposal({
+    instrumentId,
+    duration: '1d',
+    tradeType: 'CALL',
   });
 
+  if (error) return <p>Error loading proposal: {error.message}</p>;
+  
   return (
     <div>
-      {isConnected ? (
-        <p>Current price: {price?.bid}</p>
+      {proposal ? (
+        <p>Proposal price: {proposal.price}</p>
       ) : (
-        <p>Connecting...</p>
+        <p>Loading proposal...</p>
       )}
     </div>
   );
@@ -88,43 +92,29 @@ function MarketPrice({ instrumentId }: { instrumentId: string }) {
 ## Part 2: RESTful API Integration
 
 ### API Overview
-The Champion Trader platform uses a RESTful API architecture for contract purchase, market data retrieval, and account management. The API is organized by resource type and follows standard HTTP conventions.
+The Champion Trader platform uses a RESTful API architecture for contract purchase, market data retrieval, and account management. The API is organized by service type and follows standard HTTP conventions.
 
-### Endpoint Catalog
-The platform interacts with the following key API endpoints:
+### API Structure
+The API is structured into service-specific modules:
+- `api/services/contract`: Contract-related endpoints
+- `api/services/instrument`: Market instruments endpoints
+- `api/services/product`: Product configuration endpoints
+- `api/services/proposal`: Proposal streaming endpoints
+- `api/services/user`: User and account endpoints
 
-| Endpoint | Method | Purpose | Authentication |
-|----------|--------|---------|----------------|
-| `/buy` | POST | Purchase a contract | Required |
-| `/balance` | GET | Retrieve account balance | Required |
-| `/instruments` | GET | Get available trading instruments | Optional |
-| `/products` | GET | Get available products | Optional |
-| `/duration` | GET | Get available durations | Optional |
+### Base API Hooks
+The platform provides several base hooks for API interaction:
+- `useQuery`: For fetching data from REST endpoints
+- `useMutation`: For modifying data via REST endpoints
+- `useSubscription`: For subscribing to SSE streams
 
-### Buy Contract API
-The buy contract API is the core trading endpoint:
-
-**Request Format:**
-```typescript
-interface BuyRequest {
-    price: number;
-    instrument: string;
-    duration: string;
-    trade_type: string;
-    currency: string;
-    payout: number;
-    strike: string;
-}
-```
-
-**Response Format:**
-```typescript
-interface BuyResponse {
-    contract_id: string;
-    price: number;
-    trade_type: string;
-}
-```
+### Service-Specific Hooks
+Service-specific hooks built on top of base hooks:
+- `useContract`: For contract operations
+- `useInstrument` and `useInstruments`: For instrument data
+- `useProduct`: For product configuration
+- `useProposal`: For streaming price proposals
+- `useUser` and `useBalance`: For user data and balance
 
 ### Error Handling
 API errors follow a standard format:
@@ -169,27 +159,35 @@ The API uses standard HTTP response codes:
 - `500 Internal Server Error`: Server error
 
 ### RESTful API Implementation Example
-Example of buying a contract:
+Example of buying a contract using the contract service:
 ```typescript
-import { buyContract } from '@/services/api/rest/buy/buyService';
+import { useContract } from '@/hooks/contract';
 
-async function executeTrade() {
-  try {
-    const response = await buyContract({
-      price: 100,
-      instrument: 'frx_EURUSD',
-      duration: '1d',
-      trade_type: 'CALL',
-      currency: 'USD',
-      payout: 200,
-      strike: '1.2345'
-    });
-    
-    console.log('Contract purchased:', response.contract_id);
-    return response;
-  } catch (error) {
-    console.error('Trade execution failed:', error.message);
-    throw error;
-  }
+function BuyContractButton() {
+  const { buyContract, isLoading, error } = useContract();
+  
+  const handleBuy = async () => {
+    try {
+      const result = await buyContract({
+        price: 100,
+        instrument_id: 'frx_EURUSD',
+        duration: '1d',
+        trade_type: 'CALL',
+        currency: 'USD',
+      });
+      
+      console.log('Contract purchased:', result.contract_id);
+    } catch (err) {
+      console.error('Failed to purchase contract:', err);
+    }
+  };
+
+  return (
+    <button 
+      onClick={handleBuy}
+      disabled={isLoading}
+    >
+      {isLoading ? 'Processing...' : 'Buy Contract'}
+    </button>
+  );
 }
-```

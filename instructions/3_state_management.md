@@ -36,6 +36,49 @@ The data flow in the application follows a unidirectional pattern:
 
 This pattern ensures predictable state updates and clear data flow throughout the application.
 
+## Hooks-Based Integration
+The application extensively uses custom hooks to integrate API data with the UI:
+
+1. **API Hooks** (`src/api/hooks/`)
+   - `useQuery`: For fetching data from REST endpoints
+   - `useMutation`: For modifying data via REST endpoints 
+   - `useSubscription`: For subscribing to SSE streams
+
+2. **Service-Specific Hooks** (`src/hooks/`)
+   - `useContract`: For contract operations
+   - `useInstrument` and `useInstruments`: For instrument data
+   - `useProduct`: For product configuration
+   - `useProposal`: For streaming price proposals
+   - `useUser` and `useBalance`: For user data and balance
+
+These hooks integrate with the store system to provide a seamless data flow between the API and UI components.
+
+## Hook Integration Example
+Example of integrating hooks with components:
+
+```typescript
+function TradingView() {
+  // API data through hooks
+  const { data: product } = useProduct('forex');
+  const { data: instruments } = useInstruments(product?.id);
+  const { data: user } = useUser();
+  
+  // Store state and actions
+  const { tradeType, setTradeType } = useTradeStore();
+  const { isModalOpen, openModal } = useUIStore();
+  
+  // Combined UI using both sources
+  return (
+    <div>
+      <UserInfo userData={user} />
+      <InstrumentSelector instruments={instruments} />
+      <TradeTypeSelector value={tradeType} onChange={setTradeType} />
+      <Button onClick={openModal}>View Details</Button>
+    </div>
+  );
+}
+```
+
 ## Persistence Strategy
 State persistence is implemented selectively:
 
@@ -122,25 +165,3 @@ export const useStore = create(
     { name: 'Store Name' }
   )
 );
-```
-
-## Examples
-Example of a component using multiple stores:
-
-```typescript
-function TradeForm() {
-  const { tradeType, setTradeType } = useTradeStore();
-  const { balance } = useUserStore();
-  const { isModalOpen } = useUIStore();
-  
-  return (
-    <div>
-      <TradeTypeSelector 
-        value={tradeType} 
-        onChange={setTradeType} 
-      />
-      <BalanceDisplay balance={balance} />
-      {isModalOpen && <TradeConfirmationModal />}
-    </div>
-  );
-}

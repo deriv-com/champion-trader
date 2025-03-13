@@ -38,17 +38,40 @@ Components are organized by feature and type:
 src/
 ├── components/
 │   ├── AddMarketButton/     # Feature-specific component
-│   ├── BalanceDisplay/      # Feature-specific component
 │   ├── Chart/               # Feature-specific component
 │   ├── Duration/            # Feature-specific component
 │   ├── Stake/               # Feature-specific component
 │   │   ├── components/      # Sub-components
 │   │   ├── hooks/           # Component-specific hooks
 │   │   └── utils/           # Component-specific utilities
+│   ├── ThemeProvider/       # Theme management component
 │   └── ui/                  # Shared UI components (atoms)
 │       ├── Button/
 │       ├── Input/
 │       └── Card/
+```
+
+## Theme System
+The platform implements a flexible theming system with:
+
+1. **Theme Provider**: Centralized theme management via `ThemeProvider` component
+2. **Light/Dark Modes**: Support for both light and dark color schemes
+3. **Theme Configuration**: Theme constants and values defined in a central location
+4. **CSS Variables**: Dynamic theme values using CSS variables
+5. **Consistent Styling**: Application of consistent styling across components
+
+Theming is integrated directly into the component layer:
+```tsx
+// Example of ThemeProvider usage
+function App() {
+  return (
+    <ThemeProvider>
+      <Router>
+        <Routes />
+      </Router>
+    </ThemeProvider>
+  );
+}
 ```
 
 ## Responsive Design
