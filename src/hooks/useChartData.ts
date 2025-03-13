@@ -52,7 +52,7 @@ export const useChartData = ({
     useEffect(() => {
         if (!useMockData) {
             // Real API data stream implementation
-            // TODO: Implement real WebSocket connection
+            // TODO: Implement real connection
             return;
         }
 

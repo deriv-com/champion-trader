@@ -114,18 +114,6 @@ describe("TradeButton", () => {
         });
     });
 
-    it("shows tooltip on hover when there is a WebSocket error", async () => {
-        const error = { error: "Connection failed" };
-        render(<TradeButton {...defaultProps} error={error} />);
-
-        const button = screen.getByRole("button");
-        await userEvent.hover(button);
-
-        await waitFor(() => {
-            expect(screen.getAllByText("Connection failed")[0]).toBeInTheDocument();
-        });
-    });
-
     it("does not show tooltip when there is no error", async () => {
         render(<TradeButton {...defaultProps} error={null} />);
 

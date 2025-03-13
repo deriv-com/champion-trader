@@ -5,7 +5,6 @@ import { useClientStore } from "@/stores/clientStore";
 import { ToastProvider } from "@/stores/toastStore";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAccount } from "@/hooks/useAccount";
-import { useBalance } from "@/hooks/useBalance";
 
 const TradePage = lazy(() =>
     import("@/screens/TradePage").then((module) => ({
@@ -37,9 +36,6 @@ const AppContent = () => {
 
     // Initialize account data
     useAccount();
-
-    // Initialize balance polling
-    useBalance();
 
     return (
         <MainLayout>

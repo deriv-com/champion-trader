@@ -38,17 +38,13 @@ jest.mock("@/config/tradeTypes", () => ({
 }));
 
 // Mock SSE
-jest.mock("@/services/api/sse/createSSEConnection", () => ({
+jest.mock("@/api/base/sse", () => ({
     createSSEConnection: () => jest.fn(),
 }));
 
 // Mock the components that are loaded with Suspense
 jest.mock("@/components/Chart", () => ({
     Chart: () => <div data-testid="chart">Chart</div>,
-}));
-
-jest.mock("@/components/BalanceDisplay", () => ({
-    BalanceDisplay: () => <div data-testid="balance-display">Balance Display</div>,
 }));
 
 jest.mock("@/components/DurationOptions", () => ({
@@ -175,8 +171,7 @@ describe("TradePage", () => {
 
         render(<TradePage />);
 
-        // Balance display should not be visible in portrait mode
-        expect(screen.queryByTestId("balance-display")).not.toBeInTheDocument();
+        // Check for expected components
         expect(screen.getByTestId("bottom-sheet")).toBeInTheDocument();
         expect(screen.getByTestId("duration-options")).toBeInTheDocument();
 
