@@ -36,12 +36,12 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
 
     return (
         <div
-            className="relative w-[50%]"
+            className="relative"
             ref={dropdownRef}
             onMouseDown={(event) => event.stopPropagation()}
         >
             <button
-                className="text-sm h-9 w-full p-2 border rounded-full text-gray-500 flex items-center justify-between"
+                className="w-fit text-sm h-9 px-4 border rounded-full text-gray-500 flex items-center justify-between gap-2"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
             >
                 <span>{selectedFilter}</span>

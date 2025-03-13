@@ -4,6 +4,7 @@ import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "../positionsSidebarS
 import { useFilteredPositions } from "../hooks/useFilteredPositions";
 import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { Timer } from "lucide-react";
 
 export const PositionsContent: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -28,10 +29,10 @@ export const PositionsContent: FC = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-6 flex-1 overflow-auto">
-                <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+            <div className="flex-1 flex flex-col p-6 gap-2 overflow-auto">
+                <div className="w-[280px] h-10 flex items-center justify-center px-1 bg-gray-100 rounded-lg">
                     <button
-                        className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
+                        className={`flex-1 h-8 px-2 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
                                 ? "bg-white text-black shadow-sm"
                                 : "text-gray-500 hover:bg-gray-50"
@@ -41,7 +42,7 @@ export const PositionsContent: FC = () => {
                         Open
                     </button>
                     <button
-                        className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
+                        className={`flex-1 h-8 px-2 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
                                 ? "text-gray-500 hover:bg-gray-50"
                                 : "bg-white text-black shadow-sm"
@@ -51,62 +52,67 @@ export const PositionsContent: FC = () => {
                         Closed
                     </button>
                 </div>
-                <div className="mt-4">
-                    <FilterDropdown
-                        isOpenTab={isOpenTab}
-                        selectedFilter={selectedFilter}
-                        onFilterSelect={handleFilterSelect}
-                    />
-                </div>
-                <div className="mt-4 space-y-4">
+                <FilterDropdown
+                    isOpenTab={isOpenTab}
+                    selectedFilter={selectedFilter}
+                    onFilterSelect={handleFilterSelect}
+                />
+                <div className="flex flex-col">
                     {filteredPositions.map((position) => (
                         <div
                             key={position.id}
-                            className="p-3 rounded-lg shadow-sm cursor-pointer"
+                            className="p-4 cursor-pointer"
                             onClick={() => {
                                 navigate(`/contract/${position.id}`);
                                 setSidebar(null);
                             }}
                         >
                             <div className="flex justify-between text-sm font-medium">
-                                <div className="flex flex-col items-start">
-                                    <div className="flex items-center gap-2">
+                                <div className="w-full flex flex-col items-start">
+                                    <div className="w-full flex items-center justify-between">
                                         <img
                                             src="/market icon.svg"
                                             alt="Market Icon"
                                             className="w-5 h-8 mb-1"
                                         />
-                                    </div>
-                                    <span className="mb-[5] font-light text-black-400">
-                                        {position.type}
-                                    </span>
-                                    <span className="text-s font-light text-gray-500 mb-4">
-                                        {position.market}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div className="flex flex-col items-end">
-                                        {isOpenTab ? (
-                                            <span className="text-gray-500 w-35 text-xs flex items-center bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 mb-3">
-                                                <span className="mr-2">⏳</span> {position.ticks}
-                                            </span>
+                                        {isOpenTab || true ? (
+                                            <div className="text-gray-500 w-35 text-xs flex items-center justify-center gap-2 bg-gray-50 px-2 py-1 rounded-md border border-transparent hover:border-gray-300 font-light">
+                                                <Timer size={16} strokeWidth={1.5} />
+                                                <div className="leading-[18px]">
+                                                    {position.ticks}
+                                                </div>
+                                            </div>
                                         ) : (
                                             <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium mb-3">
                                                 Closed
                                             </span>
                                         )}
-                                        <span className="text-s font-light text-gray-400 mb-[2]">
-                                            {position.stake}
-                                        </span>
-                                        <span
-                                            className={`text-sm ${
-                                                position.profit.startsWith("+")
-                                                    ? "text-[#008832]"
-                                                    : "text-red-500"
-                                            }`}
-                                        >
-                                            {position.profit}
-                                        </span>
+                                    </div>
+                                    <div className="w-full flex justify-between">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="font-light text-black-400">
+                                                {position.type}
+                                            </span>
+                                            <span className="text-s font-light text-gray-500 mb-4">
+                                                {position.market}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div className="flex flex-col gap-1 items-end">
+                                                <span className="text-s font-light text-gray-400">
+                                                    {position.stake}
+                                                </span>
+                                                <span
+                                                    className={`text-sm ${
+                                                        position.profit.startsWith("+")
+                                                            ? "text-[#008832]"
+                                                            : "text-red-500"
+                                                    }`}
+                                                >
+                                                    {position.profit}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
