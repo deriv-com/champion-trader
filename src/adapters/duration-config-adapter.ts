@@ -1,5 +1,4 @@
-import { DurationRangesResponse } from "@/services/api/rest/duration/types";
-import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import { DurationRangesResponse, ProductConfigResponse } from "@/api/services/product/types";
 
 /**
  * Filters duration types based on API configuration
@@ -130,10 +129,10 @@ export const adaptDurationRanges = (config: ProductConfigResponse): DurationRang
  * Converts API default duration to internal format
  */
 export const adaptDefaultDuration = (config: ProductConfigResponse): string => {
-    const { duration, duration_units } = config.data.defaults;
+    const { duration, duration_unit } = config.data.defaults;
 
     // If the default duration is in seconds, convert to the most appropriate unit
-    if (duration_units === "seconds") {
+    if (duration_unit === "seconds") {
         if (duration >= 3600) {
             // 1 hour in seconds
             const hours = Math.floor(duration / 3600);
@@ -148,10 +147,10 @@ export const adaptDefaultDuration = (config: ProductConfigResponse): string => {
     }
 
     // For other units, use as is
-    if (duration_units === "hours") {
+    if (duration_unit === "hours") {
         // For hours, use the HH:MM format
         return `${duration}:00 hours`;
     }
 
-    return `${duration} ${duration_units}`;
+    return `${duration} ${duration_unit}`;
 };

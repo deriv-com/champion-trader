@@ -1,43 +1,36 @@
 # BalanceHandler Component
 
-The BalanceHandler component is responsible for managing and updating the user's balance data, ensuring that balance information is accurately refreshed and maintained across the application.
+## Overview
 
-## Features
-- Fetches and updates balance data from the backend or clientStore.
-- Handles state management and error states related to balance updates.
-- Integrates seamlessly with other components such as BalanceDisplay.
-- Designed following atomic component and TDD principles.
+The `BalanceHandler` component is responsible for subscribing to the balance stream API and updating the client store with the latest balance data. It doesn't render any UI elements and is designed to be used as a background service component.
 
-## Props
-- **onUpdate**: *function* (optional) — Callback function triggered when a balance update occurs.
-- **initialBalance**: *number* (optional) — Sets an initial balance value, if applicable.
-
-## Usage Example
+## Usage
 
 ```tsx
 import { BalanceHandler } from '@/components/BalanceHandler';
 
-function App() {
-  const handleBalanceUpdate = (newBalance: number) => {
-    console.log('Updated balance:', newBalance);
-  };
-
-  return (
-    <div>
-      <BalanceHandler 
-        onUpdate={handleBalanceUpdate}
-        initialBalance={1000}
-      />
-    </div>
-  );
-}
-
-export default App;
+// Inside your component
+return (
+  <>
+    {token && <BalanceHandler token={token} />}
+    {/* Rest of your UI */}
+  </>
+);
 ```
 
-## Testing
-- Unit tests are located in the __tests__ folder (`__tests__/BalanceHandler.test.tsx`), covering scenarios such as proper balance updates and error handling.
+## Props
 
-## Integration Notes
-- This component works closely with the clientStore to retrieve and update balance information.
-- It is designed to be modular and easily testable, following TDD practices.
+| Prop | Type | Description |
+|------|------|-------------|
+| token | string | Authentication token for the user |
+
+## Functionality
+
+1. Subscribes to the balance stream API using the `useAccountBalanceStream` hook
+2. Updates the client store with the latest balance data when it changes
+3. Automatically unsubscribes when the component unmounts
+
+## Dependencies
+
+- `useClientStore`: For accessing and updating the client's balance information
+- `useAccountBalanceStream`: For subscribing to the balance stream API

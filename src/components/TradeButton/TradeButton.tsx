@@ -13,7 +13,7 @@ export interface TradeButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     loading?: boolean;
-    error?: Event | null;
+    error?: Event | { error: string } | null;
 }
 
 export const TradeButton: React.FC<TradeButtonProps> = ({

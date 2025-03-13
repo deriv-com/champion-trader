@@ -12,7 +12,7 @@ import { useClientStore } from "@/stores/clientStore";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
-import { useProductConfig } from "@/hooks/useProductConfig";
+import { useProductConfig } from "@/hooks/product/useProductConfig";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -72,8 +72,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     // Fetch product config when trade_type changes
     useEffect(() => {
         fetchProductConfig(trade_type, instrument);
-    }, [trade_type, instrument, fetchProductConfig]);
-    // Commented out API calls for now
+    }, [trade_type, instrument]);
+
     // useEffect(() => {
     //   // Create SSE connections for each button's contract type
     //   const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(

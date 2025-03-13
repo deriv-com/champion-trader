@@ -10,7 +10,7 @@ import {
     formatDurationDisplay,
     SPECIAL_HOUR_CASES,
 } from "../duration";
-import type { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import type { ProductConfigResponse } from "@/api/services/product/types";
 
 describe("duration utils", () => {
     // Default config for tests
@@ -19,7 +19,7 @@ describe("duration utils", () => {
             defaults: {
                 id: "test",
                 duration: 5,
-                duration_units: "minutes",
+                duration_unit: "minutes",
                 allow_equals: true,
                 stake: 10,
             },

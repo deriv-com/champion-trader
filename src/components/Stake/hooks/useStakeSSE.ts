@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
-import { ContractPriceResponse } from "@/services/api/sse/types";
+import { createSSEConnection } from "@/api/base/sse";
+import { ContractPriceResponse } from "@/api/base/sse";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 import { formatDuration } from "@/utils/duration";
-import { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import { DurationRangesResponse } from "@/api/services/product/types";
 
 interface UseStakeSSEParams {
     duration: string;

@@ -1,1 +1,1 @@
-export { BalanceHandler } from "./BalanceHandler";
+export * from "./BalanceHandler";

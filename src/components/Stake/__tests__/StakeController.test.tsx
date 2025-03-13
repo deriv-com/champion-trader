@@ -6,14 +6,16 @@ import { useClientStore } from "@/stores/clientStore";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { getStakeConfig } from "@/adapters/stake-config-adapter";
-import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
+import { createSSEConnection } from "@/api/base/sse";
 import { validateStake } from "../utils/validation";
 import { parseDuration, formatDuration } from "@/utils/duration";
 import { parseStakeAmount } from "@/utils/stake";
 
 // Mock dependencies
 jest.mock("@/adapters/stake-config-adapter");
-jest.mock("@/services/api/sse/createSSEConnection");
+jest.mock("@/api/base/sse", () => ({
+    createSSEConnection: jest.fn(),
+}));
 jest.mock("@/utils/stake");
 jest.mock("../utils/validation");
 jest.mock("@/utils/duration");

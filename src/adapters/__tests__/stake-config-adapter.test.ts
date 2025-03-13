@@ -4,7 +4,7 @@ import {
     getStakeConfig,
     adaptDefaultStake,
 } from "../stake-config-adapter";
-import type { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import type { ProductConfigResponse } from "@/api/services/product/types";
 
 describe("adaptStakeConfig", () => {
     it("adapts stake configuration from API response", () => {
@@ -13,7 +13,7 @@ describe("adaptStakeConfig", () => {
                 defaults: {
                     id: "CALL",
                     duration: 1,
-                    duration_units: "ticks",
+                    duration_unit: "ticks",
                     allow_equals: true,
                     stake: 10,
                 },
