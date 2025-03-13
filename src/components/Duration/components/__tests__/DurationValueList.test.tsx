@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DurationValueList } from "../DurationValueList";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
-import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import type { DurationRangesResponse } from "@/api/services/product/types";
 
 // Mock hooks
 jest.mock("@/hooks/useDeviceDetection", () => ({

@@ -1,5 +1,4 @@
-import { DurationRangesResponse } from "@/services/api/rest/duration/types";
-import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import { DurationRangesResponse, ProductConfigResponse } from "@/api/services/product/types";
 
 /**
  * Filters duration types based on API configuration

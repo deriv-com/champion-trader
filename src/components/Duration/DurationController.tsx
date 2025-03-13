@@ -9,7 +9,7 @@ import { generateDurationValues as getDurationValues, getDefaultDuration } from 
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
-import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import type { DurationRangesResponse } from "@/api/services/product/types";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { getAvailableDurationTypes } from "@/adapters/duration-config-adapter";
 
@@ -52,7 +52,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
 
     // Track selected tab type separately from duration value
     const [selectedTabType, setSelectedTabType] = React.useState<DurationType>(
-        type as DurationType
+        (type as DurationType) || "ticks"
     );
 
     // Track selected values for each tab type - only initialize with current value
@@ -85,7 +85,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
             ...prev,
             [selectedTabType]: value,
         }));
-        const newDuration = `${value} ${selectedTabType}`;
+        const newDuration = `${value} ${String(selectedTabType)}`;
         setLocalDuration(newDuration);
     };
 
@@ -94,7 +94,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
             ...prev,
             [selectedTabType]: value,
         }));
-        const newDuration = `${value} ${selectedTabType}`;
+        const newDuration = `${value} ${String(selectedTabType)}`;
         setLocalDuration(newDuration);
         setDuration(newDuration); // Update store immediately on click
         if (isLandscape) {
@@ -118,8 +118,8 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
                 <div className="mx-4 w-fit">
                     <TabList
                         tabs={availableDurationTypes}
-                        selectedValue={selectedTabType}
-                        onSelect={handleTypeSelect as (value: string) => void}
+                        selectedValue={String(selectedTabType)}
+                        onSelect={(value) => handleTypeSelect(value as DurationType)}
                         variant={isLandscape ? "vertical" : "chip"}
                     />
                 </div>
@@ -135,7 +135,7 @@ export const DurationController: React.FC<DurationControllerProps> = ({ onClose 
                         />
                     ) : (
                         <DurationValueList
-                            key={selectedTabType}
+                            key={String(selectedTabType)}
                             selectedValue={
                                 (selectedValue as number) ?? getDefaultDuration(selectedTabType)
                             }
