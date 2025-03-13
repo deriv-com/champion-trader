@@ -45,7 +45,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
     if (!isLandscape) {
         return (
             <MobileTradeFieldCard onClick={handleMobileClick}>
-                <div className="flex flex-col">
+                <div className="flex flex-col justify-center">
                     <div
                         className={cn(
                             error ? "bg-[rgba(230,25,14,0.08)]" : "bg-transparent",
@@ -61,7 +61,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                     </div>
                     {error && errorMessage && (
                         <div className="mt-1 px-2">
-                            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
+                            <span className="text-xs leading-[18px] font-normal text-red-500">
                                 {errorMessage}
                             </span>
                         </div>
@@ -85,8 +85,8 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                     }}
                     tabIndex={0}
                 >
-                    <div ref={containerRef} className="flex rounded-lg h-[48px]">
-                        <div className="flex flex-col flex-1 justify-between">
+                    <div ref={containerRef} className="flex items-center rounded-lg h-[48px]">
+                        <div className="flex flex-col flex-1 justify-between gap-0">
                             <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
                                 Stake ({currency})
                             </span>

@@ -10,8 +10,8 @@ interface TradeParamProps {
 const TradeParam: React.FC<TradeParamProps> = ({ label, value, onClick, className }) => {
     const formattedValue = label === "Duration" ? formatDurationDisplay(value) : value;
 
-    const labelClasses = "text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary";
-    const valueClasses = "text-left font-ibm-plex text-base leading-6 font-normal text-gray-900";
+    const labelClasses = "text-left text-xs leading-[18px] font-normal text-primary";
+    const valueClasses = "text-left text-base leading-[24px] font-normal text-gray-900";
 
     if (onClick) {
         return (
