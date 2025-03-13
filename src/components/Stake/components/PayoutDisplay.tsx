@@ -27,12 +27,12 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
         <div className="space-y-1">
             {config.payouts.max && (
                 <div className="flex justify-between">
-                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
+                    <span className="text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
                         Max payout
                     </span>
                     <span
                         className={cn(
-                            "font-ibm-plex text-xs font-normal leading-[18px] text-right",
+                            "text-xs font-normal leading-[18px] text-right",
                             hasError
                                 ? "text-red-500"
                                 : loading
@@ -46,12 +46,12 @@ export const PayoutDisplay: React.FC<PayoutDisplayProps> = ({
             )}
             {config.buttons.map((button) => (
                 <div key={button.actionName} className="flex justify-between">
-                    <span className="font-ibm-plex text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
+                    <span className="text-xs font-normal leading-[18px] text-[rgba(0,0,0,0.48)]">
                         {config.payouts.labels[button.actionName]}
                     </span>
                     <span
                         className={cn(
-                            "font-ibm-plex text-xs font-normal leading-[18px] text-right",
+                            "text-xs font-normal leading-[18px] text-right",
                             hasError
                                 ? "text-red-500"
                                 : loadingStates[button.actionName]

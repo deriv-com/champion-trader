@@ -61,7 +61,7 @@ export const MobileNumberInputField = React.forwardRef<
                     </Button>
                     <div className="flex items-center justify-center w-full">
                         {prefix && (
-                            <span className="font-ibm-plex text-base font-normal leading-6 text-[rgba(0,0,0,0.24)]">
+                            <span className="text-base font-normal leading-6 text-[rgba(0,0,0,0.24)]">
                                 {prefix}
                             </span>
                         )}
@@ -84,7 +84,7 @@ export const MobileNumberInputField = React.forwardRef<
                     </Button>
                 </div>
                 {error && errorMessage && (
-                    <p className="text-red-500 font-ibm-plex text-xs font-normal leading-[18px]">
+                    <p className="text-red-500 text-xs font-normal leading-[18px]">
                         {errorMessage}
                     </p>
                 )}

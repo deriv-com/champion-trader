@@ -55,7 +55,7 @@ const VerticalTabList: React.FC<BaseTabListProps> = ({ tabs, selectedValue, onSe
                     key={value}
                     onClick={() => onSelect(value)}
                     className={`
-            relative w-full text-left py-3 px-6 transition-colors font-ibm-plex text-base leading-6 font-normal
+            relative w-full text-left py-3 px-6 transition-colors text-base leading-6 font-normal
             text-primary cursor-pointer
             before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[4px]
             ${

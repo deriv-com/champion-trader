@@ -26,7 +26,7 @@ export const EntryExitDetails: React.FC = () => {
                     "0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)",
             }}
         >
-            <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-[rgba(0,0,0,0.72)] mb-4">
+            <h2 className="text-[14px] leading-[22px] font-bold text-[rgba(0,0,0,0.72)] mb-4">
                 Entry & exit details
             </h2>
             {details.map((detail, index) => (
@@ -34,15 +34,15 @@ export const EntryExitDetails: React.FC = () => {
                     key={index}
                     className="col-span-2 flex justify-between border-b border-gray-300 py-2"
                 >
-                    <span className="text-[rgba(0,0,0,0.48)] font-ibm-plex text-[14px] leading-[22px] font-normal">
+                    <span className="text-[rgba(0,0,0,0.48)] text-[14px] leading-[22px] font-normal">
                         {detail.label}
                     </span>
                     <div className="text-right">
-                        <span className="text-[rgba(0,0,0,0.72)] font-ibm-plex text-[14px] leading-[22px] font-normal block pb-1">
+                        <span className="text-[rgba(0,0,0,0.72)] text-[14px] leading-[22px] font-normal block pb-1">
                             {detail.value}
                         </span>
                         {detail.subValue && (
-                            <span className="text-[rgba(0,0,0,0.48)] font-ibm-plex text-[12px] leading-[18px] font-normal block">
+                            <span className="text-[rgba(0,0,0,0.48)] text-[12px] leading-[18px] font-normal block">
                                 {detail.subValue}
                             </span>
                         )}

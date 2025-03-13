@@ -87,7 +87,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                 >
                     <div ref={containerRef} className="flex items-center rounded-lg h-[48px]">
                         <div className="flex flex-col flex-1 justify-between gap-0">
-                            <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
+                            <span className="text-left text-xs leading-[18px] font-normal text-primary">
                                 Stake ({currency})
                             </span>
                             <div className="relative">
@@ -98,11 +98,11 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                                         value={`${localValue}`}
                                         onChange={handleChange}
                                         onFocus={() => handleSelect(true)}
-                                        className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
+                                        className="text-left text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
                                         aria-label="Stake amount"
                                     />
                                 ) : (
-                                    <span className="text-left font-ibm-plex text-base leading-6 font-normal text-gray-900">
+                                    <span className="text-left text-base leading-6 font-normal text-gray-900">
                                         N/A
                                     </span>
                                 )}

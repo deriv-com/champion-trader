@@ -32,7 +32,7 @@ export const Tooltip = () => {
             ref={tooltipRef}
             style={tooltipStyles}
             className={cn(
-                "z-50 px-4 py-2 rounded-lg shadow-lg whitespace-nowrap font-ibm-plex text-xs leading-[18px] font-normal",
+                "z-50 px-4 py-2 rounded-lg shadow-lg whitespace-nowrap text-xs leading-[18px] font-normal",
                 "after:content-[''] after:absolute after:top-1/2 after:-right-2",
                 "after:w-4 after:h-4 after:-translate-y-1/2 after:rotate-45",
                 {

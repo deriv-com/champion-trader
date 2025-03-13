@@ -24,20 +24,20 @@ export const ContractSummary: React.FC = () => {
                         <MarketIcon symbol="R_100" size="small" />
                     </div>
                     <div>
-                        <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.72)] font-ibm-plex text-[14px] leading-[22px] font-normal pb-1">
+                        <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.72)] text-[14px] leading-[22px] font-normal pb-1">
                             {type}
                         </div>
-                        <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.48)] font-ibm-plex text-[14px] leading-[22px] font-normal">
+                        <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.48)] text-[14px] leading-[22px] font-normal">
                             {market}
                         </div>
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-[rgba(0,0,0,0.48)] font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-[rgba(0,0,0,0.04)] px-2 rounded-md mb-1   py-0.5 inline-block">
+                    <div className="text-[rgba(0,0,0,0.48)] text-[14px] leading-[22px] font-normal text-right bg-[rgba(0,0,0,0.04)] px-2 rounded-md mb-1   py-0.5 inline-block">
                         0/10 ticks
                     </div>
-                    <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.48)] mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>
-                    <div className="text-[#008832] font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
+                    <div className="overflow-hidden text-ellipsis text-[rgba(0,0,0,0.48)] mb-1 text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>
+                    <div className="text-[#008832] text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
                 </div>
             </div>
         </div>
