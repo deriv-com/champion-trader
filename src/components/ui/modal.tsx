@@ -53,7 +53,7 @@ export const Modal = ({
             <div className="fixed inset-0 bg-black/80" onClick={onClose} />
             <div
                 className={cn(
-                    "relative bg-theme rounded-3xl shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col p-[32px] border border-theme",
+                    "relative bg-theme rounded-3xl shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col p-[32px]",
                     className
                 )}
             >
