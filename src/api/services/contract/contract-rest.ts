@@ -8,11 +8,19 @@ import {
 
 /**
  * Buy a contract
- * @param params Buy contract request parameters
+ * @param requestBody The request body containing contract details
+ * @param queryParams Optional query parameters (e.g., account_uuid)
  * @returns Promise with buy contract response
  */
-export const buyContract = async (params: BuyContractRequest): Promise<BuyContractResponse> => {
-    const response = await apiClient.post<BuyContractResponse>("/v1/trading/contracts/buy", params);
+export const buyContract = async (
+    requestBody: BuyContractRequest,
+    queryParams?: { account_uuid?: string }
+): Promise<BuyContractResponse> => {
+    const response = await apiClient.post<BuyContractResponse>(
+        "/v1/trading/contracts/buy",
+        requestBody,
+        { params: queryParams }
+    );
     return response.data;
 };
 

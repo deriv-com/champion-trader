@@ -9,13 +9,16 @@ export const OrderDetails: React.FC = () => {
         return null;
     }
 
-    const { duration, barrier, stake, payout } = contractDetails;
+    const { duration, barrier, stake, potential_payout } = contractDetails;
     const details = [
-        { label: "Reference ID", value: "1234" }, // Hardcoded ID for stub data
-        { label: "Duration", value: duration },
+        { label: "Reference ID", value: contractDetails.contract_id },
+        { label: "Duration", value: `${duration} ${contractDetails.duration_unit}` },
         { label: "Barrier", value: barrier },
-        { label: "Stake", value: stake },
-        { label: "Potential payout", value: payout },
+        { label: "Stake", value: `${stake} ${contractDetails.bid_price_currency}` },
+        {
+            label: "Potential payout",
+            value: `${potential_payout} ${contractDetails.bid_price_currency}`,
+        },
     ];
 
     return (

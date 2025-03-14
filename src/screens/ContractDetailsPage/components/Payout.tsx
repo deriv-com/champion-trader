@@ -9,7 +9,7 @@ export const Payout: React.FC = () => {
         return null;
     }
 
-    const { market, duration } = contractDetails;
+    const { instrument_id: market, duration, duration_unit } = contractDetails;
     return (
         <div
             className="mt-4 p-4 bg-white rounded-lg border-b border-gray-300"
@@ -22,7 +22,8 @@ export const Payout: React.FC = () => {
                 How do I earn a payout?
             </h2>
             <p className="text-[rgba(0,0,0,0.72)] font-ibm-plex text-[14px] leading-[22px] font-normal">
-                Win payout if {market} after {duration} is strictly higher than entry spot.
+                Win payout if {market} after {duration} {duration_unit} is strictly higher than
+                entry spot.
             </p>
         </div>
     );
