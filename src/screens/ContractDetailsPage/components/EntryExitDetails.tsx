@@ -1,6 +1,6 @@
 import React from "react";
-
 import { useTradeStore } from "@/stores/tradeStore";
+import { formatTime, formatGMT } from "@/utils/date-format";
 
 export const EntryExitDetails: React.FC = () => {
     const contractDetails = useTradeStore((state) => state.contractDetails);
@@ -9,13 +9,27 @@ export const EntryExitDetails: React.FC = () => {
         return null;
     }
 
-    const { startTime, startTimeGMT, entrySpot, entryTimeGMT, exitTime, exitTimeGMT, exitSpot } =
-        contractDetails;
     const details = [
-        { label: "Start time", value: startTime, subValue: startTimeGMT },
-        { label: "Entry spot", value: entrySpot, subValue: entryTimeGMT },
-        { label: "Exit time", value: exitTime, subValue: exitTimeGMT },
-        { label: "Exit spot", value: exitSpot, subValue: exitTimeGMT },
+        {
+            label: "Start time",
+            value: formatTime(contractDetails.contract_start_time),
+            subValue: formatGMT(contractDetails.contract_start_time),
+        },
+        {
+            label: "Entry spot",
+            value: contractDetails.entry_spot,
+            subValue: formatGMT(contractDetails.entry_tick_time),
+        },
+        {
+            label: "Exit time",
+            value: formatTime(contractDetails.contract_expiry_time),
+            subValue: formatGMT(contractDetails.contract_expiry_time),
+        },
+        {
+            label: "Exit spot",
+            value: "Pending", // This would be updated when the contract is completed
+            subValue: null,
+        },
     ];
 
     return (

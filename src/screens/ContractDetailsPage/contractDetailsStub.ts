@@ -1,6 +1,7 @@
 export interface ContractDetails {
     contract_id: string;
     product_id: string;
+    instrument_id: string;
     buy_price: string;
     buy_time: number;
     contract_start_time: number;
@@ -24,6 +25,7 @@ export interface ContractDetails {
 export const contractDetailsStub: ContractDetails = {
     contract_id: "123ef4567-e89b-12d3-a456-426614174000",
     product_id: "rise_fall",
+    instrument_id: "frxEURUSD",
     buy_price: "1.00",
     buy_time: 1741669445330,
     contract_start_time: 1741669445330,

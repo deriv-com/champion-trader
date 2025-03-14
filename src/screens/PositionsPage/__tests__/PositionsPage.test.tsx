@@ -14,7 +14,7 @@ describe("PositionsPage", () => {
     it("navigates to contract details when clicking a position", () => {
         renderWithRouter();
 
-        const position = screen.getByText("Volatility 100 (1s) Index");
+        const position = screen.getByText("R_100");
         fireEvent.click(position);
 
         expect(window.location.pathname).toMatch("/");

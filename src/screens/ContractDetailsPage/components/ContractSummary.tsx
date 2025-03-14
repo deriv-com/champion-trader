@@ -1,15 +1,25 @@
 import React from "react";
-import { useTradeStore } from "@/stores/tradeStore";
 import { MarketIcon } from "@/components/MarketSelector/MarketIcon";
+import { ContractDetails } from "@/screens/ContractDetailsPage/contractDetailsStub";
 
-export const ContractSummary: React.FC = () => {
-    const contractDetails = useTradeStore((state) => state.contractDetails);
+interface ContractSummaryProps {
+    contractDetails?: ContractDetails;
+}
+
+export const ContractSummary: React.FC<ContractSummaryProps> = ({
+    contractDetails: propContractDetails,
+}) => {
+    const contractDetails = propContractDetails;
 
     if (!contractDetails) {
         return null;
     }
 
-    const { type, market, stake, profit } = contractDetails;
+    // Calculate profit as potential_payout - stake
+    const profit =
+        parseFloat(contractDetails.potential_payout || "0") -
+        parseFloat(contractDetails.stake || "0");
+
     return (
         <div
             className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme"
@@ -20,23 +30,26 @@ export const ContractSummary: React.FC = () => {
             <div className="flex justify-between">
                 <div>
                     <div className=" mb-1">
-                        <MarketIcon symbol="R_100" size="small" />
+                        <MarketIcon
+                            symbol={contractDetails.instrument_id || "R_100"}
+                            size="small"
+                        />
                     </div>
                     <div>
                         <div className="overflow-hidden text-ellipsis text-theme font-ibm-plex text-[14px] leading-[22px] font-normal pb-1">
-                            {type}
+                            {contractDetails.variant}
                         </div>
                         <div className="overflow-hidden text-ellipsis text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal">
-                            {market}
+                            {contractDetails.instrument_id}
                         </div>
                     </div>
                 </div>
                 <div className="text-right">
                     <div className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-theme-secondary/50 px-2 rounded-md mb-1 py-0.5 inline-block">
-                        0/10 ticks
+                        {`${contractDetails.duration} ${contractDetails.duration_unit}`}
                     </div>
-                    <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>
-                    <div className="text-[#008832] font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
+                    <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${contractDetails.stake} ${contractDetails.bid_price_currency}`}</div>
+                    <div className="text-[#008832] font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} ${contractDetails.bid_price_currency}`}</div>
                 </div>
             </div>
         </div>

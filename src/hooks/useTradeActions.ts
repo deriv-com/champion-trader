@@ -73,6 +73,7 @@ export const useTradeActions = () => {
                     product_id: response.data.product_id,
                     buy_price: response.data.buy_price,
                     buy_time: response.data.buy_time,
+                    instrument_id: instrument, // TODO - Add instrument_id from response
                     ...response.data.contract_details,
                 });
             }
