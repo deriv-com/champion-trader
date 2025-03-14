@@ -38,30 +38,85 @@ export interface SellContractResponse {
     // Add other sell response properties as needed
 }
 
-/**
- * Open contract data from SSE stream
- */
-export interface OpenContract {
-    contract_id: string;
-    instrument_id: string;
-    trade_type: string;
-    entry_price: number;
-    current_price: number;
-    profit: number;
-    status: string;
-    // Add other open contract properties as needed
+// Response structure for open contracts
+export interface OpenContractsResponse {
+    data: {
+        contracts: Array<{
+            contract_id: string;
+            product_id: string;
+            contract_details: ContractDetails;
+        }>;
+        total_profit_loss: string;
+    };
+    meta: {
+        endpoint: string;
+        method: string;
+        timing: number;
+    };
 }
 
-/**
- * Closed contract data from SSE stream
- */
-export interface ClosedContract {
-    contract_id: string;
+// Response structure for closed contracts
+export interface ClosedContractsResponse {
+    data: {
+        contracts: Array<{
+            contract_id: string;
+            product_id: string;
+            contract_details: ContractDetails;
+        }>;
+        pagination: {
+            current_page: number;
+            limit: number;
+            total_items: number;
+            total_pages: number;
+        };
+        total_profit_loss: string;
+    };
+    meta: {
+        endpoint: string;
+        method: string;
+        timing: number;
+    };
+}
+
+// Common contract details structure
+export interface ContractDetails {
+    allow_equals: boolean;
+    barrier: string;
+    bid_price: string;
+    bid_price_currency: string;
+    contract_expiry_time: number;
+    contract_start_time: number;
+    duration: number;
+    duration_unit: string;
+    entry_spot: string;
+    entry_tick_time: number;
+    exit_spot: string;
+    exit_tick_time?: number;
+    exit_time?: number;
     instrument_id: string;
-    trade_type: string;
-    entry_price: number;
-    exit_price: number;
-    profit: number;
-    status: string;
-    // Add other closed contract properties as needed
+    instrument_name: string;
+    is_expired: boolean;
+    is_sold: boolean;
+    is_valid_to_sell: boolean;
+    potential_payout: string;
+    profit_loss: string;
+    reference_id: string;
+    stake: string;
+    variant: string;
+    buy_tick_id?: number;
+    pricing_tick_id?: string;
+    sell_tick_id?: number;
+    tick_stream: Array<{
+        ask: string;
+        bid: string;
+        epoch_ms: number;
+        price: string;
+    }>;
+}
+
+// Simplified contract type for UI display
+export interface Contract {
+    contract_id: string;
+    product_id: string;
+    details: ContractDetails;
 }

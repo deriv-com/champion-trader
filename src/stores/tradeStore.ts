@@ -5,6 +5,11 @@ import {
     contractDetailsStub,
 } from "@/screens/ContractDetailsPage/contractDetailsStub";
 import { ProductConfigResponse } from "@/api/services/product/types";
+import {
+    Contract,
+    OpenContractsResponse,
+    ClosedContractsResponse,
+} from "@/api/services/contract/types";
 
 /**
  * Trade Store
@@ -61,6 +66,18 @@ interface TradeState {
     /** Cache for product config responses */
     configCache: Record<string, ProductConfigResponse>;
 
+    // Positions State
+    /** Open positions from API */
+    openPositions: Contract[];
+    /** Closed positions from API */
+    closedPositions: Contract[];
+    /** Loading state for positions */
+    positionsLoading: boolean;
+    /** Error state for positions */
+    positionsError: Error | null;
+    /** Total profit/loss for positions */
+    totalProfitLoss: string;
+
     // Trade Actions
     /** Set the stake amount */
     setStake: (stake: string) => void;
@@ -101,6 +118,16 @@ interface TradeState {
     setConfigError: (error: Error | null) => void;
     /** Set the config cache */
     setConfigCache: (cache: Record<string, ProductConfigResponse>) => void;
+
+    // Positions Actions
+    /** Set open positions from API response */
+    setOpenPositions: (response: OpenContractsResponse) => void;
+    /** Set closed positions from API response */
+    setClosedPositions: (response: ClosedContractsResponse) => void;
+    /** Set the loading state for positions */
+    setPositionsLoading: (isLoading: boolean) => void;
+    /** Set the error state for positions */
+    setPositionsError: (error: Error | null) => void;
 }
 
 export const useTradeStore = create<TradeState>((set) => ({
@@ -125,6 +152,13 @@ export const useTradeStore = create<TradeState>((set) => ({
     isConfigLoading: false,
     configError: null,
     configCache: {},
+
+    // Positions State
+    openPositions: [],
+    closedPositions: [],
+    positionsLoading: false,
+    positionsError: null,
+    totalProfitLoss: "0.00",
 
     // Trade Actions
     setStake: (stake) => set({ stake }),
@@ -158,4 +192,28 @@ export const useTradeStore = create<TradeState>((set) => ({
     setConfigLoading: (loading: boolean) => set({ isConfigLoading: loading }),
     setConfigError: (error: Error | null) => set({ configError: error }),
     setConfigCache: (cache: Record<string, ProductConfigResponse>) => set({ configCache: cache }),
+
+    // Positions Actions
+    setOpenPositions: (response) =>
+        set({
+            openPositions: response.data.contracts.map((contract) => ({
+                contract_id: contract.contract_id,
+                product_id: contract.product_id,
+                details: contract.contract_details,
+            })),
+            totalProfitLoss: response.data.total_profit_loss,
+        }),
+
+    setClosedPositions: (response) =>
+        set({
+            closedPositions: response.data.contracts.map((contract) => ({
+                contract_id: contract.contract_id,
+                product_id: contract.product_id,
+                details: contract.contract_details,
+            })),
+            totalProfitLoss: response.data.total_profit_loss,
+        }),
+
+    setPositionsLoading: (isLoading) => set({ positionsLoading: isLoading }),
+    setPositionsError: (error) => set({ positionsError: error }),
 }));
