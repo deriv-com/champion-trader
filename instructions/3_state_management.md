@@ -26,6 +26,82 @@ The application state is divided into several domain-specific stores:
    - Tracks device orientation and screen size
    - Provides actions for UI interactions
 
+## Trade Store
+The Trade Store is the primary store for managing trade-related state. It interacts directly with trade type configurations to determine which fields are available and how trade actions are processed.
+
+> **Note:** For details on trade type configuration, refer to the [Trade Types instruction](./1_trade_types.md) document.
+
+### Trade Store Structure
+
+```typescript
+interface TradeState {
+  // Selected trade type (e.g., 'rise_fall', 'touch_no_touch')
+  tradeType: TradeType;
+  
+  // Duration value and unit
+  duration: string;
+  
+  // Stake amount
+  stake: number;
+  
+  // Selected instrument
+  instrument: string;
+  
+  // Equals option (for trade types that support it)
+  equals: boolean;
+  
+  // Actions for updating state
+  setTradeType: (type: TradeType) => void;
+  setDuration: (duration: string) => void;
+  setStake: (stake: number) => void;
+  setInstrument: (instrument: string) => void;
+  setEquals: (equals: boolean) => void;
+}
+```
+
+### Trade Type Integration
+
+The Trade Store integrates with trade type configurations in the following ways:
+
+1. **Field Visibility**
+   - The selected trade type determines which fields are displayed
+   - Components check the trade type configuration to determine visibility
+   - Example: `const showDuration = tradeTypeConfigs[tradeType].fields.duration;`
+
+2. **Trade Actions**
+   - Trade actions are determined by the selected trade type
+   - The `useTradeActions` hook maps action names to handlers
+   - Example: `const actions = useTradeActions(); actions.buy_rise();`
+
+3. **Trade Parameters**
+   - Trade parameters are stored in the trade store
+   - Components read and update these parameters
+   - Example: `const { stake, setStake } = useTradeStore();`
+
+### Adding Support for a New Trade Type
+
+When adding a new trade type, you need to ensure the Trade Store can handle it:
+
+1. Add the new trade type to the `TradeType` type:
+   ```typescript
+   export type TradeType = 
+     | 'rise_fall'
+     | 'touch_no_touch'
+     | 'your_new_trade_type';
+   ```
+
+2. Update the `useTradeActions` hook to handle the new trade type's actions:
+   ```typescript
+   export type TradeAction =
+     | 'buy_rise'
+     | 'buy_fall'
+     | 'your_new_action';
+   ```
+
+3. Implement the action handlers in the `useTradeActions` hook.
+
+No changes to the Trade Store itself are typically needed, as it's designed to be flexible and configuration-driven.
+
 ## Data Flow
 The data flow in the application follows a unidirectional pattern:
 
@@ -144,3 +220,26 @@ function TradeForm() {
     </div>
   );
 }
+```
+
+## Best Practices
+
+1. **Store Organization**
+   - Keep stores focused on specific domains
+   - Avoid storing derived state that can be computed
+   - Use selectors for efficient state access
+
+2. **State Updates**
+   - Use atomic updates with the function form of `set`
+   - Avoid retrieving state outside updaters
+   - Keep actions close to the state they modify
+
+3. **Performance**
+   - Use selectors to prevent unnecessary re-renders
+   - Split large stores into smaller ones
+   - Avoid storing large objects or arrays directly
+
+4. **TypeScript**
+   - Define clear interfaces for store state
+   - Type all actions and selectors
+   - Use discriminated unions for complex state

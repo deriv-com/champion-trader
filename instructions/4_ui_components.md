@@ -3,53 +3,207 @@
 ## Atomic Design Overview
 The Champion Trader platform implements the atomic design methodology, organizing components into a hierarchical structure from simple to complex. This approach ensures consistency, reusability, and maintainability across the UI.
 
+## Component Development Rules
+
+When creating or modifying components, follow these rules:
+
+1. **Documentation**
+   - Update this instruction file when adding new components
+   - Add the component to the Component Hierarchy section
+   - Include a brief description in the Component Organization section
+
+2. **Component Structure**
+   - Create a dedicated folder for each component
+   - Include an index.ts file for exports
+   - Add a README.md with usage examples
+   - Write unit tests in a __tests__ folder
+
+3. **Component Prologue**
+   - Add JSDoc comments with component description
+   - Document props with TypeScript interfaces
+   - Include usage examples
+   - Add accessibility notes
+
+4. **Security**
+   - Sanitize all user inputs
+   - Avoid using dangerouslySetInnerHTML
+   - Use DOMPurify for any HTML rendering
+   - Prevent XSS attacks in user-generated content
+
+5. **Accessibility**
+   - Use semantic HTML elements
+   - Include ARIA attributes where needed
+   - Ensure keyboard navigation works
+   - Maintain proper focus management
+   - Meet WCAG AA contrast requirements
+
+6. **Performance**
+   - Implement lazy loading for complex components
+   - Optimize re-renders with memoization
+   - Keep component dependencies minimal
+   - Use code splitting for large components
+
+7. **Testing**
+   - Write unit tests for all components
+   - Test accessibility with axe-core
+   - Include visual regression tests
+   - Test across different screen sizes
+
+8. **Styling**
+   - Use TailwindCSS utility classes
+   - Follow the project's color scheme
+   - Implement responsive design
+   - Support dark mode where appropriate
+
 ## Component Hierarchy
-Components are organized into the following hierarchy:
-
-1. **Atoms**: Fundamental building blocks
-   - Buttons, inputs, labels, icons
-   - Self-contained with minimal dependencies
-   - Examples: `Button`, `Input`, `Icon`
-
-2. **Molecules**: Groups of atoms functioning together
-   - Form fields, card headers, navigation items
-   - Composed of multiple atoms
-   - Examples: `FormField`, `CardHeader`, `NavItem`
-
-3. **Organisms**: Complex UI sections
-   - Forms, cards, navigation bars
-   - Composed of molecules and atoms
-   - Examples: `TradeForm`, `MarketCard`, `Navbar`
-
-4. **Templates**: Page layouts
-   - Define content structure
-   - Arrange organisms into a complete interface
-   - Examples: `TradePageTemplate`, `PortfolioPageTemplate`
-
-5. **Pages**: Specific instances of templates
-   - Implement templates with real content
-   - Handle data fetching and state
-   - Examples: `TradePage`, `PortfolioPage`
+```
+src/components/
+├── AccountSwitcher/                  # Account selection and management
+│   ├── AccountInfo.tsx               # Displays account information
+│   ├── AccountSwitcher.tsx           # Allows switching between accounts
+│   └── index.ts                      # Export file
+├── AddMarketButton/                  # Market addition functionality
+│   ├── AddMarketButton.tsx           # Button to add markets to watchlist
+│   └── index.ts                      # Export file
+├── BottomNav/                        # Mobile bottom navigation
+│   ├── BottomNav.tsx                 # Bottom navigation bar component
+│   └── index.ts                      # Export file
+├── BottomSheet/                      # Mobile bottom sheet UI
+│   ├── BottomSheet.tsx               # Sliding bottom sheet component
+│   └── index.ts                      # Export file
+├── Chart/                            # Price chart components
+│   ├── Chart.tsx                     # Main chart component
+│   ├── ChartErrorBoundary.tsx        # Error handling for charts
+│   ├── SmartChart.ts                 # Chart configuration and logic
+│   └── index.tsx                     # Export file
+├── ContractDetailsChart/             # Contract-specific charts
+│   ├── ContractDetailsChart.tsx      # Chart for contract details
+│   └── index.tsx                     # Export file
+├── Currency/                         # Currency display components
+│   └── CurrencyIcon.tsx              # Currency icon component
+├── Duration/                         # Trade duration components
+│   ├── DurationController.tsx        # Main duration control component
+│   ├── DurationField.tsx             # Duration input field
+│   ├── components/                   # Sub-components for duration
+│   │   ├── DurationValueList.tsx     # List of duration values
+│   │   └── HoursDurationValue.tsx    # Hours duration input
+│   └── index.ts                      # Export file
+├── DurationOptions/                  # Duration option selection
+│   ├── DurationOptions.tsx           # Duration options component
+│   └── index.ts                      # Export file
+├── EqualTrade/                       # Equal trade option components
+│   ├── EqualTradeController.tsx      # Controls for equal trade option
+│   └── index.ts                      # Export file
+├── HowToTrade/                       # Trading guide components
+│   ├── GuideModal.tsx                # Modal with trading instructions
+│   ├── HowToTrade.tsx                # How to trade component
+│   └── index.ts                      # Export file
+├── MarketInfo/                       # Market information display
+│   ├── MarketInfo.tsx                # Market details component
+│   └── index.ts                      # Export file
+├── MarketSelector/                   # Market selection components
+│   ├── MarketIcon.tsx                # Market icon component
+│   ├── MarketSelector.tsx            # Market selection component
+│   ├── MarketSelectorButton.tsx      # Button for market selection
+│   ├── MarketSelectorList.tsx        # List of available markets
+│   └── index.ts                      # Export file
+├── NotificationProvider/             # Notification system
+│   ├── NotificationProvider.tsx      # Notification context provider
+│   └── index.ts                      # Export file
+├── ServerTime/                       # Server time synchronization
+│   ├── ServerTime.tsx                # Server time component
+│   └── index.ts                      # Export file
+├── Sidebar/                          # Application sidebar
+│   ├── Sidebar.tsx                   # Main sidebar component
+│   ├── menu/                         # Menu components
+│   │   └── MenuContent.tsx           # Menu content component
+│   ├── positions/                    # Position tracking components
+│   │   └── components/               # Position sub-components
+│   │       ├── FilterDropdown.tsx    # Filter for positions
+│   │       └── PositionsContent.tsx  # Positions content display
+│   └── index.ts                      # Export file
+├── SideNav/                          # Side navigation
+│   ├── SideNav.tsx                   # Side navigation component
+│   └── index.ts                      # Export file
+├── Stake/                            # Stake input components
+│   ├── StakeController.tsx           # Main stake control component
+│   ├── StakeField.tsx                # Stake input field
+│   ├── components/                   # Stake sub-components
+│   │   ├── PayoutDisplay.tsx         # Displays potential payout
+│   │   ├── StakeInput.tsx            # Stake input component
+│   │   └── StakeInputLayout.tsx      # Layout for stake input
+│   ├── hooks/                        # Stake-specific hooks
+│   │   ├── useStakeField.ts          # Hook for stake field logic
+│   │   └── useStakeSSE.ts            # Hook for stake SSE integration
+│   ├── utils/                        # Stake utilities
+│   │   └── validation.ts             # Stake validation functions
+│   └── index.ts                      # Export file
+├── ThemeProvider/                    # Theme management
+│   ├── ThemeProvider.tsx             # Theme context provider
+│   └── index.ts                      # Export file
+├── TradeButton/                      # Trade execution buttons
+│   ├── Button.tsx                    # Base button component
+│   ├── TradeButton.tsx               # Trade-specific button
+│   └── index.ts                      # Export file
+├── TradeFields/                      # Trade parameter fields
+│   ├── ToggleButton.tsx              # Toggle button component
+│   ├── TradeParam.tsx                # Trade parameter component
+│   ├── TradeParamField.tsx           # Trade parameter field
+│   └── index.ts                      # Export file
+└── ui/                               # Shared UI components (atoms)
+    ├── button.tsx                    # Button component
+    ├── card.tsx                      # Card component
+    ├── chip.tsx                      # Chip/tag component
+    ├── modal.tsx                     # Modal dialog component
+    ├── popover.tsx                   # Popover component
+    ├── primary-button.tsx            # Primary button component
+    ├── skeleton.tsx                  # Loading skeleton component
+    ├── switch.tsx                    # Toggle switch component
+    ├── toast.tsx                     # Toast notification component
+    ├── tooltip.tsx                   # Tooltip component
+    └── ... (other UI components)
+```
 
 ## Component Organization
-Components are organized by feature and type:
+The platform organizes components by feature and functionality:
 
-```
-src/
-├── components/
-│   ├── AddMarketButton/     # Feature-specific component
-│   ├── BalanceDisplay/      # Feature-specific component
-│   ├── Chart/               # Feature-specific component
-│   ├── Duration/            # Feature-specific component
-│   ├── Stake/               # Feature-specific component
-│   │   ├── components/      # Sub-components
-│   │   ├── hooks/           # Component-specific hooks
-│   │   └── utils/           # Component-specific utilities
-│   └── ui/                  # Shared UI components (atoms)
-│       ├── Button/
-│       ├── Input/
-│       └── Card/
-```
+- **AccountSwitcher**: Allows users to view and switch between different trading accounts
+- **AddMarketButton**: Allows users to add new markets to their watchlist
+- **BottomNav**: Provides navigation for mobile devices at the bottom of the screen
+- **BottomSheet**: Implements a sliding sheet from the bottom for mobile interfaces
+- **Chart**: Displays price charts for trading instruments
+- **ContractDetailsChart**: Shows charts specific to contract details
+- **Currency**: Handles currency display and formatting
+- **Duration**: Handles duration selection for trades
+- **DurationOptions**: Provides options for selecting trade durations
+- **EqualTrade**: Manages the equals option for applicable trade types
+- **HowToTrade**: Provides guidance on how to use the trading platform
+- **MarketInfo**: Displays market information and details
+- **MarketSelector**: Allows users to select different markets for trading
+- **NotificationProvider**: Manages system notifications
+- **ServerTime**: Synchronizes with server time for accurate trading
+- **Sidebar**: Provides navigation and content for the application sidebar
+- **SideNav**: Implements side navigation for desktop interfaces
+- **Stake**: Manages stake input for trades
+- **ThemeProvider**: Manages application theming
+- **TradeButton**: Handles trade execution actions
+- **TradeFields**: Provides input fields for trade parameters
+- **ui**: Contains shared atomic UI components (buttons, inputs, etc.)
+
+## Trade-Related Components
+
+The platform includes several components specifically designed to work with trade types. These components read their configuration from the trade type definitions in `src/config/tradeTypes.ts`.
+
+> **Note:** For details on trade type configuration, refer to the [Trade Types instruction](./1_trade_types.md) document.
+
+### Major Trade Components
+
+- **Stake Controller** (`src/components/Stake/StakeController.tsx`): Handles stake input for trade types
+- **Duration Controller** (`src/components/Duration/DurationController.tsx`): Handles duration selection for trade types
+- **Equal Trade Controller** (`src/components/EqualTrade/EqualTradeController.tsx`): Handles the equals option for trade types
+- **Trade Button** (`src/components/TradeButton/TradeButton.tsx`): Handles trade execution based on button configuration
+
+These components automatically adapt to the trade type configuration. When implementing a new trade type, you typically don't need to modify these components - just configure them properly in the trade type definition.
 
 ## Responsive Design
 The platform implements a responsive design approach:
