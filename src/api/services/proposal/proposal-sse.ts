@@ -20,12 +20,16 @@ export const subscribeToProposalStream = (
             stream: "proposal",
             ...Object.entries(params).reduce(
                 (acc, [key, value]) => {
-                    acc[key] = value.toString();
+                    // Only include defined values in the parameters
+                    if (value !== undefined) {
+                        acc[key] = value.toString();
+                    }
                     return acc;
                 },
                 {} as Record<string, string>
             ),
         },
+        customPath: "/v1/trading/proposal/stream", // Use the new API endpoint path
         onMessage: callbacks.onData,
         onError: callbacks.onError,
     });
