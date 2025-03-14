@@ -1,30 +1,38 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { OPEN_POSITIONS, CLOSED_POSITIONS, Position } from "../positionsSidebarStub";
-import { useFilteredPositions } from "../hooks/useFilteredPositions";
+import { useTradeStore } from "@/stores/tradeStore";
+import {
+    useOpenPositionsSubscription,
+    useClosedPositionsSubscription,
+} from "@/hooks/contract/usePositionsSubscription";
 import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { ContractSummary } from "@/screens/ContractDetailsPage/components";
+import { Briefcase } from "lucide-react";
 
 export const PositionsContent: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
     const navigate = useNavigate();
     const { setSidebar } = useMainLayoutStore();
-    const [allPositions, setAllPositions] = useState<Position[]>(OPEN_POSITIONS);
 
-    const { filteredPositions, selectedFilter, handleFilterSelect } = useFilteredPositions({
-        isOpenTab,
-        allPositions,
-        closedPositions: CLOSED_POSITIONS,
-    });
+    // Subscribe to positions data
+    useOpenPositionsSubscription();
+    useClosedPositionsSubscription();
 
-    useEffect(() => {
-        fetch("/api/positions")
-            .then((response) => response.json())
-            .then((data) => {
-                setAllPositions(data);
-            })
-            .catch((error) => console.error("Error fetching positions:", error));
-    }, []);
+    // Get positions from tradeStore
+    const { openPositions, closedPositions, positionsLoading, positionsError, totalProfitLoss } =
+        useTradeStore();
+
+    // Get current positions based on active tab
+    const currentPositions = isOpenTab ? openPositions : closedPositions;
+
+    // Filter logic (simplified for now)
+    const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+
+    const handleFilterSelect = (filter: string) => {
+        setSelectedFilter(filter);
+        // Filter implementation would go here
+    };
 
     return (
         <div className="flex flex-col h-full">
@@ -58,71 +66,76 @@ export const PositionsContent: FC = () => {
                         onFilterSelect={handleFilterSelect}
                     />
                 </div>
-                <div className="mt-4 space-y-4">
-                    {filteredPositions.map((position) => (
-                        <div
-                            key={position.id}
-                            className="p-3 rounded-lg shadow-sm cursor-pointer"
-                            onClick={() => {
-                                navigate(`/contract/${position.id}`);
-                                setSidebar(null);
-                            }}
-                        >
-                            <div className="flex justify-between text-sm font-medium">
-                                <div className="flex flex-col items-start">
-                                    <div className="flex items-center gap-2">
-                                        <img
-                                            src="/market icon.svg"
-                                            alt="Market Icon"
-                                            className="w-5 h-8 mb-1"
-                                        />
-                                    </div>
-                                    <span className="mb-[5] font-light text-theme">
-                                        {position.type}
-                                    </span>
-                                    <span className="text-s font-light text-theme-muted mb-4">
-                                        {position.market}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div className="flex flex-col items-end">
-                                        {isOpenTab ? (
-                                            <span className="text-theme-muted w-35 text-xs flex items-center bg-theme-secondary px-2 py-1 rounded-md border border-transparent hover:border-theme mb-3">
-                                                <span className="mr-2">⏳</span> {position.ticks}
-                                            </span>
-                                        ) : (
-                                            <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium mb-3">
-                                                Closed
-                                            </span>
-                                        )}
-                                        <span className="text-s font-light text-theme-muted mb-[2]">
-                                            {position.stake}
-                                        </span>
-                                        <span
-                                            className={`text-sm ${
-                                                position.profit.startsWith("+")
-                                                    ? "text-[#008832]"
-                                                    : "text-red-500"
-                                            }`}
-                                        >
-                                            {position.profit}
-                                        </span>
-                                    </div>
-                                </div>
+
+                {/* Loading State */}
+                {positionsLoading && (
+                    <div className="flex items-center justify-center mt-8">
+                        <p className="text-theme">Loading positions...</p>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {positionsError && (
+                    <div className="flex items-center justify-center mt-8">
+                        <p className="text-red-500">
+                            Error loading positions: {positionsError.message}
+                        </p>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!positionsLoading && !positionsError && currentPositions.length === 0 && (
+                    <div className="flex items-center justify-center min-h-[35rem]">
+                        <div className="text-center">
+                            <div className="text-gray-400 mb-4 flex justify-center">
+                                <Briefcase size={64} strokeWidth={1.5} />
                             </div>
-                            {isOpenTab && (
-                                <button className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8]">
-                                    Close {position.stake}
-                                </button>
-                            )}
+                            <h3 className="text-lg font-semibold text-theme-muted mb-2">
+                                No {isOpenTab ? "open" : "closed"} positions
+                            </h3>
+                            <p className="text-theme-muted text-sm">
+                                Your {isOpenTab ? "open" : "closed"} positions will appear here.
+                            </p>
                         </div>
-                    ))}
+                    </div>
+                )}
+
+                {/* Positions List */}
+                {!positionsLoading && !positionsError && currentPositions.length > 0 && (
+                    <div className="mt-4 space-y-4">
+                        {currentPositions.map((position) => (
+                            <div
+                                key={position.contract_id}
+                                className="p-3 rounded-lg shadow-sm cursor-pointer"
+                                onClick={() => {
+                                    navigate(`/contract/${position.contract_id}`);
+                                    setSidebar(null);
+                                }}
+                            >
+                                <ContractSummary
+                                    contract={position}
+                                    variant="desktop"
+                                    showCloseButton={isOpenTab && position.details.is_valid_to_sell}
+                                    onClose={(id) => console.log("Close action triggered for", id)}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Total Profit/Loss - Only show when in open tab AND there are open positions */}
+            {isOpenTab && openPositions.length > 0 && (
+                <div className="p-4 font-bold border-t border-theme flex justify-between mt-auto">
+                    <span className="text-theme">Total profit/loss: </span>
+                    <span
+                        className={`${parseFloat(totalProfitLoss) >= 0 ? "text-[#008832]" : "text-red-500"}`}
+                    >
+                        {parseFloat(totalProfitLoss) >= 0 ? "+" : ""}
+                        {totalProfitLoss} USD
+                    </span>
                 </div>
-            </div>
-            <div className="p-4 font-bold border-t border-theme flex justify-between mt-auto">
-                <span className="text-theme">Total profit/loss: </span>
-                <span className="text-[#008832]">+2.00 USD</span>
-            </div>
+            )}
         </div>
     );
 };
