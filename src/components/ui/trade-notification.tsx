@@ -17,7 +17,7 @@ export const TradeNotification: React.FC<TradeNotificationProps> = ({
     return (
         <div className="flex items-start gap-4 bg-black text-white p-4 rounded-lg w-[320px]">
             <div className="rounded-full bg-primary/10 p-2">
-                <Timer className="w-6 h-6 text-color-solid-glacier-700" />
+                <Timer className="w-6 h-6 text-color-brand-700" />
             </div>
             <div className="flex-1">
                 <div className="font-semibold text-base">Stake: {stake}</div>

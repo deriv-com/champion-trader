@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart";
+import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { useOrientationStore } from "@/stores/orientationStore";
 
@@ -22,12 +22,12 @@ const MobileContractDetailsPage: React.FC = () => {
     }, [setHeaderVisible, setBottomNavVisible]);
 
     return (
-        <div className="w-full bg-gray-100 h-screen flex flex-col">
+        <div className="w-full bg-theme-secondary h-screen flex flex-col">
             <Header />
             <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
                 <div className="p-2 pb-[72px]">
                     <ContractSummary />
-                    <div className="min-h-[400px] mt-4 bg-white rounded-lg border-b border-gray-300">
+                    <div className="min-h-[400px] mt-4">
                         <ContractDetailsChart />
                     </div>
                     <OrderDetails />
@@ -39,7 +39,7 @@ const MobileContractDetailsPage: React.FC = () => {
                     <div className="mx-2 my-2 text-center">
                         <button
                             onClick={() => navigate(-1)}
-                            className="text-white bg-black max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
                         >
                             Close
                         </button>

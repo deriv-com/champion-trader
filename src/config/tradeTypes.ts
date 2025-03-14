@@ -50,7 +50,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Rise",
                 label: "Payout",
-                className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+                className: "bg-color-rise-700 hover:bg-color-rise-600",
                 position: "right",
                 actionName: "buy_rise",
                 contractType: "CALL",
@@ -58,7 +58,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Fall",
                 label: "Payout",
-                className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600",
+                className: "bg-color-fall-700 hover:bg-color-fall-600",
                 position: "left",
                 actionName: "buy_fall",
                 contractType: "PUT",
@@ -86,7 +86,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Higher",
                 label: "Payout",
-                className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+                className: "bg-color-rise-700 hover:bg-color-rise-600",
                 position: "right",
                 actionName: "buy_higher",
                 contractType: "CALL",
@@ -94,7 +94,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Lower",
                 label: "Payout",
-                className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600",
+                className: "bg-color-fall-700 hover:bg-color-fall-600",
                 position: "left",
                 actionName: "buy_lower",
                 contractType: "PUT",
@@ -122,7 +122,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Touch",
                 label: "Payout",
-                className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+                className: "bg-color-rise-700 hover:bg-color-rise-600",
                 position: "right",
                 actionName: "buy_touch",
                 contractType: "TOUCH",
@@ -130,7 +130,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "No Touch",
                 label: "Payout",
-                className: "bg-color-solid-cherry-700 hover:bg-color-solid-cherry-600",
+                className: "bg-color-fall-700 hover:bg-color-fall-600",
                 position: "left",
                 actionName: "buy_no_touch",
                 contractType: "NOTOUCH",
@@ -158,7 +158,7 @@ export const tradeTypeConfigs: Record<string, TradeTypeConfig> = {
             {
                 title: "Buy",
                 label: "Payout",
-                className: "bg-color-solid-emerald-700 hover:bg-color-solid-emerald-600",
+                className: "bg-color-rise-700 hover:bg-color-rise-600",
                 position: "right",
                 actionName: "buy_multiplier",
                 contractType: "MULTUP",

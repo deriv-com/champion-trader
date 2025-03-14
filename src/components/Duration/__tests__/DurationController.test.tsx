@@ -4,7 +4,7 @@ import { DurationController } from "../DurationController";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
-import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import { ProductConfigResponse } from "@/api/services/product/types";
 
 // Mock the store modules themselves, not the hooks
 jest.mock("@/stores/tradeStore", () => ({

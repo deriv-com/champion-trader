@@ -66,14 +66,14 @@ const PositionsPage: React.FC = () => {
     }, [swipedCard]);
 
     return (
-        <div className="flex flex-col flex-1 h-full bg-white">
+        <div className="flex flex-col flex-1 h-full bg-theme">
             {/* Tabs */}
-            <div className="flex sticky top-0 z-10 px-4 bg-white border-b border-border">
+            <div className="flex sticky top-0 z-10 px-4 bg-theme border-b border-theme">
                 <button
                     className={`flex-1 py-3 border-b-2 transition-colors ${
                         activeTab === "open"
-                            ? "border-primary text-primary"
-                            : "border-transparent text-muted-foreground"
+                            ? "border-theme-text text-theme"
+                            : "border-transparent text-theme-muted"
                     }`}
                     onClick={() => setActiveTab("open")}
                 >
@@ -82,8 +82,8 @@ const PositionsPage: React.FC = () => {
                 <button
                     className={`flex-1 py-3 border-b-2 transition-colors ${
                         activeTab === "closed"
-                            ? "border-primary text-primary"
-                            : "border-transparent text-muted-foreground"
+                            ? "border-theme-text text-theme"
+                            : "border-transparent text-theme-muted"
                     }`}
                     onClick={() => setActiveTab("closed")}
                 >
@@ -92,7 +92,7 @@ const PositionsPage: React.FC = () => {
             </div>
 
             {/* Positions List */}
-            <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-gray-100">
+            <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-theme-secondary">
                 {positions
                     .filter((position) =>
                         activeTab === "open" ? position.isOpen : !position.isOpen

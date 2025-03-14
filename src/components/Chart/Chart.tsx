@@ -1,31 +1,25 @@
 import React, { useRef, useMemo } from "react";
 import { SmartChart } from "./SmartChart";
 import { useChartData } from "@/hooks/useChartData";
-import { generateHistoricalCandles, generateHistoricalTicks } from "@/utils/generateHistoricalData";
-import { transformCandleData, transformTickData } from "@/utils/transformChartData";
+import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
+import { transformTickData } from "@/utils/transformChartData";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 export const TradeChart: React.FC = () => {
     const ref = useRef<{
         hasPredictionIndicators(): void;
         triggerPopup(arg: () => void): void;
     }>(null);
+    const { theme } = useMainLayoutStore();
 
-    const historicalData1 = useMemo(() => {
-        const data = generateHistoricalCandles(100, 60);
-        return transformCandleData(data);
-    }, []);
+    const settings = {
+        theme: theme,
+    };
 
     const historicalData = useMemo(() => {
         const data = generateHistoricalTicks("1HZ100V", 100);
         return transformTickData(data);
     }, []);
-
-    const streamingData1 = useChartData({
-        useMockData: true,
-        instrumentId: "1HZ100V",
-        type: "candle",
-        durationInSeconds: 60,
-    });
 
     const streamingData = useChartData({
         useMockData: true,
@@ -35,7 +29,7 @@ export const TradeChart: React.FC = () => {
     });
 
     return (
-        <div style={{ display: "flex", height: "100%", position: "relative" }}>
+        <div className="flex h-full relative bg-theme">
             <SmartChart
                 ref={ref}
                 id="trade-chart"
@@ -71,6 +65,7 @@ export const TradeChart: React.FC = () => {
                 chartType="line" // "line", "candles", "hollow"
                 ticksHistory={historicalData}
                 streamingData={streamingData}
+                settings={settings}
             />
         </div>
     );

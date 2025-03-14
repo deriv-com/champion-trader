@@ -7,7 +7,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
     return (
-        <footer className={`border-t ${className}`}>
+        <footer className={`border-t border-theme ${className}`}>
             <BottomNav />
         </footer>
     );

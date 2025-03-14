@@ -10,7 +10,7 @@ import { parseStakeAmount } from "@/utils/stake";
 import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { validateStake } from "./utils/validation";
 import { parseDuration, formatDuration } from "@/utils/duration";
-import { createSSEConnection } from "@/services/api/sse/createSSEConnection";
+import { createSSEConnection } from "@/api/base/sse";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 import { useOrientationStore } from "@/stores/orientationStore";
 

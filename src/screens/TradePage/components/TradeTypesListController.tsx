@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getProducts } from "@/services/api/rest/product/service";
+import { getProducts } from "@/api/services/product/product-rest";
 import { TabList, Tab } from "@/components/ui/tab-list";
 import { useTradeStore } from "@/stores/tradeStore";
 import { TradeType } from "@/config/tradeTypes";

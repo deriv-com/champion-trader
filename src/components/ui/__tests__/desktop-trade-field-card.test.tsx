@@ -23,7 +23,7 @@ describe("DesktopTradeFieldCard", () => {
         expect(card).toHaveClass(
             "rounded-lg",
             "p-2",
-            "bg-[rgba(246,247,248,1)]",
+            "bg-theme-secondary",
             "border",
             "border-transparent"
         );
@@ -38,7 +38,7 @@ describe("DesktopTradeFieldCard", () => {
 
         const card = container.firstChild as HTMLElement;
         expect(card).toHaveClass(
-            "bg-[rgba(246,247,248,1)] rounded-lg p-2 border border-transparent custom-class"
+            "bg-theme-secondary rounded-lg p-2 border border-transparent custom-class"
         );
     });
 });

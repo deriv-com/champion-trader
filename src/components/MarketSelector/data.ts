@@ -1,4 +1,4 @@
-import { MarketGroup } from "@/services/api/rest/types";
+import { MarketGroup } from "@/api/services/instrument/types";
 
 export interface Tab {
     id: string;

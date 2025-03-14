@@ -42,7 +42,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const shouldEnableScrolling = isLandscape && window.innerHeight < 500;
 
     return (
-        <div className="min-h-[100dvh] h-[100dvh] flex flex-col">
+        <div className="min-h-[100dvh] h-[100dvh] flex flex-col bg-theme text-theme">
             {isResponsiveHeaderVisible && (
                 <ResponsiveHeader
                     className={`${shouldEnableScrolling ? "" : "sticky top-0"} z-50 w-full`}

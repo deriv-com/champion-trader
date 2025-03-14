@@ -139,7 +139,7 @@ export const BottomSheet = () => {
           max-w-[800px]
           w-full
           mx-auto
-          bg-background
+          bg-theme
           rounded-t-[16px]
           animate-in fade-in-0 slide-in-from-bottom
           duration-300

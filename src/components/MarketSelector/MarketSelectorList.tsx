@@ -43,7 +43,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 newFavorites.add(symbol);
                 toast({
                     content: (
-                        <div className="flex items-center gap-3 bg-black text-white p-4 rounded-lg">
+                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
                             <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
                             <span className="text-base">Added to favourites</span>
                         </div>
@@ -56,7 +56,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 newFavorites.delete(symbol);
                 toast({
                     content: (
-                        <div className="flex items-center gap-3 bg-black text-white p-4 rounded-lg">
+                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
                             <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
                             <span className="text-base">Removed from favourites</span>
                         </div>
@@ -122,12 +122,12 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     );
 
     return (
-        <div className="flex flex-col h-full bg-background">
+        <div className="flex flex-col h-full bg-theme-bg">
             {/* Header with centered title and close button */}
             {!isMobile && (
                 <div className="flex items-center justify-between px-6 py-8">
                     <div className="flex-1" />
-                    <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-black">
+                    <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-theme">
                         Markets
                     </h1>
                     <div className="flex-1 flex justify-end">
@@ -136,7 +136,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                 setBottomSheet(false);
                                 setOverlaySidebar(false);
                             }}
-                            className="text-text-primary"
+                            className="text-theme-muted hover:text-theme"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -146,19 +146,19 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             {/* Search Bar */}
             <div className="px-6 pb-2">
-                <div className="flex items-center h-8 px-2 gap-2 bg-black/[0.04] rounded-lg">
-                    <Search className="w-5 h-5 text-black/[0.24]" />
+                <div className="flex items-center h-8 px-2 gap-2 bg-theme-secondary rounded-lg">
+                    <Search className="w-5 h-5 text-theme-muted" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search markets on Rise/Fall"
-                        className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-black/[0.72] placeholder:text-black/[0.24] overflow-hidden text-ellipsis"
+                        className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-theme placeholder:text-theme-muted overflow-hidden text-ellipsis"
                     />
                     {searchQuery && (
                         <button
                             onClick={() => setSearchQuery("")}
-                            className="text-black/[0.72] hover:text-black"
+                            className="text-theme-muted hover:text-theme"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -175,17 +175,17 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             />
 
             {/* Market List */}
-            <div className="flex-1 overflow-y-auto px-6">
+            <div className="flex-1 overflow-y-auto px-6 scrollbar-thin">
                 {/* Market Groups */}
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
                         <div key={marketName} className="mb-6">
-                            <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-text-primary mb-2">
+                            <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-theme mb-2">
                                 {marketTitles[marketName]}
                             </h2>
                             <div>
                                 {marketName === "synthetic_index" && (
-                                    <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-text-secondary mb-3">
+                                    <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-theme-muted mb-3">
                                         Continuous Indices
                                     </h3>
                                 )}
@@ -196,8 +196,8 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                             market.isClosed
                                                 ? "cursor-not-allowed"
                                                 : selectedMarket?.symbol === market.symbol
-                                                  ? "bg-black text-white"
-                                                  : "cursor-pointer hover:bg-black/[0.08] active:bg-black/[0.16]"
+                                                  ? "bg-theme-text text-theme-bg"
+                                                  : "cursor-pointer hover:bg-theme-hover active:bg-theme-active"
                                         }`}
                                         onClick={() =>
                                             !market.isClosed && handleMarketSelect(market)
@@ -228,8 +228,8 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                   favorites.has(market.symbol)
                                       ? "text-yellow-400"
                                       : selectedMarket?.symbol === market.symbol
-                                        ? "text-white"
-                                        : "text-text-tertiary"
+                                        ? "text-theme-bg"
+                                        : "text-theme-muted"
                               }
                             `}
                                         >
@@ -238,7 +238,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                     favorites.has(market.symbol)
                                                         ? "fill-yellow-400"
                                                         : selectedMarket?.symbol === market.symbol
-                                                          ? "stroke-white"
+                                                          ? "stroke-theme-bg"
                                                           : ""
                                                 }`}
                                             />
@@ -251,7 +251,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 </div>
 
                 {searchQuery && filteredInstruments.length === 0 && (
-                    <div className="p-4 text-center text-text-secondary font-ibm-plex-sans text-sm">
+                    <div className="p-4 text-center text-theme-muted font-ibm-plex-sans text-sm">
                         No markets found matching "{searchQuery}"
                     </div>
                 )}

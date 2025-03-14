@@ -8,11 +8,10 @@ import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
 // import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
-import { WebSocketError } from "@/services/api/websocket/types";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
-import { useProductConfig } from "@/hooks/useProductConfig";
+import { useProductConfig } from "@/hooks/product/useProductConfig";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -39,7 +38,7 @@ interface TradeFormControllerProps {
 
 interface ButtonState {
     loading: boolean;
-    error: Event | WebSocketError | null;
+    error: Event | null;
     payout: number;
     reconnecting?: boolean;
 }
@@ -72,8 +71,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     // Fetch product config when trade_type changes
     useEffect(() => {
         fetchProductConfig(trade_type, instrument);
-    }, [trade_type, instrument, fetchProductConfig]);
-    // Commented out API calls for now
+    }, [trade_type, instrument]);
+
     // useEffect(() => {
     //   // Create SSE connections for each button's contract type
     //   const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(
@@ -187,7 +186,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         <div
             id="trade-section"
             className={`${
-                isLandscape ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2" : ""
+                isLandscape
+                    ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2"
+                    : "bg-theme"
             }`}
         >
             {isLandscape ? (
@@ -195,7 +196,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     {isLoggedIn && <AccountSwitcher />}
                     {isLoggedIn ? (
                         <button
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600"
+                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
                             // onClick={}
                         >
                             Deposit
@@ -203,7 +204,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     ) : (
                         <a
                             href="/login"
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-solid-glacier-700 hover:bg-color-solid-glacier-600"
+                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
                         >
                             Log in
                         </a>
@@ -212,7 +213,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             ) : (
                 <></>
             )}
-            <div className={isLandscape ? "pb-2" : "pt-1 px-4"} id="how-to-trade">
+            <div className={isLandscape ? "pb-2" : "px-4"} id="how-to-trade">
                 <HowToTrade />
             </div>
             {isLandscape ? (
@@ -313,7 +314,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 // Mobile layout
                 <>
                     <div id="trade-fields" className="flex flex-col">
-                        <div className="p-4">
+                        <div className="px-4 py-3">
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
                                     <Suspense fallback={<div>Loading duration field...</div>}>

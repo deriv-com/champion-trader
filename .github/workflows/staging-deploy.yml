@@ -26,9 +26,6 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          RSBUILD_WS_URL: ${{ secrets.RSBUILD_WS_URL }}
-          RSBUILD_WS_PUBLIC_PATH: ${{ secrets.RSBUILD_WS_PUBLIC_PATH }}
-          RSBUILD_WS_PROTECTED_PATH: ${{ secrets.RSBUILD_WS_PROTECTED_PATH }}
           RSBUILD_REST_URL: ${{ secrets.RSBUILD_REST_URL }}
 
       - name: Publish to Staging

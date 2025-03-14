@@ -36,7 +36,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
             <div className={`${className} relative`}>
                 <div
                     data-testid="stake-field-skeleton"
-                    className="h-[66px] bg-gray-200 rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent"
+                    className="h-[66px] bg-theme-secondary rounded relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent"
                 />
             </div>
         );
@@ -48,7 +48,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                 <div className="flex flex-col">
                     <div
                         className={cn(
-                            error ? "bg-[rgba(230,25,14,0.08)]" : "bg-transparent",
+                            error ? "bg-[rgba(230,25,14,0.08)]" : "bg-theme-secondary",
                             "rounded-lg"
                         )}
                     >
@@ -72,7 +72,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
     }
 
     return (
-        <div className="bg-white rounded-lg">
+        <div className="bg-theme-bg rounded-lg">
             <DesktopTradeFieldCard isSelected={isStakeSelected} error={error}>
                 <div
                     className={`flex flex-col ${className} ${!productConfig ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -87,7 +87,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                 >
                     <div ref={containerRef} className="flex rounded-lg h-[48px]">
                         <div className="flex flex-col flex-1 justify-between">
-                            <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-primary">
+                            <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-theme-muted">
                                 Stake ({currency})
                             </span>
                             <div className="relative">
@@ -98,7 +98,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                                         value={`${localValue}`}
                                         onChange={handleChange}
                                         onFocus={() => handleSelect(true)}
-                                        className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-gray-900"
+                                        className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-theme"
                                         aria-label="Stake amount"
                                     />
                                 ) : (
@@ -112,7 +112,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                             <div className="flex items-center">
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
                                     <button
-                                        className="flex items-center justify-center text-2xl"
+                                        className="flex items-center justify-center text-2xl text-theme"
                                         onClick={handleDecrement}
                                         aria-label="Decrease stake"
                                     >
@@ -121,7 +121,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
                                 </div>
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
                                     <button
-                                        className="flex items-center justify-center text-2xl"
+                                        className="flex items-center justify-center text-2xl text-theme"
                                         onClick={handleIncrement}
                                         aria-label="Increase stake"
                                     >

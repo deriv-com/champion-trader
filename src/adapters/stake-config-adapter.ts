@@ -1,4 +1,4 @@
-import { ProductConfigResponse } from "@/services/api/rest/product-config/types";
+import { ProductConfigResponse } from "@/api/services/product/types";
 
 export interface StakeConfig {
     min: number;

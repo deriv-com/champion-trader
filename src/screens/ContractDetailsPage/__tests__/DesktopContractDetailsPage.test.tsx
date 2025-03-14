@@ -92,15 +92,17 @@ describe("DesktopContractDetailsPage", () => {
 
         // Check main container
         const mainContainer = screen.getByTestId("desktop-contract-details");
-        expect(mainContainer).toHaveClass("flex flex-col bg-gray-50 w-full");
+        expect(mainContainer).toHaveClass("flex flex-col bg-theme-secondary w-full");
 
         // Check left panel
         const leftPanel = screen.getByTestId("left-panel");
-        expect(leftPanel).toHaveClass("w-[320px] bg-white flex flex-col");
+        expect(leftPanel).toHaveClass("w-[320px] flex flex-col");
 
         // Check content area
         const contentArea = screen.getByTestId("content-area");
-        expect(contentArea).toHaveClass("flex-1 overflow-y-auto pb-20 space-y-4 bg-gray-50");
+        expect(contentArea).toHaveClass(
+            "flex-1 overflow-y-auto pb-20 space-y-4 bg-theme-secondary"
+        );
 
         // Check close button container
         const closeButtonContainer = screen.getByTestId("close-button-container");

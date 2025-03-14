@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollSelect } from "@/components/ui/scroll-select";
-import type { DurationRangesResponse } from "@/services/api/rest/duration/types";
+import type { DurationRangesResponse } from "@/api/services/product/types";
 
 interface DurationValueListProps {
     selectedValue: number;
