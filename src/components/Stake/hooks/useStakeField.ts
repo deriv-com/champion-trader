@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useClientStore } from "@/stores/clientStore";
 import { incrementStake, decrementStake, parseStakeAmount } from "@/utils/stake";
-import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTooltipStore } from "@/stores/tooltipStore";
 import { validateStake } from "../utils/validation";
@@ -34,10 +33,15 @@ export const useStakeField = () => {
         if (!productConfig) return false;
 
         const amount = parseStakeAmount(value || "0");
+
+        // Use values directly from productConfig instead of getStakeConfig()
+        const minStake = parseFloat(productConfig.data.validations.stake.min);
+        const maxStake = parseFloat(productConfig.data.validations.stake.max);
+
         const validation = validateStake({
             amount,
-            minStake: getStakeConfig().min,
-            maxStake: getStakeConfig().max,
+            minStake,
+            maxStake,
             currency,
         });
 
