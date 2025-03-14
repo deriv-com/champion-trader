@@ -6,7 +6,7 @@ import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
-// import { useTradeActions } from "@/hooks/useTradeActions";
+import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
@@ -51,7 +51,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
-    // const tradeActions = useTradeActions()
+    const tradeActions = useTradeActions();
     const config = tradeTypeConfigs[trade_type];
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
@@ -72,85 +72,6 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     useEffect(() => {
         fetchProductConfig(trade_type, instrument);
     }, [trade_type, instrument]);
-
-    // useEffect(() => {
-    //   // Create SSE connections for each button's contract type
-    //   const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(
-    //     (button) => {
-    //       return createSSEConnection({
-    //         params: {
-    //           action: "contract_price",
-    //           duration: formatDuration(Number(apiDurationValue), apiDurationType),
-    //           trade_type: button.contractType,
-    //           instrument: "R_100",
-    //           currency: currency,
-    //           payout: stake,
-    //           strike: stake,
-    //         },
-    //         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    //         onMessage: (priceData) => {
-    //           // Update button state for this specific button
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               loading: false,
-    //               error: null,
-    //               payout: Number(priceData.price),
-    //               reconnecting: false,
-    //             },
-    //           }))
-
-    //           // Update payouts in store
-    //           const payoutValue = Number(priceData.price)
-
-    //           // Create a map of button action names to their payout values
-    //           const payoutValues = Object.keys(buttonStates).reduce(
-    //             (acc, key) => {
-    //               acc[key] =
-    //                 key === button.actionName
-    //                   ? payoutValue
-    //                   : buttonStates[key]?.payout || 0
-    //               return acc
-    //             },
-    //             {} as Record<string, number>
-    //           )
-
-    //           setPayouts({
-    //             max: 50000,
-    //             values: payoutValues,
-    //           })
-    //         },
-    //         onError: (error) => {
-    //           // Update only this button's state on error
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               ...prev[button.actionName],
-    //               loading: false,
-    //               error,
-    //               reconnecting: true,
-    //             },
-    //           }))
-    //         },
-    //         onOpen: () => {
-    //           // Reset error and reconnecting state on successful connection
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               ...prev[button.actionName],
-    //               error: null,
-    //               reconnecting: false,
-    //             },
-    //           }))
-    //         },
-    //       })
-    //     }
-    //   )
-
-    //   return () => {
-    //     cleanupFunctions.forEach((cleanup) => cleanup())
-    //   }
-    // }, [duration, stake, currency, token])
 
     // Reset loading states when duration or trade type changes
     useEffect(() => {
@@ -272,30 +193,37 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
                                     error={buttonStates[button.actionName]?.error}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (!isLoggedIn) return;
-                                        // Comment out actual API call but keep the success flow
-                                        // await tradeActions[button.actionName]()
 
-                                        // Open positions sidebar only in desktop view
-                                        if (isLandscape) {
-                                            setSidebar("positions");
+                                        try {
+                                            // Call the API
+                                            await tradeActions[button.actionName]();
+
+                                            // Open positions sidebar only in desktop view
+                                            if (isLandscape) {
+                                                setSidebar("positions");
+                                            }
+
+                                            // Show trade notification
+                                            toast({
+                                                content: (
+                                                    <TradeNotification
+                                                        stake={`${stake} ${currency}`}
+                                                        market={instrument}
+                                                        type={button.title}
+                                                        onClose={hideToast}
+                                                    />
+                                                ),
+                                                variant: "default",
+                                                duration: 3000,
+                                                position: isLandscape
+                                                    ? "bottom-left"
+                                                    : "top-center",
+                                            });
+                                        } catch (error) {
+                                            // Error is already handled in the trade action
                                         }
-
-                                        // Show trade notification
-                                        toast({
-                                            content: (
-                                                <TradeNotification
-                                                    stake={`${10.0} ${currency}`}
-                                                    market="Volatility 75 Index"
-                                                    type={button.title}
-                                                    onClose={hideToast}
-                                                />
-                                            ),
-                                            variant: "default",
-                                            duration: 3000,
-                                            position: isLandscape ? "bottom-left" : "top-center",
-                                        });
                                     }}
                                 />
                             </Suspense>
@@ -360,30 +288,37 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
                                     error={buttonStates[button.actionName]?.error}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (!isLoggedIn) return;
-                                        // Comment out actual API call but keep the success flow
-                                        // await tradeActions[button.actionName]()
 
-                                        // Open positions sidebar only in desktop view
-                                        if (isLandscape) {
-                                            setSidebar("positions");
+                                        try {
+                                            // Call the API
+                                            await tradeActions[button.actionName]();
+
+                                            // Open positions sidebar only in desktop view
+                                            if (isLandscape) {
+                                                setSidebar("positions");
+                                            }
+
+                                            // Show trade notification
+                                            toast({
+                                                content: (
+                                                    <TradeNotification
+                                                        stake={`${stake} ${currency}`}
+                                                        market={instrument}
+                                                        type={button.title}
+                                                        onClose={hideToast}
+                                                    />
+                                                ),
+                                                variant: "default",
+                                                duration: 3000,
+                                                position: isLandscape
+                                                    ? "bottom-left"
+                                                    : "top-center",
+                                            });
+                                        } catch (error) {
+                                            // Error is already handled in the trade action
                                         }
-
-                                        // Show trade notification
-                                        toast({
-                                            content: (
-                                                <TradeNotification
-                                                    stake={`${10.0} ${currency}`}
-                                                    market="Volatility 75 Index"
-                                                    type={button.title}
-                                                    onClose={hideToast}
-                                                />
-                                            ),
-                                            variant: "default",
-                                            duration: 3000,
-                                            position: isLandscape ? "bottom-left" : "top-center",
-                                        });
                                     }}
                                 />
                             </Suspense>
