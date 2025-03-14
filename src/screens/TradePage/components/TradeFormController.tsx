@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState, useMemo } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
@@ -6,14 +6,12 @@ import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
-// import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
 import { useProductConfig } from "@/hooks/product/useProductConfig";
 import { useProposalStream } from "@/hooks/proposal/useProposal";
-import { ProposalRequest } from "@/api/services/proposal/types";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -47,50 +45,19 @@ interface ButtonState {
 
 type ButtonStates = Record<string, ButtonState>;
 
-// Helper function to parse duration string into value and unit
-const parseDuration = (durationString: string): [number, string] => {
-    const match = durationString.match(/(\d+)\s+(\w+)/);
-    if (match) {
-        const value = parseInt(match[1], 10);
-        const unit = match[2].toLowerCase();
-        return [value, unit];
-    }
-    return [5, "minutes"]; // Default fallback
-};
-
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type, instrument, productConfig, duration, stake, allowEquals } = useTradeStore();
-    const { fetchProductConfig } = useProductConfig();
+    const { trade_type, instrument, productConfig } = useTradeStore();
+    const { refetch } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
-    const { currency, isLoggedIn, account_uuid } = useClientStore();
+    const { currency, isLoggedIn } = useClientStore();
     // const tradeActions = useTradeActions()
     const config = tradeTypeConfigs[trade_type];
 
     // Parse duration into value and unit
-    const [durationValue, durationUnit] = parseDuration(duration);
-
-    // Memoize the proposal parameters to prevent unnecessary re-subscriptions
-    const proposalParams = useMemo(
-        () => ({
-            product_id: trade_type,
-            instrument_id: instrument,
-            duration: durationValue,
-            duration_unit: durationUnit,
-            allow_equals: allowEquals,
-            stake: stake,
-            // Only include account_uuid when it's not null
-            ...(account_uuid ? { account_uuid } : {}),
-        }),
-        [trade_type, instrument, durationValue, durationUnit, allowEquals, stake, account_uuid]
-    );
 
     // Subscribe to proposal stream at the top level of the component
-    const { data: proposalData, error: proposalError } = useProposalStream(
-        // Type assertion to satisfy TypeScript
-        proposalParams as ProposalRequest,
-        { enabled: isLoggedIn && !!account_uuid }
-    );
+    const { data: proposalData, error: proposalError } = useProposalStream();
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -108,89 +75,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
     // Fetch product config when trade_type changes
     useEffect(() => {
-        fetchProductConfig(trade_type, instrument);
+        refetch();
     }, [trade_type, instrument]);
 
-    // useEffect(() => {
-    //   // Create SSE connections for each button's contract type
-    //   const cleanupFunctions = tradeTypeConfigs[trade_type].buttons.map(
-    //     (button) => {
-    //       return createSSEConnection({
-    //         params: {
-    //           action: "contract_price",
-    //           duration: formatDuration(Number(apiDurationValue), apiDurationType),
-    //           trade_type: button.contractType,
-    //           instrument: "R_100",
-    //           currency: currency,
-    //           payout: stake,
-    //           strike: stake,
-    //         },
-    //         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    //         onMessage: (priceData) => {
-    //           // Update button state for this specific button
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               loading: false,
-    //               error: null,
-    //               payout: Number(priceData.price),
-    //               reconnecting: false,
-    //             },
-    //           }))
-
-    //           // Update payouts in store
-    //           const payoutValue = Number(priceData.price)
-
-    //           // Create a map of button action names to their payout values
-    //           const payoutValues = Object.keys(buttonStates).reduce(
-    //             (acc, key) => {
-    //               acc[key] =
-    //                 key === button.actionName
-    //                   ? payoutValue
-    //                   : buttonStates[key]?.payout || 0
-    //               return acc
-    //             },
-    //             {} as Record<string, number>
-    //           )
-
-    //           setPayouts({
-    //             max: 50000,
-    //             values: payoutValues,
-    //           })
-    //         },
-    //         onError: (error) => {
-    //           // Update only this button's state on error
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               ...prev[button.actionName],
-    //               loading: false,
-    //               error,
-    //               reconnecting: true,
-    //             },
-    //           }))
-    //         },
-    //         onOpen: () => {
-    //           // Reset error and reconnecting state on successful connection
-    //           setButtonStates((prev) => ({
-    //             ...prev,
-    //             [button.actionName]: {
-    //               ...prev[button.actionName],
-    //               error: null,
-    //               reconnecting: false,
-    //             },
-    //           }))
-    //         },
-    //       })
-    //     }
-    //   )
-
-    //   return () => {
-    //     cleanupFunctions.forEach((cleanup) => cleanup())
-    //   }
-    // }, [duration, stake, currency, token])
-
-    // Reset loading states when duration or trade type changes
     useEffect(() => {
         setButtonStates((prevStates) => {
             const initialStates: ButtonStates = {};
@@ -224,7 +111,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
     // Process proposal data and update button states
     useEffect(() => {
-        if (!isLoggedIn || !account_uuid) return;
+        if (!productConfig?.data) return;
 
         // Set initial loading state for buttons when parameters change
         if (!proposalData && !proposalError) {
@@ -288,7 +175,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 return errorButtonStates;
             });
         }
-    }, [proposalData, proposalError, trade_type, isLoggedIn, account_uuid, config.buttons]);
+    }, [proposalData, proposalError, trade_type, config.buttons, productConfig]);
 
     return (
         <div

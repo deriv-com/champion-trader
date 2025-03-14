@@ -8,7 +8,7 @@ export interface ProposalRequest {
     duration_unit: string; // e.g., "seconds"
     allow_equals?: boolean; // e.g., false
     stake: string; // e.g., "2.00"
-    account_uuid: string; // e.g., "9f8c1b23-4e2a-47ad-92c2-b1e5d2a7e65f"
+    account_uuid?: string; // e.g., "9f8c1b23-4e2a-47ad-92c2-b1e5d2a7e65f"
 }
 
 /**

@@ -1,9 +1,10 @@
-import { useCallback } from "react";
-import { useMutation } from "@/api/hooks";
+import { useCallback, useEffect, useRef } from "react";
+import { useQuery } from "@/api/hooks";
 import { useTradeStore } from "@/stores/tradeStore";
+import { useClientStore } from "@/stores/clientStore";
 import { useToastStore } from "@/stores/toastStore";
 import { getProductConfig } from "@/api/services/product/product-rest";
-import { ProductConfigResponse } from "@/api/services/product/types";
+import { ProductConfigResponse, ProductConfigRequest } from "@/api/services/product/types";
 import { updateDurationRanges } from "@/utils/duration";
 import { adaptDefaultDuration } from "@/adapters/duration-config-adapter";
 import {
@@ -12,55 +13,28 @@ import {
     adaptDefaultStake,
 } from "@/adapters/stake-config-adapter";
 
-// Default configuration to use as fallback
-const DEFAULT_CONFIG: ProductConfigResponse = {
-    data: {
-        defaults: {
-            product_id: "rise_fall",
-            duration: 60,
-            duration_unit: "seconds",
-            allow_equals: true,
-            stake: 10,
-            variants: ["rise", "fall"],
-        },
-        validations: {
-            durations: {
-                supported_units: ["ticks", "seconds", "days"],
-                ticks: { min: 1, max: 10 },
-                seconds: { min: 15, max: 86400 },
-                days: { min: 1, max: 365 },
-            },
-            stake: {
-                min: "1.00",
-                max: "50000.00",
-            },
-            payout: {
-                min: "1.00",
-                max: "50000.00",
-            },
-        },
-    },
-};
-
-interface ProductConfigParams {
-    product_id: string;
-    instrument_id: string;
-    account_uuid?: string | null;
-}
-
 export const useProductConfig = () => {
     const {
+        trade_type,
+        instrument,
         setProductConfig,
         setConfigLoading,
         setConfigError,
         setDuration,
         setStake,
         allowEquals,
-        toggleAllowEquals,
+        setAllowEquals,
         configCache,
         setConfigCache,
     } = useTradeStore();
+    const { account_uuid } = useClientStore();
     const { toast } = useToastStore();
+
+    // Create a cache key
+    const cacheKey = `${trade_type}_${instrument}`;
+
+    // Check if we have a cached response
+    const cachedConfig = configCache[cacheKey];
 
     // Apply configuration to the app
     const applyConfig = useCallback(
@@ -80,94 +54,69 @@ export const useProductConfig = () => {
             const defaultStake = adaptDefaultStake(config);
             setStake(defaultStake);
 
-            // Set allow equals if different from current value
-            if (allowEquals !== config.data.defaults.allow_equals) {
-                toggleAllowEquals();
-            }
+            setAllowEquals(config.data.defaults.allow_equals);
         },
-        [setDuration, setStake, allowEquals, toggleAllowEquals]
+        [setDuration, setStake, allowEquals]
     );
-
-    // Apply fallback configuration
-    const applyFallbackConfig = useCallback(() => {
-        console.warn("Using fallback product configuration");
-        setProductConfig(DEFAULT_CONFIG);
-        setConfigLoading(false);
-        applyConfig(DEFAULT_CONFIG);
-    }, [applyConfig, setConfigLoading, setProductConfig]);
 
     // Handle successful product config fetch
-    const handleConfigSuccess = useCallback(
-        (config: ProductConfigResponse, product_id: string, instrument_id: string) => {
+    const handleSuccess = useCallback(
+        (config: ProductConfigResponse, skipCacheUpdate = false) => {
             setProductConfig(config);
-            setConfigLoading(false);
-
-            // Create a cache key
-            const cacheKey = `${product_id}_${instrument_id}`;
-            setConfigCache({ ...configCache, [cacheKey]: config });
-
-            // Apply the configuration
+            // Only update the cache if we're not applying a cached config
+            if (!skipCacheUpdate) {
+                setConfigCache({ ...configCache, [cacheKey]: config });
+            }
             applyConfig(config);
         },
-        [applyConfig, configCache, setConfigCache, setConfigLoading, setProductConfig]
+        [applyConfig, cacheKey, configCache, setConfigCache, setProductConfig]
     );
 
-    // Handle error in product config fetch
-    const handleConfigError = useCallback(
-        (error: Error) => {
-            setConfigError(error);
-            setConfigLoading(false);
-
-            // Show error toast
-            toast({
-                content: `Failed to load trade configuration: ${error.message}`,
-                variant: "error",
-                duration: 5000,
-            });
-
-            // Apply fallback config
-            applyFallbackConfig();
-        },
-        [applyFallbackConfig, setConfigError, setConfigLoading, toast]
+    // Use query hook for product config
+    const { data, error, loading, refetch } = useQuery<ProductConfigResponse, ProductConfigRequest>(
+        {
+            queryFn: getProductConfig,
+            params: {
+                product_id: trade_type,
+                instrument_id: instrument,
+                ...(account_uuid ? { account_uuid } : {}),
+            },
+            enabled: !cachedConfig, // Only fetch if not in cache
+            onSuccess: (data) => handleSuccess(data, false), // Update cache for new API data
+            onError: (error) => {
+                setConfigError(error);
+                toast({
+                    content: `Failed to load trade configuration: ${error.message}`,
+                    variant: "error",
+                    duration: 5000,
+                });
+            },
+        }
     );
 
-    // Use mutation hook for product config
-    const { mutate, loading, error } = useMutation<ProductConfigResponse, ProductConfigParams>({
-        mutationFn: getProductConfig,
-        onSuccess: () => {
-            // We'll handle this in fetchProductConfig to avoid dependency issues
-        },
-        onError: handleConfigError,
-    });
+    // Add a ref to track if we've applied the cached config
+    const appliedCacheRef = useRef<Record<string, boolean>>({});
 
-    // Fetch product configuration
-    const fetchProductConfig = useCallback(
-        async (product_id: string, instrument_id: string, account_uuid?: string | null) => {
-            setConfigLoading(true);
-            setConfigError(null);
+    // Reset the applied cache ref when trade_type or instrument changes
+    useEffect(() => {
+        // Reset the applied cache flag for this specific cache key
+        // This allows us to apply the cached config again if the trade_type or instrument changes
+        // and then changes back to a previously used value
+        appliedCacheRef.current = {};
+    }, [trade_type, instrument]);
 
-            // Create a cache key
-            const cacheKey = `${product_id}_${instrument_id}`;
+    // Apply cached config if available (only once per cache key)
+    useEffect(() => {
+        if (cachedConfig && !appliedCacheRef.current[cacheKey]) {
+            appliedCacheRef.current[cacheKey] = true;
+            handleSuccess(cachedConfig, true); // Skip cache update when applying cached config
+        }
+    }, [cacheKey, cachedConfig, handleSuccess]);
 
-            // Check if we have a cached response
-            if (configCache[cacheKey]) {
-                const cachedConfig = configCache[cacheKey];
-                handleConfigSuccess(cachedConfig, product_id, instrument_id);
-                return;
-            }
-
-            try {
-                // Call the mutation function with updated parameter names
-                const result = await mutate({ product_id, instrument_id, account_uuid });
-                if (result) {
-                    handleConfigSuccess(result, product_id, instrument_id);
-                }
-            } catch (error) {
-                // Error is handled by onError callback
-            }
-        },
-        [configCache, handleConfigSuccess, mutate, setConfigError, setConfigLoading]
-    );
+    // Update loading state
+    useEffect(() => {
+        setConfigLoading(loading);
+    }, [loading, setConfigLoading]);
 
     // Reset product configuration
     const resetProductConfig = useCallback(() => {
@@ -177,10 +126,10 @@ export const useProductConfig = () => {
     }, [setConfigError, setConfigLoading, setProductConfig]);
 
     return {
-        fetchProductConfig,
-        resetProductConfig,
-        applyFallbackConfig,
-        loading,
+        data: data || cachedConfig,
         error,
+        loading,
+        refetch,
+        resetProductConfig,
     };
 };

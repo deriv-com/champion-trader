@@ -105,8 +105,8 @@ interface TradeState {
 
 export const useTradeStore = create<TradeState>((set) => ({
     // Trade State
-    stake: "10",
-    duration: "5 minutes",
+    stake: "",
+    duration: "",
     allowEquals: false,
     trade_type: "rise_fall", // Default to rise_fall trade type
     tradeTypeDisplayName: "", // Initialize with empty string
