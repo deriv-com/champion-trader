@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState, useMemo } from "react";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
@@ -12,6 +12,8 @@ import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
 import { useProductConfig } from "@/hooks/product/useProductConfig";
+import { useProposalStream } from "@/hooks/proposal/useProposal";
+import { ProposalRequest } from "@/api/services/proposal/types";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -38,26 +40,62 @@ interface TradeFormControllerProps {
 
 interface ButtonState {
     loading: boolean;
-    error: Event | null;
+    error: Event | { error: string } | null;
     payout: number;
     reconnecting?: boolean;
 }
 
 type ButtonStates = Record<string, ButtonState>;
 
+// Helper function to parse duration string into value and unit
+const parseDuration = (durationString: string): [number, string] => {
+    const match = durationString.match(/(\d+)\s+(\w+)/);
+    if (match) {
+        const value = parseInt(match[1], 10);
+        const unit = match[2].toLowerCase();
+        return [value, unit];
+    }
+    return [5, "minutes"]; // Default fallback
+};
+
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type, instrument } = useTradeStore();
+    const { trade_type, instrument, productConfig, duration, stake, allowEquals } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
-    const { currency, isLoggedIn } = useClientStore();
+    const { currency, isLoggedIn, account_uuid } = useClientStore();
     const tradeActions = useTradeActions();
     const config = tradeTypeConfigs[trade_type];
+
+    // Parse duration into value and unit
+    const [durationValue, durationUnit] = parseDuration(duration);
+
+    // Memoize the proposal parameters to prevent unnecessary re-subscriptions
+    const proposalParams = useMemo(
+        () => ({
+            product_id: trade_type,
+            instrument_id: instrument,
+            duration: durationValue,
+            duration_unit: durationUnit,
+            allow_equals: allowEquals,
+            stake: stake,
+            // Only include account_uuid when it's not null
+            ...(account_uuid ? { account_uuid } : {}),
+        }),
+        [trade_type, instrument, durationValue, durationUnit, allowEquals, stake, account_uuid]
+    );
+
+    // Subscribe to proposal stream at the top level of the component
+    const { data: proposalData, error: proposalError } = useProposalStream(
+        // Type assertion to satisfy TypeScript
+        proposalParams as ProposalRequest,
+        { enabled: isLoggedIn && !!account_uuid }
+    );
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
         const initialStates: ButtonStates = {};
-        tradeTypeConfigs[trade_type].buttons.forEach((button) => {
+        config.buttons.forEach((button: any) => {
             initialStates[button.actionName] = {
                 loading: true,
                 error: null,
@@ -75,17 +113,19 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
     // Reset loading states when duration or trade type changes
     useEffect(() => {
-        const initialStates: ButtonStates = {};
-        tradeTypeConfigs[trade_type].buttons.forEach((button) => {
-            initialStates[button.actionName] = {
-                loading: false,
-                error: null,
-                payout: buttonStates[button.actionName]?.payout || 0,
-                reconnecting: false,
-            };
+        setButtonStates((prevStates) => {
+            const initialStates: ButtonStates = {};
+            config.buttons.forEach((button: any) => {
+                initialStates[button.actionName] = {
+                    loading: false,
+                    error: null,
+                    payout: prevStates[button.actionName]?.payout || 0,
+                    reconnecting: false,
+                };
+            });
+            return initialStates;
         });
-        setButtonStates(initialStates);
-    }, [trade_type]);
+    }, [trade_type, config.buttons]);
 
     // Preload components based on metadata
     useEffect(() => {
@@ -102,6 +142,74 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             }
         }
     }, [trade_type, config]);
+
+    // Process proposal data and update button states
+    useEffect(() => {
+        if (!isLoggedIn || !account_uuid) return;
+
+        // Set initial loading state for buttons when parameters change
+        if (!proposalData && !proposalError) {
+            setButtonStates((prevStates) => {
+                const initialLoadingStates: ButtonStates = {};
+                config.buttons.forEach((button: any) => {
+                    initialLoadingStates[button.actionName] = {
+                        loading: true,
+                        error: null,
+                        payout: prevStates[button.actionName]?.payout || 0,
+                        reconnecting: false,
+                    };
+                });
+                return initialLoadingStates;
+            });
+            return;
+        }
+
+        // Update button states when data is received
+        if (proposalData) {
+            const variants = proposalData.data.variants;
+
+            setButtonStates(() => {
+                // Create updated button states
+                const updatedButtonStates: ButtonStates = {};
+
+                // Map variants to buttons
+                config.buttons.forEach((button: any) => {
+                    // Find the matching variant for this button
+                    const variantType = button.actionName === "buy_rise" ? "rise" : "fall";
+                    const variant = variants.find((v) => v.variant === variantType);
+
+                    updatedButtonStates[button.actionName] = {
+                        loading: false,
+                        error: null,
+                        payout: variant ? Number(variant.contract_details.payout) : 0,
+                        reconnecting: false,
+                    };
+                });
+
+                return updatedButtonStates;
+            });
+        }
+
+        // Handle errors
+        if (proposalError) {
+            // Update all buttons to show error state
+            setButtonStates((prevStates) => {
+                const errorButtonStates = { ...prevStates };
+                Object.keys(errorButtonStates).forEach((key) => {
+                    errorButtonStates[key] = {
+                        ...errorButtonStates[key],
+                        loading: false,
+                        error:
+                            proposalError instanceof Error
+                                ? { error: proposalError.message }
+                                : proposalError,
+                        reconnecting: true,
+                    };
+                });
+                return errorButtonStates;
+            });
+        }
+    }, [proposalData, proposalError, trade_type, isLoggedIn, account_uuid, config.buttons]);
 
     return (
         <div
@@ -177,8 +285,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         buttonStates[button.actionName]?.loading
                                             ? "Loading..."
                                             : `${
-                                                  // added for demo proposes will change it to 0 once api is connected
-                                                  buttonStates[button.actionName]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout ||
+                                                  (productConfig?.data.validations.payout.max
+                                                      ? Number(
+                                                            productConfig.data.validations.payout
+                                                                .max
+                                                        )
+                                                      : 0)
                                               } ${currency}`
                                     }
                                     title_position={button.position}
@@ -271,7 +384,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         buttonStates[button.actionName]?.loading
                                             ? "Loading..."
                                             : `${
-                                                  buttonStates[button.actionName]?.payout || 10
+                                                  buttonStates[button.actionName]?.payout ||
+                                                  (productConfig?.data.validations.payout.max
+                                                      ? Number(
+                                                            productConfig.data.validations.payout
+                                                                .max
+                                                        )
+                                                      : 0)
                                               } ${currency}`
                                     }
                                     title_position={button.position}

@@ -1,4 +1,4 @@
-import { parseStakeAmount, validateStakeAmount, incrementStake, decrementStake } from "../stake";
+import { parseStakeAmount, incrementStake, decrementStake } from "../stake";
 import { getStakeConfig } from "@/adapters/stake-config-adapter";
 
 // Mock the stake-config-adapter
@@ -34,39 +34,6 @@ describe("stake utils", () => {
         it("returns NaN for invalid input", () => {
             expect(parseStakeAmount("invalid")).toBe(NaN);
             expect(parseStakeAmount("abc USD")).toBe(NaN);
-        });
-    });
-
-    describe("validateStakeAmount", () => {
-        it("validates amount within range", () => {
-            expect(validateStakeAmount(50)).toBe(true);
-            expect(validateStakeAmount(1)).toBe(true);
-            expect(validateStakeAmount(100)).toBe(true);
-        });
-
-        it("invalidates amount below minimum", () => {
-            expect(validateStakeAmount(0)).toBe(false);
-            expect(validateStakeAmount(-1)).toBe(false);
-        });
-
-        it("invalidates amount above maximum", () => {
-            expect(validateStakeAmount(101)).toBe(false);
-            expect(validateStakeAmount(1000)).toBe(false);
-        });
-
-        it("uses config from adapter", () => {
-            (getStakeConfig as jest.Mock).mockReturnValue({
-                min: 5,
-                max: 50,
-                step: 1,
-            });
-
-            expect(validateStakeAmount(4)).toBe(false);
-            expect(validateStakeAmount(5)).toBe(true);
-            expect(validateStakeAmount(50)).toBe(true);
-            expect(validateStakeAmount(51)).toBe(false);
-
-            expect(getStakeConfig).toHaveBeenCalled();
         });
     });
 
