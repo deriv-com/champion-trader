@@ -40,7 +40,8 @@ export const useProposalStream = (options?: { enabled?: boolean }) => {
         (options?.enabled !== undefined ? options.enabled : true) &&
         Boolean(productConfig?.data) &&
         !!durationValue &&
-        !!durationUnit;
+        !!durationUnit &&
+        !!stake;
 
     // Create proposal parameters from store values
     const proposalParams = useMemo<ProposalRequest>(

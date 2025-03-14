@@ -47,7 +47,7 @@ type ButtonStates = Record<string, ButtonState>;
 
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
     const { trade_type, instrument, productConfig } = useTradeStore();
-    const { refetch } = useProductConfig();
+    const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
@@ -75,7 +75,9 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
     // Fetch product config when trade_type changes
     useEffect(() => {
-        refetch();
+        if (trade_type && instrument) {
+            fetchProductConfig(trade_type, instrument);
+        }
     }, [trade_type, instrument]);
 
     useEffect(() => {
