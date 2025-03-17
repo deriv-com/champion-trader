@@ -12,36 +12,6 @@ import {
     adaptDefaultStake,
 } from "@/adapters/stake-config-adapter";
 
-// Default configuration to use as fallback
-const DEFAULT_CONFIG: ProductConfigResponse = {
-    data: {
-        defaults: {
-            product_id: "rise_fall",
-            duration: 60,
-            duration_unit: "seconds",
-            allow_equals: true,
-            stake: 10,
-            variants: ["rise", "fall"],
-        },
-        validations: {
-            durations: {
-                supported_units: ["ticks", "seconds", "days"],
-                ticks: { min: 1, max: 10 },
-                seconds: { min: 15, max: 86400 },
-                days: { min: 1, max: 365 },
-            },
-            stake: {
-                min: "1.00",
-                max: "50000.00",
-            },
-            payout: {
-                min: "1.00",
-                max: "50000.00",
-            },
-        },
-    },
-};
-
 interface ProductConfigParams {
     product_id: string;
     instrument_id: string;
@@ -56,7 +26,7 @@ export const useProductConfig = () => {
         setDuration,
         setStake,
         allowEquals,
-        toggleAllowEquals,
+        setAllowEquals,
         configCache,
         setConfigCache,
     } = useTradeStore();
@@ -82,19 +52,11 @@ export const useProductConfig = () => {
 
             // Set allow equals if different from current value
             if (allowEquals !== config.data.defaults.allow_equals) {
-                toggleAllowEquals();
+                setAllowEquals(config.data.defaults.allow_equals);
             }
         },
-        [setDuration, setStake, allowEquals, toggleAllowEquals]
+        [setDuration, setStake, allowEquals]
     );
-
-    // Apply fallback configuration
-    const applyFallbackConfig = useCallback(() => {
-        console.warn("Using fallback product configuration");
-        setProductConfig(DEFAULT_CONFIG);
-        setConfigLoading(false);
-        applyConfig(DEFAULT_CONFIG);
-    }, [applyConfig, setConfigLoading, setProductConfig]);
 
     // Handle successful product config fetch
     const handleConfigSuccess = useCallback(
@@ -126,9 +88,9 @@ export const useProductConfig = () => {
             });
 
             // Apply fallback config
-            applyFallbackConfig();
+            // applyFallbackConfig();
         },
-        [applyFallbackConfig, setConfigError, setConfigLoading, toast]
+        [setConfigError, setConfigLoading, toast]
     );
 
     // Use mutation hook for product config
@@ -179,7 +141,6 @@ export const useProductConfig = () => {
     return {
         fetchProductConfig,
         resetProductConfig,
-        applyFallbackConfig,
         loading,
         error,
     };
