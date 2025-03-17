@@ -164,6 +164,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         }
     }, [trade_type, instrument]);
 
+    // Reset button states when trade type changes
     useEffect(() => {
         setButtonStates((prevStates) => {
             const initialStates: ButtonStates = {};
@@ -173,6 +174,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     error: null,
                     payout: prevStates[button.actionName]?.payout || 0,
                     reconnecting: false,
+                    // Preserve any validation errors when trade type changes
+                    validationError: prevStates[button.actionName]?.validationError || null,
                 };
             });
             return initialStates;
@@ -202,14 +205,17 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         // Set initial loading state for buttons when parameters change
         if (!proposalData && !proposalError) {
             setButtonStates((prevStates) => {
+                // Create a new state object based on previous state
                 const initialLoadingStates: ButtonStates = {};
                 config.buttons.forEach((button: any) => {
+                    // Preserve existing payout and validationError values from previous state
                     initialLoadingStates[button.actionName] = {
                         loading: true,
                         error: null,
                         payout: prevStates[button.actionName]?.payout || 0,
                         reconnecting: false,
-                        validationError: null,
+                        // Also preserve any existing validation errors
+                        validationError: prevStates[button.actionName]?.validationError || null,
                     };
                 });
                 return initialLoadingStates;
@@ -219,7 +225,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
         // Update button states when data is received
         if (proposalData) {
-            const variants = proposalData.data.variants;
+            const { variants } = proposalData.data;
 
             setButtonStates((prevStates) => {
                 // Create updated button states
@@ -236,7 +242,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     updatedButtonStates[button.actionName] = {
                         loading: false,
                         error: null,
-                        payout,
+                        payout: payout || prevStates[button.actionName]?.payout,
                         reconnecting: false,
                         validationError: stakeValidationError, // Use the separate stake validation state
                     };
@@ -312,6 +318,86 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         currency,
     ]);
 
+    // Validate all trade parameters (stake and payout) for all buttons
+    const validateAllTradeParameters = () => {
+        if (!productConfig?.data) return;
+
+        const payoutValidation = productConfig.data.validations.payout;
+        const stakeValidation = productConfig.data.validations.stake;
+
+        // First validate stake if needed
+        if (!stakeValidationError && stake) {
+            const stakeValue = parseStakeAmount(stake || "0");
+            const stakeResult = validateStake({
+                amount: stakeValue,
+                minStake: parseFloat(stakeValidation.min),
+                maxStake: parseFloat(stakeValidation.max),
+                currency,
+            });
+
+            // If stake is invalid, update stake validation error
+            if (stakeResult.error) {
+                setStakeValidationError(stakeResult.message || null);
+
+                // Update button states with stake error
+                setButtonStates((prevStates) => {
+                    const updatedStates = { ...prevStates };
+                    Object.keys(updatedStates).forEach((buttonActionName) => {
+                        updatedStates[buttonActionName] = {
+                            ...updatedStates[buttonActionName],
+                            validationError: stakeResult.message || null,
+                        };
+                    });
+                    return updatedStates;
+                });
+
+                return; // Exit early if stake is invalid
+            }
+        }
+
+        // Then validate payout for each button
+        setButtonStates((prevStates) => {
+            const updatedStates = { ...prevStates };
+
+            // Check each button
+            Object.keys(updatedStates).forEach((buttonActionName) => {
+                const buttonState = updatedStates[buttonActionName];
+
+                // If there's a stake validation error, keep it
+                if (stakeValidationError) {
+                    updatedStates[buttonActionName] = {
+                        ...buttonState,
+                        validationError: stakeValidationError,
+                    };
+                    return;
+                }
+
+                // Otherwise, validate payout
+                const payoutResult = validatePayout(
+                    buttonState.payout,
+                    parseFloat(payoutValidation.min),
+                    parseFloat(payoutValidation.max),
+                    currency
+                );
+
+                if (payoutResult.error) {
+                    updatedStates[buttonActionName] = {
+                        ...buttonState,
+                        validationError: payoutResult.message || null,
+                    };
+                } else {
+                    // Clear validation error if both stake and payout are valid
+                    updatedStates[buttonActionName] = {
+                        ...buttonState,
+                        validationError: null,
+                    };
+                }
+            });
+
+            return updatedStates;
+        });
+    };
+
     // Handle stake validation errors
     const handleStakeError = (hasError: boolean, errorMessage: string | null) => {
         // Update the separate stake validation state
@@ -331,6 +417,12 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
 
             return updatedStates;
         });
+
+        // If stake is now valid, re-validate payout
+        if (!hasError) {
+            // Use setTimeout to ensure state updates have completed
+            setTimeout(() => validateAllTradeParameters(), 0);
+        }
     };
 
     // Update payout validation errors when productConfig or currency changes
