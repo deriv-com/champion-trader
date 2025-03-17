@@ -6,7 +6,7 @@ import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { Footer } from "./Footer";
 import { ResponsiveHeader } from "./ResponsiveHeader";
 import { SideNav } from "@/components/SideNav";
-import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar";
+import { Sidebar, MenuPanel, PositionsPanel } from "@/components/Sidebar";
 import { useLocation } from "react-router-dom";
 
 interface MainLayoutProps {
@@ -63,14 +63,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                                     onClose={() => setSidebar(null)}
                                     title="Positions"
                                 >
-                                    <PositionsContent />
+                                    <PositionsPanel />
                                 </Sidebar>
                                 <Sidebar
                                     isOpen={activeSidebar === "menu"}
                                     onClose={() => setSidebar(null)}
                                     title="Menu"
                                 >
-                                    <MenuContent />
+                                    <MenuPanel />
                                 </Sidebar>
                             </div>
                             <main className="flex-1 flex flex-row transition-all duration-300">

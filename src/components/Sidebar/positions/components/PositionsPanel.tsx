@@ -8,9 +8,11 @@ import {
     PositionLoadingState,
     PositionErrorState,
     PositionEmptyState,
-} from "@/components/PositionStateComponents";
+    PositionMapper,
+    PositionProfitLoss,
+} from "@/components/PositionComponents";
 
-export const PositionsContent: FC = () => {
+export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
     const navigate = useNavigate();
     const { setSidebar } = useMainLayoutStore();
@@ -86,8 +88,11 @@ export const PositionsContent: FC = () => {
 
                 {/* Positions List */}
                 {!positionsLoading && !positionsError && currentPositions.length > 0 && (
-                    <div className="mt-4 space-y-4">
-                        {currentPositions.map((position) => (
+                    <PositionMapper
+                        positions={currentPositions}
+                        positionType={isOpenTab ? "open" : "closed"}
+                        className="mt-4 space-y-4"
+                        renderPosition={(position) => (
                             <div
                                 key={position.contract_id}
                                 className="p-3 rounded-lg shadow-sm cursor-pointer"
@@ -103,25 +108,22 @@ export const PositionsContent: FC = () => {
                                     onClose={(id) => console.log("Close action triggered for", id)}
                                 />
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    />
                 )}
             </div>
 
             {/* Total Profit/Loss - Only show when in open tab AND there are open positions */}
             {isOpenTab && openPositions.length > 0 && (
-                <div className="p-4 font-bold border-t border-theme flex justify-between mt-auto">
-                    <span className="text-theme">Total profit/loss: </span>
-                    <span
-                        className={`${parseFloat(totalProfitLoss) >= 0 ? "text-[#008832]" : "text-red-500"}`}
-                    >
-                        {parseFloat(totalProfitLoss) >= 0 ? "+" : ""}
-                        {totalProfitLoss} USD
-                    </span>
-                </div>
+                <PositionProfitLoss
+                    totalProfitLoss={totalProfitLoss}
+                    containerClassName="p-4 border-t border-theme mt-auto"
+                    labelClassName="text-theme font-bold"
+                    valueClassName="font-bold"
+                />
             )}
         </div>
     );
 };
 
-export default PositionsContent;
+export default PositionsPanel;

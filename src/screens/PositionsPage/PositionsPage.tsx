@@ -6,7 +6,9 @@ import {
     PositionLoadingState,
     PositionErrorState,
     PositionEmptyState,
-} from "@/components/PositionStateComponents";
+    PositionMapper,
+    PositionProfitLoss,
+} from "@/components/PositionComponents";
 
 const PositionsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -76,19 +78,12 @@ const PositionsPage: React.FC = () => {
 
             {/* Total Profit/Loss - Only show when in open tab AND there are open positions */}
             {activeTab === "open" && openPositions.length > 0 && (
-                <div className="px-4 py-3 bg-theme-secondary">
-                    <div className="flex justify-between items-center text-sm font-semibold">
-                        <span className="text-theme">Total profit/loss:</span>
-                        <span
-                            className={`font-semibold ${
-                                parseFloat(totalProfitLoss) >= 0 ? "text-[#008832]" : "text-red-500"
-                            }`}
-                        >
-                            {parseFloat(totalProfitLoss) >= 0 ? "+" : ""}
-                            {totalProfitLoss} USD
-                        </span>
-                    </div>
-                </div>
+                <PositionProfitLoss
+                    totalProfitLoss={totalProfitLoss}
+                    containerClassName="px-4 py-3 bg-theme-secondary"
+                    labelClassName="text-theme text-sm font-semibold"
+                    valueClassName="text-sm font-semibold"
+                />
             )}
 
             {/* Loading State */}
@@ -114,8 +109,11 @@ const PositionsPage: React.FC = () => {
 
             {/* Positions List */}
             {!positionsLoading && !positionsError && currentPositions.length > 0 && (
-                <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-theme-secondary">
-                    {currentPositions.map((position) => (
+                <PositionMapper
+                    positions={currentPositions}
+                    positionType={activeTab}
+                    className="flex-1 overflow-y-auto px-2 pb-4 pt-2 space-y-2 bg-theme-secondary"
+                    renderPosition={(position) => (
                         <div
                             key={position.contract_id}
                             className="relative flex transition-transform duration-300"
@@ -155,8 +153,8 @@ const PositionsPage: React.FC = () => {
                                 </button>
                             )}
                         </div>
-                    ))}
-                </div>
+                    )}
+                />
             )}
         </div>
     );
