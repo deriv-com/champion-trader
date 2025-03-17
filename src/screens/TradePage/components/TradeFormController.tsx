@@ -12,6 +12,8 @@ import { TradeNotification } from "@/components/ui/trade-notification";
 import { AccountSwitcher } from "@/components/AccountSwitcher";
 import { useProductConfig } from "@/hooks/product/useProductConfig";
 import { useProposalStream } from "@/hooks/proposal/useProposal";
+import { validateStake } from "@/components/Stake/utils/validation";
+import { parseStakeAmount } from "@/utils/stake";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -41,18 +43,100 @@ interface ButtonState {
     error: Event | { error: string } | null;
     payout: number;
     reconnecting?: boolean;
+    validationError?: string | null;
 }
+
+interface ValidationResult {
+    error: boolean;
+    message?: string;
+}
+
+// Validate payout
+const validatePayout = (
+    payout: number,
+    minPayout: number,
+    maxPayout: number,
+    currency: string
+): ValidationResult => {
+    if (payout < minPayout) {
+        return {
+            error: true,
+            message: `Minimum payout is ${minPayout} ${currency}`,
+        };
+    }
+
+    if (payout > maxPayout) {
+        return {
+            error: true,
+            message: `Maximum payout is ${maxPayout} ${currency}`,
+        };
+    }
+
+    return { error: false };
+};
 
 type ButtonStates = Record<string, ButtonState>;
 
+// Validate trade parameters (stake and payout)
+const validateTradeParameters = (
+    buttonState: ButtonState | undefined,
+    stake: string,
+    productConfig: any,
+    currency: string
+): { isValid: boolean; errorMessage: string | null } => {
+    console.log({ stake });
+    if (!productConfig?.data) {
+        return { isValid: true, errorMessage: null }; // Default to valid if no config
+    }
+
+    const stakeValidation = productConfig.data.validations.stake;
+    const payoutValidation = productConfig.data.validations.payout;
+
+    if (!buttonState) {
+        return { isValid: false, errorMessage: "Button state not available" };
+    }
+
+    // Parse stake value
+    const stakeValue = parseStakeAmount(stake || "0");
+
+    // Validate stake
+    const stakeResult = validateStake({
+        amount: stakeValue,
+        minStake: parseFloat(stakeValidation.min),
+        maxStake: parseFloat(stakeValidation.max),
+        currency,
+    });
+
+    if (stakeResult.error) {
+        return { isValid: false, errorMessage: stakeResult.message || null };
+    }
+
+    // Validate payout
+    const payoutResult = validatePayout(
+        buttonState.payout,
+        parseFloat(payoutValidation.min),
+        parseFloat(payoutValidation.max),
+        currency
+    );
+
+    if (payoutResult.error) {
+        return { isValid: false, errorMessage: payoutResult.message || null };
+    }
+
+    return { isValid: true, errorMessage: null };
+};
+
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type, instrument, productConfig, setPayouts } = useTradeStore();
+    const { trade_type, instrument, productConfig, setPayouts, stake, setStake } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
     // const tradeActions = useTradeActions()
     const config = tradeTypeConfigs[trade_type];
+
+    // Track stake validation errors separately to persist them across payout updates
+    const [stakeValidationError, setStakeValidationError] = useState<string | null>(null);
 
     // Parse duration into value and unit
 
@@ -125,6 +209,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                         error: null,
                         payout: prevStates[button.actionName]?.payout || 0,
                         reconnecting: false,
+                        validationError: null,
                     };
                 });
                 return initialLoadingStates;
@@ -136,7 +221,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
         if (proposalData) {
             const variants = proposalData.data.variants;
 
-            setButtonStates(() => {
+            setButtonStates((prevStates) => {
                 // Create updated button states
                 const updatedButtonStates: ButtonStates = {};
 
@@ -145,13 +230,32 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     // Find the matching variant for this button
                     const variantType = button.actionName === "buy_rise" ? "rise" : "fall";
                     const variant = variants.find((v) => v.variant === variantType);
+                    const payout = variant ? Number(variant.contract_details.payout) : 0;
 
+                    // Preserve stake validation error if it exists
                     updatedButtonStates[button.actionName] = {
                         loading: false,
                         error: null,
-                        payout: variant ? Number(variant.contract_details.payout) : 0,
+                        payout,
                         reconnecting: false,
+                        validationError: stakeValidationError, // Use the separate stake validation state
                     };
+
+                    // If no stake error, check payout validation
+                    if (!stakeValidationError && productConfig?.data) {
+                        const payoutValidation = productConfig.data.validations.payout;
+                        const payoutResult = validatePayout(
+                            payout,
+                            parseFloat(payoutValidation.min),
+                            parseFloat(payoutValidation.max),
+                            currency
+                        );
+
+                        if (payoutResult.error) {
+                            updatedButtonStates[button.actionName].validationError =
+                                payoutResult.message || null;
+                        }
+                    }
                 });
 
                 return updatedButtonStates;
@@ -191,12 +295,81 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                 ? { error: proposalError.message }
                                 : proposalError,
                         reconnecting: true,
+                        // Preserve stake validation errors
+                        validationError: stakeValidationError,
                     };
                 });
                 return errorButtonStates;
             });
         }
-    }, [proposalData, proposalError, trade_type, config.buttons, productConfig]);
+    }, [
+        proposalData,
+        proposalError,
+        trade_type,
+        config.buttons,
+        productConfig,
+        stakeValidationError,
+        currency,
+    ]);
+
+    // Handle stake validation errors
+    const handleStakeError = (hasError: boolean, errorMessage: string | null) => {
+        // Update the separate stake validation state
+        setStakeValidationError(hasError ? errorMessage : null);
+
+        // Also update button states
+        setButtonStates((prevStates) => {
+            const updatedStates = { ...prevStates };
+
+            // Update all buttons with the stake validation error
+            Object.keys(updatedStates).forEach((buttonActionName) => {
+                updatedStates[buttonActionName] = {
+                    ...updatedStates[buttonActionName],
+                    validationError: hasError ? errorMessage : null,
+                };
+            });
+
+            return updatedStates;
+        });
+    };
+
+    // Update payout validation errors when productConfig or currency changes
+    useEffect(() => {
+        if (!productConfig?.data) {
+            return;
+        }
+
+        const payoutValidation = productConfig.data.validations.payout;
+
+        setButtonStates((prevStates) => {
+            const updatedStates = { ...prevStates };
+
+            // Only validate payout for each button
+            Object.keys(updatedStates).forEach((buttonActionName) => {
+                const buttonState = updatedStates[buttonActionName];
+
+                // Skip if there's already a stake validation error
+                if (buttonState.validationError) return;
+
+                // Validate payout
+                const payoutResult = validatePayout(
+                    buttonState.payout,
+                    parseFloat(payoutValidation.min),
+                    parseFloat(payoutValidation.max),
+                    currency
+                );
+
+                if (payoutResult.error) {
+                    updatedStates[buttonActionName] = {
+                        ...buttonState,
+                        validationError: payoutResult.message || null,
+                    };
+                }
+            });
+
+            return updatedStates;
+        });
+    }, [productConfig, currency]); // Only run for productConfig and currency changes
 
     return (
         <div
@@ -254,7 +427,15 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                             )}
                             {config.fields.stake && (
                                 <Suspense fallback={<div>Loading stake field...</div>}>
-                                    <StakeField className="w-full" />
+                                    <StakeField
+                                        className="w-full"
+                                        stake={stake}
+                                        setStake={setStake}
+                                        productConfig={productConfig}
+                                        currency={currency}
+                                        isConfigLoading={!productConfig}
+                                        handleError={handleStakeError}
+                                    />
                                 </Suspense>
                             )}
                         </div>
@@ -283,7 +464,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                     }
                                     title_position={button.position}
                                     disabled={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        Boolean(buttonStates[button.actionName]?.validationError)
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.error !== null
                                     }
@@ -292,7 +474,15 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
-                                    error={buttonStates[button.actionName]?.error}
+                                    error={
+                                        buttonStates[button.actionName]?.validationError
+                                            ? {
+                                                  error:
+                                                      buttonStates[button.actionName]
+                                                          ?.validationError || "",
+                                              }
+                                            : buttonStates[button.actionName]?.error
+                                    }
                                     onClick={() => {
                                         if (!isLoggedIn) return;
                                         // Comment out actual API call but keep the success flow
@@ -339,7 +529,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                 )}
                                 {config.fields.stake && (
                                     <Suspense fallback={<div>Loading stake field...</div>}>
-                                        <StakeField />
+                                        <StakeField
+                                            stake={stake}
+                                            setStake={setStake}
+                                            productConfig={productConfig}
+                                            currency={currency}
+                                            isConfigLoading={!productConfig}
+                                            handleError={handleStakeError}
+                                        />
                                     </Suspense>
                                 )}
                             </ResponsiveTradeParamLayout>
@@ -375,7 +572,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                     }
                                     title_position={button.position}
                                     disabled={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        Boolean(buttonStates[button.actionName]?.validationError)
                                         // ||
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.error !== null
@@ -386,7 +584,15 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
-                                    error={buttonStates[button.actionName]?.error}
+                                    error={
+                                        buttonStates[button.actionName]?.validationError
+                                            ? {
+                                                  error:
+                                                      buttonStates[button.actionName]
+                                                          ?.validationError || "",
+                                              }
+                                            : buttonStates[button.actionName]?.error
+                                    }
                                     onClick={() => {
                                         if (!isLoggedIn) return;
                                         // Comment out actual API call but keep the success flow
