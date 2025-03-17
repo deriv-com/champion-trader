@@ -103,7 +103,7 @@ export const PositionsPanel: FC = () => {
                             >
                                 <ContractSummary
                                     contract={position}
-                                    variant="desktop"
+                                    containerClassName="bg-transparent shadow-none p-0"
                                     showCloseButton={isOpenTab && position.details.is_valid_to_sell}
                                     onClose={(id) => console.log("Close action triggered for", id)}
                                 />
