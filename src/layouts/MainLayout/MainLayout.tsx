@@ -78,13 +78,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             </main>
                         </div>
                     ) : (
-                        <main className="max-w-full flex-1 flex flex-col">
-                            {children}
-                            {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
-                        </main>
+                        <main className="max-w-full flex-1 flex flex-col">{children}</main>
                     )}
                 </div>
             </div>
+            {!isLandscape && isBottomNavVisible && (
+                <Footer className="sticky bottom-0 left-0 right-0 z-50 w-full" />
+            )}
         </div>
     );
 };

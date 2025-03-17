@@ -34,7 +34,7 @@ export const PositionsPanel: FC = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-6 flex-1 overflow-auto">
+            <div className="p-6 flex-1 overflow-auto scrollbar-thin">
                 <div className="flex gap-2 p-1 bg-theme-secondary rounded-lg">
                     <button
                         className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
