@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useOpenContractsStream, useClosedContractsStream } from "./useContract";
 import { ClosedContractsResponse } from "@/api/services/contract/types";
+import { calculateTotalProfitLoss } from "@/utils/profit-loss";
 
 /**
  * Hook for managing positions data in the store
@@ -19,7 +20,6 @@ export const usePositionsData = () => {
         closedPositions,
         positionsLoading,
         positionsError,
-        totalProfitLoss,
         setOpenPositions,
         setClosedPositions,
         setPositionsLoading,
@@ -59,6 +59,9 @@ export const usePositionsData = () => {
             setPositionsError(closedError);
         }
     }, [closedError, setPositionsError]);
+
+    // Calculate total profit/loss
+    const totalProfitLoss = calculateTotalProfitLoss(openPositions);
 
     return {
         openPositions,

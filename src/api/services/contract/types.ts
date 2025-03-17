@@ -46,12 +46,6 @@ export interface OpenContractsResponse {
             product_id: string;
             contract_details: ContractDetails;
         }>;
-        total_profit_loss: string;
-    };
-    meta: {
-        endpoint: string;
-        method: string;
-        timing: number;
     };
 }
 
@@ -69,12 +63,6 @@ export interface ClosedContractsResponse {
             total_items: number;
             total_pages: number;
         };
-        total_profit_loss: string;
-    };
-    meta: {
-        endpoint: string;
-        method: string;
-        timing: number;
     };
 }
 

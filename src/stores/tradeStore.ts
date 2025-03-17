@@ -75,8 +75,6 @@ interface TradeState {
     positionsLoading: boolean;
     /** Error state for positions */
     positionsError: Error | null;
-    /** Total profit/loss for positions */
-    totalProfitLoss: string;
 
     // Trade Actions
     /** Set the stake amount */
@@ -158,7 +156,6 @@ export const useTradeStore = create<TradeState>((set) => ({
     closedPositions: [],
     positionsLoading: false,
     positionsError: null,
-    totalProfitLoss: "0.00",
 
     // Trade Actions
     setStake: (stake) => set({ stake }),
@@ -201,7 +198,6 @@ export const useTradeStore = create<TradeState>((set) => ({
                 product_id: contract.product_id,
                 details: contract.contract_details,
             })),
-            totalProfitLoss: response.data.total_profit_loss,
         }),
 
     setClosedPositions: (response) =>
@@ -211,7 +207,6 @@ export const useTradeStore = create<TradeState>((set) => ({
                 product_id: contract.product_id,
                 details: contract.contract_details,
             })),
-            totalProfitLoss: response.data.total_profit_loss,
         }),
 
     setPositionsLoading: (isLoading) => set({ positionsLoading: isLoading }),
