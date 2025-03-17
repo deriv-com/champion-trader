@@ -1,21 +1,47 @@
 import React from "react";
 import TradeParam from "@/components/TradeFields/TradeParam";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useStakeField } from "./hooks/useStakeField";
 import { cn } from "@/lib/utils";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { DesktopTradeFieldCard } from "@/components/ui/desktop-trade-field-card";
 import { MobileTradeFieldCard } from "@/components/ui/mobile-trade-field-card";
+import { useStakeField } from "./hooks/useStakeField";
 
 interface StakeFieldProps {
     className?: string;
+    // Value props
+    stake: string;
+    setStake: (value: string) => void;
+    // Config props
+    productConfig: any;
+    currency: string;
+    // Optional UI state props
+    isConfigLoading?: boolean;
+    // Optional handlers that can be overridden
+    onIncrement?: () => void;
+    onDecrement?: () => void;
+    onMobileClick?: () => void;
+    // Error handler callback
+    handleError?: (hasError: boolean, errorMessage: string | null) => void;
 }
 
-export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
+export const StakeField: React.FC<StakeFieldProps> = ({
+    className,
+    stake,
+    setStake,
+    productConfig,
+    currency,
+    isConfigLoading = false,
+    onIncrement,
+    onDecrement,
+    onMobileClick,
+    handleError,
+}) => {
     const { isLandscape } = useOrientationStore();
+
+    // Use the hook to get all the state and handlers
     const {
-        stake,
-        currency,
+        isStakeSelected,
         error,
         errorMessage,
         localValue,
@@ -23,13 +49,21 @@ export const StakeField: React.FC<StakeFieldProps> = ({ className }) => {
         containerRef,
         handleSelect,
         handleChange,
-        handleIncrement,
-        handleDecrement,
-        handleMobileClick,
-        isConfigLoading,
-        isStakeSelected,
+        defaultHandleIncrement,
+        defaultHandleDecrement,
+        defaultHandleMobileClick,
+    } = useStakeField({
+        stake,
+        setStake,
         productConfig,
-    } = useStakeField();
+        currency,
+        handleError,
+    });
+
+    // Use provided handlers or defaults
+    const handleIncrement = onIncrement || defaultHandleIncrement;
+    const handleDecrement = onDecrement || defaultHandleDecrement;
+    const handleMobileClick = onMobileClick || defaultHandleMobileClick;
 
     if (isConfigLoading) {
         return (

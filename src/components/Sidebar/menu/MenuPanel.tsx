@@ -5,7 +5,7 @@ import { useClientStore } from "@/stores/clientStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import ToggleButton from "@/components/TradeFields/ToggleButton";
 
-export const MenuContent: React.FC = () => {
+export const MenuPanel: React.FC = () => {
     const { isLoggedIn } = useClientStore();
     const logout = useLogout();
     const { setSidebar, theme, toggleTheme } = useMainLayoutStore();
@@ -53,4 +53,4 @@ export const MenuContent: React.FC = () => {
     );
 };
 
-export default MenuContent;
+export default MenuPanel;
