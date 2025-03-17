@@ -53,7 +53,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
             </button>
             {dropdownOpen && (
                 <ul
-                    className="absolute text-sm left-0 w-full bg-theme border border-theme rounded-lg shadow-md mt-1"
+                    className="absolute text-sm left-0 w-full bg-theme bg-opacity-100 border border-theme rounded-lg shadow-md mt-1 z-50"
                     onMouseDown={(event) => event.stopPropagation()}
                 >
                     {isOpenTab ? (

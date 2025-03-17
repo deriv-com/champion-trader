@@ -1,44 +1,73 @@
 import React from "react";
-import { useTradeStore } from "@/stores/tradeStore";
-import { MarketIcon } from "@/components/MarketSelector/MarketIcon";
+import { Contract } from "@/api/services/contract/types";
+import { useContractSummaryData } from "@/hooks/contract/useContractSummaryData";
+import { ContractSummaryInfo } from "./ContractSummaryInfo";
+import { ContractSummaryDetails } from "./ContractSummaryDetails";
 
-export const ContractSummary: React.FC = () => {
-    const contractDetails = useTradeStore((state) => state.contractDetails);
+interface ContractSummaryProps {
+    contract?: Contract;
+    showCloseButton?: boolean;
+    onClose?: (contractId: string) => void;
+    className?: string;
+    containerClassName?: string;
+}
 
-    if (!contractDetails) {
+export const ContractSummary: React.FC<ContractSummaryProps> = ({
+    contract,
+    showCloseButton = false,
+    onClose,
+    className = "",
+    containerClassName = "",
+}) => {
+    // Extract contract data using our custom hook
+    const contractData = useContractSummaryData(contract);
+
+    if (!contractData.type) {
         return null;
     }
 
-    const { type, market, stake, profit } = contractDetails;
+    const handleClose = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (onClose && contractData.contractId) {
+            onClose(contractData.contractId);
+        }
+    };
+
+    // Default container styles for mobile view
+    const defaultContainerClass = "h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme";
+    const containerStyle = {
+        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
+    };
+
     return (
         <div
-            className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme"
-            style={{
-                boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
-            }}
+            className={`${containerClassName || defaultContainerClass} ${className}`}
+            style={containerClassName ? {} : containerStyle}
         >
             <div className="flex justify-between">
-                <div>
-                    <div className=" mb-1">
-                        <MarketIcon symbol="R_100" size="small" />
-                    </div>
-                    <div>
-                        <div className="overflow-hidden text-ellipsis text-theme font-ibm-plex text-[14px] leading-[22px] font-normal pb-1">
-                            {type}
-                        </div>
-                        <div className="overflow-hidden text-ellipsis text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal">
-                            {market}
-                        </div>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <div className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-theme-secondary/50 px-2 rounded-md mb-1 py-0.5 inline-block">
-                        0/10 ticks
-                    </div>
-                    <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${stake} USD`}</div>
-                    <div className="text-[#008832] font-ibm-plex text-[14px] leading-[22px] font-normal text-right">{`${profit} USD`}</div>
-                </div>
+                <ContractSummaryInfo
+                    type={contractData.type}
+                    market={contractData.market}
+                    marketSymbol={contract?.details.instrument_id}
+                />
+
+                <ContractSummaryDetails
+                    duration={contractData.duration}
+                    stake={contractData.stake}
+                    profit={contractData.profit}
+                    currency={contractData.currency}
+                    isOpen={contractData.isOpen}
+                />
             </div>
+
+            {showCloseButton && contractData.isOpen && contractData.isValidToSell && (
+                <button
+                    className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2"
+                    onClick={handleClose}
+                >
+                    Close {`${contractData.stake} ${contractData.currency}`}
+                </button>
+            )}
         </div>
     );
 };
