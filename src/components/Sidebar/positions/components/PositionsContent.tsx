@@ -1,13 +1,9 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTradeStore } from "@/stores/tradeStore";
-import {
-    useOpenPositionsSubscription,
-    useClosedPositionsSubscription,
-} from "@/hooks/contract/usePositionsSubscription";
 import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { ContractSummary } from "@/screens/ContractDetailsPage/components";
+import { usePositionsData } from "@/hooks/contract/usePositionsData";
 import { Briefcase } from "lucide-react";
 
 export const PositionsContent: FC = () => {
@@ -15,13 +11,9 @@ export const PositionsContent: FC = () => {
     const navigate = useNavigate();
     const { setSidebar } = useMainLayoutStore();
 
-    // Subscribe to positions data
-    useOpenPositionsSubscription();
-    useClosedPositionsSubscription();
-
-    // Get positions from tradeStore
+    // Get positions data using the centralized hook
     const { openPositions, closedPositions, positionsLoading, positionsError, totalProfitLoss } =
-        useTradeStore();
+        usePositionsData();
 
     // Get current positions based on active tab
     const currentPositions = isOpenTab ? openPositions : closedPositions;

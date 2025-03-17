@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ContractSummary } from "../ContractDetailsPage/components";
-import { useTradeStore } from "@/stores/tradeStore";
-import {
-    useOpenPositionsSubscription,
-    useClosedPositionsSubscription,
-} from "@/hooks/contract/usePositionsSubscription";
+import { usePositionsData } from "@/hooks/contract/usePositionsData";
 import { Briefcase } from "lucide-react";
 
 const PositionsPage: React.FC = () => {
@@ -13,13 +9,9 @@ const PositionsPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
     const [swipedCard, setSwipedCard] = useState<string | null>(null);
 
-    // Subscribe to positions data
-    useOpenPositionsSubscription();
-    useClosedPositionsSubscription();
-
-    // Get positions from tradeStore
+    // Get positions data using the centralized hook
     const { openPositions, closedPositions, positionsLoading, positionsError, totalProfitLoss } =
-        useTradeStore();
+        usePositionsData();
 
     const handleTouchStart = () => {
         setSwipedCard(null);

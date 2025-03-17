@@ -1,2 +1,2 @@
 export * from "./useContract";
-export * from "./usePositionsSubscription";
+export * from "./usePositionsData";

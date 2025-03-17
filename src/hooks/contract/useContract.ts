@@ -10,8 +10,8 @@ import {
     BuyContractResponse,
     SellContractRequest,
     SellContractResponse,
-    OpenContract,
-    ClosedContract,
+    OpenContractsResponse,
+    ClosedContractsResponse,
 } from "@/api/services/contract/types";
 
 /**
@@ -52,8 +52,8 @@ export const useSellContract = (options?: {
  * @returns Subscription result with open contract data
  */
 export const useOpenContractsStream = (options?: { enabled?: boolean }) => {
-    return useSSESubscription<OpenContract>(
-        (onData: (data: OpenContract) => void, onError: (error: any) => void) =>
+    return useSSESubscription<OpenContractsResponse>(
+        (onData: (data: OpenContractsResponse) => void, onError: (error: any) => void) =>
             subscribeToOpenContracts({ onData, onError }),
         [options?.enabled]
     );
@@ -65,8 +65,8 @@ export const useOpenContractsStream = (options?: { enabled?: boolean }) => {
  * @returns Subscription result with closed contract data
  */
 export const useClosedContractsStream = (options?: { enabled?: boolean }) => {
-    return useSSESubscription<ClosedContract>(
-        (onData: (data: ClosedContract) => void, onError: (error: any) => void) =>
+    return useSSESubscription<OpenContractsResponse>(
+        (onData: (data: OpenContractsResponse) => void, onError: (error: any) => void) =>
             subscribeToClosedContracts({ onData, onError }),
         [options?.enabled]
     );
