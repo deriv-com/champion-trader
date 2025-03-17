@@ -192,11 +192,11 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             }`}
         >
             {isLandscape ? (
-                <div className={`flex ${isLoggedIn ? "justify-between pb-4" : "justify-end"}`}>
+                <div className={`flex ${isLoggedIn ? "justify-between pb-2" : "justify-end"}`}>
                     {isLoggedIn && <AccountSwitcher />}
                     {isLoggedIn ? (
                         <button
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
+                            className="text-sm font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black flex h-8 min-w-[80px] px-4 justify-center items-center"
                             // onClick={}
                         >
                             Deposit
@@ -204,7 +204,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                     ) : (
                         <a
                             href="/login"
-                            className="text-sm px-5 py-2 font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black"
+                            className="text-sm font-semibold rounded-3xl bg-color-brand-700 hover:bg-color-brand-600 text-black flex h-8 min-w-[80px] px-4 justify-center items-center"
                         >
                             Log in
                         </a>
