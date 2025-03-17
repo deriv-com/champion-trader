@@ -51,7 +51,6 @@ export const useProductConfig = () => {
             setStake(defaultStake);
 
             // Set allow equals if different from current value
-            debugger;
             if (allowEquals !== config.data.defaults.allow_equals) {
                 setAllowEquals(config.data.defaults.allow_equals);
             }

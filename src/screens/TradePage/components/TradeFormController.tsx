@@ -46,7 +46,7 @@ interface ButtonState {
 type ButtonStates = Record<string, ButtonState>;
 
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
-    const { trade_type, instrument, productConfig } = useTradeStore();
+    const { trade_type, instrument, productConfig, setPayouts } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
@@ -155,6 +155,25 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 });
 
                 return updatedButtonStates;
+            });
+
+            // Update payouts in store
+            const payoutValues = config.buttons.reduce(
+                (acc, button) => {
+                    const variantType = button.actionName === "buy_rise" ? "rise" : "fall";
+                    const variant = variants.find((v) => v.variant === variantType);
+                    acc[button.actionName] = variant ? Number(variant.contract_details.payout) : 0;
+                    return acc;
+                },
+                {} as Record<string, number>
+            );
+
+            // Set payouts in store
+            setPayouts({
+                max: productConfig?.data.validations.payout.max
+                    ? Number(productConfig.data.validations.payout.max)
+                    : 50000,
+                values: payoutValues,
             });
         }
 
