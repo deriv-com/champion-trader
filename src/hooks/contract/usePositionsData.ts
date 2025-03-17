@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useOpenContractsStream, useClosedContractsStream } from "./useContract";
 import { ClosedContractsResponse } from "@/api/services/contract/types";
-import { calculateTotalProfitLoss } from "@/utils/profit-loss";
+import { calculateTotalProfitLoss } from "@/components/PositionComponents/utils/profit-loss";
 
 /**
  * Hook for managing positions data in the store
