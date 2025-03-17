@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ContractSummary } from "../ContractDetailsPage/components";
 import { usePositionsData } from "@/hooks/contract/usePositionsData";
-import { Briefcase } from "lucide-react";
+import {
+    PositionLoadingState,
+    PositionErrorState,
+    PositionEmptyState,
+} from "@/components/PositionStateComponents";
 
 const PositionsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -89,33 +93,23 @@ const PositionsPage: React.FC = () => {
 
             {/* Loading State */}
             {positionsLoading && (
-                <div className="flex-1 flex items-center justify-center">
-                    <p className="text-theme">Loading positions...</p>
-                </div>
+                <PositionLoadingState className="flex-1 flex items-center justify-center" />
             )}
 
             {/* Error State */}
             {positionsError && (
-                <div className="flex-1 flex items-center justify-center">
-                    <p className="text-red-500">
-                        Error loading positions: {positionsError.message}
-                    </p>
-                </div>
+                <PositionErrorState
+                    error={positionsError}
+                    className="flex-1 flex items-center justify-center"
+                />
             )}
 
             {/* Empty State */}
             {!positionsLoading && !positionsError && currentPositions.length === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center bg-theme-secondary">
-                    <div className="text-gray-400 mb-4">
-                        <Briefcase size={64} strokeWidth={1.5} />
-                    </div>
-                    <h3 className="text-lg font-semibold text-theme-muted mb-2">
-                        No {activeTab} positions
-                    </h3>
-                    <p className="text-theme-muted text-sm">
-                        Your {activeTab} positions will appear here.
-                    </p>
-                </div>
+                <PositionEmptyState
+                    positionType={activeTab}
+                    className="flex-1 flex flex-col items-center justify-center bg-theme-secondary"
+                />
             )}
 
             {/* Positions List */}

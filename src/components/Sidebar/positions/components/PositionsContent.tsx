@@ -4,7 +4,11 @@ import { FilterDropdown } from "./FilterDropdown";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { ContractSummary } from "@/screens/ContractDetailsPage/components";
 import { usePositionsData } from "@/hooks/contract/usePositionsData";
-import { Briefcase } from "lucide-react";
+import {
+    PositionLoadingState,
+    PositionErrorState,
+    PositionEmptyState,
+} from "@/components/PositionStateComponents";
 
 export const PositionsContent: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -61,35 +65,23 @@ export const PositionsContent: FC = () => {
 
                 {/* Loading State */}
                 {positionsLoading && (
-                    <div className="flex items-center justify-center mt-8">
-                        <p className="text-theme">Loading positions...</p>
-                    </div>
+                    <PositionLoadingState className="flex items-center justify-center mt-8" />
                 )}
 
                 {/* Error State */}
                 {positionsError && (
-                    <div className="flex items-center justify-center mt-8">
-                        <p className="text-red-500">
-                            Error loading positions: {positionsError.message}
-                        </p>
-                    </div>
+                    <PositionErrorState
+                        error={positionsError}
+                        className="flex items-center justify-center mt-8"
+                    />
                 )}
 
                 {/* Empty State */}
                 {!positionsLoading && !positionsError && currentPositions.length === 0 && (
-                    <div className="flex items-center justify-center min-h-[35rem]">
-                        <div className="text-center">
-                            <div className="text-gray-400 mb-4 flex justify-center">
-                                <Briefcase size={64} strokeWidth={1.5} />
-                            </div>
-                            <h3 className="text-lg font-semibold text-theme-muted mb-2">
-                                No {isOpenTab ? "open" : "closed"} positions
-                            </h3>
-                            <p className="text-theme-muted text-sm">
-                                Your {isOpenTab ? "open" : "closed"} positions will appear here.
-                            </p>
-                        </div>
-                    </div>
+                    <PositionEmptyState
+                        positionType={isOpenTab ? "open" : "closed"}
+                        className="flex items-center justify-center min-h-[35rem]"
+                    />
                 )}
 
                 {/* Positions List */}
