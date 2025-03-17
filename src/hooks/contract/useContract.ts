@@ -65,8 +65,8 @@ export const useOpenContractsStream = (options?: { enabled?: boolean }) => {
  * @returns Subscription result with closed contract data
  */
 export const useClosedContractsStream = (options?: { enabled?: boolean }) => {
-    return useSSESubscription<OpenContractsResponse>(
-        (onData: (data: OpenContractsResponse) => void, onError: (error: any) => void) =>
+    return useSSESubscription<ClosedContractsResponse>(
+        (onData: (data: ClosedContractsResponse) => void, onError: (error: any) => void) =>
             subscribeToClosedContracts({ onData, onError }),
         [options?.enabled]
     );
