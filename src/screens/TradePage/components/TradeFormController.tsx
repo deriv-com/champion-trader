@@ -192,7 +192,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             }`}
         >
             {isLandscape ? (
-                <div className={`flex ${isLoggedIn ? "justify-between" : "justify-end"}`}>
+                <div className={`flex ${isLoggedIn ? "justify-between pb-4" : "justify-end"}`}>
                     {isLoggedIn && <AccountSwitcher />}
                     {isLoggedIn ? (
                         <button
