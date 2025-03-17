@@ -179,6 +179,12 @@ export const StakeField: React.FC<StakeFieldProps> = ({
             setErrorMessage(message);
             showError(message);
             setStake("");
+
+            // Call handleError callback if provided
+            if (handleError) {
+                handleError(true, message);
+            }
+
             return;
         }
 
