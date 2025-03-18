@@ -39,8 +39,6 @@ export const PositionsPanel: FC = () => {
     // Handle closing a contract
     const handleCloseContract = async (contractId: string, position: any) => {
         try {
-            console.log("Closing contract:", contractId);
-
             // Use the enhanced sell_contract function
             await sell_contract(contractId, position.details, {
                 setLoading: (isLoading) => {
@@ -48,8 +46,6 @@ export const PositionsPanel: FC = () => {
                 },
                 onError: (error: unknown) => console.error("Error closing contract:", error),
             });
-
-            console.log("Contract closed successfully");
         } catch (error) {
             // Error handling is done in the hook
         }

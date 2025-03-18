@@ -36,8 +36,6 @@ const PositionsPage: React.FC = () => {
         if (!position) return;
 
         try {
-            console.log("Closing contract:", contractId);
-
             // Use the enhanced sell_contract function
             await tradeActions.sell_contract(contractId, position.details, {
                 setLoading: (isLoading) => {
@@ -45,8 +43,6 @@ const PositionsPage: React.FC = () => {
                 },
                 onError: (error: unknown) => console.error("Error closing contract:", error),
             });
-
-            console.log("Contract closed successfully");
         } catch (error) {
             // Error handling is done in the hook
         }
