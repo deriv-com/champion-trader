@@ -7,6 +7,7 @@ import { ContractSummaryDetails } from "./ContractSummaryDetails";
 interface ContractSummaryProps {
     contract?: Contract;
     showCloseButton?: boolean;
+    isClosing?: boolean;
     onClose?: (contractId: string) => void;
     className?: string;
     containerClassName?: string;
@@ -15,6 +16,7 @@ interface ContractSummaryProps {
 export const ContractSummary: React.FC<ContractSummaryProps> = ({
     contract,
     showCloseButton = false,
+    isClosing = false,
     onClose,
     className = "",
     containerClassName = "",
@@ -67,10 +69,13 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
 
             {showCloseButton && contractData.isOpen && contractData.isValidToSell && (
                 <button
-                    className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2"
+                    className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleClose}
+                    disabled={isClosing}
                 >
-                    Close {`${contractData.stake} ${contractData.currency}`}
+                    {isClosing
+                        ? "Closing..."
+                        : `Close ${contractData.stake} ${contractData.currency}`}
                 </button>
             )}
         </div>

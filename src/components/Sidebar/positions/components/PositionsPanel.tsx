@@ -13,6 +13,9 @@ import {
 } from "@/components/PositionComponents";
 import { useTradeActions } from "@/hooks";
 import { useToastStore } from "@/stores/toastStore";
+import { TradeNotification } from "@/components/ui/trade-notification";
+import { useOrientationStore } from "@/stores/orientationStore";
+import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -29,7 +32,8 @@ export const PositionsPanel: FC = () => {
     // Filter logic (simplified for now)
     const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
-    const { toast } = useToastStore();
+    const { toast, hideToast } = useToastStore();
+    const { isLandscape } = useOrientationStore();
 
     const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
@@ -39,7 +43,7 @@ export const PositionsPanel: FC = () => {
     const { sell_contract } = useTradeActions();
 
     // Handle closing a contract
-    const handleCloseContract = async (contractId: string) => {
+    const handleCloseContract = async (contractId: string, position: any) => {
         try {
             console.log("Closing contract:", contractId);
 
@@ -49,18 +53,50 @@ export const PositionsPanel: FC = () => {
             // Call the API
             const response = await sell_contract(contractId);
             console.log("Sell contract response:", response);
+            const isProfit = Number(response.data.profit) >= 0;
 
-            // Show success toast
+            // Show success toast with TradeNotification
             toast({
-                content: `Successfully closed contract: ${contractId}`,
-                variant: "success",
+                content: (
+                    <TradeNotification
+                        stake={`${isProfit ? "Profit" : "Loss"}: ${response.data.profit} ${position.details.bid_price_currency}`}
+                        market={position.details.instrument_name || position.details.instrument_id}
+                        type={
+                            position.details.variant.charAt(0).toUpperCase() +
+                            position.details.variant.slice(1)
+                        }
+                        onClose={hideToast}
+                        icon={
+                            <div>
+                                <StandaloneFlagCheckeredFillIcon
+                                    fill={isProfit ? "#4DBC6B" : "#0088323D"}
+                                    iconSize="sm"
+                                    className={`rounded-full ${isProfit ? "#0088323D" : "#E6190E3D"}`}
+                                />
+                            </div>
+                        }
+                    />
+                ),
+                variant: "default",
+                duration: 3000,
+                position: isLandscape ? "bottom-left" : "top-center",
             });
-        } catch (error) {
+        } catch (error: any) {
+            // Extract error message from API response if available
+            let errorMessage = "Failed to close contract";
+
+            if (error.response?.data?.errors?.[0]?.message) {
+                errorMessage = error.response.data.errors[0].message;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
             // Show error toast
             toast({
-                content: error instanceof Error ? error.message : "Failed to close contract",
+                content: errorMessage,
                 variant: "error",
             });
+
             console.error("Error closing contract:", error);
         } finally {
             // Clear loading state
@@ -141,9 +177,10 @@ export const PositionsPanel: FC = () => {
                                     contract={position}
                                     containerClassName="bg-transparent shadow-none p-0"
                                     showCloseButton={isOpenTab && position.details.is_valid_to_sell}
+                                    isClosing={closingContracts[position.contract_id]}
                                     onClose={(id) => {
                                         // Prevent navigation when clicking the close button
-                                        handleCloseContract(id);
+                                        handleCloseContract(id, position);
                                     }}
                                 />
                             </div>

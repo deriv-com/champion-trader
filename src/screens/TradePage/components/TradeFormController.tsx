@@ -15,6 +15,7 @@ import { useProductConfig } from "@/hooks/product/useProductConfig";
 import { useProposalStream } from "@/hooks/proposal/useProposal";
 import { validateStake } from "@/components/Stake/utils/validation";
 import { parseStakeAmount } from "@/utils/stake";
+import { StandaloneStopwatchBoldIcon } from "@deriv/quill-icons";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -596,6 +597,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                         market={instrument}
                                                         type={button.title}
                                                         onClose={hideToast}
+                                                        icon={
+                                                            <StandaloneStopwatchBoldIcon
+                                                                fill="#53b9ff"
+                                                                iconSize="md"
+                                                                className="rounded-full bg-[#2C9AFF3D]"
+                                                            />
+                                                        }
                                                     />
                                                 ),
                                                 variant: "default",
@@ -713,6 +721,13 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                                         market={instrument}
                                                         type={button.title}
                                                         onClose={hideToast}
+                                                        icon={
+                                                            <StandaloneStopwatchBoldIcon
+                                                                fill="#53b9ff"
+                                                                iconSize="md"
+                                                                className="rounded-full bg-[#2C9AFF3D]"
+                                                            />
+                                                        }
                                                     />
                                                 ),
                                                 variant: "default",

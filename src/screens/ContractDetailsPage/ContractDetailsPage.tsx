@@ -8,6 +8,9 @@ import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./compo
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useTradeActions } from "@/hooks/useTradeActions";
+import { useToastStore } from "@/stores/toastStore";
+import { TradeNotification } from "@/components/ui/trade-notification";
+import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -16,6 +19,8 @@ const MobileContractDetailsPage: React.FC = () => {
     const contractDetails = useTradeStore((state) => state.contractDetails);
     const tradeActions = useTradeActions();
     const [isClosing, setIsClosing] = useState(false);
+    const { toast, hideToast } = useToastStore();
+    const { isLandscape } = useOrientationStore();
 
     useEffect(() => {
         setHeaderVisible(false);
@@ -31,9 +36,53 @@ const MobileContractDetailsPage: React.FC = () => {
 
         setIsClosing(true);
         try {
-            await tradeActions.sell_contract(contractDetails.contract_id);
+            const response = await tradeActions.sell_contract(contractDetails.contract_id);
+            const isProfit = Number(response.data.profit) >= 0;
+
+            // Show success toast with TradeNotification
+            toast({
+                content: (
+                    <TradeNotification
+                        stake={`${isProfit ? "Profit" : "Loss"}: ${response.data.profit} ${contractDetails.bid_price_currency}`}
+                        market={contractDetails.instrument_id}
+                        type={
+                            contractDetails.variant.charAt(0).toUpperCase() +
+                            contractDetails.variant.slice(1)
+                        }
+                        onClose={hideToast}
+                        icon={
+                            <div>
+                                <StandaloneFlagCheckeredFillIcon
+                                    fill={Number(response.data.profit) >= 0 ? "#007a22" : "#FF4D4D"}
+                                    iconSize="sm"
+                                    className={`rounded-full ${isProfit ? "#0088323D" : "#E6190E3D"}`}
+                                />
+                            </div>
+                        }
+                    />
+                ),
+                variant: "default",
+                duration: 3000,
+                position: isLandscape ? "bottom-left" : "top-center",
+            });
+
             navigate(-1);
-        } catch (error) {
+        } catch (error: any) {
+            // Extract error message from API response if available
+            let errorMessage = "Failed to close contract";
+
+            if (error.response?.data?.errors?.[0]?.message) {
+                errorMessage = error.response.data.errors[0].message;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            // Show error toast
+            toast({
+                content: errorMessage,
+                variant: "error",
+            });
+
             console.error("Error closing contract:", error);
             setIsClosing(false);
         }
