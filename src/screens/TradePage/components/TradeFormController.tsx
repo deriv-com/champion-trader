@@ -143,7 +143,11 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     // Parse duration into value and unit
 
     // Subscribe to proposal stream at the top level of the component
-    const { data: proposalData, error: proposalError } = useProposalStream();
+    const {
+        data: proposalData,
+        error: proposalError,
+        isConnecting: isProposalConnecting,
+    } = useProposalStream();
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -564,7 +568,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.error !== null
                                     }
                                     loading={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        isProposalConnecting
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
@@ -687,7 +692,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.error !== null
                                     }
                                     loading={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        isProposalConnecting
                                         // ||
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
