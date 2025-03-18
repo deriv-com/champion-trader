@@ -17,7 +17,6 @@ const DesktopContractDetailsPage: React.FC = () => {
     const contractDetails = useTradeStore((state) => state.contractDetails);
     const tradeActions = useTradeActions();
     const [isClosing, setIsClosing] = useState(false);
-    const { toast, hideToast } = useToastStore();
     const { isLandscape } = useOrientationStore();
 
     useEffect(() => {
@@ -31,57 +30,14 @@ const DesktopContractDetailsPage: React.FC = () => {
     const handleCloseContract = async () => {
         if (!contractDetails?.contract_id) return;
 
-        setIsClosing(true);
         try {
-            const response = await tradeActions.sell_contract(contractDetails.contract_id);
-            const isProfit = Number(response.data.profit) >= 0;
-
-            // Show success toast with TradeNotification
-            toast({
-                content: (
-                    <TradeNotification
-                        stake={`${isProfit ? "Profit" : "Loss"}: ${response.data.profit} ${contractDetails.bid_price_currency}`}
-                        market={contractDetails.instrument_id}
-                        type={
-                            contractDetails.variant.charAt(0).toUpperCase() +
-                            contractDetails.variant.slice(1)
-                        }
-                        onClose={hideToast}
-                        icon={
-                            <div>
-                                <StandaloneFlagCheckeredFillIcon
-                                    fill={Number(response.data.profit) >= 0 ? "#007a22" : "#FF4D4D"}
-                                    iconSize="sm"
-                                    className={`rounded-full ${isProfit ? "#0088323D" : "#E6190E3D"}`}
-                                />
-                            </div>
-                        }
-                    />
-                ),
-                variant: "default",
-                duration: 3000,
-                position: isLandscape ? "bottom-left" : "top-center",
+            await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
+                setLoading: setIsClosing,
+                onSuccess: () => navigate(-1),
+                onError: (error: unknown) => console.error("Error closing contract:", error),
             });
-
-            navigate(-1);
-        } catch (error: any) {
-            // Extract error message from API response if available
-            let errorMessage = "Failed to close contract";
-
-            if (error.response?.data?.errors?.[0]?.message) {
-                errorMessage = error.response.data.errors[0].message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            // Show error toast
-            toast({
-                content: errorMessage,
-                variant: "error",
-            });
-
-            console.error("Error closing contract:", error);
-            setIsClosing(false);
+        } catch (error) {
+            // Error handling is done in the hook
         }
     };
 

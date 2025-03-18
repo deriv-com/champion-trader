@@ -32,7 +32,6 @@ export const PositionsPanel: FC = () => {
     // Filter logic (simplified for now)
     const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
-    const { toast, hideToast } = useToastStore();
     const { isLandscape } = useOrientationStore();
 
     const handleFilterSelect = (filter: string) => {
@@ -47,60 +46,17 @@ export const PositionsPanel: FC = () => {
         try {
             console.log("Closing contract:", contractId);
 
-            // Set loading state
-            setClosingContracts((prev) => ({ ...prev, [contractId]: true }));
-
-            // Call the API
-            const response = await sell_contract(contractId);
-            console.log("Sell contract response:", response);
-            const isProfit = Number(response.data.profit) >= 0;
-
-            // Show success toast with TradeNotification
-            toast({
-                content: (
-                    <TradeNotification
-                        stake={`${isProfit ? "Profit" : "Loss"}: ${response.data.profit} ${position.details.bid_price_currency}`}
-                        market={position.details.instrument_name || position.details.instrument_id}
-                        type={
-                            position.details.variant.charAt(0).toUpperCase() +
-                            position.details.variant.slice(1)
-                        }
-                        onClose={hideToast}
-                        icon={
-                            <div>
-                                <StandaloneFlagCheckeredFillIcon
-                                    fill={isProfit ? "#4DBC6B" : "#0088323D"}
-                                    iconSize="sm"
-                                    className={`rounded-full ${isProfit ? "#0088323D" : "#E6190E3D"}`}
-                                />
-                            </div>
-                        }
-                    />
-                ),
-                variant: "default",
-                duration: 3000,
-                position: isLandscape ? "bottom-left" : "top-center",
-            });
-        } catch (error: any) {
-            // Extract error message from API response if available
-            let errorMessage = "Failed to close contract";
-
-            if (error.response?.data?.errors?.[0]?.message) {
-                errorMessage = error.response.data.errors[0].message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-
-            // Show error toast
-            toast({
-                content: errorMessage,
-                variant: "error",
+            // Use the enhanced sell_contract function
+            await sell_contract(contractId, position.details, {
+                setLoading: (isLoading) => {
+                    setClosingContracts((prev) => ({ ...prev, [contractId]: isLoading }));
+                },
+                onError: (error: unknown) => console.error("Error closing contract:", error),
             });
 
-            console.error("Error closing contract:", error);
-        } finally {
-            // Clear loading state
-            setClosingContracts((prev) => ({ ...prev, [contractId]: false }));
+            console.log("Contract closed successfully");
+        } catch (error) {
+            // Error handling is done in the hook
         }
     };
 
