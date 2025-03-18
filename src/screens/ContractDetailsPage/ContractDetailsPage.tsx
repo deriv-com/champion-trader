@@ -8,9 +8,6 @@ import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./compo
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useTradeActions } from "@/hooks/useTradeActions";
-import { useToastStore } from "@/stores/toastStore";
-import { TradeNotification } from "@/components/ui/trade-notification";
-import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -19,7 +16,6 @@ const MobileContractDetailsPage: React.FC = () => {
     const contractDetails = useTradeStore((state) => state.contractDetails);
     const tradeActions = useTradeActions();
     const [isClosing, setIsClosing] = useState(false);
-    const { isLandscape } = useOrientationStore();
 
     useEffect(() => {
         setHeaderVisible(false);
