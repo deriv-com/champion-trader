@@ -11,6 +11,8 @@ import {
     PositionMapper,
     PositionProfitLoss,
 } from "@/components/PositionComponents";
+import { useTradeActions } from "@/hooks";
+import { useToastStore } from "@/stores/toastStore";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -26,10 +28,44 @@ export const PositionsPanel: FC = () => {
 
     // Filter logic (simplified for now)
     const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
+    const { toast } = useToastStore();
 
     const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
         // Filter implementation would go here
+    };
+
+    const { sell_contract } = useTradeActions();
+
+    // Handle closing a contract
+    const handleCloseContract = async (contractId: string) => {
+        try {
+            console.log("Closing contract:", contractId);
+
+            // Set loading state
+            setClosingContracts((prev) => ({ ...prev, [contractId]: true }));
+
+            // Call the API
+            const response = await sell_contract(contractId);
+            console.log("Sell contract response:", response);
+
+            // Show success toast
+            toast({
+                content: `Successfully closed contract: ${contractId}`,
+                variant: "success",
+            });
+        } catch (error) {
+            // Show error toast
+            toast({
+                content: error instanceof Error ? error.message : "Failed to close contract",
+                variant: "error",
+            });
+            console.error("Error closing contract:", error);
+        } finally {
+            // Clear loading state
+            setClosingContracts((prev) => ({ ...prev, [contractId]: false }));
+        }
     };
 
     return (
@@ -105,7 +141,10 @@ export const PositionsPanel: FC = () => {
                                     contract={position}
                                     containerClassName="bg-transparent shadow-none p-0"
                                     showCloseButton={isOpenTab && position.details.is_valid_to_sell}
-                                    onClose={(id) => console.log("Close action triggered for", id)}
+                                    onClose={(id) => {
+                                        // Prevent navigation when clicking the close button
+                                        handleCloseContract(id);
+                                    }}
                                 />
                             </div>
                         )}

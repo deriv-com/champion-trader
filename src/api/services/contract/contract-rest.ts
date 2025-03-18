@@ -26,13 +26,23 @@ export const buyContract = async (
 
 /**
  * Sell a contract
- * @param params Sell contract request parameters
+ * @param params SellContractRequest containing contract_id and optional account_uuid
  * @returns Promise with sell contract response
  */
 export const sellContract = async (params: SellContractRequest): Promise<SellContractResponse> => {
+    // Extract parameters for query params
+    const { contract_id, account_uuid } = params;
+
+    // Create query parameters object
+    const queryParams = {
+        contract_id,
+        ...(account_uuid ? { account_uuid } : {}),
+    };
+
     const response = await apiClient.post<SellContractResponse>(
         "/v1/trading/contracts/sell",
-        params
+        {}, // Empty request body as per API spec
+        { params: queryParams } // All parameters as query params
     );
     return response.data;
 };

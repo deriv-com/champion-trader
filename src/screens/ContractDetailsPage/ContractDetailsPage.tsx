@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
@@ -6,11 +6,16 @@ import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useTradeActions } from "@/hooks/useTradeActions";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
     const setHeaderVisible = useHeaderStore((state) => state.setIsVisible);
     const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible);
+    const contractDetails = useTradeStore((state) => state.contractDetails);
+    const tradeActions = useTradeActions();
+    const [isClosing, setIsClosing] = useState(false);
 
     useEffect(() => {
         setHeaderVisible(false);
@@ -20,6 +25,19 @@ const MobileContractDetailsPage: React.FC = () => {
             setBottomNavVisible(true);
         };
     }, [setHeaderVisible, setBottomNavVisible]);
+
+    const handleCloseContract = async () => {
+        if (!contractDetails?.contract_id) return;
+
+        setIsClosing(true);
+        try {
+            await tradeActions.sell_contract(contractDetails.contract_id);
+            navigate(-1);
+        } catch (error) {
+            console.error("Error closing contract:", error);
+            setIsClosing(false);
+        }
+    };
 
     return (
         <div className="w-full bg-theme-secondary h-screen flex flex-col">
@@ -38,10 +56,16 @@ const MobileContractDetailsPage: React.FC = () => {
                 <div className="fixed bottom-1 left-0 right-0 z-[60]">
                     <div className="mx-2 my-2 text-center">
                         <button
-                            onClick={() => navigate(-1)}
-                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+                            onClick={handleCloseContract}
+                            disabled={
+                                isClosing || !contractDetails?.contract_id
+                                // Temporarily removed: !contractDetails?.is_valid_to_sell
+                            }
+                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md disabled:text-theme-muted"
                         >
-                            Close
+                            {isClosing
+                                ? "Closing..."
+                                : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
                         </button>
                     </div>
                 </div>

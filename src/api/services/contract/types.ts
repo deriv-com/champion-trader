@@ -47,21 +47,28 @@ export interface BuyContractResponse {
 }
 
 /**
- * Request parameters for selling a contract
+ * Query parameters for selling a contract
+ * According to API spec, contract_id and account_uuid should be query parameters
  */
 export interface SellContractRequest {
     contract_id: string;
-    price?: number;
+    account_uuid?: string;
 }
 
 /**
  * Response from sell contract API
  */
 export interface SellContractResponse {
-    contract_id: string;
-    price: number;
-    profit: number;
-    // Add other sell response properties as needed
+    data: {
+        contract_id: string;
+        product_id: string;
+        buy_price: string;
+        buy_time: number;
+        sell_price: string;
+        sell_time: number;
+        profit: string;
+        contract_details: ContractDetails;
+    };
 }
 
 // Response structure for open contracts

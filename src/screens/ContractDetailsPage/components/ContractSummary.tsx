@@ -31,6 +31,7 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
     //     parseFloat(contractDetails.potential_payout || "0") -
     //     parseFloat(contractDetails.stake || "0");
     const handleClose = (e: React.MouseEvent) => {
+        console.log("handleClose in ContractSummary");
         e.stopPropagation();
         if (onClose && contractData.contractId) {
             onClose(contractData.contractId);
