@@ -19,6 +19,7 @@ export const TradeNotification: React.FC<TradeNotificationProps> = ({
         <div className="flex items-start gap-4 bg-black text-white p-4 rounded-lg w-[320px]">
             <div className="rounded-full bg-primary/10 p-2">{icon}</div>
             <div className="flex-1">
+                <div className="font-semibold text-base">{stake}</div>
                 <div className="text-sm text-gray-400">
                     {type} - {market}
                 </div>

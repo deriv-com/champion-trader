@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useTradeActions } from "../useTradeActions";
 import { useBuyContract, useSellContract } from "../contract/useContract";

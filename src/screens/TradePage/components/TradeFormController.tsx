@@ -593,7 +593,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                             toast({
                                                 content: (
                                                     <TradeNotification
-                                                        stake={`${stake} ${currency}`}
+                                                        stake={`Stake: ${stake} ${currency}`}
                                                         market={instrument}
                                                         type={button.title}
                                                         onClose={hideToast}
@@ -717,7 +717,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                             toast({
                                                 content: (
                                                     <TradeNotification
-                                                        stake={`${stake} ${currency}`}
+                                                        stake={`Stake: ${stake} ${currency}`}
                                                         market={instrument}
                                                         type={button.title}
                                                         onClose={hideToast}

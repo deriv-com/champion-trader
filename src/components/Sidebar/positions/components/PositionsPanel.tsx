@@ -12,10 +12,6 @@ import {
     PositionProfitLoss,
 } from "@/components/PositionComponents";
 import { useTradeActions } from "@/hooks";
-import { useToastStore } from "@/stores/toastStore";
-import { TradeNotification } from "@/components/ui/trade-notification";
-import { useOrientationStore } from "@/stores/orientationStore";
-import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -32,7 +28,6 @@ export const PositionsPanel: FC = () => {
     // Filter logic (simplified for now)
     const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
-    const { isLandscape } = useOrientationStore();
 
     const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
