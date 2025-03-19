@@ -6,6 +6,7 @@ import { TradeButton } from "@/components/TradeButton";
 import { ResponsiveTradeParamLayout } from "@/components/ui/responsive-trade-param-layout";
 import { useTradeStore } from "@/stores/tradeStore";
 import { tradeTypeConfigs } from "@/config/tradeTypes";
+import { useTradeActions } from "@/hooks/useTradeActions";
 import { useClientStore } from "@/stores/clientStore";
 import { HowToTrade } from "@/components/HowToTrade";
 import { TradeNotification } from "@/components/ui/trade-notification";
@@ -14,6 +15,7 @@ import { useProductConfig } from "@/hooks/product/useProductConfig";
 import { useProposalStream } from "@/hooks/proposal/useProposal";
 import { validateStake } from "@/components/Stake/utils/validation";
 import { parseStakeAmount } from "@/utils/stake";
+import { StandaloneStopwatchBoldIcon } from "@deriv/quill-icons";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -126,13 +128,82 @@ const validateTradeParameters = (
     return { isValid: true, errorMessage: null };
 };
 
+/**
+ * Helper function to handle trade button clicks
+ * Encapsulates common logic for trade actions, sidebar updates, and notifications
+ *
+ * @param params - Parameters needed for the trade action
+ * @returns A promise that resolves when the action is complete
+ */
+const handleTradeClick = async ({
+    isLoggedIn,
+    tradeActions,
+    actionName,
+    buttonTitle,
+    isLandscape,
+    setSidebar,
+    stake,
+    currency,
+    instrument,
+    toast,
+    hideToast,
+}: {
+    isLoggedIn: boolean;
+    tradeActions: any;
+    actionName: string;
+    buttonTitle: string;
+    isLandscape: boolean;
+    setSidebar: (sidebar: "positions" | "menu" | null) => void;
+    stake: string;
+    currency: string;
+    instrument: string;
+    toast: (params: any) => void;
+    hideToast: () => void;
+}): Promise<void> => {
+    if (!isLoggedIn) return;
+
+    try {
+        // Call the API
+        await tradeActions[actionName]();
+
+        // Open positions sidebar only in desktop view
+        if (isLandscape) {
+            setSidebar("positions");
+        }
+
+        // Show trade notification
+        toast({
+            content: (
+                <TradeNotification
+                    stake={`Stake: ${stake} ${currency}`}
+                    market={instrument}
+                    type={buttonTitle}
+                    onClose={hideToast}
+                    icon={
+                        <StandaloneStopwatchBoldIcon
+                            fill="#53b9ff"
+                            iconSize="md"
+                            className="rounded-full bg-[#2C9AFF3D]"
+                        />
+                    }
+                />
+            ),
+            variant: "default",
+            duration: 3000,
+            position: isLandscape ? "bottom-left" : "top-center",
+        });
+    } catch (error) {
+        // Error is already handled in the trade action
+    }
+};
+
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
     const { trade_type, instrument, productConfig, setPayouts, stake, setStake } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
     const { setSidebar } = useMainLayoutStore();
     const { toast, hideToast } = useToastStore();
     const { currency, isLoggedIn } = useClientStore();
-    // const tradeActions = useTradeActions()
+    const tradeActions = useTradeActions();
     const config = tradeTypeConfigs[trade_type];
 
     // Track stake validation errors separately to persist them across payout updates
@@ -141,7 +212,11 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     // Parse duration into value and unit
 
     // Subscribe to proposal stream at the top level of the component
-    const { data: proposalData, error: proposalError } = useProposalStream();
+    const {
+        data: proposalData,
+        error: proposalError,
+        isConnecting: isProposalConnecting,
+    } = useProposalStream();
 
     const [buttonStates, setButtonStates] = useState<ButtonStates>(() => {
         // Initialize states for all buttons in the current trade type
@@ -562,7 +637,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.error !== null
                                     }
                                     loading={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        isProposalConnecting
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
                                     }
@@ -575,31 +651,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                               }
                                             : buttonStates[button.actionName]?.error
                                     }
-                                    onClick={() => {
-                                        if (!isLoggedIn) return;
-                                        // Comment out actual API call but keep the success flow
-                                        // await tradeActions[button.actionName]()
-
-                                        // Open positions sidebar only in desktop view
-                                        if (isLandscape) {
-                                            setSidebar("positions");
-                                        }
-
-                                        // Show trade notification
-                                        toast({
-                                            content: (
-                                                <TradeNotification
-                                                    stake={`${10.0} ${currency}`}
-                                                    market="Volatility 75 Index"
-                                                    type={button.title}
-                                                    onClose={hideToast}
-                                                />
-                                            ),
-                                            variant: "default",
-                                            duration: 3000,
-                                            position: isLandscape ? "bottom-left" : "top-center",
-                                        });
-                                    }}
+                                    onClick={() =>
+                                        handleTradeClick({
+                                            isLoggedIn,
+                                            tradeActions,
+                                            actionName: button.actionName,
+                                            buttonTitle: button.title,
+                                            isLandscape,
+                                            setSidebar,
+                                            stake,
+                                            currency,
+                                            instrument,
+                                            toast,
+                                            hideToast,
+                                        })
+                                    }
                                 />
                             </Suspense>
                         ))}
@@ -671,7 +737,8 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                         // buttonStates[button.actionName]?.error !== null
                                     }
                                     loading={
-                                        buttonStates[button.actionName]?.loading
+                                        buttonStates[button.actionName]?.loading ||
+                                        isProposalConnecting
                                         // ||
                                         // Commenting it as api is not working we'll enable it once api is working
                                         // buttonStates[button.actionName]?.reconnecting
@@ -685,31 +752,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                               }
                                             : buttonStates[button.actionName]?.error
                                     }
-                                    onClick={() => {
-                                        if (!isLoggedIn) return;
-                                        // Comment out actual API call but keep the success flow
-                                        // await tradeActions[button.actionName]()
-
-                                        // Open positions sidebar only in desktop view
-                                        if (isLandscape) {
-                                            setSidebar("positions");
-                                        }
-
-                                        // Show trade notification
-                                        toast({
-                                            content: (
-                                                <TradeNotification
-                                                    stake={`${10.0} ${currency}`}
-                                                    market="Volatility 75 Index"
-                                                    type={button.title}
-                                                    onClose={hideToast}
-                                                />
-                                            ),
-                                            variant: "default",
-                                            duration: 3000,
-                                            position: isLandscape ? "bottom-left" : "top-center",
-                                        });
-                                    }}
+                                    onClick={() =>
+                                        handleTradeClick({
+                                            isLoggedIn,
+                                            tradeActions,
+                                            actionName: button.actionName,
+                                            buttonTitle: button.title,
+                                            isLandscape,
+                                            setSidebar,
+                                            stake,
+                                            currency,
+                                            instrument,
+                                            toast,
+                                            hideToast,
+                                        })
+                                    }
                                 />
                             </Suspense>
                         ))}

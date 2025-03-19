@@ -69,11 +69,19 @@ export const useContractSummaryData = (contract?: Contract): ContractData => {
         }
     } else {
         // Fall back to contractDetails from tradeStore
-        ({ type, market, stake, profit } = contractDetails!);
+        // Map properties correctly from contractDetails
+        type = contractDetails!.variant.charAt(0).toUpperCase() + contractDetails!.variant.slice(1);
+        market = contractDetails!.instrument_id;
+        stake = contractDetails!.stake;
+        // Calculate profit or use a default value
+        profit = (
+            parseFloat(contractDetails!.bid_price) - parseFloat(contractDetails!.buy_price)
+        ).toFixed(2);
         duration = "0/10 ticks";
-        currency = "USD";
-        isOpen = true;
-        isValidToSell = false;
+        currency = contractDetails!.bid_price_currency;
+        isOpen = !contractDetails!.is_sold && !contractDetails!.is_expired;
+        isValidToSell = contractDetails!.is_valid_to_sell;
+        contractId = contractDetails!.contract_id;
     }
 
     return {

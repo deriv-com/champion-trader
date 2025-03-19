@@ -1,5 +1,6 @@
 import React from "react";
 import { Contract } from "@/api/services/contract/types";
+import { formatTime, formatDate } from "@/utils/date-format";
 
 interface EntryExitDetailsProps {
     contract: Contract;
@@ -7,24 +8,6 @@ interface EntryExitDetailsProps {
 
 export const EntryExitDetails: React.FC<EntryExitDetailsProps> = ({ contract }) => {
     const { details } = contract;
-
-    // Format timestamps to "01 Jan 2024" format
-    const formatDate = (timestamp: number) => {
-        if (!timestamp) return "N/A";
-        const date = new Date(timestamp);
-        return date.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
-    };
-
-    // Format timestamps to "16:20:02 GMT" format
-    const formatTime = (timestamp: number) => {
-        if (!timestamp) return "N/A";
-        const date = new Date(timestamp);
-        return date.toTimeString().substring(0, 8) + " GMT";
-    };
 
     const entryExitDetails = [
         {

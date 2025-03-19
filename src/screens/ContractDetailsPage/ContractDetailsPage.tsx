@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContractDetails } from "@/hooks/contract/useContract";
 import { useHeaderStore } from "@/stores/headerStore";
@@ -7,6 +7,8 @@ import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
 import { Header, ContractDetailsPageSummary } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useTradeActions } from "@/hooks/useTradeActions";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -14,6 +16,9 @@ const MobileContractDetailsPage: React.FC = () => {
     const { contract, loading, error } = useContractDetails(contract_id || "");
     const setHeaderVisible = useHeaderStore((state) => state.setIsVisible);
     const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible);
+    const contractDetails = useTradeStore((state) => state.contractDetails);
+    const tradeActions = useTradeActions();
+    const [isClosing, setIsClosing] = useState(false);
 
     useEffect(() => {
         setHeaderVisible(false);
@@ -23,6 +28,20 @@ const MobileContractDetailsPage: React.FC = () => {
             setBottomNavVisible(true);
         };
     }, [setHeaderVisible, setBottomNavVisible]);
+
+    const handleCloseContract = async () => {
+        if (!contractDetails?.contract_id) return;
+
+        try {
+            await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
+                setLoading: setIsClosing,
+                onSuccess: () => navigate(-1),
+                onError: (error: unknown) => console.error("Error closing contract:", error),
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
+    };
 
     return (
         <div className="w-full bg-theme-secondary h-screen flex flex-col">
@@ -45,10 +64,18 @@ const MobileContractDetailsPage: React.FC = () => {
                 <div className="fixed bottom-1 left-0 right-0 z-[60]">
                     <div className="mx-2 my-2 text-center">
                         <button
-                            onClick={() => navigate(-1)}
-                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md"
+                            onClick={handleCloseContract}
+                            disabled={
+                                isClosing ||
+                                !contractDetails?.contract_id ||
+                                !contractDetails?.is_valid_to_sell ||
+                                contractDetails?.is_sold
+                            }
+                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md disabled:text-theme-muted"
                         >
-                            Close
+                            {isClosing
+                                ? "Closing..."
+                                : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
                         </button>
                     </div>
                 </div>

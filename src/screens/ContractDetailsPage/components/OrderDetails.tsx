@@ -15,7 +15,10 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ contract }) => {
         },
         { label: "Barrier", value: details.barrier || "N/A" },
         { label: "Stake", value: `${details.stake} ${details.bid_price_currency}` },
-        { label: "Potential payout", value: details.potential_payout || "N/A" },
+        {
+            label: "Potential payout",
+            value: `${details.potential_payout} ${details.bid_price_currency}` || "N/A",
+        },
     ];
 
     return (
