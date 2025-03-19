@@ -67,11 +67,11 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
                 />
             </div>
 
-            {showCloseButton && contractData.isOpen && contractData.isValidToSell && (
+            {showCloseButton && contractData.isOpen && (
                 <button
                     className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleClose}
-                    disabled={isClosing}
+                    disabled={isClosing || !contractData.isValidToSell}
                 >
                     {isClosing
                         ? "Closing..."
