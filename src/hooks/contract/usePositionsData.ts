@@ -63,9 +63,19 @@ export const usePositionsData = () => {
     // Calculate total profit/loss
     const totalProfitLoss = calculateTotalProfitLoss(openPositions);
 
+    // Sort open positions by contract_start_time (newest first)
+    const sortedOpenPositions = [...openPositions].sort(
+        (a, b) => b.details.contract_start_time - a.details.contract_start_time
+    );
+
+    // Sort closed positions by contract_start_time (newest first)
+    const sortedClosedPositions = [...closedPositions].sort(
+        (a, b) => b.details.contract_start_time - a.details.contract_start_time
+    );
+
     return {
-        openPositions,
-        closedPositions,
+        openPositions: sortedOpenPositions,
+        closedPositions: sortedClosedPositions,
         positionsLoading,
         positionsError,
         totalProfitLoss,
