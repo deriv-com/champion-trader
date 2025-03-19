@@ -53,11 +53,9 @@ const MobileContractDetailsPage: React.FC = () => {
                         loading={loading}
                         error={error}
                     />
-                    {!loading && contract && (
-                        <div className="min-h-[400px] mt-4">
-                            <ContractDetailsChart contract={contract} />
-                        </div>
-                    )}
+                    <div className="min-h-[400px] mt-4">
+                        <ContractDetailsChart contract={contract} />
+                    </div>
                 </div>
 
                 {/* Close Button */}
