@@ -6,4 +6,3 @@ export { OrderDetails } from "./OrderDetails";
 export { Chart } from "./Chart";
 export { Payout } from "./Payout";
 export { EntryExitDetails } from "./EntryExitDetails";
-export { ContractDetailsPageSummary } from "./ContractDetailsPageSummary";

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContractDetails } from "@/hooks/contract/useContract";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { X } from "lucide-react";
-import { ContractDetailsPageSummary } from "./components";
+import { ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useTradeActions } from "@/hooks/useTradeActions";
@@ -56,11 +56,31 @@ const DesktopContractDetailsPage: React.FC = () => {
                         className="flex-1 overflow-y-auto pb-20 space-y-4 bg-theme-secondary scrollbar-thin"
                         data-testid="content-area"
                     >
-                        <ContractDetailsPageSummary
-                            contract={contract}
-                            loading={loading}
-                            error={error}
-                        />
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading contract details...</p>
+                                </div>
+                                <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading order details...</p>
+                                </div>
+                                <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading entry & exit details...</p>
+                                </div>
+                            </div>
+                        ) : error || !contract ? (
+                            <div className="space-y-4">
+                                <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Failed to load contract details</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <ContractSummary contract={contract} />
+                                <OrderDetails contract={contract} />
+                                <EntryExitDetails contract={contract} />
+                            </>
+                        )}
                     </div>
                     <div
                         className="absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]"

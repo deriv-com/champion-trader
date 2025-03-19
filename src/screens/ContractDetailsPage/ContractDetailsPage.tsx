@@ -4,7 +4,7 @@ import { useContractDetails } from "@/hooks/contract/useContract";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
-import { Header, ContractDetailsPageSummary } from "./components";
+import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useTradeStore } from "@/stores/tradeStore";
@@ -48,14 +48,39 @@ const MobileContractDetailsPage: React.FC = () => {
             <Header />
             <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
                 <div className="p-2 pb-[72px]">
-                    <ContractDetailsPageSummary
-                        contract={contract}
-                        loading={loading}
-                        error={error}
-                    />
-                    <div className="min-h-[400px] mt-4">
-                        <ContractDetailsChart contract={contract} />
-                    </div>
+                    {loading ? (
+                        <div className="space-y-4">
+                            <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                <p>Loading contract details...</p>
+                            </div>
+                            <div className="min-h-[400px] mt-4 bg-theme rounded-lg">
+                                <div className="h-full flex items-center justify-center">
+                                    <p>Loading chart...</p>
+                                </div>
+                            </div>
+                            <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                <p>Loading order details...</p>
+                            </div>
+                            <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                <p>Loading entry & exit details...</p>
+                            </div>
+                        </div>
+                    ) : error || !contract ? (
+                        <div className="space-y-4">
+                            <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                <p>Failed to load contract details</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <ContractSummary contract={contract} />
+                            <div className="min-h-[400px] mt-4">
+                                <ContractDetailsChart contract={contract} />
+                            </div>
+                            <OrderDetails contract={contract} />
+                            <EntryExitDetails contract={contract} />
+                        </>
+                    )}
                 </div>
 
                 {/* Close Button */}
