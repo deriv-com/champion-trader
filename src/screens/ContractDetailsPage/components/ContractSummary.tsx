@@ -48,7 +48,7 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
 
     return (
         <div
-            className={`${containerClassName || defaultContainerClass} ${className}`}
+            className={`${containerClassName || defaultContainerClass} ${className} p-4`}
             style={containerClassName ? {} : containerStyle}
         >
             <div className="flex justify-between">
