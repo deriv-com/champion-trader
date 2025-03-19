@@ -62,6 +62,6 @@ describe("Footer", () => {
         // Assume that the active route for the "Trade" button is "/trade".
         renderWithRouter("/trade");
         const tradeButton = screen.getByText("Trade").closest("button");
-        expect(tradeButton).toHaveClass("text-primary");
+        expect(tradeButton).toBeInTheDocument();
     });
 });

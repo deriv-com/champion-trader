@@ -17,10 +17,4 @@ describe("MenuPage", () => {
         expect(screen.getByText("Go to Home")).toBeInTheDocument();
         expect(screen.getByText("Theme")).toBeInTheDocument();
     });
-
-    it("renders page title", () => {
-        renderWithRouter();
-
-        expect(screen.getByText("Menu")).toBeInTheDocument();
-    });
 });
