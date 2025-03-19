@@ -1,13 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { X } from "lucide-react";
 import { ContractSummary, EntryExitDetails, OrderDetails } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useTradeActions } from "@/hooks/useTradeActions";
 
 const DesktopContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
     const { setSideNavVisible } = useMainLayoutStore();
+    const contractDetails = useTradeStore((state) => state.contractDetails);
+    const tradeActions = useTradeActions();
+    const [isClosing, setIsClosing] = useState(false);
 
     useEffect(() => {
         // Hide SideNav when component mounts
@@ -16,6 +21,19 @@ const DesktopContractDetailsPage: React.FC = () => {
         // Show SideNav when component unmounts
         return () => setSideNavVisible(true);
     }, [setSideNavVisible]);
+
+    const handleCloseContract = async () => {
+        if (!contractDetails?.contract_id) return;
+
+        try {
+            await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
+                setLoading: setIsClosing,
+                onSuccess: () => navigate(-1),
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
+    };
 
     return (
         <div
@@ -45,10 +63,18 @@ const DesktopContractDetailsPage: React.FC = () => {
                     >
                         <div className="max-w-[1200px] mx-auto">
                             <button
-                                onClick={() => navigate(-1)}
-                                className="w-full bg-action-button text-action-button py-3 rounded-lg"
+                                onClick={handleCloseContract}
+                                disabled={
+                                    isClosing ||
+                                    !contractDetails?.contract_id ||
+                                    !contractDetails?.is_valid_to_sell ||
+                                    contractDetails?.is_sold
+                                }
+                                className="w-full bg-action-button text-action-button py-3 rounded-lg disabled:opacity-50"
                             >
-                                Close
+                                {isClosing
+                                    ? "Closing..."
+                                    : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
                             </button>
                         </div>
                     </div>

@@ -23,7 +23,7 @@ const parseDuration = (durationString: string): [number, string] => {
 /**
  * Hook for subscribing to proposal stream
  * @param options Additional options for the subscription
- * @returns Subscription result with proposal data containing variants for rise and fall
+ * @returns Subscription result with proposal data containing variants for rise and fall, error, and connection state
  */
 export const useProposalStream = (options?: { enabled?: boolean }) => {
     // Get parameters directly from tradeStore
@@ -58,7 +58,7 @@ export const useProposalStream = (options?: { enabled?: boolean }) => {
     );
 
     // ALWAYS call useSSESubscription, but conditionally create the subscription
-    const { data, error } = useSSESubscription<ProposalData>(
+    const { data, error, isConnecting } = useSSESubscription<ProposalData>(
         (onData: (data: ProposalData) => void, onError: (error: any) => void) => {
             // Only create subscription if enabled
             if (!isEnabled) {
@@ -72,10 +72,10 @@ export const useProposalStream = (options?: { enabled?: boolean }) => {
         [isEnabled, proposalParams]
     );
 
-    // If not enabled, return null data and error
+    // If not enabled, return null data, error, and isConnecting as false
     if (!isEnabled) {
-        return { data: null, error: null };
+        return { data: null, error: null, isConnecting: false };
     }
 
-    return { data, error };
+    return { data, error, isConnecting };
 };

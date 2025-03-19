@@ -1,54 +1,74 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useNavigate } from "react-router-dom";
 import DesktopContractDetailsPage from "../DesktopContractDetailsPage";
 
 // Mock the router hook
+const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
-    useNavigate: jest.fn(),
+    useNavigate: () => mockNavigate,
+}));
+
+// Mock the stores
+const mockSetSideNavVisible = jest.fn();
+jest.mock("@/stores/mainLayoutStore", () => ({
+    useMainLayoutStore: () => ({
+        setSideNavVisible: mockSetSideNavVisible,
+    }),
+}));
+
+// Mock contract details
+const mockContractDetails = {
+    contract_id: "123",
+    bid_price: "1.90",
+    bid_price_currency: "USD",
+    is_valid_to_sell: true,
+};
+
+// Mock the tradeStore with a simple function that returns the mock data
+jest.mock("@/stores/tradeStore", () => ({
+    useTradeStore: () => ({
+        contractDetails: mockContractDetails,
+    }),
+}));
+
+// Mock the trade actions
+const mockSellContract = jest.fn();
+jest.mock("@/hooks/useTradeActions", () => ({
+    useTradeActions: () => ({
+        sell_contract: mockSellContract,
+    }),
 }));
 
 // Mock the components
 jest.mock("@/components/ContractDetailsChart/ContractDetailsChart", () => ({
-    ContractDetailsChart: () => <div>Chart placeholder</div>,
+    ContractDetailsChart: () => <div data-testid="chart-placeholder">Chart placeholder</div>,
 }));
 
-jest.mock(
-    "../components",
-    () => ({
-        ContractSummary: function ContractSummary() {
-            return React.createElement(
-                "div",
-                { "data-testid": "contract-summary" },
-                "Contract Summary"
-            );
-        },
-        OrderDetails: function OrderDetails() {
-            return React.createElement("div", { "data-testid": "order-details" }, "Order Details");
-        },
-        Payout: function Payout() {
-            return React.createElement("div", { "data-testid": "payout" }, "Payout");
-        },
-        EntryExitDetails: function EntryExitDetails() {
-            return React.createElement(
-                "div",
-                { "data-testid": "entry-exit-details" },
-                "Entry Exit Details"
-            );
-        },
-    }),
-    { virtual: true }
-);
+jest.mock("../components", () => ({
+    ContractSummary: () => <div data-testid="contract-summary">Contract Summary</div>,
+    OrderDetails: () => <div data-testid="order-details">Order Details</div>,
+    EntryExitDetails: () => <div data-testid="entry-exit-details">Entry Exit Details</div>,
+}));
+
+// Mock the X icon
+jest.mock("lucide-react", () => ({
+    X: () => <div data-testid="x-icon">X</div>,
+}));
 
 describe("DesktopContractDetailsPage", () => {
-    const mockNavigate = jest.fn();
-
     beforeEach(() => {
-        (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
-    });
-
-    afterEach(() => {
         jest.clearAllMocks();
+
+        // Setup mock implementation for sell_contract
+        mockSellContract.mockImplementation((contractId, _contractDetails, options) => {
+            if (options?.setLoading) {
+                options.setLoading(true);
+            }
+            if (options?.onSuccess) {
+                options.onSuccess();
+            }
+            return Promise.resolve({ data: { contract_id: contractId } });
+        });
     });
 
     it("renders all components correctly", () => {
@@ -63,28 +83,113 @@ describe("DesktopContractDetailsPage", () => {
         expect(screen.getByTestId("entry-exit-details")).toBeInTheDocument();
 
         // Check chart placeholder
-        expect(screen.getByText("Chart placeholder")).toBeInTheDocument();
+        expect(screen.getByTestId("chart-placeholder")).toBeInTheDocument();
 
-        // Check close button
-        expect(screen.getByText("Close")).toBeInTheDocument();
+        // Check close button (using a more flexible approach)
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeInTheDocument();
     });
 
-    it("navigates back when close button is clicked", () => {
-        render(<DesktopContractDetailsPage />);
+    it("sets side nav visibility on mount and unmount", () => {
+        const { unmount } = render(<DesktopContractDetailsPage />);
 
-        const closeButton = screen.getByText("Close");
-        fireEvent.click(closeButton);
+        // Check that setSideNavVisible was called with false on mount
+        expect(mockSetSideNavVisible).toHaveBeenCalledWith(false);
 
-        expect(mockNavigate).toHaveBeenCalledWith(-1);
+        // Unmount the component
+        unmount();
+
+        // Check that setSideNavVisible was called with true on unmount
+        expect(mockSetSideNavVisible).toHaveBeenCalledWith(true);
     });
 
     it("navigates back when header close button is clicked", () => {
         render(<DesktopContractDetailsPage />);
 
-        const headerCloseButton = screen.getByRole("button", { name: /close/i });
+        // Find the header close button (it's the button containing the X icon)
+        const headerCloseButton = screen.getByTestId("x-icon").closest("button");
+        if (!headerCloseButton) {
+            throw new Error("Header close button not found");
+        }
         fireEvent.click(headerCloseButton);
 
+        // Check that navigate was called with -1
         expect(mockNavigate).toHaveBeenCalledWith(-1);
+    });
+
+    it("shows 'Closing...' text when isClosing is true", () => {
+        // Mock React's useState to return isClosing as true
+        jest.spyOn(React, "useState").mockImplementationOnce(() => [true, jest.fn()]);
+
+        render(<DesktopContractDetailsPage />);
+
+        // Check that the button text is "Closing..."
+        expect(screen.getByText("Closing...")).toBeInTheDocument();
+    });
+
+    it("disables close contract button when contractDetails.contract_id is falsy", () => {
+        // Mock useTradeStore to return contractDetails without contract_id
+        jest.spyOn(require("@/stores/tradeStore"), "useTradeStore").mockReturnValueOnce({
+            contractDetails: {
+                bid_price: "1.90",
+                bid_price_currency: "USD",
+            },
+        });
+
+        render(<DesktopContractDetailsPage />);
+
+        // Find the close contract button and check it's disabled
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeDisabled();
+    });
+
+    it("disables close contract button when is_valid_to_sell is false", () => {
+        // Mock useTradeStore to return contractDetails with is_valid_to_sell set to false
+        jest.spyOn(require("@/stores/tradeStore"), "useTradeStore").mockReturnValueOnce({
+            contractDetails: {
+                contract_id: "123", // non-falsy to distinguish from the previous test
+                bid_price: "1.90",
+                bid_price_currency: "USD",
+                is_valid_to_sell: false,
+            },
+        });
+
+        render(<DesktopContractDetailsPage />);
+
+        // Find the close contract button and check it's disabled
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeDisabled();
+    });
+
+    it("disables close contract button when contract is already sold", () => {
+        // Mock useTradeStore to return contractDetails with is_sold set to true
+        jest.spyOn(require("@/stores/tradeStore"), "useTradeStore").mockReturnValueOnce({
+            contractDetails: {
+                contract_id: "123", // non-falsy to distinguish from the previous test
+                bid_price: "1.90",
+                bid_price_currency: "USD",
+                is_valid_to_sell: true, // would be valid to sell but already sold
+                is_sold: true,
+            },
+        });
+
+        render(<DesktopContractDetailsPage />);
+
+        // Find the close contract button and check it's disabled
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeDisabled();
+    });
+
+    it("renders components in correct order", () => {
+        render(<DesktopContractDetailsPage />);
+
+        const content = screen.getByTestId("content-area");
+        const children = Array.from(content.children);
+
+        // Check components are rendered in correct order
+        expect(children[0]).toHaveAttribute("data-testid", "contract-summary");
+        expect(children[1]).toHaveAttribute("data-testid", "order-details");
+        expect(children[2]).toHaveAttribute("data-testid", "entry-exit-details");
     });
 
     it("has correct layout structure", () => {
@@ -109,17 +214,5 @@ describe("DesktopContractDetailsPage", () => {
         expect(closeButtonContainer).toHaveClass(
             "absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]"
         );
-    });
-
-    it("renders in correct order", () => {
-        render(<DesktopContractDetailsPage />);
-
-        const content = screen.getByTestId("content-area");
-        const children = Array.from(content.children);
-
-        // Check components are rendered in correct order
-        expect(children[0]).toHaveAttribute("data-testid", "contract-summary");
-        expect(children[1]).toHaveAttribute("data-testid", "order-details");
-        expect(children[2]).toHaveAttribute("data-testid", "entry-exit-details");
     });
 });

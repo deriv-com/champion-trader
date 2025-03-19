@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ContractSummary } from "../ContractDetailsPage/components";
 import { usePositionsData } from "@/hooks/contract/usePositionsData";
+import { useTradeActions } from "@/hooks/useTradeActions";
 import {
     PositionLoadingState,
     PositionErrorState,
@@ -9,15 +10,43 @@ import {
     PositionMapper,
     PositionProfitLoss,
 } from "@/components/PositionComponents";
+import { useToastStore } from "@/stores/toastStore";
+import { TradeNotification } from "@/components/ui/trade-notification";
+import { useOrientationStore } from "@/stores/orientationStore";
+import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 
 const PositionsPage: React.FC = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
     const [swipedCard, setSwipedCard] = useState<string | null>(null);
+    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
     // Get positions data using the centralized hook
     const { openPositions, closedPositions, positionsLoading, positionsError, totalProfitLoss } =
         usePositionsData();
+
+    // Get trade actions including sell_contract
+    const tradeActions = useTradeActions();
+    const { isLandscape } = useOrientationStore();
+
+    // Handle closing a contract
+    const handleCloseContract = async (contractId: string) => {
+        // Find the position object for this contract ID
+        const position = openPositions.find((p) => p.contract_id === contractId);
+        if (!position) return;
+
+        try {
+            // Use the enhanced sell_contract function
+            await tradeActions.sell_contract(contractId, position.details, {
+                setLoading: (isLoading) => {
+                    setClosingContracts((prev) => ({ ...prev, [contractId]: isLoading }));
+                },
+                onError: (error: unknown) => console.error("Error closing contract:", error),
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
+    };
 
     const handleTouchStart = () => {
         setSwipedCard(null);
@@ -143,15 +172,16 @@ const PositionsPage: React.FC = () => {
                                     <button
                                         className={`absolute right-0 h-[104px] w-16 bg-red-600 text-xs text-white font-bold flex items-center justify-center transition-all duration-300 rounded-r-lg ${
                                             swipedCard === position.contract_id ? "flex" : "hidden"
-                                        }`}
-                                        onClick={() =>
-                                            console.log(
-                                                "Close action triggered for",
-                                                position.contract_id
-                                            )
-                                        }
+                                        } ${closingContracts[position.contract_id] ? "opacity-75" : ""}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent navigation
+                                            handleCloseContract(position.contract_id);
+                                        }}
+                                        disabled={closingContracts[position.contract_id]}
                                     >
-                                        Close
+                                        {closingContracts[position.contract_id]
+                                            ? "Closing..."
+                                            : "Close"}
                                     </button>
                                 )}
                             </div>

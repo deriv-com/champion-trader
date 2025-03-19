@@ -11,6 +11,7 @@ import {
     PositionMapper,
     PositionProfitLoss,
 } from "@/components/PositionComponents";
+import { useTradeActions } from "@/hooks";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -26,10 +27,28 @@ export const PositionsPanel: FC = () => {
 
     // Filter logic (simplified for now)
     const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
     const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
         // Filter implementation would go here
+    };
+
+    const { sell_contract } = useTradeActions();
+
+    // Handle closing a contract
+    const handleCloseContract = async (contractId: string, position: any) => {
+        try {
+            // Use the enhanced sell_contract function
+            await sell_contract(contractId, position.details, {
+                setLoading: (isLoading) => {
+                    setClosingContracts((prev) => ({ ...prev, [contractId]: isLoading }));
+                },
+                onError: (error: unknown) => console.error("Error closing contract:", error),
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
     };
 
     return (
@@ -105,7 +124,11 @@ export const PositionsPanel: FC = () => {
                                     contract={position}
                                     containerClassName="bg-transparent shadow-none p-0"
                                     showCloseButton={isOpenTab && position.details.is_valid_to_sell}
-                                    onClose={(id) => console.log("Close action triggered for", id)}
+                                    isClosing={closingContracts[position.contract_id]}
+                                    onClose={(id) => {
+                                        // Prevent navigation when clicking the close button
+                                        handleCloseContract(id, position);
+                                    }}
                                 />
                             </div>
                         )}
