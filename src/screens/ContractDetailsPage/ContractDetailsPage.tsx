@@ -35,7 +35,6 @@ const MobileContractDetailsPage: React.FC = () => {
         try {
             await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
                 setLoading: setIsClosing,
-                onSuccess: () => navigate(-1),
                 onError: (error: unknown) => console.error("Error closing contract:", error),
             });
         } catch (error) {
@@ -83,25 +82,24 @@ const MobileContractDetailsPage: React.FC = () => {
                     )}
                 </div>
 
-                {/* Close Button */}
-                <div className="fixed bottom-1 left-0 right-0 z-[60]">
-                    <div className="mx-2 my-2 text-center">
-                        <button
-                            onClick={handleCloseContract}
-                            disabled={
-                                isClosing ||
-                                !contractDetails?.contract_id ||
-                                !contractDetails?.is_valid_to_sell ||
-                                contractDetails?.is_sold
-                            }
-                            className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md disabled:text-theme-muted"
-                        >
-                            {isClosing
-                                ? "Closing..."
-                                : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
-                        </button>
-                    </div>
-                </div>
+                {/* Close Button - Only shown if contract is not sold/expired */}
+                {!loading &&
+                    contract &&
+                    !contract.details.is_sold &&
+                    !contract.details.is_expired && (
+                        <div className="fixed bottom-1 left-0 right-0 z-[60]">
+                            <div className="mx-2 my-2 text-center">
+                                <button
+                                    onClick={handleCloseContract}
+                                    className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md disabled:text-theme-muted"
+                                >
+                                    {isClosing
+                                        ? "Closing..."
+                                        : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
+                                </button>
+                            </div>
+                        </div>
+                    )}
             </div>
         </div>
     );

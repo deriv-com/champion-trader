@@ -43,15 +43,15 @@ export const Toast = ({
                 {
                     "animate-in fade-in slide-in-from-bottom-4": position.startsWith("bottom"),
                     "animate-in fade-in slide-in-from-top-4": position.startsWith("top"),
-                },
-                // Variant-specific styling
-                {
-                    "bg-green-500 text-white": variant === "success",
-                    "bg-red-500 text-white": variant === "error",
-                    "bg-amber-500 text-white": variant === "warning",
-                    "bg-blue-500 text-white": variant === "info",
-                    "bg-gray-700 text-white": variant === "default",
                 }
+                // Variant-specific styling
+                // {
+                //     "bg-green-500 text-white": variant === "success",
+                //     "bg-red-500 text-white": variant === "error",
+                //     "bg-amber-500 text-white": variant === "warning",
+                //     "bg-blue-500 text-white": variant === "info",
+                //     "bg-gray-700 text-white": variant === "default",
+                // }
             )}
             role="alert"
         >
