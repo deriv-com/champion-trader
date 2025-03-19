@@ -29,7 +29,6 @@ const DesktopContractDetailsPage: React.FC = () => {
             await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
                 setLoading: setIsClosing,
                 onSuccess: () => navigate(-1),
-                onError: (error: unknown) => console.error("Error closing contract:", error),
             });
         } catch (error) {
             // Error handling is done in the hook

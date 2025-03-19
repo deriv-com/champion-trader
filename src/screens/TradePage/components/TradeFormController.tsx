@@ -128,6 +128,75 @@ const validateTradeParameters = (
     return { isValid: true, errorMessage: null };
 };
 
+/**
+ * Helper function to handle trade button clicks
+ * Encapsulates common logic for trade actions, sidebar updates, and notifications
+ *
+ * @param params - Parameters needed for the trade action
+ * @returns A promise that resolves when the action is complete
+ */
+const handleTradeClick = async ({
+    isLoggedIn,
+    tradeActions,
+    actionName,
+    buttonTitle,
+    isLandscape,
+    setSidebar,
+    stake,
+    currency,
+    instrument,
+    toast,
+    hideToast,
+}: {
+    isLoggedIn: boolean;
+    tradeActions: any;
+    actionName: string;
+    buttonTitle: string;
+    isLandscape: boolean;
+    setSidebar: (sidebar: "positions" | "menu" | null) => void;
+    stake: string;
+    currency: string;
+    instrument: string;
+    toast: (params: any) => void;
+    hideToast: () => void;
+}): Promise<void> => {
+    if (!isLoggedIn) return;
+
+    try {
+        // Call the API
+        await tradeActions[actionName]();
+
+        // Open positions sidebar only in desktop view
+        if (isLandscape) {
+            setSidebar("positions");
+        }
+
+        // Show trade notification
+        toast({
+            content: (
+                <TradeNotification
+                    stake={`Stake: ${stake} ${currency}`}
+                    market={instrument}
+                    type={buttonTitle}
+                    onClose={hideToast}
+                    icon={
+                        <StandaloneStopwatchBoldIcon
+                            fill="#53b9ff"
+                            iconSize="md"
+                            className="rounded-full bg-[#2C9AFF3D]"
+                        />
+                    }
+                />
+            ),
+            variant: "default",
+            duration: 3000,
+            position: isLandscape ? "bottom-left" : "top-center",
+        });
+    } catch (error) {
+        // Error is already handled in the trade action
+    }
+};
+
 export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLandscape }) => {
     const { trade_type, instrument, productConfig, setPayouts, stake, setStake } = useTradeStore();
     const { fetchProductConfig } = useProductConfig();
@@ -582,45 +651,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                               }
                                             : buttonStates[button.actionName]?.error
                                     }
-                                    onClick={async () => {
-                                        if (!isLoggedIn) return;
-
-                                        try {
-                                            // Call the API
-                                            await tradeActions[button.actionName]();
-
-                                            // Open positions sidebar only in desktop view
-                                            if (isLandscape) {
-                                                setSidebar("positions");
-                                            }
-
-                                            // Show trade notification
-                                            toast({
-                                                content: (
-                                                    <TradeNotification
-                                                        stake={`Stake: ${stake} ${currency}`}
-                                                        market={instrument}
-                                                        type={button.title}
-                                                        onClose={hideToast}
-                                                        icon={
-                                                            <StandaloneStopwatchBoldIcon
-                                                                fill="#53b9ff"
-                                                                iconSize="md"
-                                                                className="rounded-full bg-[#2C9AFF3D]"
-                                                            />
-                                                        }
-                                                    />
-                                                ),
-                                                variant: "default",
-                                                duration: 3000,
-                                                position: isLandscape
-                                                    ? "bottom-left"
-                                                    : "top-center",
-                                            });
-                                        } catch (error) {
-                                            // Error is already handled in the trade action
-                                        }
-                                    }}
+                                    onClick={() =>
+                                        handleTradeClick({
+                                            isLoggedIn,
+                                            tradeActions,
+                                            actionName: button.actionName,
+                                            buttonTitle: button.title,
+                                            isLandscape,
+                                            setSidebar,
+                                            stake,
+                                            currency,
+                                            instrument,
+                                            toast,
+                                            hideToast,
+                                        })
+                                    }
                                 />
                             </Suspense>
                         ))}
@@ -707,45 +752,21 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                               }
                                             : buttonStates[button.actionName]?.error
                                     }
-                                    onClick={async () => {
-                                        if (!isLoggedIn) return;
-
-                                        try {
-                                            // Call the API
-                                            await tradeActions[button.actionName]();
-
-                                            // Open positions sidebar only in desktop view
-                                            if (isLandscape) {
-                                                setSidebar("positions");
-                                            }
-
-                                            // Show trade notification
-                                            toast({
-                                                content: (
-                                                    <TradeNotification
-                                                        stake={`Stake: ${stake} ${currency}`}
-                                                        market={instrument}
-                                                        type={button.title}
-                                                        onClose={hideToast}
-                                                        icon={
-                                                            <StandaloneStopwatchBoldIcon
-                                                                fill="#53b9ff"
-                                                                iconSize="md"
-                                                                className="rounded-full bg-[#2C9AFF3D]"
-                                                            />
-                                                        }
-                                                    />
-                                                ),
-                                                variant: "default",
-                                                duration: 3000,
-                                                position: isLandscape
-                                                    ? "bottom-left"
-                                                    : "top-center",
-                                            });
-                                        } catch (error) {
-                                            // Error is already handled in the trade action
-                                        }
-                                    }}
+                                    onClick={() =>
+                                        handleTradeClick({
+                                            isLoggedIn,
+                                            tradeActions,
+                                            actionName: button.actionName,
+                                            buttonTitle: button.title,
+                                            isLandscape,
+                                            setSidebar,
+                                            stake,
+                                            currency,
+                                            instrument,
+                                            toast,
+                                            hideToast,
+                                        })
+                                    }
                                 />
                             </Suspense>
                         ))}
