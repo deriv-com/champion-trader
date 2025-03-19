@@ -16,6 +16,7 @@ import { useProposalStream } from "@/hooks/proposal/useProposal";
 import { validateStake } from "@/components/Stake/utils/validation";
 import { parseStakeAmount } from "@/utils/stake";
 import { StandaloneStopwatchBoldIcon } from "@deriv/quill-icons";
+import { cn } from "@/lib/utils";
 
 // Lazy load components
 const DurationField = lazy(() =>
@@ -541,11 +542,10 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     return (
         <div
             id="trade-section"
-            className={`${
-                isLandscape
-                    ? "w-[30%] max-w-[272px] flex flex-col justify-start px-4 gap-2"
-                    : "bg-theme"
-            }`}
+            className={cn(
+                "px-4",
+                isLandscape ? "w-[30%] max-w-[272px] flex flex-col justify-start gap-2" : "bg-theme"
+            )}
         >
             {isLandscape ? (
                 <div className={`flex ${isLoggedIn ? "justify-between pb-2" : "justify-end"}`}>
@@ -569,7 +569,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             ) : (
                 <></>
             )}
-            <div className={isLandscape ? "pb-2" : "px-4"} id="how-to-trade">
+            <div id="how-to-trade">
                 <HowToTrade />
             </div>
             {isLandscape ? (
@@ -613,7 +613,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                         {config.buttons.map((button) => (
                             <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton
-                                    className={`${button.className} rounded-[16px] h-[48px] py-3 [&>div]:px-2 [&_span]:text-sm`}
+                                    className={button.className}
                                     title={button.title}
                                     label={button.label}
                                     value={
@@ -678,7 +678,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                 // Mobile layout
                 <>
                     <div id="trade-fields" className="flex flex-col">
-                        <div className="px-4 py-3">
+                        <div className="py-3">
                             <ResponsiveTradeParamLayout>
                                 {config.fields.duration && (
                                     <Suspense fallback={<div>Loading duration field...</div>}>
@@ -708,11 +708,11 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                         </div>
                     </div>
 
-                    <div className="flex p-4 pt-0 gap-2" id="trade-buttons">
+                    <div className="flex flex-1 mb-4 gap-2" id="trade-buttons">
                         {config.buttons.map((button) => (
                             <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton
-                                    className={`${button.className} rounded-[32px]`}
+                                    className={button.className}
                                     title={button.title}
                                     label={button.label}
                                     value={
