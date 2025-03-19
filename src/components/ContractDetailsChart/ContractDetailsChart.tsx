@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import { SmartChart } from "@/components/Chart/SmartChart";
 import { useChartData } from "@/hooks/useChartData";
 import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
@@ -9,19 +9,9 @@ import { Contract } from "@/api/services/contract/types";
 
 interface ContractDetailsChartProps {
     contract: Contract | null;
-    loading: boolean;
-    error: Error | null;
 }
 
-export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
-    contract,
-    loading,
-    error,
-}) => {
-    const ref = useRef<{
-        hasPredictionIndicators(): void;
-        triggerPopup(arg: () => void): void;
-    }>(null);
+export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({ contract }) => {
     const { isLandscape } = useOrientationStore();
     const { theme } = useMainLayoutStore();
     const settings = {
@@ -60,12 +50,9 @@ export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
         >
             <div className="absolute inset-0 rounded-lg overflow-hidden">
                 <SmartChart
-                    ref={ref}
                     id="replay-chart"
                     barriers={[]}
-                    chartStatusListener={(isChartReady: boolean) =>
-                        console.log("isChartReady", isChartReady)
-                    }
+                    chartStatusListener={() => {}}
                     crosshair={0}
                     isLive
                     chartControlsWidgets={null}

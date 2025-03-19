@@ -36,11 +36,7 @@ const MobileContractDetailsPage: React.FC = () => {
                     />
                     {!loading && contract && (
                         <div className="min-h-[400px] mt-4">
-                            <ContractDetailsChart
-                                contract={contract}
-                                loading={loading}
-                                error={error}
-                            />
+                            <ContractDetailsChart contract={contract} />
                         </div>
                     )}
                 </div>

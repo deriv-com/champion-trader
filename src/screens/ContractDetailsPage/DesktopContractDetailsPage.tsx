@@ -60,7 +60,7 @@ const DesktopContractDetailsPage: React.FC = () => {
                 </div>
                 <div className="flex-1 flex flex-col">
                     <div className="ml-4 h-full">
-                        <ContractDetailsChart contract={contract} loading={loading} error={error} />
+                        <ContractDetailsChart contract={contract} />
                     </div>
                 </div>
             </div>
