@@ -201,7 +201,6 @@ export const useTradeActions = () => {
                         }
                     />
                 ),
-                variant: "default",
                 duration: 3000,
                 position: isLandscape ? "bottom-left" : "top-center",
             });

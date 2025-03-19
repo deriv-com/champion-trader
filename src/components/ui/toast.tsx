@@ -14,7 +14,7 @@ export interface ToastProps {
 
 export const Toast = ({
     content,
-    variant = "default",
+    variant,
     onClose,
     duration = 3000,
     position = "bottom-center",
