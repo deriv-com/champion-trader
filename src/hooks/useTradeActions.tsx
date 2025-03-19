@@ -11,7 +11,7 @@ import {
 import { TradeNotification } from "@/components/ui/trade-notification";
 import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
 import { parseDuration } from "@/utils/duration";
-import { generateUUID } from "@/utils/uuid";
+import { v4 as uuidv4 } from "uuid";
 import { BuyAction } from "@/config/tradeTypes";
 
 export type TradeAction =
@@ -98,7 +98,7 @@ export const useTradeActions = () => {
 
             // Create the request body
             const requestBody = {
-                idempotency_key: generateUUID(),
+                idempotency_key: uuidv4(),
                 product_id: trade_type,
                 proposal_details: {
                     instrument_id: instrument,
