@@ -143,6 +143,43 @@ describe("DesktopContractDetailsPage", () => {
         expect(closeButton).toBeDisabled();
     });
 
+    it("disables close contract button when is_valid_to_sell is false", () => {
+        // Mock useTradeStore to return contractDetails with is_valid_to_sell set to false
+        jest.spyOn(require("@/stores/tradeStore"), "useTradeStore").mockReturnValueOnce({
+            contractDetails: {
+                contract_id: "123", // non-falsy to distinguish from the previous test
+                bid_price: "1.90",
+                bid_price_currency: "USD",
+                is_valid_to_sell: false,
+            },
+        });
+
+        render(<DesktopContractDetailsPage />);
+
+        // Find the close contract button and check it's disabled
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeDisabled();
+    });
+
+    it("disables close contract button when contract is already sold", () => {
+        // Mock useTradeStore to return contractDetails with is_sold set to true
+        jest.spyOn(require("@/stores/tradeStore"), "useTradeStore").mockReturnValueOnce({
+            contractDetails: {
+                contract_id: "123", // non-falsy to distinguish from the previous test
+                bid_price: "1.90",
+                bid_price_currency: "USD",
+                is_valid_to_sell: true, // would be valid to sell but already sold
+                is_sold: true,
+            },
+        });
+
+        render(<DesktopContractDetailsPage />);
+
+        // Find the close contract button and check it's disabled
+        const closeButton = screen.getByRole("button", { name: /Close/i });
+        expect(closeButton).toBeDisabled();
+    });
+
     it("renders components in correct order", () => {
         render(<DesktopContractDetailsPage />);
 

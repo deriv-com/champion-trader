@@ -61,7 +61,8 @@ const MobileContractDetailsPage: React.FC = () => {
                             disabled={
                                 isClosing ||
                                 !contractDetails?.contract_id ||
-                                !contractDetails?.is_valid_to_sell
+                                !contractDetails?.is_valid_to_sell ||
+                                contractDetails?.is_sold
                             }
                             className="text-action-button bg-action-button max-w-[500px] mx-auto w-full p-3 px-8 text-center rounded-xl shadow-md disabled:text-theme-muted"
                         >

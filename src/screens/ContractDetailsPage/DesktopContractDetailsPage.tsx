@@ -67,7 +67,8 @@ const DesktopContractDetailsPage: React.FC = () => {
                                 disabled={
                                     isClosing ||
                                     !contractDetails?.contract_id ||
-                                    !contractDetails?.is_valid_to_sell
+                                    !contractDetails?.is_valid_to_sell ||
+                                    contractDetails?.is_sold
                                 }
                                 className="w-full bg-action-button text-action-button py-3 rounded-lg disabled:opacity-50"
                             >
