@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContractDetails } from "@/hooks/contract/useContract";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
+import { Header, ContractDetailsPageSummary } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
-import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { useOrientationStore } from "@/stores/orientationStore";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { contract_id } = useParams<{ contract_id: string }>();
+    const { contract, loading, error } = useContractDetails(contract_id || "");
     const setHeaderVisible = useHeaderStore((state) => state.setIsVisible);
     const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible);
 
@@ -26,12 +29,20 @@ const MobileContractDetailsPage: React.FC = () => {
             <Header />
             <div className="flex-1 overflow-y-auto w-full lg:w-3/5 mx-auto">
                 <div className="p-2 pb-[72px]">
-                    <ContractSummary />
-                    <div className="min-h-[400px] mt-4">
-                        <ContractDetailsChart />
-                    </div>
-                    <OrderDetails />
-                    <EntryExitDetails />
+                    <ContractDetailsPageSummary
+                        contract={contract}
+                        loading={loading}
+                        error={error}
+                    />
+                    {!loading && contract && (
+                        <div className="min-h-[400px] mt-4">
+                            <ContractDetailsChart
+                                contract={contract}
+                                loading={loading}
+                                error={error}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Close Button */}

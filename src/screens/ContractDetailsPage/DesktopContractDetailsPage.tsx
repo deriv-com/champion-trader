@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContractDetails } from "@/hooks/contract/useContract";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { X } from "lucide-react";
-import { ContractSummary, EntryExitDetails, OrderDetails } from "./components";
+import { ContractDetailsPageSummary } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 
 const DesktopContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { contract_id } = useParams<{ contract_id: string }>();
+    const { contract, loading, error } = useContractDetails(contract_id || "");
     const { setSideNavVisible } = useMainLayoutStore();
 
     useEffect(() => {
@@ -35,9 +38,11 @@ const DesktopContractDetailsPage: React.FC = () => {
                         className="flex-1 overflow-y-auto pb-20 space-y-4 bg-theme-secondary scrollbar-thin"
                         data-testid="content-area"
                     >
-                        <ContractSummary />
-                        <OrderDetails />
-                        <EntryExitDetails />
+                        <ContractDetailsPageSummary
+                            contract={contract}
+                            loading={loading}
+                            error={error}
+                        />
                     </div>
                     <div
                         className="absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]"
@@ -55,7 +60,7 @@ const DesktopContractDetailsPage: React.FC = () => {
                 </div>
                 <div className="flex-1 flex flex-col">
                     <div className="ml-4 h-full">
-                        <ContractDetailsChart />
+                        <ContractDetailsChart contract={contract} loading={loading} error={error} />
                     </div>
                 </div>
             </div>

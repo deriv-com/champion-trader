@@ -5,8 +5,19 @@ import { generateHistoricalTicks } from "@/utils/generateHistoricalData";
 import { transformTickData } from "@/utils/transformChartData";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { Contract } from "@/api/services/contract/types";
 
-export const ContractDetailsChart: React.FC = () => {
+interface ContractDetailsChartProps {
+    contract: Contract | null;
+    loading: boolean;
+    error: Error | null;
+}
+
+export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
+    contract,
+    loading,
+    error,
+}) => {
     const ref = useRef<{
         hasPredictionIndicators(): void;
         triggerPopup(arg: () => void): void;
@@ -17,14 +28,28 @@ export const ContractDetailsChart: React.FC = () => {
         theme: theme,
     };
 
+    // Use contract tick data if available, otherwise use mock data
     const historicalData = useMemo(() => {
-        const data = generateHistoricalTicks("1HZ100V", 100);
-        return transformTickData(data);
-    }, []);
+        if (contract && contract.details.tick_stream && contract.details.tick_stream.length > 0) {
+            // Transform contract tick stream data to the format expected by SmartChart
+            return contract.details.tick_stream.map((tick) => ({
+                epoch: Math.floor(tick.epoch_ms / 1000), // Convert ms to seconds
+                quote: parseFloat(tick.price),
+                symbol: contract.details.instrument_id,
+            }));
+        } else {
+            // Fallback to mock data
+            const data = generateHistoricalTicks("1HZ100V", 100);
+            return transformTickData(data);
+        }
+    }, [contract]);
+
+    // Use the contract's instrument_id if available
+    const instrumentId = contract?.details.instrument_id || "1HZ100V";
 
     const streamingData = useChartData({
-        useMockData: true,
-        instrumentId: "1HZ100V",
+        useMockData: !contract,
+        instrumentId,
         type: "tick",
         durationInSeconds: 0,
     });
@@ -46,7 +71,7 @@ export const ContractDetailsChart: React.FC = () => {
                     chartControlsWidgets={null}
                     requestSubscribe={() => {}}
                     toolbarWidget={() => <></>}
-                    symbol={"R_10"}
+                    symbol={instrumentId}
                     topWidgets={() => <div />}
                     enabledNavigationWidget={false}
                     requestForget={() => {}}

@@ -1,21 +1,21 @@
 import React from "react";
+import { Contract } from "@/api/services/contract/types";
 
-import { useTradeStore } from "@/stores/tradeStore";
+interface OrderDetailsProps {
+    contract: Contract;
+}
 
-export const OrderDetails: React.FC = () => {
-    const contractDetails = useTradeStore((state) => state.contractDetails);
-
-    if (!contractDetails) {
-        return null;
-    }
-
-    const { duration, barrier, stake, payout } = contractDetails;
-    const details = [
-        { label: "Reference ID", value: "1234" }, // Hardcoded ID for stub data
-        { label: "Duration", value: duration },
-        { label: "Barrier", value: barrier },
-        { label: "Stake", value: stake },
-        { label: "Potential payout", value: payout },
+export const OrderDetails: React.FC<OrderDetailsProps> = ({ contract }) => {
+    const { details } = contract;
+    const orderDetails = [
+        { label: "Reference ID", value: details.reference_id || "N/A" },
+        {
+            label: "Duration",
+            value: `${details.duration} ${details.duration_unit}`,
+        },
+        { label: "Barrier", value: details.barrier || "N/A" },
+        { label: "Stake", value: `${details.stake} ${details.bid_price_currency}` },
+        { label: "Potential payout", value: details.potential_payout || "N/A" },
     ];
 
     return (
@@ -28,7 +28,7 @@ export const OrderDetails: React.FC = () => {
             <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-theme mb-4">
                 Order details
             </h2>
-            {details.map((detail, index) => (
+            {orderDetails.map((detail, index) => (
                 <div
                     key={index}
                     className="col-span-2 flex justify-between border-b border-theme py-2"
