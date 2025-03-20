@@ -39,8 +39,6 @@ export const TradeChart: React.FC = () => {
 
     // Update chart type and granularity
     const updateChartType = (type: string) => {
-        console.log(`Updating chart type to: ${type} (current granularity: ${granularity})`);
-
         // First, forget all existing streams to ensure clean state
         requestForgetStream();
 
@@ -63,10 +61,6 @@ export const TradeChart: React.FC = () => {
     };
 
     const updateGranularity = (newGranularity: number) => {
-        console.log(
-            `Updating granularity to: ${newGranularity} (current chart type: ${chartType})`
-        );
-
         // First, forget all existing streams to ensure clean state
         requestForgetStream();
 
@@ -112,9 +106,7 @@ export const TradeChart: React.FC = () => {
                     ref={ref}
                     id="trade-chart"
                     barriers={[]}
-                    chartStatusListener={(isChartReady: boolean) =>
-                        console.log("isChartReady", isChartReady)
-                    }
+                    chartStatusListener={() => null}
                     crosshair={0}
                     isLive
                     chartControlsWidgets={null}

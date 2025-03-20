@@ -14,7 +14,6 @@ const init = () => {
         .then(({ setSmartChartsPublicPath }) => {
             try {
                 setSmartChartsPublicPath(getUrlBase("/js/smartcharts/"));
-                console.log("SmartCharts path set successfully");
             } catch (error) {
                 console.error("Error setting SmartCharts path:", error);
             }
