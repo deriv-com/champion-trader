@@ -26,7 +26,7 @@ export const PositionsPanel: FC = () => {
     const currentPositions = isOpenTab ? openPositions : closedPositions;
 
     // Filter logic (simplified for now)
-    const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [selectedFilter, setSelectedFilter] = useState<string>("Trade types");
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
     const handleFilterSelect = (filter: string) => {
@@ -53,8 +53,8 @@ export const PositionsPanel: FC = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-6 flex-1 overflow-auto scrollbar-thin">
-                <div className="flex gap-2 p-1 bg-theme-secondary rounded-lg">
+            <div className="flex flex-col gap-2 flex-1 overflow-auto scrollbar-thin">
+                <div className="flex gap-2 p-1 mx-4 bg-theme-secondary rounded-lg">
                     <button
                         className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
@@ -76,7 +76,7 @@ export const PositionsPanel: FC = () => {
                         Closed
                     </button>
                 </div>
-                <div className="mt-4">
+                <div className="mx-4">
                     <FilterDropdown
                         isOpenTab={isOpenTab}
                         selectedFilter={selectedFilter}
@@ -86,14 +86,14 @@ export const PositionsPanel: FC = () => {
 
                 {/* Loading State */}
                 {positionsLoading && (
-                    <PositionLoadingState className="flex items-center justify-center mt-8" />
+                    <PositionLoadingState className="flex items-center justify-center mx-4" />
                 )}
 
                 {/* Error State */}
                 {positionsError && (
                     <PositionErrorState
                         error={positionsError}
-                        className="flex items-center justify-center mt-8"
+                        className="flex items-center justify-center mx-4"
                     />
                 )}
 
@@ -110,11 +110,11 @@ export const PositionsPanel: FC = () => {
                     <PositionMapper
                         positions={currentPositions}
                         positionType={isOpenTab ? "open" : "closed"}
-                        className="mt-4 space-y-4"
+                        className="mx-2"
                         renderPosition={(position) => (
                             <div
                                 key={position.contract_id}
-                                className="p-3 rounded-lg shadow-sm cursor-pointer"
+                                className="rounded-lg cursor-pointer"
                                 onClick={() => {
                                     navigate(`/contract/${position.contract_id}`);
                                     setSidebar(null);

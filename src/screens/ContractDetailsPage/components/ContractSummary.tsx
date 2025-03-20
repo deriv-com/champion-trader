@@ -43,12 +43,12 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
     // Default container styles for mobile view
     const defaultContainerClass = "h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme";
     const containerStyle = {
-        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
+        boxShadow: "0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)",
     };
 
     return (
         <div
-            className={`${containerClassName || defaultContainerClass} ${className}`}
+            className={`${containerClassName || defaultContainerClass} ${className} p-4`}
             style={containerClassName ? {} : containerStyle}
         >
             <div className="flex justify-between">

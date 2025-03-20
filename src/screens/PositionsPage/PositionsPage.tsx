@@ -109,7 +109,7 @@ const PositionsPage: React.FC = () => {
             {activeTab === "open" && openPositions.length > 0 && (
                 <PositionProfitLoss
                     totalProfitLoss={totalProfitLoss}
-                    containerClassName="px-4 py-3"
+                    containerClassName="px-4 py-2"
                     labelClassName="text-theme text-sm font-semibold"
                     valueClassName="text-sm font-semibold"
                 />
@@ -143,7 +143,7 @@ const PositionsPage: React.FC = () => {
                     <PositionMapper
                         positions={currentPositions}
                         positionType={activeTab}
-                        className="flex-1 overflow-y-auto px-2 pt-2 space-y-2"
+                        className="flex-1 overflow-y-auto px-2 space-y-2"
                         renderPosition={(position) => (
                             <div
                                 key={position.contract_id}
