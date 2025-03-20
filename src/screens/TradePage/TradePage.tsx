@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { BottomSheet } from "@/components/BottomSheet";
-import { DurationOptions } from "@/components/DurationOptions";
 import { TradeFormController } from "./components/TradeFormController";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { MarketSelector } from "@/components/MarketSelector";
