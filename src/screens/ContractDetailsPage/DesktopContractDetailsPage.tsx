@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { X } from "lucide-react";
 import { ContractSummary, EntryExitDetails, OrderDetails } from "./components";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
+import { WrappedContractDetailsChart } from "@/components/ContractDetailsChart";
 
 const DesktopContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { setSideNavVisible } = useMainLayoutStore();
+    const { contractId } = useParams<{ contractId: string }>();
+    const { setSideNavVisible, theme } = useMainLayoutStore();
 
     useEffect(() => {
         // Hide SideNav when component mounts
@@ -55,7 +56,11 @@ const DesktopContractDetailsPage: React.FC = () => {
                 </div>
                 <div className="flex-1 flex flex-col">
                     <div className="ml-4 h-full">
-                        <ContractDetailsChart />
+                        <WrappedContractDetailsChart
+                            contractId={contractId}
+                            isReplay={true}
+                            is_dark_theme={theme === "dark"}
+                        />
                     </div>
                 </div>
             </div>

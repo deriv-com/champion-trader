@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
+import { WrappedContractDetailsChart } from "@/components/ContractDetailsChart";
 import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 
 const MobileContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { contractId } = useParams<{ contractId: string }>();
     const setHeaderVisible = useHeaderStore((state) => state.setIsVisible);
     const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible);
+    const { theme } = useMainLayoutStore();
 
     useEffect(() => {
         setHeaderVisible(false);
@@ -28,7 +31,11 @@ const MobileContractDetailsPage: React.FC = () => {
                 <div className="p-2 pb-[72px]">
                     <ContractSummary />
                     <div className="min-h-[400px] mt-4">
-                        <ContractDetailsChart />
+                        <WrappedContractDetailsChart
+                            contractId={contractId}
+                            isReplay={true}
+                            is_dark_theme={theme === "dark"}
+                        />
                     </div>
                     <OrderDetails />
                     <EntryExitDetails />
