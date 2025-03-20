@@ -127,7 +127,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             {!isMobile && (
                 <div className="flex items-center justify-between px-6 py-8">
                     <div className="flex-1" />
-                    <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-theme">
+                    <h1 className="text-center text-base font-bold overflow-hidden text-ellipsis text-theme">
                         Markets
                     </h1>
                     <div className="flex-1 flex justify-end">
