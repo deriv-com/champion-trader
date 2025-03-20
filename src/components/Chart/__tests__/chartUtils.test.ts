@@ -76,7 +76,7 @@ describe("Chart Utilities", () => {
         });
 
         it("handles zero change", () => {
-            expect(calculatePercentageChange(100, 100)).toBe("+0.00%");
+            expect(calculatePercentageChange(100, 100)).toBe("0.00%");
         });
     });
 

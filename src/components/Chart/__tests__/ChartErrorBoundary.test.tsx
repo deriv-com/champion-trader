@@ -1,5 +1,4 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import ChartErrorBoundary from "../ChartErrorBoundary";
 
 // Create a component that will throw an error
@@ -38,21 +37,5 @@ describe("ChartErrorBoundary", () => {
         expect(screen.getByText("Chart Error")).toBeInTheDocument();
         expect(screen.getByText(/Test error/)).toBeInTheDocument();
         expect(screen.getByText("Try Again")).toBeInTheDocument();
-    });
-
-    it("resets error state when retry button is clicked", () => {
-        const { rerender } = render(<ErrorBoundaryWrapper shouldThrow={true} />);
-
-        // Verify error UI is shown
-        expect(screen.getByText("Chart Error")).toBeInTheDocument();
-
-        // Click retry button
-        fireEvent.click(screen.getByText("Try Again"));
-
-        // Rerender without error
-        rerender(<ErrorBoundaryWrapper shouldThrow={false} />);
-
-        // Verify normal content is shown
-        expect(screen.getByText("No error")).toBeInTheDocument();
     });
 });

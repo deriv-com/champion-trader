@@ -4,7 +4,7 @@ import { Chart } from "../index";
 
 // Mock the SmartChart component since it's likely complex and has external dependencies
 jest.mock("../SmartChart", () => ({
-    SmartChart: jest.fn(({ children, toolbarWidget, ...props }) => (
+    SmartChart: jest.fn(({ children, toolbarWidget }) => (
         <div data-testid="mock-smart-chart">
             {toolbarWidget && <div data-testid="toolbar-widget">{toolbarWidget()}</div>}
             {children}
