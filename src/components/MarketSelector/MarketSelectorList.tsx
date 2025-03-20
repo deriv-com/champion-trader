@@ -61,7 +61,6 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                             <span className="text-base">Removed from favourites</span>
                         </div>
                     ),
-                    variant: "default",
                     duration: 2000,
                     position: "bottom-center",
                 });

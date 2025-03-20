@@ -10,7 +10,7 @@ export const BottomSheetHeader: React.FC<BottomSheetHeaderProps> = ({ title, cla
     return (
         <h5
             className={cn(
-                "font-ubuntu text-[16px] font-bold leading-[24px] text-center py-4 px-2 text-theme",
+                "text-[16px] font-bold leading-[24px] text-center py-4 px-2 text-theme",
                 className
             )}
         >
