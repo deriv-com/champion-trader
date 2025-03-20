@@ -10,6 +10,7 @@ import { marketData, MarketInfo, marketTitles, marketTypeMap } from "./marketSel
 import { MarketIcon } from "./MarketIcon";
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { StandaloneStarRegularIcon } from "@deriv/quill-icons";
 
 interface MarketSelectorListProps {
     onDragDown?: () => void;
@@ -175,6 +176,21 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             {/* Market List */}
             <div className="flex-1 overflow-y-auto px-6 scrollbar-thin">
+                {/* Empty state for favourites tab */}
+                {activeTab === "favourites" && favorites.size === 0 && !searchQuery && (
+                    <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+                        <StandaloneStarRegularIcon
+                            fill="#D1D5DB"
+                            iconSize="2xl"
+                            className=" mb-4"
+                        />
+                        <h3 className="text-lg font-semibold text-gray-500 mb-2">No favourites</h3>
+                        <p className="text-sm text-gray-400">
+                            Your favourite markets will appear here.
+                        </p>
+                    </div>
+                )}
+
                 {/* Market Groups */}
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (

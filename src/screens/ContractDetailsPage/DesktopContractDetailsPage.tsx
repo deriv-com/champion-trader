@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContractDetails } from "@/hooks/contract/useContract";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { WrappedContractDetailsChart } from "@/components/ContractDetailsChart";
+import { useContractDetails } from "@/hooks/contract/useContract";
 import { X } from "lucide-react";
 import { ContractSummary, OrderDetails, EntryExitDetails } from "./components";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useTradeActions } from "@/hooks/useTradeActions";
 
 const DesktopContractDetailsPage: React.FC = () => {
+    const { setSideNavVisible, theme } = useMainLayoutStore();
     const navigate = useNavigate();
     const { contract_id } = useParams<{ contract_id: string }>();
     const { contract, loading, error } = useContractDetails(contract_id || "");
-    const { setSideNavVisible } = useMainLayoutStore();
     const contractDetails = useTradeStore((state) => state.contractDetails);
     const tradeActions = useTradeActions();
     const [isClosing, setIsClosing] = useState(false);
@@ -105,7 +105,11 @@ const DesktopContractDetailsPage: React.FC = () => {
                 </div>
                 <div className="flex-1 flex flex-col">
                     <div className="ml-4 h-full">
-                        <ContractDetailsChart contract={contract} />
+                        <WrappedContractDetailsChart
+                            contractId={undefined}
+                            isReplay={true}
+                            is_dark_theme={theme === "dark"}
+                        />
                     </div>
                 </div>
             </div>
