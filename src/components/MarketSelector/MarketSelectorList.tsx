@@ -181,11 +181,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 {/* Empty state for favourites tab */}
                 {activeTab === "favourites" && favorites.size === 0 && !searchQuery && (
                     <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
-                        <StandaloneStarRegularIcon
-                            fill="#D1D5DB"
-                            iconSize="2xl"
-                            className=" mb-4"
-                        />
+                        <StandaloneStarFillIcon fill="#D1D5DB" iconSize="2xl" className=" mb-4" />
                         <h3 className="text-lg font-semibold text-gray-500 mb-2">No favourites</h3>
                         <p className="text-sm text-gray-400">
                             Your favourite markets will appear here.
