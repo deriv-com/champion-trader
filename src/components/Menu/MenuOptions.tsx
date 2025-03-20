@@ -25,7 +25,7 @@ const MenuOption: React.FC<MenuOptionProps> = ({ icon, name, onClick, action }) 
 
     return (
         <Component
-            className={`h-12 text-left rounded-lg ${action ? "" : "hover:bg-theme-hover"} flex items-center justify-between`}
+            className={`h-12 px-4 text-left rounded-lg ${action ? "" : "hover:bg-theme-hover"} flex items-center justify-between`}
             onClick={onClick}
         >
             <div className="flex gap-2 items-center">
@@ -123,7 +123,7 @@ export const MenuOptions: React.FC<MenuOptionsProps> = ({ className = "", isSide
     );
 
     return (
-        <div className={`flex flex-col gap-2 ${className}`}>
+        <div className={`flex flex-col gap-2 px-2 py-4 ${className}`}>
             {options
                 .filter((option) => option.showWhen !== false)
                 .map((option, index) => (
