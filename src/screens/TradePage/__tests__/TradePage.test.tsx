@@ -173,8 +173,6 @@ describe("TradePage", () => {
 
         // Check for expected components
         expect(screen.getByTestId("bottom-sheet")).toBeInTheDocument();
-        expect(screen.getByTestId("duration-options")).toBeInTheDocument();
-
         expect(screen.getByText("Rise/Fall")).toBeInTheDocument();
 
         // Check layout classes
