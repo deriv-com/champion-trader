@@ -5,6 +5,7 @@ type ToastPosition = "bottom-left" | "bottom-center" | "bottom-right" | "top-cen
 type ToastVariant = "success" | "error" | "warning" | "info" | "default";
 
 export interface ToastProps {
+    className?: string;
     content: React.ReactNode;
     variant?: ToastVariant;
     onClose: () => void;
@@ -13,6 +14,7 @@ export interface ToastProps {
 }
 
 export const Toast = ({
+    className,
     content,
     variant,
     onClose,
@@ -30,7 +32,7 @@ export const Toast = ({
     return (
         <div
             className={cn(
-                "fixed z-[99999] px-4 py-3 rounded-md shadow-lg",
+                "fixed z-[99999] rounded-md shadow-lg",
                 "w-[100%] max-w-[320px]", // Set minimum width and allow content to wrap
                 // Position classes
                 {
@@ -43,7 +45,7 @@ export const Toast = ({
                 {
                     "animate-in fade-in slide-in-from-bottom-4": position.startsWith("bottom"),
                     "animate-in fade-in slide-in-from-top-4": position.startsWith("top"),
-                }
+                },
                 // Variant-specific styling
                 // {
                 //     "bg-green-500 text-white": variant === "success",
@@ -51,7 +53,8 @@ export const Toast = ({
                 //     "bg-amber-500 text-white": variant === "warning",
                 //     "bg-blue-500 text-white": variant === "info",
                 //     "bg-gray-700 text-white": variant === "default",
-                // }
+                // },
+                className
             )}
             role="alert"
         >
