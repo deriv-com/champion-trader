@@ -23,7 +23,7 @@ export const ContractSummaryDetails: React.FC<ContractSummaryDetailsProps> = ({
         <div className={`flex flex-col items-end ${className}`}>
             <div
                 className={cn(
-                    "text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right rounded-md mb-1 py-0.5 inline-block",
+                    "text-theme-muted text-[14px] leading-[22px] font-normal text-right rounded-md mb-1 py-0.5 inline-block",
                     isOpen ? "bg-theme-secondary/50 px-2" : "px-0"
                 )}
             >
@@ -37,11 +37,11 @@ export const ContractSummaryDetails: React.FC<ContractSummaryDetailsProps> = ({
                     </span>
                 )}
             </div>
-            <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 font-ibm-plex text-[14px] leading-[22px] font-normal text-right">
+            <div className="overflow-hidden text-ellipsis text-theme-muted mb-1 text-[14px] leading-[22px] font-normal text-right">
                 {`${stake} ${currency}`}
             </div>
             <div
-                className={`font-ibm-plex text-[14px] leading-[22px] font-normal text-right ${
+                className={`text-[14px] leading-[22px] font-normal text-right ${
                     profit.includes("+") ? "text-[#008832]" : "text-red-500"
                 }`}
             >

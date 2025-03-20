@@ -28,18 +28,16 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ contract }) => {
                 boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
             }}
         >
-            <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-theme mb-4">
-                Order details
-            </h2>
+            <h2 className="text-[14px] leading-[22px] font-bold text-theme mb-4">Order details</h2>
             {orderDetails.map((detail, index) => (
                 <div
                     key={index}
                     className="col-span-2 flex justify-between border-b border-theme py-2"
                 >
-                    <span className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal">
+                    <span className="text-theme-muted text-[14px] leading-[22px] font-normal">
                         {detail.label}
                     </span>
-                    <span className="text-theme font-ibm-plex text-[14px] leading-[22px] font-normal text-right">
+                    <span className="text-theme text-[14px] leading-[22px] font-normal text-right">
                         {detail.value}
                     </span>
                 </div>

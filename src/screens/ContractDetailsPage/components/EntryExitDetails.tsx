@@ -43,7 +43,7 @@ export const EntryExitDetails: React.FC<EntryExitDetailsProps> = ({ contract }) 
                 boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
             }}
         >
-            <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-theme mb-4">
+            <h2 className="text-[14px] leading-[22px] font-bold text-theme mb-4">
                 Entry & exit details
             </h2>
             {entryExitDetails.map((detail, index) => (
@@ -51,15 +51,15 @@ export const EntryExitDetails: React.FC<EntryExitDetailsProps> = ({ contract }) 
                     key={index}
                     className="col-span-2 flex justify-between border-b border-theme py-2"
                 >
-                    <span className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal">
+                    <span className="text-theme-muted text-[14px] leading-[22px] font-normal">
                         {detail.label}
                     </span>
                     <div className="text-right">
-                        <span className="text-theme font-ibm-plex text-[14px] leading-[22px] font-normal block pb-1">
+                        <span className="text-theme text-[14px] leading-[22px] font-normal block pb-1">
                             {detail.value}
                         </span>
                         {detail.subValue && (
-                            <div className="text-theme-muted font-ibm-plex text-[12px] leading-[18px] font-normal">
+                            <div className="text-theme-muted text-[12px] leading-[18px] font-normal">
                                 {detail.subValue.split("\n").map((text, i) => (
                                     <div key={i}>{text}</div>
                                 ))}
