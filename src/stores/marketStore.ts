@@ -1,29 +1,57 @@
 import { create } from "zustand";
+import { Instrument } from "@/api/services/instrument/types";
 
-interface ProcessedInstrument {
-    symbol: string;
-    displayName: string;
-    shortName: string;
-    market_name: string;
-    isClosed?: boolean;
-    type: "volatility" | "boom" | "crash";
-}
-
+/**
+ * Market store interface
+ * Only contains state and simple setters
+ */
 interface MarketState {
-    selectedMarket: ProcessedInstrument;
-    setSelectedMarket: (market: ProcessedInstrument) => void;
+    // Market selection state
+    selectedMarket: Instrument | null;
+    setSelectedMarket: (market: Instrument | null) => void;
+
+    // Instruments state
+    instruments: Instrument[];
+    setInstruments: (instruments: Instrument[]) => void;
+
+    // Loading state
+    isLoading: boolean;
+    setIsLoading: (isLoading: boolean) => void;
+
+    // Error state
+    error: string | null;
+    setError: (error: string | null) => void;
+
+    errorDetails: {
+        statusCode?: number;
+        errorCode?: string;
+    } | null;
+    setErrorDetails: (errorDetails: { statusCode?: number; errorCode?: string } | null) => void;
 }
 
-// Default market (Volatility 100 (1s))
-const defaultMarket: ProcessedInstrument = {
-    symbol: "R_100", // Using the format that matches marketIcons mapping
-    displayName: "Volatility 100 Index",
-    shortName: "100",
-    market_name: "synthetic_index",
-    type: "volatility",
-};
-
+/**
+ * Market store
+ * Only contains state and simple setters
+ * Complex logic is moved to useInstrumentUtils hook
+ */
 export const useMarketStore = create<MarketState>((set) => ({
-    selectedMarket: defaultMarket,
-    setSelectedMarket: (market) => set({ selectedMarket: market }),
+    // Market selection state
+    selectedMarket: null,
+    setSelectedMarket: (market: Instrument | null) => set({ selectedMarket: market }),
+
+    // Instruments state
+    instruments: [],
+    setInstruments: (instruments: Instrument[]) => set({ instruments }),
+
+    // Loading state
+    isLoading: false,
+    setIsLoading: (isLoading: boolean) => set({ isLoading }),
+
+    // Error state
+    error: null,
+    setError: (error: string | null) => set({ error }),
+
+    errorDetails: null,
+    setErrorDetails: (errorDetails: { statusCode?: number; errorCode?: string } | null) =>
+        set({ errorDetails }),
 }));

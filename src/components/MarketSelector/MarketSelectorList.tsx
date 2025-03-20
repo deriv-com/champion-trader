@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Search, X, Star } from "lucide-react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useMarketStore } from "@/stores/marketStore";
 import { useToastStore } from "@/stores/toastStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
-import { tabs } from "./data";
-import { marketData, MarketInfo, marketTitles, marketTypeMap } from "./marketSelectorStub";
 import { MarketIcon } from "./MarketIcon";
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { Instrument } from "@/api/services/instrument/types";
+
+// Market category tabs
+interface Tab {
+    id: string;
+    label: string;
+}
 
 interface MarketSelectorListProps {
     onDragDown?: () => void;
@@ -25,6 +30,74 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
     });
 
+    // Get instruments data from the market store
+    const { instruments, isLoading, error, selectedMarket, setSelectedMarket } = useMarketStore();
+
+    // Helper function to normalize category names (convert to lowercase and replace spaces with underscores)
+    const normalizeCategory = (category: string): string => {
+        return category.toLowerCase().replace(/\s+/g, "_");
+    };
+
+    // Helper function to format category names for display (capitalize first letter of each word)
+    const formatCategoryForDisplay = (category: string): string => {
+        return category
+            .split(/[\s_]+/)
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(" ");
+    };
+
+    // Generate tabs dynamically from instruments
+    const { tabs, marketTitles } = useMemo<{
+        tabs: Tab[];
+        marketTitles: { [key: string]: string };
+        marketTypeMap: { [key: string]: string };
+    }>(() => {
+        // Default tabs that are always present
+        const defaultTabs: Tab[] = [
+            { id: "favourites", label: "Favourites" },
+            { id: "all", label: "All" },
+        ];
+
+        // Maps to store unique categories and their display names
+        const categoryMap = new Map<string, string>();
+        const titlesMap: { [key: string]: string } = {};
+        const typeMap: { [key: string]: string } = {};
+
+        // Process instruments to extract categories
+        instruments.forEach((instrument) => {
+            if (instrument.categories && instrument.categories.length > 0) {
+                // First category is the main category (e.g., "forex" or "Forex")
+                const mainCategory = instrument.categories[0];
+
+                // Normalize the category name for internal use
+                const normalizedCategory = normalizeCategory(mainCategory);
+
+                // Use the original category name for display, but format it consistently
+                const displayName = formatCategoryForDisplay(mainCategory);
+
+                // Add to category map if not already present
+                if (!categoryMap.has(normalizedCategory)) {
+                    categoryMap.set(normalizedCategory, displayName);
+
+                    // Add to titles map
+                    titlesMap[normalizedCategory] = displayName;
+
+                    // Add to type map (mapping from tab ID to normalized category)
+                    typeMap[normalizedCategory] = normalizedCategory;
+                }
+            }
+        });
+
+        // Convert category map to tabs array
+        const dynamicTabs = Array.from(categoryMap.entries()).map(([id, label]) => ({ id, label }));
+
+        // Combine default tabs with dynamic tabs
+        return {
+            tabs: [...defaultTabs, ...dynamicTabs],
+            marketTitles: { ...titlesMap, other: "Other Markets" },
+            marketTypeMap: typeMap,
+        };
+    }, [instruments]);
     // Update localStorage when favorites change
     React.useEffect(() => {
         localStorage.setItem("market-favorites", JSON.stringify(Array.from(favorites)));
@@ -32,15 +105,15 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
     const { toast } = useToastStore((state) => ({ toast: state.toast }));
 
-    const toggleFavorite = (symbol: string) => (e: React.MouseEvent) => {
+    const toggleFavorite = (id: string) => (e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setFavorites((prev) => {
             const newFavorites = new Set(prev);
-            const isAdding = !newFavorites.has(symbol);
+            const isAdding = !newFavorites.has(id);
 
             if (isAdding) {
-                newFavorites.add(symbol);
+                newFavorites.add(id);
                 toast({
                     content: (
                         <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
@@ -53,7 +126,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                     position: "bottom-center",
                 });
             } else {
-                newFavorites.delete(symbol);
+                newFavorites.delete(id);
                 toast({
                     content: (
                         <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
@@ -71,22 +144,21 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     };
 
     const setInstrument = useTradeStore((state) => state.setInstrument);
-    const { selectedMarket, setSelectedMarket } = useMarketStore();
     const { setOverlaySidebar } = useMainLayoutStore();
 
     // Set initial instrument based on default market
     React.useEffect(() => {
         if (selectedMarket) {
-            setInstrument(selectedMarket.symbol);
+            setInstrument(selectedMarket.id);
         }
-    }, []);
+    }, [selectedMarket, setInstrument]);
 
     const isBottomSheetOpenRef = React.useRef(true);
 
-    const handleMarketSelect = (market: MarketInfo) => {
+    const handleMarketSelect = (instrument: Instrument) => {
         isBottomSheetOpenRef.current = false;
-        setInstrument(market.symbol);
-        setSelectedMarket(market);
+        setInstrument(instrument.id);
+        setSelectedMarket(instrument);
         setBottomSheet(false);
         setOverlaySidebar(false);
     };
@@ -96,30 +168,67 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
         isBottomSheetOpenRef.current = true;
     }, []);
 
-    const filteredInstruments = marketData.filter((instrument) => {
-        const matchesSearch = instrument.displayName
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+    const filteredInstruments = useMemo(() => {
+        if (!instruments) return [];
 
-        if (activeTab === "all") return matchesSearch;
-        if (activeTab === "favourites") return matchesSearch && favorites.has(instrument.symbol);
-        return (
-            matchesSearch &&
-            instrument.market_name === marketTypeMap[activeTab as keyof typeof marketTypeMap]
+        return instruments.filter((instrument) => {
+            const matchesSearch = instrument.display_name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+
+            // Get the main category from the instrument and normalize it
+            const mainCategory =
+                instrument.categories && instrument.categories.length > 0
+                    ? normalizeCategory(instrument.categories[0])
+                    : "other";
+
+            if (activeTab === "all") return matchesSearch;
+            if (activeTab === "favourites") return matchesSearch && favorites.has(instrument.id);
+            return matchesSearch && mainCategory === activeTab;
+        });
+    }, [instruments, searchQuery, activeTab, favorites, normalizeCategory]);
+
+    // Group markets by main category
+    const groupedInstruments = useMemo(() => {
+        return filteredInstruments.reduce(
+            (acc, instrument) => {
+                // Get the main category from the instrument and normalize it
+                const mainCategory =
+                    instrument.categories && instrument.categories.length > 0
+                        ? normalizeCategory(instrument.categories[0])
+                        : "other";
+
+                if (!acc[mainCategory]) {
+                    acc[mainCategory] = [];
+                }
+                acc[mainCategory].push(instrument);
+                return acc;
+            },
+            {} as Record<string, Instrument[]>
         );
-    });
+    }, [filteredInstruments, normalizeCategory]);
 
-    // Group markets by market_name
-    const groupedInstruments = filteredInstruments.reduce(
-        (acc, instrument) => {
-            if (!acc[instrument.market_name]) {
-                acc[instrument.market_name] = [];
-            }
-            acc[instrument.market_name].push(instrument);
-            return acc;
-        },
-        {} as Record<string, MarketInfo[]>
-    );
+    if (isLoading) {
+        return (
+            <div className="flex flex-col h-full bg-theme-bg items-center justify-center">
+                <div className="text-theme">Loading markets...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col h-full bg-theme-bg items-center justify-center">
+                <div className="text-rose-500">Error loading markets: {error}</div>
+                <button
+                    className="mt-4 px-4 py-2 bg-theme-text text-theme-bg rounded-lg"
+                    onClick={() => window.location.reload()}
+                >
+                    Retry
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full bg-theme-bg">
@@ -181,37 +290,42 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
                         <div key={marketName} className="mb-6">
                             <h2 className="font-ibm-plex-sans text-sm font-normal leading-[22px] text-theme mb-2">
-                                {marketTitles[marketName]}
+                                {/* Display the formatted category name or fallback to the raw category name */}
+                                {marketTitles[marketName] || formatCategoryForDisplay(marketName)}
                             </h2>
                             <div>
-                                {marketName === "synthetic_index" && (
-                                    <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-theme-muted mb-3">
-                                        Continuous Indices
-                                    </h3>
-                                )}
-                                {markets.map((market) => (
+                                {/* Show subcategory if available */}
+                                {markets.length > 0 &&
+                                    markets[0].categories &&
+                                    markets[0].categories.length > 1 && (
+                                        <h3 className="font-ibm-plex-sans text-xs font-normal leading-[18px] text-theme-muted mb-3">
+                                            {formatCategoryForDisplay(markets[0].categories[1])}
+                                        </h3>
+                                    )}
+                                {markets.map((instrument) => (
                                     <div
-                                        key={market.symbol}
+                                        key={instrument.id}
                                         className={`flex items-center justify-between py-2 px-4 -mx-2 rounded-lg transition-all ${
-                                            market.isClosed
+                                            !instrument.is_market_open
                                                 ? "cursor-not-allowed"
-                                                : selectedMarket?.symbol === market.symbol
+                                                : selectedMarket?.id === instrument.id
                                                   ? "bg-theme-text text-theme-bg"
                                                   : "cursor-pointer hover:bg-theme-hover active:bg-theme-active"
                                         }`}
                                         onClick={() =>
-                                            !market.isClosed && handleMarketSelect(market)
+                                            instrument.is_market_open &&
+                                            handleMarketSelect(instrument)
                                         }
                                     >
                                         <div className="flex items-center gap-3 flex-1">
                                             <div className="w-8 h-8 flex items-center justify-center">
-                                                <MarketIcon symbol={market.symbol} />
+                                                <MarketIcon symbol={instrument.id} />
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <span className="font-ibm-plex-sans text-sm font-normal leading-[22px] overflow-hidden text-ellipsis text-inherit">
-                                                    {market.displayName}
+                                                    {instrument.display_name}
                                                 </span>
-                                                {market.isClosed && (
+                                                {!instrument.is_market_open && (
                                                     <span className="flex h-6 min-h-6 max-h-6 px-2 justify-center items-center gap-2 bg-[rgba(230,25,14,0.08)] rounded text-rose-500 text-xs font-normal leading-[18px] uppercase">
                                                         CLOSED
                                                     </span>
@@ -221,13 +335,13 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                toggleFavorite(market.symbol)(e);
+                                                toggleFavorite(instrument.id)(e);
                                             }}
                                             className={`
                               ${
-                                  favorites.has(market.symbol)
+                                  favorites.has(instrument.id)
                                       ? "text-yellow-400"
-                                      : selectedMarket?.symbol === market.symbol
+                                      : selectedMarket?.id === instrument.id
                                         ? "text-theme-bg"
                                         : "text-theme-muted"
                               }
@@ -235,9 +349,9 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                         >
                                             <Star
                                                 className={`w-5 h-5 ${
-                                                    favorites.has(market.symbol)
+                                                    favorites.has(instrument.id)
                                                         ? "fill-yellow-400"
-                                                        : selectedMarket?.symbol === market.symbol
+                                                        : selectedMarket?.id === instrument.id
                                                           ? "stroke-theme-bg"
                                                           : ""
                                                 }`}
