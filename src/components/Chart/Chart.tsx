@@ -123,7 +123,7 @@ export const TradeChart: React.FC = () => {
                     enabledNavigationWidget={isDesktop ? true : false}
                     requestForget={requestForget}
                     requestForgetStream={requestForgetStream}
-                    enabledChartFooter={true}
+                    enabledChartFooter={false}
                     granularity={granularity}
                     isVerticalScrollEnabled
                     isConnectionOpened
