@@ -110,36 +110,37 @@ export const useTradeActions = () => {
                     payout: payout,
                 },
             };
-
             // Add account_uuid to the request if available
-            if (account_uuid) {
-                // We need to create a combined request object that includes both the contract details
-                // and the account_uuid, since the mutation function expects a single parameter
-                const requestWithAccount = {
-                    ...requestBody,
-                    account_uuid,
-                };
-
-                // Call the API using the hook from useContract.ts
-                const response = await buyContractMutate(requestWithAccount);
-
-                // Handle null response
-                if (!response) {
-                    throw new Error("Failed to buy contract: No response received");
-                }
-
-                return response;
-            } else {
-                // Call the API without account_uuid
-                const response = await buyContractMutate(requestBody);
-
-                // Handle null response
-                if (!response) {
-                    throw new Error("Failed to buy contract: No response received");
-                }
-
-                return response;
+            const requestWithAccount = account_uuid
+                ? { ...requestBody, account_uuid }
+                : requestBody;
+            // Validate required fields before making the request
+            if (!instrument) {
+                throw new Error("Instrument ID is required");
             }
+            if (!trade_type) {
+                throw new Error("Product ID is required");
+            }
+            if (!parsedDuration.value || !parsedDuration.type) {
+                throw new Error("Duration and duration unit are required");
+            }
+            if (!stake || Number(stake) <= 0) {
+                throw new Error("Valid stake amount is required");
+            }
+            if (!variant) {
+                throw new Error("Trade variant is required");
+            }
+            if (!payout || Number(payout) <= 0) {
+                throw new Error("Valid payout amount is required");
+            }
+
+            const response = await buyContractMutate(requestWithAccount);
+
+            if (!response) {
+                throw new Error("Failed to buy contract: No response received");
+            }
+
+            return response;
         } catch (error) {
             // Error is already handled in onError callback
             throw error;

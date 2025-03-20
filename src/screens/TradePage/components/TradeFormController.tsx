@@ -1,5 +1,6 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState, useCallback } from "react";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useToastStore } from "@/stores/toastStore";
 import { ServerTime } from "@/components/ServerTime";
 import { TradeButton } from "@/components/TradeButton";
@@ -209,6 +210,14 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
     // Track stake validation errors separately to persist them across payout updates
     const [stakeValidationError, setStakeValidationError] = useState<string | null>(null);
 
+    const [debouncedValue, setDebouncedValue] = useState(stake);
+
+    useDebounce(debouncedValue, setStake, 500);
+
+    const handleStakeChange = useCallback((value: string) => {
+        setDebouncedValue(value);
+    }, []);
+
     // Parse duration into value and unit
 
     // Subscribe to proposal stream at the top level of the component
@@ -245,7 +254,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
             const initialStates: ButtonStates = {};
             config.buttons.forEach((button: any) => {
                 initialStates[button.actionName] = {
-                    loading: false,
+                    loading: true,
                     error: null,
                     payout: prevStates[button.actionName]?.payout || 0,
                     reconnecting: false,
@@ -598,7 +607,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                     <StakeField
                                         className="w-full"
                                         stake={stake}
-                                        setStake={setStake}
+                                        setStake={handleStakeChange}
                                         productConfig={productConfig}
                                         currency={currency}
                                         isConfigLoading={!productConfig}
@@ -690,7 +699,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                                     <Suspense fallback={<div>Loading stake field...</div>}>
                                         <StakeField
                                             stake={stake}
-                                            setStake={setStake}
+                                            setStake={handleStakeChange}
                                             productConfig={productConfig}
                                             currency={currency}
                                             isConfigLoading={!productConfig}
