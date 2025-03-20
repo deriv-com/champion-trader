@@ -100,9 +100,6 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                                 {balance} {currency}
                             </p>
                         </div>
-                        <p className="text-xs text-theme-muted">
-                            Total assets in your Deriv accounts.
-                        </p>
                     </div>
 
                     <div className="w-full h-1 bg-theme-secondary"></div>

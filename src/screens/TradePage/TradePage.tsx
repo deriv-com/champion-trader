@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { BottomSheet } from "@/components/BottomSheet";
-import { DurationOptions } from "@/components/DurationOptions";
 import { TradeFormController } from "./components/TradeFormController";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { MarketSelector } from "@/components/MarketSelector";
@@ -41,13 +40,9 @@ export const TradePage: React.FC = () => {
             } flex-1 lg:py-4`}
             data-testid="trade-page"
         >
-            <div className="flex flex-col flex-1 min-h-0 gap-2">
+            <div className={`flex flex-col flex-1 min-h-0 gap-2 ${isLandscape ? "" : "pb-2"}`}>
                 <TradeTypesListController />
-                <div
-                    className={`relative flex flex-col flex-1 overflow-hidden ${
-                        isLandscape ? "mb-2" : ""
-                    }`}
-                >
+                <div className="relative flex flex-col flex-1 overflow-hidden">
                     {isLandscape && (
                         <div
                             className={`absolute ${
@@ -70,17 +65,11 @@ export const TradePage: React.FC = () => {
                             isMobile={true}
                         />
                     )}
-                    <div className="flex-1 relative">
+                    <div className={`flex-1 relative ${isLandscape ? "" : "border-b"}`}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Chart />
                         </Suspense>
                     </div>
-
-                    {!isLandscape && (
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <DurationOptions />
-                        </Suspense>
-                    )}
                 </div>
             </div>
 

@@ -120,7 +120,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                     tabIndex={0}
                 >
                     <div ref={containerRef} className="flex rounded-lg h-[48px]">
-                        <div className="flex flex-col flex-1 justify-between">
+                        <div className="flex flex-col flex-1 gap-1">
                             <span className="text-left text-xs leading-[18px] font-normal text-theme-muted">
                                 Stake ({currency})
                             </span>
