@@ -48,14 +48,14 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             }
 
             toast({
-                className: " max-w-full w-[334px] ",
+                className: "max-w-full w-[334px]",
                 content: (
                     <div className="w-full h-12 flex items-center gap-3 bg-theme-text text-theme-bg p-2 pl-4 rounded-lg">
                         {isAdding ? (
                             <StandaloneStarFillIcon fill="#F7C60B" iconSize="sm" />
                         ) : (
                             <StandaloneStarRegularIcon
-                                fill={theme === "light" ? "#ffffff" : "##000000B8"}
+                                fill={theme === "light" ? "#ffffff" : "#000000B8"}
                                 iconSize="sm"
                             />
                         )}
@@ -64,7 +64,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                         </span>
                     </div>
                 ),
-                duration: 20000,
+                duration: 2000,
                 position: "bottom-center",
             });
 
@@ -225,6 +225,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                 e.stopPropagation();
                                                 toggleFavorite(market.symbol)(e);
                                             }}
+                                            data-testid="star-icon"
                                         >
                                             {favorites.has(market.symbol) ? (
                                                 <StandaloneStarFillIcon
@@ -237,9 +238,9 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                         selectedMarket?.symbol === market.symbol
                                                             ? theme === "light"
                                                                 ? "#ffffff"
-                                                                : "##000000B8"
+                                                                : "#000000B8"
                                                             : theme === "light"
-                                                              ? "##000000B8"
+                                                              ? "#000000B8"
                                                               : "#ffffff"
                                                     }
                                                     iconSize="sm"

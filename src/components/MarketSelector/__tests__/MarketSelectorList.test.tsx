@@ -76,7 +76,6 @@ jest.mock("../marketSelectorStub", () => ({
 jest.mock("lucide-react", () => ({
     Search: () => <div data-testid="search-icon">Search</div>,
     X: () => <div data-testid="clear-icon">Clear</div>,
-    Star: () => <div data-testid="star-icon">Star</div>,
 }));
 
 // Mock localStorage
@@ -202,7 +201,7 @@ describe("MarketSelectorList", () => {
             it("toggles favorites and updates localStorage", () => {
                 render(<MarketSelectorList />);
 
-                const starButton = screen.getAllByTestId("star-icon")[1].parentElement;
+                const starButton = screen.getAllByTestId("star-icon")[0];
                 fireEvent.click(starButton!);
 
                 expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
@@ -211,7 +210,7 @@ describe("MarketSelectorList", () => {
                 );
                 expect(mockToast).toHaveBeenCalledWith(
                     expect.objectContaining({
-                        variant: "default",
+                        className: "max-w-full w-[334px]",
                         duration: 2000,
                         position: "bottom-center",
                     })
