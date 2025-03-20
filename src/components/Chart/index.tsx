@@ -1,13 +1,17 @@
-import React from "react";
-import { TradeChart as BaseChart } from "./Chart";
-import { ChartErrorBoundary } from "./ChartErrorBoundary";
+import { TradeChart } from "./Chart";
+import ChartErrorBoundary from "./ChartErrorBoundary";
+import "./chart-styles.css";
 
-const ChartWithErrorBoundary = (props: React.ComponentProps<typeof BaseChart>) => {
-    return (
-        <ChartErrorBoundary>
-            <BaseChart {...props} />
-        </ChartErrorBoundary>
-    );
-};
+// Export the Chart component wrapped with error boundary
+export const Chart = (props: any) => (
+    <ChartErrorBoundary>
+        <TradeChart {...props} />
+    </ChartErrorBoundary>
+);
 
-export { ChartWithErrorBoundary as Chart, ChartErrorBoundary };
+// Export individual components
+export { TradeChart };
+export { ChartErrorBoundary };
+
+// Export default wrapped component
+export default Chart;

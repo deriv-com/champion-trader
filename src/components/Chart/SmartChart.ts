@@ -1,18 +1,30 @@
 // @ts-nocheck
 import React from "react";
 import { getUrlBase, moduleLoader } from "@/lib/chart-utils";
+import "./chart-styles.css";
 
 let smartchartsModule;
 
 const init = () => {
     smartchartsModule = moduleLoader(() => {
-        return import(/* webpackChunkName: "smart_chart" */ "@deriv-com/smartcharts-champion");
+        return import(/* webpackChunkName: "smart_chart" */ "@deriv/deriv-charts");
     });
 
-    smartchartsModule.then(({ setSmartChartsPublicPath }) => {
-        setSmartChartsPublicPath(getUrlBase("/js/smartcharts/"));
-    });
+    smartchartsModule
+        .then(({ setSmartChartsPublicPath }) => {
+            try {
+                setSmartChartsPublicPath(getUrlBase("/js/smartcharts/"));
+            } catch (error) {
+                console.error("Error setting SmartCharts path:", error);
+            }
+        })
+        .catch((error) => {
+            console.error("Failed to load SmartCharts module:", error);
+        });
 };
+
+// Initialize the module immediately
+init();
 
 // React.Lazy expects a default export for the component
 // SmartChart library exports many components
