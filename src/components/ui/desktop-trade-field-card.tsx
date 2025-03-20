@@ -17,7 +17,7 @@ export const DesktopTradeFieldCard = ({
     return (
         <div
             className={cn(
-                "bg-theme-secondary rounded-lg p-2 border border-transparent",
+                "bg-theme-secondary rounded-lg py-2 px-4 border border-transparent",
                 isSelected && "border-theme-button",
                 error && "border-red-500 bg-[rgba(230,25,14,0.08)]",
                 className

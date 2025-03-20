@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useContractDetails } from "@/hooks/contract/useContract";
+import { useParams } from "react-router-dom";
 import { useHeaderStore } from "@/stores/headerStore";
 import { useBottomNavStore } from "@/stores/bottomNavStore";
 import DesktopContractDetailsPage from "./DesktopContractDetailsPage";
+import { WrappedContractDetailsChart } from "@/components/ContractDetailsChart";
+import { useContractDetails } from "@/hooks/contract/useContract";
 import { Header, ContractSummary, OrderDetails, EntryExitDetails } from "./components";
-import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
 import { useOrientationStore } from "@/stores/orientationStore";
+import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useTradeActions } from "@/hooks/useTradeActions";
 
 const MobileContractDetailsPage: React.FC = () => {
-    const navigate = useNavigate();
-    const { contract_id } = useParams<{ contract_id: string }>();
-    const { contract, loading, error } = useContractDetails(contract_id || "");
     const setHeaderVisible = useHeaderStore((state) => state.setIsVisible);
     const setBottomNavVisible = useBottomNavStore((state) => state.setIsVisible);
+    const { theme } = useMainLayoutStore();
+    const { contract_id } = useParams<{ contract_id: string }>();
+    const { contract, loading, error } = useContractDetails(contract_id || "");
     const contractDetails = useTradeStore((state) => state.contractDetails);
     const tradeActions = useTradeActions();
     const [isClosing, setIsClosing] = useState(false);
@@ -74,7 +75,11 @@ const MobileContractDetailsPage: React.FC = () => {
                         <>
                             <ContractSummary contract={contract} />
                             <div className="min-h-[400px] mt-4">
-                                <ContractDetailsChart contract={contract} />
+                                <WrappedContractDetailsChart
+                                    contractId={undefined}
+                                    isReplay={true}
+                                    is_dark_theme={theme === "dark"}
+                                />
                             </div>
                             <OrderDetails contract={contract} />
                             <EntryExitDetails contract={contract} />

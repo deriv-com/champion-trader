@@ -129,7 +129,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             {!isMobile && (
                 <div className="flex items-center justify-between px-6 py-8">
                     <div className="flex-1" />
-                    <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-theme">
+                    <h1 className="text-center text-base font-bold overflow-hidden text-ellipsis text-theme">
                         Markets
                     </h1>
                     <div className="flex-1 flex justify-end">
@@ -178,6 +178,21 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             {/* Market List */}
             <div className="flex-1 overflow-y-auto px-6 scrollbar-thin">
+                {/* Empty state for favourites tab */}
+                {activeTab === "favourites" && favorites.size === 0 && !searchQuery && (
+                    <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+                        <StandaloneStarRegularIcon
+                            fill="#D1D5DB"
+                            iconSize="2xl"
+                            className=" mb-4"
+                        />
+                        <h3 className="text-lg font-semibold text-gray-500 mb-2">No favourites</h3>
+                        <p className="text-sm text-gray-400">
+                            Your favourite markets will appear here.
+                        </p>
+                    </div>
+                )}
+
                 {/* Market Groups */}
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
