@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, X, Star } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTradeStore } from "@/stores/tradeStore";
 import { useMarketStore } from "@/stores/marketStore";
@@ -10,6 +10,7 @@ import { marketData, MarketInfo, marketTitles, marketTypeMap } from "./marketSel
 import { MarketIcon } from "./MarketIcon";
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
+import { StandaloneStarFillIcon, StandaloneStarRegularIcon } from "@deriv/quill-icons";
 
 interface MarketSelectorListProps {
     onDragDown?: () => void;
@@ -20,6 +21,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
     const { isMobile } = useDeviceDetection();
+    const { theme } = useMainLayoutStore();
     const [favorites, setFavorites] = useState<Set<string>>(() => {
         const savedFavorites = localStorage.getItem("market-favorites");
         return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
@@ -41,31 +43,31 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             if (isAdding) {
                 newFavorites.add(symbol);
-                toast({
-                    content: (
-                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
-                            <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                            <span className="text-base">Added to favourites</span>
-                        </div>
-                    ),
-                    variant: "default",
-                    duration: 2000,
-                    position: "bottom-center",
-                });
             } else {
                 newFavorites.delete(symbol);
-                toast({
-                    content: (
-                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
-                            <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                            <span className="text-base">Removed from favourites</span>
-                        </div>
-                    ),
-                    variant: "default",
-                    duration: 2000,
-                    position: "bottom-center",
-                });
             }
+
+            toast({
+                className: " max-w-full w-[334px] ",
+                content: (
+                    <div className="w-full h-12 flex items-center gap-3 bg-theme-text text-theme-bg p-2 pl-4 rounded-lg">
+                        {isAdding ? (
+                            <StandaloneStarFillIcon fill="#F7C60B" iconSize="sm" />
+                        ) : (
+                            <StandaloneStarRegularIcon
+                                fill={theme === "light" ? "#ffffff" : "##000000B8"}
+                                iconSize="sm"
+                            />
+                        )}
+                        <span className="text-sm">
+                            {isAdding ? "Added" : "Removed"} from favourites
+                        </span>
+                    </div>
+                ),
+                duration: 20000,
+                position: "bottom-center",
+            });
+
             return newFavorites;
         });
     };
@@ -223,25 +225,26 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                 e.stopPropagation();
                                                 toggleFavorite(market.symbol)(e);
                                             }}
-                                            className={`
-                              ${
-                                  favorites.has(market.symbol)
-                                      ? "text-yellow-400"
-                                      : selectedMarket?.symbol === market.symbol
-                                        ? "text-theme-bg"
-                                        : "text-theme-muted"
-                              }
-                            `}
                                         >
-                                            <Star
-                                                className={`w-5 h-5 ${
-                                                    favorites.has(market.symbol)
-                                                        ? "fill-yellow-400"
-                                                        : selectedMarket?.symbol === market.symbol
-                                                          ? "stroke-theme-bg"
-                                                          : ""
-                                                }`}
-                                            />
+                                            {favorites.has(market.symbol) ? (
+                                                <StandaloneStarFillIcon
+                                                    fill="#F7C60B"
+                                                    iconSize="sm"
+                                                />
+                                            ) : (
+                                                <StandaloneStarRegularIcon
+                                                    fill={
+                                                        selectedMarket?.symbol === market.symbol
+                                                            ? theme === "light"
+                                                                ? "#ffffff"
+                                                                : "##000000B8"
+                                                            : theme === "light"
+                                                              ? "##000000B8"
+                                                              : "#ffffff"
+                                                    }
+                                                    iconSize="sm"
+                                                />
+                                            )}
                                         </button>
                                     </div>
                                 ))}
