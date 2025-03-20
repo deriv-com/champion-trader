@@ -73,7 +73,7 @@ describe("TradeButton", () => {
         const label = screen.getByText("Payout");
         const value = screen.getByText("19.55 USD");
 
-        expect(title).toHaveClass("font-bold");
+        expect(title).toHaveClass("font-semibold");
         expect(label).toHaveClass("text-[12px]");
         expect(value).toBeInTheDocument();
     });
