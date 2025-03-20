@@ -2,40 +2,73 @@
  * Request parameters for buying a contract
  */
 export interface BuyContractRequest {
-    instrument_id: string;
-    trade_type: string;
-    duration: string;
-    amount: number;
-    currency: string;
-    price?: number;
-    // Add other buy parameters as needed
+    idempotency_key: string;
+    product_id: string;
+    proposal_details: {
+        instrument_id: string;
+        duration: number;
+        duration_unit: string;
+        allow_equals: boolean;
+        stake: string;
+        variant: string;
+        payout: string;
+    };
 }
 
 /**
  * Response from buy contract API
  */
 export interface BuyContractResponse {
-    contract_id: string;
-    price: number;
-    // Add other buy response properties as needed
+    data: {
+        idempotency_key: string;
+        contract_id: string;
+        product_id: string;
+        buy_price: string;
+        buy_time: number;
+        contract_details: {
+            contract_start_time: number;
+            contract_expiry_time: number;
+            entry_tick_time: number;
+            entry_spot: string;
+            duration: number;
+            duration_unit: string;
+            allow_equals: boolean;
+            stake: string;
+            bid_price: string;
+            bid_price_currency: string;
+            variant: string;
+            barrier: string;
+            is_expired: boolean;
+            is_valid_to_sell: boolean;
+            is_sold: boolean;
+            potential_payout: string;
+        };
+    };
 }
 
 /**
- * Request parameters for selling a contract
+ * Query parameters for selling a contract
+ * According to API spec, contract_id and account_uuid should be query parameters
  */
 export interface SellContractRequest {
     contract_id: string;
-    price?: number;
+    account_uuid?: string;
 }
 
 /**
  * Response from sell contract API
  */
 export interface SellContractResponse {
-    contract_id: string;
-    price: number;
-    profit: number;
-    // Add other sell response properties as needed
+    data: {
+        contract_id: string;
+        product_id: string;
+        buy_price: string;
+        buy_time: number;
+        sell_price: string;
+        sell_time: number;
+        profit: string;
+        contract_details: ContractDetails;
+    };
 }
 
 // Response structure for open contracts

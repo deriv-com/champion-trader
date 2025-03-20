@@ -11,6 +11,7 @@ import {
     PositionMapper,
     PositionProfitLoss,
 } from "@/components/PositionComponents";
+import { useTradeActions } from "@/hooks";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -25,17 +26,35 @@ export const PositionsPanel: FC = () => {
     const currentPositions = isOpenTab ? openPositions : closedPositions;
 
     // Filter logic (simplified for now)
-    const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [selectedFilter, setSelectedFilter] = useState<string>("Trade types");
+    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
     const handleFilterSelect = (filter: string) => {
         setSelectedFilter(filter);
         // Filter implementation would go here
     };
 
+    const { sell_contract } = useTradeActions();
+
+    // Handle closing a contract
+    const handleCloseContract = async (contractId: string, position: any) => {
+        try {
+            // Use the enhanced sell_contract function
+            await sell_contract(contractId, position.details, {
+                setLoading: (isLoading) => {
+                    setClosingContracts((prev) => ({ ...prev, [contractId]: isLoading }));
+                },
+                onError: (error: unknown) => console.error("Error closing contract:", error),
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
+    };
+
     return (
         <div className="flex flex-col h-full">
-            <div className="p-6 flex-1 overflow-auto scrollbar-thin">
-                <div className="flex gap-2 p-1 bg-theme-secondary rounded-lg">
+            <div className="flex flex-col gap-2 flex-1 overflow-auto scrollbar-thin">
+                <div className="flex gap-2 p-1 mx-4 bg-theme-secondary rounded-lg">
                     <button
                         className={`flex-1 h-8 flex items-center justify-center rounded-lg transition-all ${
                             isOpenTab
@@ -57,7 +76,7 @@ export const PositionsPanel: FC = () => {
                         Closed
                     </button>
                 </div>
-                <div className="mt-4">
+                <div className="mx-4">
                     <FilterDropdown
                         isOpenTab={isOpenTab}
                         selectedFilter={selectedFilter}
@@ -67,14 +86,14 @@ export const PositionsPanel: FC = () => {
 
                 {/* Loading State */}
                 {positionsLoading && (
-                    <PositionLoadingState className="flex items-center justify-center mt-8" />
+                    <PositionLoadingState className="flex items-center justify-center mx-4" />
                 )}
 
                 {/* Error State */}
                 {positionsError && (
                     <PositionErrorState
                         error={positionsError}
-                        className="flex items-center justify-center mt-8"
+                        className="flex items-center justify-center mx-4"
                     />
                 )}
 
@@ -91,11 +110,11 @@ export const PositionsPanel: FC = () => {
                     <PositionMapper
                         positions={currentPositions}
                         positionType={isOpenTab ? "open" : "closed"}
-                        className="mt-4 space-y-4"
+                        className="mx-2"
                         renderPosition={(position) => (
                             <div
                                 key={position.contract_id}
-                                className="p-3 rounded-lg shadow-sm cursor-pointer"
+                                className="rounded-lg cursor-pointer"
                                 onClick={() => {
                                     navigate(`/contract/${position.contract_id}`);
                                     setSidebar(null);
@@ -105,7 +124,11 @@ export const PositionsPanel: FC = () => {
                                     contract={position}
                                     containerClassName="bg-transparent shadow-none p-0"
                                     showCloseButton={isOpenTab && position.details.is_valid_to_sell}
-                                    onClose={(id) => console.log("Close action triggered for", id)}
+                                    isClosing={closingContracts[position.contract_id]}
+                                    onClose={(id) => {
+                                        // Prevent navigation when clicking the close button
+                                        handleCloseContract(id, position);
+                                    }}
                                 />
                             </div>
                         )}

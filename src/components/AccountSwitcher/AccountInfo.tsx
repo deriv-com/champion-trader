@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useClientStore } from "@/stores/clientStore";
 import { LogOut } from "lucide-react";
 import { useAccount } from "@/hooks/useAccount";
@@ -12,31 +12,30 @@ interface AccountInfoProps {
 
 export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
     const { balance, currency, setBalance } = useClientStore();
-
-    const { account_uuid, isDemo, isReal, switchAccountType, selectAccount, getAvailableAccounts } =
-        useAccount();
+    const { account_uuid, isDemo, selectAccount, getAvailableAccounts } = useAccount();
     const logout = useLogout();
+    const [selectedTab, setSelectedTab] = useState<"demo" | "real">(isDemo ? "demo" : "real");
 
     return (
         <div className="w-full min-w-[280px]">
             <div className="flex border-b border-theme text-sm">
                 <button
                     className={`flex-1 py-2 text-center ${
-                        isReal ? "font-semibold border-b-2 border-theme-text" : "text-theme-muted"
+                        selectedTab === "real"
+                            ? "font-semibold border-b-2 border-theme-text"
+                            : "text-theme-muted"
                     }`}
-                    onClick={() => {
-                        switchAccountType("real");
-                    }}
+                    onClick={() => setSelectedTab("real")}
                 >
                     Real
                 </button>
                 <button
                     className={`flex-1 py-2 text-center ${
-                        isDemo ? "font-semibold border-b-2 border-theme-text" : "text-theme-muted"
+                        selectedTab === "demo"
+                            ? "font-semibold border-b-2 border-theme-text"
+                            : "text-theme-muted"
                     }`}
-                    onClick={() => {
-                        switchAccountType("demo");
-                    }}
+                    onClick={() => setSelectedTab("demo")}
                 >
                     Demo
                 </button>
@@ -46,7 +45,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                 <div className="flex flex-col gap-4">
                     <h3 className="text-sm font-semibold">Trading account</h3>
                     <div className="flex flex-col gap-2">
-                        {getAvailableAccounts().map((account) => (
+                        {getAvailableAccounts(selectedTab).map((account) => (
                             <Popover.Close key={account.uuid} asChild>
                                 <button
                                     className={`flex items-center p-2 rounded hover:bg-theme-hover ${
@@ -70,7 +69,6 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ onSelect }) => {
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {console.log(account.balance)}
                                         {account_uuid === account.uuid &&
                                         account.group === "demo" &&
                                         account.balance !== "10000.00" ? (

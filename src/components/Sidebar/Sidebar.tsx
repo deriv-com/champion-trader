@@ -16,7 +16,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, title, childr
         >
             <div className="p-4 flex justify-between items-center">
                 <h2 className="text-lg font-bold">{title}</h2>
-                <button onClick={onClose} className="text-theme-muted hover:text-theme">
+                <button
+                    onClick={onClose}
+                    className={`${isOpen ? "text-theme" : "text-theme-muted"} hover:text-theme`}
+                >
                     ✕
                 </button>
             </div>

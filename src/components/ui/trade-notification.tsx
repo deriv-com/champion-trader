@@ -1,10 +1,10 @@
 import React from "react";
-import { Timer } from "lucide-react";
 
 interface TradeNotificationProps {
     stake: string;
     market: string;
     type: string;
+    icon?: React.ReactNode;
     onClose?: () => void;
 }
 
@@ -12,15 +12,14 @@ export const TradeNotification: React.FC<TradeNotificationProps> = ({
     stake,
     market,
     type,
+    icon,
     onClose,
 }) => {
     return (
         <div className="flex items-start gap-4 bg-black text-white p-4 rounded-lg w-[320px]">
-            <div className="rounded-full bg-primary/10 p-2">
-                <Timer className="w-6 h-6 text-color-brand-700" />
-            </div>
+            <div className="rounded-full bg-primary/10 p-2">{icon}</div>
             <div className="flex-1">
-                <div className="font-semibold text-base">Stake: {stake}</div>
+                <div className="font-semibold text-base">{stake}</div>
                 <div className="text-sm text-gray-400">
                     {type} - {market}
                 </div>

@@ -7,6 +7,7 @@ import { ContractSummaryDetails } from "./ContractSummaryDetails";
 interface ContractSummaryProps {
     contract?: Contract;
     showCloseButton?: boolean;
+    isClosing?: boolean;
     onClose?: (contractId: string) => void;
     className?: string;
     containerClassName?: string;
@@ -15,6 +16,7 @@ interface ContractSummaryProps {
 export const ContractSummary: React.FC<ContractSummaryProps> = ({
     contract,
     showCloseButton = false,
+    isClosing = false,
     onClose,
     className = "",
     containerClassName = "",
@@ -26,7 +28,12 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
         return null;
     }
 
+    // Calculate profit as potential_payout - stake
+    // const profit =
+    //     parseFloat(contractDetails.potential_payout || "0") -
+    //     parseFloat(contractDetails.stake || "0");
     const handleClose = (e: React.MouseEvent) => {
+        console.log("handleClose in ContractSummary");
         e.stopPropagation();
         if (onClose && contractData.contractId) {
             onClose(contractData.contractId);
@@ -36,12 +43,12 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
     // Default container styles for mobile view
     const defaultContainerClass = "h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme";
     const containerStyle = {
-        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
+        boxShadow: "0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.03)",
     };
 
     return (
         <div
-            className={`${containerClassName || defaultContainerClass} ${className}`}
+            className={`${containerClassName || defaultContainerClass} ${className} p-4`}
             style={containerClassName ? {} : containerStyle}
         >
             <div className="flex justify-between">
@@ -60,12 +67,15 @@ export const ContractSummary: React.FC<ContractSummaryProps> = ({
                 />
             </div>
 
-            {showCloseButton && contractData.isOpen && contractData.isValidToSell && (
+            {showCloseButton && contractData.isOpen && (
                 <button
-                    className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2"
+                    className="w-full h-6 flex items-center justify-center py-2 border border-theme text-xs font-bold rounded-[8] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleClose}
+                    disabled={isClosing || !contractData.isValidToSell}
                 >
-                    Close {`${contractData.stake} ${contractData.currency}`}
+                    {isClosing
+                        ? "Closing..."
+                        : `Close ${contractData.stake} ${contractData.currency}`}
                 </button>
             )}
         </div>

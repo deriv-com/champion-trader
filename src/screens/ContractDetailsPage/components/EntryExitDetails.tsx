@@ -1,21 +1,39 @@
 import React from "react";
+import { Contract } from "@/api/services/contract/types";
+import { formatTime, formatDate } from "@/utils/date-format";
 
-import { useTradeStore } from "@/stores/tradeStore";
+interface EntryExitDetailsProps {
+    contract: Contract;
+}
 
-export const EntryExitDetails: React.FC = () => {
-    const contractDetails = useTradeStore((state) => state.contractDetails);
+export const EntryExitDetails: React.FC<EntryExitDetailsProps> = ({ contract }) => {
+    const { details } = contract;
 
-    if (!contractDetails) {
-        return null;
-    }
-
-    const { startTime, startTimeGMT, entrySpot, entryTimeGMT, exitTime, exitTimeGMT, exitSpot } =
-        contractDetails;
-    const details = [
-        { label: "Start time", value: startTime, subValue: startTimeGMT },
-        { label: "Entry spot", value: entrySpot, subValue: entryTimeGMT },
-        { label: "Exit time", value: exitTime, subValue: exitTimeGMT },
-        { label: "Exit spot", value: exitSpot, subValue: exitTimeGMT },
+    const entryExitDetails = [
+        {
+            label: "Start time",
+            value: formatDate(details.contract_start_time),
+            subValue: formatTime(details.contract_start_time),
+        },
+        {
+            label: "Entry spot",
+            value: details.entry_spot || "N/A",
+            subValue:
+                formatDate(details.entry_tick_time) + "\n" + formatTime(details.entry_tick_time),
+        },
+        {
+            label: "Exit time",
+            value: formatDate(details.exit_time || 0),
+            subValue: formatTime(details.exit_time || 0),
+        },
+        {
+            label: "Exit spot",
+            value: details.exit_spot || "N/A",
+            subValue:
+                formatDate(details.exit_tick_time || 0) +
+                "\n" +
+                formatTime(details.exit_tick_time || 0),
+        },
     ];
 
     return (
@@ -28,7 +46,7 @@ export const EntryExitDetails: React.FC = () => {
             <h2 className="text-[14px] leading-[22px] font-ibm-plex font-bold text-theme mb-4">
                 Entry & exit details
             </h2>
-            {details.map((detail, index) => (
+            {entryExitDetails.map((detail, index) => (
                 <div
                     key={index}
                     className="col-span-2 flex justify-between border-b border-theme py-2"
@@ -41,9 +59,11 @@ export const EntryExitDetails: React.FC = () => {
                             {detail.value}
                         </span>
                         {detail.subValue && (
-                            <span className="text-theme-muted font-ibm-plex text-[12px] leading-[18px] font-normal block">
-                                {detail.subValue}
-                            </span>
+                            <div className="text-theme-muted font-ibm-plex text-[12px] leading-[18px] font-normal">
+                                {detail.subValue.split("\n").map((text, i) => (
+                                    <div key={i}>{text}</div>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>

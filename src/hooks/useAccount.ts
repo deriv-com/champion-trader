@@ -24,14 +24,6 @@ export const useAccount = () => {
         }
     }, [token, account_uuid, setAccount]);
 
-    const switchAccountType = (type: "demo" | "real") => {
-        // When switching account type, select the first account of that type
-        const accountsOfType = accountData.filter((account) => account.group === type);
-        if (accountsOfType.length > 0) {
-            setAccount(accountsOfType[0]);
-        }
-    };
-
     const selectAccount = (uuid: string) => {
         const account = accountData.find((acc) => acc.uuid === uuid);
         if (!account) {
@@ -40,15 +32,14 @@ export const useAccount = () => {
         setAccount(account);
     };
 
-    const getAvailableAccounts = (): AccountInfo[] => {
-        return accountData.filter((account) => account.group === group);
+    const getAvailableAccounts = (groupType: "demo" | "real"): AccountInfo[] => {
+        return accountData.filter((account) => account.group === groupType);
     };
 
     return {
         group,
         account_uuid,
         selectedAccount,
-        switchAccountType,
         selectAccount,
         getAvailableAccounts,
         isDemo: group === "demo",

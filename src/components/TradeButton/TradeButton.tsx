@@ -35,8 +35,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                 <Tooltip.Trigger asChild>
                     <Button
                         className={cn(
-                            "flex-1 flex flex-col gap-1 text-white rounded-full",
-                            isLandscape ? "py-4 h-12" : "py-6 h-16",
+                            "flex-1 flex flex-col gap-1 text-white rounded-full h-14 px-6 py-2 [&>div]:px-2 [&_span]:text-md",
                             className
                         )}
                         variant="default"
@@ -91,14 +90,14 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                             className={cn(
                                 "flex items-center w-full px-3",
                                 !isLandscape
-                                    ? title_position === "right"
+                                    ? title_position === "left"
                                         ? "justify-between"
                                         : "justify-between flex-row-reverse"
                                     : "justify-between"
                             )}
                         >
-                            <span className="text- opacity-80">{label}</span>
-                            <span className="text-xs">{value}</span>
+                            <span className="text-[12px]">{value}</span>
+                            <span className="text-[12px]">{label}</span>
                         </div>
                     </Button>
                 </Tooltip.Trigger>

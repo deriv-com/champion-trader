@@ -46,7 +46,10 @@ const AppContent = () => {
                     {isLoggedIn ? (
                         <>
                             <Route path="/positions" element={<PositionsPage />} />
-                            <Route path="/contract/:id" element={<ContractDetailsPage />} />
+                            <Route
+                                path="/contract/:contract_id"
+                                element={<ContractDetailsPage />}
+                            />
                         </>
                     ) : (
                         <Route path="/positions" element={<Navigate to="/menu" />} />

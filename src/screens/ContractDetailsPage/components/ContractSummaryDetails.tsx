@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+import { StandaloneStopwatchRegularIcon } from "@deriv/quill-icons";
 import React from "react";
 
 interface ContractSummaryDetailsProps {
@@ -19,10 +21,15 @@ export const ContractSummaryDetails: React.FC<ContractSummaryDetailsProps> = ({
 }) => {
     return (
         <div className={`flex flex-col items-end ${className}`}>
-            <div className="text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right bg-theme-secondary/50 px-2 rounded-md mb-1 py-0.5 inline-block">
+            <div
+                className={cn(
+                    "text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal text-right rounded-md mb-1 py-0.5 inline-block",
+                    isOpen ? "bg-theme-secondary/50 px-2" : "px-0"
+                )}
+            >
                 {isOpen ? (
                     <span className="flex items-center">
-                        <span className="mr-1">⏳</span> {duration}
+                        <StandaloneStopwatchRegularIcon fill="#737373" iconSize="sm" /> {duration}
                     </span>
                 ) : (
                     <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-xs font-medium">
