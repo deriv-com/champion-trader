@@ -68,9 +68,9 @@ export const usePositionsData = () => {
         (a, b) => b.details.contract_start_time - a.details.contract_start_time
     );
 
-    // Sort closed positions by contract_start_time (newest first)
+    // Sort closed positions by contract_expiry_time (newest first)
     const sortedClosedPositions = [...closedPositions].sort(
-        (a, b) => b.details.contract_start_time - a.details.contract_start_time
+        (a, b) => b.details.contract_expiry_time - a.details.contract_expiry_time
     );
 
     return {
