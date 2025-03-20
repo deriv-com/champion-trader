@@ -1,19 +1,17 @@
-/**
- * Format a timestamp to a localized time string
- * @param timestamp - Timestamp in milliseconds
- * @returns Formatted time string
- */
-export const formatTime = (timestamp: number): string => {
+// Format timestamps to "01 Jan 2024" format
+export const formatDate = (timestamp: number) => {
+    if (!timestamp) return "N/A";
     const date = new Date(timestamp);
-    return date.toLocaleTimeString();
+    return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
 };
 
-/**
- * Format a timestamp to a GMT string
- * @param timestamp - Timestamp in milliseconds
- * @returns Formatted GMT string
- */
-export const formatGMT = (timestamp: number): string => {
+// Format timestamps to "16:20:02 GMT" format
+export const formatTime = (timestamp: number) => {
+    if (!timestamp) return "N/A";
     const date = new Date(timestamp);
-    return `GMT: ${date.toISOString()}`;
+    return date.toTimeString().substring(0, 8) + " GMT";
 };
