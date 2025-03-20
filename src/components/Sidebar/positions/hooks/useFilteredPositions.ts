@@ -18,7 +18,7 @@ export const useFilteredPositions = ({
     allPositions,
     closedPositions,
 }: UseFilteredPositionsProps): UseFilteredPositionsReturn => {
-    const [selectedFilter, setSelectedFilter] = useState<string>("All trade types");
+    const [selectedFilter, setSelectedFilter] = useState<string>("Trade types");
     const [filteredPositions, setFilteredPositions] = useState<Position[]>(allPositions);
 
     useEffect(() => {

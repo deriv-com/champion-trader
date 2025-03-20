@@ -1,17 +1,49 @@
 import { useState, useRef, useEffect } from "react";
-import { useTradeStore } from "@/stores/tradeStore";
-import { useClientStore } from "@/stores/clientStore";
+import { validateStake } from "../utils/validation";
 import { incrementStake, decrementStake, parseStakeAmount } from "@/utils/stake";
-import { getStakeConfig } from "@/adapters/stake-config-adapter";
 import { useBottomSheetStore } from "@/stores/bottomSheetStore";
 import { useTooltipStore } from "@/stores/tooltipStore";
-import { validateStake } from "../utils/validation";
 
-export const useStakeField = () => {
-    const { stake, setStake, isConfigLoading, productConfig } = useTradeStore();
-    const { currency } = useClientStore();
+interface UseStakeFieldParams {
+    stake: string;
+    setStake: (value: string) => void;
+    productConfig: any;
+    currency: string;
+    handleError?: (hasError: boolean, errorMessage: string | null) => void;
+}
+
+interface UseStakeFieldResult {
+    // State
+    isStakeSelected: boolean;
+    error: boolean;
+    errorMessage?: string;
+    localValue: string;
+    inputRef: React.RefObject<HTMLInputElement>;
+    containerRef: React.RefObject<HTMLDivElement>;
+
+    // Handlers
+    handleSelect: (selected: boolean) => void;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    defaultHandleIncrement: () => void;
+    defaultHandleDecrement: () => void;
+    defaultHandleMobileClick: () => void;
+    showError: (message: string) => void;
+    validateAndUpdateStake: (value: string) => boolean;
+}
+
+export const useStakeField = ({
+    stake,
+    setStake,
+    productConfig,
+    currency,
+    handleError,
+}: UseStakeFieldParams): UseStakeFieldResult => {
+    // isConfigLoading is used in the component but not in the hook
+    // We're keeping it in the interface for API consistency
     const { setBottomSheet } = useBottomSheetStore();
     const { showTooltip, hideTooltip } = useTooltipStore();
+
+    // Internal state
     const [isStakeSelected, setIsStakeSelected] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string>();
@@ -19,6 +51,7 @@ export const useStakeField = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    // Update local value when stake prop changes
     useEffect(() => {
         setLocalValue(stake);
     }, [stake]);
@@ -34,22 +67,35 @@ export const useStakeField = () => {
         if (!productConfig) return false;
 
         const amount = parseStakeAmount(value || "0");
+
+        // Use values from productConfig
+        const minStake = parseFloat(productConfig.data.validations.stake.min);
+        const maxStake = parseFloat(productConfig.data.validations.stake.max);
+
         const validation = validateStake({
             amount,
-            minStake: getStakeConfig().min,
-            maxStake: getStakeConfig().max,
+            minStake,
+            maxStake,
             currency,
         });
 
         setError(validation.error);
         setErrorMessage(validation.message);
+
+        // Call handleError callback if provided
+        if (handleError) {
+            handleError(validation.error, validation.error ? validation.message || null : null);
+        }
+
         if (validation.error && validation.message) {
             showError(validation.message);
         }
+
         return !validation.error;
     };
 
-    const handleIncrement = () => {
+    // Default handlers that can be overridden by props
+    const defaultHandleIncrement = () => {
         if (!productConfig) return;
 
         const newValue = incrementStake(stake || "0");
@@ -59,7 +105,7 @@ export const useStakeField = () => {
         }
     };
 
-    const handleDecrement = () => {
+    const defaultHandleDecrement = () => {
         if (!productConfig) return;
 
         const newValue = decrementStake(stake || "0");
@@ -67,6 +113,11 @@ export const useStakeField = () => {
             setStake(newValue);
             hideTooltip();
         }
+    };
+
+    const defaultHandleMobileClick = () => {
+        if (!productConfig) return;
+        setBottomSheet(true, "stake", "400px");
     };
 
     const handleSelect = (selected: boolean) => {
@@ -122,6 +173,12 @@ export const useStakeField = () => {
             setErrorMessage(message);
             showError(message);
             setStake("");
+
+            // Call handleError callback if provided
+            if (handleError) {
+                handleError(true, message);
+            }
+
             return;
         }
 
@@ -142,26 +199,22 @@ export const useStakeField = () => {
         }
     };
 
-    const handleMobileClick = () => {
-        if (!productConfig) return;
-        setBottomSheet(true, "stake", "400px");
-    };
-
     return {
-        stake,
-        currency,
+        // State
         isStakeSelected,
-        isConfigLoading,
         error,
         errorMessage,
         localValue,
         inputRef,
         containerRef,
+
+        // Handlers
         handleSelect,
         handleChange,
-        handleIncrement,
-        handleDecrement,
-        handleMobileClick,
-        productConfig,
+        defaultHandleIncrement,
+        defaultHandleDecrement,
+        defaultHandleMobileClick,
+        showError,
+        validateAndUpdateStake,
     };
 };

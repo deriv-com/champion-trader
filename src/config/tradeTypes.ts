@@ -1,11 +1,14 @@
 import { TradeAction } from "@/hooks/useTradeActions";
 
+// Define a type for buy actions only (excluding sell_contract)
+export type BuyAction = Exclude<TradeAction, "sell_contract">;
+
 export interface TradeButton {
     title: string;
     label: string;
     className: string;
     position: "left" | "right";
-    actionName: TradeAction;
+    actionName: BuyAction; // Use BuyAction instead of TradeAction
     contractType: string; // The actual contract type to use with the API (e.g., "CALL", "PUT")
 }
 

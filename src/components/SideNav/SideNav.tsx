@@ -1,16 +1,21 @@
 import React from "react";
-import { Clock, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useClientStore } from "@/stores/clientStore";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
+import {
+    LegacyMenuHamburger1pxIcon,
+    LegacyMenuHamburger2pxIcon,
+    StandaloneClockThreeFillIcon,
+    StandaloneClockThreeRegularIcon,
+} from "@deriv/quill-icons";
 
 export const SideNav: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isLoggedIn } = useClientStore();
     const { isLandscape } = useOrientationStore();
-    const { activeSidebar, toggleSidebar, isSideNavVisible } = useMainLayoutStore();
+    const { activeSidebar, toggleSidebar, isSideNavVisible, theme } = useMainLayoutStore();
 
     return (
         <nav
@@ -43,13 +48,17 @@ export const SideNav: React.FC = () => {
                             <div
                                 className={`${activeSidebar === "positions" ? "bg-theme-active rounded-lg p-2" : "p-2"}`}
                             >
-                                <Clock className="w-5 h-5" />
+                                {activeSidebar === "positions" ? (
+                                    <StandaloneClockThreeFillIcon
+                                        fill={theme === "dark" ? "#fff" : "#000"}
+                                    />
+                                ) : (
+                                    <StandaloneClockThreeRegularIcon
+                                        fill={theme === "dark" ? "#fff" : "#000"}
+                                    />
+                                )}
                             </div>
-                            <span
-                                className={`text-xs ${activeSidebar === "positions" ? "text-theme" : ""}`}
-                            >
-                                Positions
-                            </span>
+                            <span className={`text-xs text-theme`}>Positions</span>
                         </button>
                     )}
                     <button
@@ -67,15 +76,19 @@ export const SideNav: React.FC = () => {
                                 activeSidebar === "menu" ? "bg-theme-active rounded-lg p-2" : "p-2"
                             }`}
                         >
-                            <Menu className="w-5 h-5" />
+                            {activeSidebar === "menu" ? (
+                                <LegacyMenuHamburger2pxIcon
+                                    iconSize="sm"
+                                    fill={theme === "dark" ? "#fff" : "#000"}
+                                />
+                            ) : (
+                                <LegacyMenuHamburger1pxIcon
+                                    iconSize="sm"
+                                    fill={theme === "dark" ? "#fff" : "#000"}
+                                />
+                            )}
                         </div>
-                        <span
-                            className={`text-xs ${
-                                activeSidebar === "menu" ? "text-theme" : "text-theme-muted"
-                            }`}
-                        >
-                            Menu
-                        </span>
+                        <span className={`text-xs text-theme`}>Menu</span>
                     </button>
                 </div>
             </div>

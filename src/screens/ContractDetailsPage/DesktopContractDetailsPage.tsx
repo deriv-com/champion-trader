@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContractDetails } from "@/hooks/contract/useContract";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { X } from "lucide-react";
-import { ContractSummary, EntryExitDetails, OrderDetails } from "./components";
+import { ContractSummary, OrderDetails, EntryExitDetails } from "./components";
 import { ContractDetailsChart } from "@/components/ContractDetailsChart/ContractDetailsChart";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useTradeActions } from "@/hooks/useTradeActions";
 
 const DesktopContractDetailsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { contract_id } = useParams<{ contract_id: string }>();
+    const { contract, loading, error } = useContractDetails(contract_id || "");
     const { setSideNavVisible } = useMainLayoutStore();
+    const contractDetails = useTradeStore((state) => state.contractDetails);
+    const tradeActions = useTradeActions();
+    const [isClosing, setIsClosing] = useState(false);
 
     useEffect(() => {
         // Hide SideNav when component mounts
@@ -16,6 +24,18 @@ const DesktopContractDetailsPage: React.FC = () => {
         // Show SideNav when component unmounts
         return () => setSideNavVisible(true);
     }, [setSideNavVisible]);
+
+    const handleCloseContract = async () => {
+        if (!contractDetails?.contract_id) return;
+
+        try {
+            await tradeActions.sell_contract(contractDetails.contract_id, contractDetails, {
+                setLoading: setIsClosing,
+            });
+        } catch (error) {
+            // Error handling is done in the hook
+        }
+    };
 
     return (
         <div
@@ -35,27 +55,57 @@ const DesktopContractDetailsPage: React.FC = () => {
                         className="flex-1 overflow-y-auto pb-20 space-y-4 bg-theme-secondary scrollbar-thin"
                         data-testid="content-area"
                     >
-                        <ContractSummary />
-                        <OrderDetails />
-                        <EntryExitDetails />
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading contract details...</p>
+                                </div>
+                                <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading order details...</p>
+                                </div>
+                                <div className="mt-4 p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Loading entry & exit details...</p>
+                                </div>
+                            </div>
+                        ) : error || !contract ? (
+                            <div className="space-y-4">
+                                <div className="h-[104px] w-full p-4 bg-theme rounded-lg border-b border-theme flex items-center justify-center">
+                                    <p>Failed to load contract details</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <ContractSummary contract={contract} />
+                                <OrderDetails contract={contract} />
+                                <EntryExitDetails contract={contract} />
+                            </>
+                        )}
                     </div>
-                    <div
-                        className="absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]"
-                        data-testid="close-button-container"
-                    >
-                        <div className="max-w-[1200px] mx-auto">
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="w-full bg-action-button text-action-button py-3 rounded-lg"
+                    {/* Close Button - Only shown if contract is not sold/expired */}
+                    {!loading &&
+                        contract &&
+                        !contract.details.is_sold &&
+                        !contract.details.is_expired && (
+                            <div
+                                className="absolute bottom-0 left-0 right-0 m-4 w-[290px] b-[55px]"
+                                data-testid="close-button-container"
                             >
-                                Close
-                            </button>
-                        </div>
-                    </div>
+                                <div className="max-w-[1200px] mx-auto">
+                                    <button
+                                        onClick={handleCloseContract}
+                                        className="w-full bg-action-button text-action-button py-3 rounded-lg disabled:opacity-50"
+                                    >
+                                        {isClosing
+                                            ? "Closing..."
+                                            : `Close ${contractDetails?.bid_price || ""} ${contractDetails?.bid_price_currency || ""}`}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                 </div>
                 <div className="flex-1 flex flex-col">
                     <div className="ml-4 h-full">
-                        <ContractDetailsChart />
+                        <ContractDetailsChart contract={contract} />
                     </div>
                 </div>
             </div>

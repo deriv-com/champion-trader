@@ -6,7 +6,7 @@ import { useMainLayoutStore } from "@/stores/mainLayoutStore";
 import { Footer } from "./Footer";
 import { ResponsiveHeader } from "./ResponsiveHeader";
 import { SideNav } from "@/components/SideNav";
-import { Sidebar, MenuContent, PositionsContent } from "@/components/Sidebar";
+import { Sidebar, MenuPanel, PositionsPanel } from "@/components/Sidebar";
 import { useLocation } from "react-router-dom";
 
 interface MainLayoutProps {
@@ -63,14 +63,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                                     onClose={() => setSidebar(null)}
                                     title="Positions"
                                 >
-                                    <PositionsContent />
+                                    <PositionsPanel />
                                 </Sidebar>
                                 <Sidebar
                                     isOpen={activeSidebar === "menu"}
                                     onClose={() => setSidebar(null)}
                                     title="Menu"
                                 >
-                                    <MenuContent />
+                                    <MenuPanel />
                                 </Sidebar>
                             </div>
                             <main className="flex-1 flex flex-row transition-all duration-300">
@@ -78,13 +78,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             </main>
                         </div>
                     ) : (
-                        <main className="max-w-full flex-1 flex flex-col">
-                            {children}
-                            {isBottomNavVisible && <Footer className="sticky bottom-0 z-50" />}
-                        </main>
+                        <main className="max-w-full flex-1 flex flex-col">{children}</main>
                     )}
                 </div>
             </div>
+            {!isLandscape && isBottomNavVisible && (
+                <Footer className="sticky bottom-0 left-0 right-0 z-50 w-full" />
+            )}
         </div>
     );
 };

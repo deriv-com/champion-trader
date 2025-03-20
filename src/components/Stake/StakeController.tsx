@@ -47,7 +47,7 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         const initialStates: ButtonStates = {};
         tradeTypeConfigs[trade_type].buttons.forEach((button) => {
             initialStates[button.actionName] = {
-                loading: true,
+                loading: false, // Set to false since we're using payouts from tradeStore
                 error: null,
                 payout: 0,
                 reconnecting: false,
@@ -148,10 +148,17 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         }
 
         const amount = parseStakeAmount(value);
+        const minStake = config?.data.validations.stake
+            ? parseFloat(config.data.validations.stake.min)
+            : getStakeConfig().min;
+        const maxStake = config?.data.validations.stake
+            ? parseFloat(config.data.validations.stake.max)
+            : payouts.max;
+
         const validation = validateStake({
             amount,
-            minStake: getStakeConfig().min,
-            maxStake: payouts.max,
+            minStake,
+            maxStake,
             currency,
         });
 
@@ -169,10 +176,17 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
         }
 
         const amount = parseStakeAmount(value);
+        const minStake = config?.data.validations.stake
+            ? parseFloat(config.data.validations.stake.min)
+            : getStakeConfig().min;
+        const maxStake = config?.data.validations.stake
+            ? parseFloat(config.data.validations.stake.max)
+            : payouts.max;
+
         const validation = validateStake({
             amount,
-            minStake: getStakeConfig().min,
-            maxStake: payouts.max,
+            minStake,
+            maxStake,
             currency,
         });
 
@@ -184,8 +198,10 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
     const preventExceedingMax = (value: string) => {
         if (error && errorMessage?.includes("maximum")) {
             const newAmount = value ? parseStakeAmount(value) : 0;
-            const maxAmount = parseStakeAmount(payouts.max.toString());
-            return newAmount > maxAmount;
+            const maxStake = config?.data.validations.stake
+                ? parseFloat(config.data.validations.stake.max)
+                : payouts.max;
+            return newAmount > maxStake;
         }
         return false;
     };
@@ -236,11 +252,11 @@ export const StakeController: React.FC<StakeControllerProps> = () => {
                     maxPayout={payouts.max}
                     payoutValues={payouts.values}
                     isDesktop={isLandscape}
-                    loading={Object.values(buttonStates).some((state) => state.loading)}
-                    loadingStates={Object.keys(buttonStates).reduce(
+                    loading={false} // Set to false since we're using payouts from tradeStore
+                    loadingStates={Object.keys(tradeTypeConfigs[trade_type].buttons).reduce(
                         (acc, key) => ({
                             ...acc,
-                            [key]: buttonStates[key].loading,
+                            [key]: false, // Set all loading states to false
                         }),
                         {}
                     )}

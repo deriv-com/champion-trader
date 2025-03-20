@@ -67,6 +67,8 @@ describe("StakeField", () => {
     const mockShowTooltip = jest.fn();
     const mockHideTooltip = jest.fn();
     const mockSetBottomSheet = jest.fn();
+    const mockSetStake = jest.fn();
+    const mockHandleError = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -78,7 +80,7 @@ describe("StakeField", () => {
         });
         (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
             stake: "100",
-            setStake: jest.fn(),
+            setStake: mockSetStake,
             isConfigLoading: false,
             productConfig: {
                 data: {
@@ -105,16 +107,34 @@ describe("StakeField", () => {
         });
     });
 
+    // Helper function to render with default props
+    const renderWithProps = (props = {}) => {
+        const defaultProps = {
+            stake: "100",
+            setStake: mockSetStake,
+            productConfig: {
+                data: {
+                    validations: {
+                        stake: {
+                            min: "1",
+                            max: "50000",
+                        },
+                    },
+                },
+            },
+            currency: "USD",
+            handleError: mockHandleError,
+            ...props,
+        };
+        return render(<StakeField {...defaultProps} />);
+    };
+
     describe("Loading State", () => {
         it("should show skeleton loader when config is loading", () => {
-            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
-                stake: "100",
-                setStake: jest.fn(),
+            renderWithProps({
                 isConfigLoading: true,
                 productConfig: null,
             });
-
-            render(<StakeField />);
 
             const skeleton = screen.getByTestId("stake-field-skeleton");
             expect(skeleton).toBeInTheDocument();
@@ -122,7 +142,7 @@ describe("StakeField", () => {
         });
 
         it("should show stake value when not loading", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             const param = screen.getByTestId("trade-param");
             expect(param).toBeInTheDocument();
@@ -134,14 +154,9 @@ describe("StakeField", () => {
 
     describe("Error State", () => {
         it("should display N/A when productConfig is null", () => {
-            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
-                stake: "100",
-                setStake: jest.fn(),
-                isConfigLoading: false,
+            renderWithProps({
                 productConfig: null,
             });
-
-            render(<StakeField />);
 
             const param = screen.getByTestId("trade-param");
             expect(param).toHaveAttribute("data-value", "N/A");
@@ -150,14 +165,9 @@ describe("StakeField", () => {
         });
 
         it("should not trigger click actions when productConfig is null", () => {
-            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
-                stake: "100",
-                setStake: jest.fn(),
-                isConfigLoading: false,
+            renderWithProps({
                 productConfig: null,
             });
-
-            render(<StakeField />);
 
             fireEvent.click(screen.getByTestId("trade-param"));
             expect(mockSetBottomSheet).not.toHaveBeenCalled();
@@ -169,14 +179,10 @@ describe("StakeField", () => {
             ).mockReturnValue({
                 isLandscape: true,
             });
-            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
-                stake: "100",
-                setStake: jest.fn(),
-                isConfigLoading: false,
+
+            renderWithProps({
                 productConfig: null,
             });
-
-            render(<StakeField />);
 
             expect(screen.queryByLabelText("Increase stake")).not.toBeInTheDocument();
             expect(screen.queryByLabelText("Decrease stake")).not.toBeInTheDocument();
@@ -194,7 +200,7 @@ describe("StakeField", () => {
         });
 
         it("should open bottom sheet when clicked", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             fireEvent.click(screen.getByTestId("trade-param"));
 
@@ -202,7 +208,7 @@ describe("StakeField", () => {
         });
 
         it("should wrap in mobile trade field card", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             expect(screen.getByTestId("mobile-trade-field-card")).toBeInTheDocument();
             expect(screen.queryByTestId("desktop-trade-field-card")).not.toBeInTheDocument();
@@ -219,7 +225,7 @@ describe("StakeField", () => {
         });
 
         it("should show input field and increment/decrement buttons", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             expect(screen.getByLabelText("Stake amount")).toBeInTheDocument();
             expect(screen.getByLabelText("Decrease stake")).toBeInTheDocument();
@@ -227,7 +233,7 @@ describe("StakeField", () => {
         });
 
         it("should update isSelected state when clicked", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             const container = screen.getByTestId("desktop-trade-field-card")
                 .firstChild as HTMLElement;
@@ -242,24 +248,7 @@ describe("StakeField", () => {
         });
 
         it("should handle increment/decrement with validation", () => {
-            const mockSetStake = jest.fn();
-            (useTradeStore as jest.MockedFunction<typeof useTradeStore>).mockReturnValue({
-                stake: "100",
-                setStake: mockSetStake,
-                isConfigLoading: false,
-                productConfig: {
-                    data: {
-                        validations: {
-                            stake: {
-                                min: "1",
-                                max: "50000",
-                            },
-                        },
-                    },
-                },
-            });
-
-            render(<StakeField />);
+            renderWithProps();
 
             // Test increment (step = 1)
             fireEvent.click(screen.getByLabelText("Increase stake"));
@@ -271,7 +260,7 @@ describe("StakeField", () => {
         });
 
         it("should show error state and tooltip when validation fails", () => {
-            render(<StakeField />);
+            renderWithProps();
 
             const input = screen.getByLabelText("Stake amount");
             fireEvent.change(input, { target: { value: "" } }); // Empty value triggers error
@@ -289,6 +278,269 @@ describe("StakeField", () => {
             // Verify tooltip is hidden when valid value is entered
             fireEvent.change(input, { target: { value: "100" } });
             expect(mockHideTooltip).toHaveBeenCalled();
+        });
+    });
+
+    describe("Error Callback", () => {
+        beforeEach(() => {
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+        });
+
+        it("should call handleError with true and error message when value is empty", () => {
+            // Create a fresh mock for this test
+            const localMockHandleError = jest.fn();
+
+            // Set landscape mode for input field
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+
+            // Render with our local mock
+            render(
+                <StakeField
+                    stake="100"
+                    setStake={mockSetStake}
+                    productConfig={{
+                        data: {
+                            validations: {
+                                stake: {
+                                    min: "1",
+                                    max: "50000",
+                                },
+                            },
+                        },
+                    }}
+                    currency="USD"
+                    handleError={localMockHandleError}
+                />
+            );
+
+            // Get the input field
+            const input = screen.getByLabelText("Stake amount");
+
+            // Create a proper change event
+            const changeEvent = {
+                target: {
+                    value: "",
+                    selectionStart: 0,
+                },
+            };
+
+            // Directly trigger the empty value validation
+            fireEvent.change(input, changeEvent);
+
+            // Verify our local mock was called with the correct parameters
+            expect(localMockHandleError).toHaveBeenCalledWith(true, "Please enter an amount");
+        });
+
+        it("should call handleError with true and error message when value is below minimum", () => {
+            renderWithProps({
+                productConfig: {
+                    data: {
+                        validations: {
+                            stake: {
+                                min: "10",
+                                max: "50000",
+                            },
+                        },
+                    },
+                },
+            });
+
+            // Clear mock calls from initial render
+            mockHandleError.mockClear();
+
+            // Trigger below minimum error
+            const input = screen.getByLabelText("Stake amount");
+            fireEvent.change(input, { target: { value: "5" } });
+
+            // Verify callback was called with correct params
+            expect(mockHandleError).toHaveBeenCalledWith(
+                true,
+                expect.stringContaining("Minimum stake")
+            );
+        });
+
+        it("should call handleError with true and error message when value is above maximum", () => {
+            // Clear mock calls before rendering
+            mockHandleError.mockClear();
+
+            renderWithProps({
+                productConfig: {
+                    data: {
+                        validations: {
+                            stake: {
+                                min: "1",
+                                max: "1000",
+                            },
+                        },
+                    },
+                },
+            });
+
+            // Trigger above maximum error
+            const input = screen.getByLabelText("Stake amount");
+            fireEvent.change(input, { target: { value: "2000" } });
+
+            // Verify callback was called with correct params - match the actual error message format
+            expect(mockHandleError).toHaveBeenCalledWith(
+                true,
+                expect.stringContaining("Minimum stake of 1 USD and maximum stake of 1000 USD")
+            );
+        });
+
+        it("should call handleError with false and null when value is valid", () => {
+            // Clear mock calls before rendering
+            mockHandleError.mockClear();
+
+            // Render with a starting value that's different from what we'll enter
+            renderWithProps({
+                stake: "50",
+            });
+
+            // Enter valid value that's different from the initial value
+            const input = screen.getByLabelText("Stake amount");
+            fireEvent.change(input, { target: { value: "100" } });
+
+            // Verify callback was called with correct params
+            expect(mockHandleError).toHaveBeenCalledWith(false, null);
+        });
+
+        it("should call handleError during increment/decrement operations", () => {
+            // Clear mock calls before rendering
+            mockHandleError.mockClear();
+
+            renderWithProps();
+
+            // Test increment - clear mock first to ensure we only capture the increment call
+            mockHandleError.mockClear();
+            fireEvent.click(screen.getByLabelText("Increase stake"));
+            expect(mockHandleError).toHaveBeenCalledWith(false, null);
+
+            // Test decrement - clear mock first to ensure we only capture the decrement call
+            mockHandleError.mockClear();
+            fireEvent.click(screen.getByLabelText("Decrease stake"));
+            expect(mockHandleError).toHaveBeenCalledWith(false, null);
+        });
+
+        it("should not throw errors when handleError is not provided", () => {
+            // Create props without handleError
+            const testProps = {
+                stake: "100",
+                setStake: mockSetStake,
+                productConfig: {
+                    data: {
+                        validations: {
+                            stake: {
+                                min: "1",
+                                max: "50000",
+                            },
+                        },
+                    },
+                },
+                currency: "USD",
+            };
+
+            // Render without handleError prop
+            render(<StakeField {...testProps} />);
+
+            // This should not throw an error
+            const input = screen.getByLabelText("Stake amount");
+            expect(() => {
+                fireEvent.change(input, { target: { value: "" } });
+            }).not.toThrow();
+        });
+    });
+
+    describe("Handler Props", () => {
+        it("should apply className when provided", () => {
+            renderWithProps({
+                className: "custom-class",
+            });
+
+            // In portrait mode, check TradeParam
+            expect(screen.getByTestId("trade-param").className).toContain("custom-class");
+
+            // In landscape mode, check container
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+
+            renderWithProps({
+                className: "custom-class",
+            });
+
+            const container = screen.getByTestId("desktop-trade-field-card")
+                .firstChild as HTMLElement;
+            expect(container.className).toContain("custom-class");
+        });
+
+        it("should use custom onIncrement handler when provided", () => {
+            const mockIncrement = jest.fn();
+
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+
+            renderWithProps({
+                onIncrement: mockIncrement,
+            });
+
+            // Click increment button
+            fireEvent.click(screen.getByLabelText("Increase stake"));
+
+            // Verify custom handler was called
+            expect(mockIncrement).toHaveBeenCalled();
+            // Default handler should not be called
+            expect(mockSetStake).not.toHaveBeenCalled();
+        });
+
+        it("should use custom onDecrement handler when provided", () => {
+            const mockDecrement = jest.fn();
+
+            (
+                useOrientationStore as jest.MockedFunction<typeof useOrientationStore>
+            ).mockReturnValue({
+                isLandscape: true,
+            });
+
+            renderWithProps({
+                onDecrement: mockDecrement,
+            });
+
+            // Click decrement button
+            fireEvent.click(screen.getByLabelText("Decrease stake"));
+
+            // Verify custom handler was called
+            expect(mockDecrement).toHaveBeenCalled();
+            // Default handler should not be called
+            expect(mockSetStake).not.toHaveBeenCalled();
+        });
+
+        it("should use custom onMobileClick handler when provided", () => {
+            const mockMobileClick = jest.fn();
+
+            renderWithProps({
+                onMobileClick: mockMobileClick,
+            });
+
+            // Click mobile card
+            fireEvent.click(screen.getByTestId("trade-param"));
+
+            // Verify custom handler was called
+            expect(mockMobileClick).toHaveBeenCalled();
+            // Default handler should not be called
+            expect(mockSetBottomSheet).not.toHaveBeenCalled();
         });
     });
 });
