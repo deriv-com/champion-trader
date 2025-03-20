@@ -36,7 +36,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                     )}
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                            <div className="text-base font-bold text-theme leading-6 truncate">
+                            <div className="text-base font-semibold text-theme leading-6 truncate">
                                 {title}
                             </div>
                             <ChevronDown className="w-4 h-6 text-theme flex-shrink-0 stroke-[1.5]" />
@@ -66,7 +66,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                 )}
                 <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                        <div className="text-base font-bold text-theme leading-6 truncate">
+                        <div className="text-base font-semibold text-theme leading-6 truncate">
                             {title}
                         </div>
                         <ChevronDown className="w-5 text-theme flex-shrink-0 stroke-[1.5]" />
