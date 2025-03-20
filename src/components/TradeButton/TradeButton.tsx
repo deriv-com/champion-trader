@@ -55,7 +55,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                             <div className="flex items-center gap-2">
                                 <span
                                     className={cn(
-                                        "font-bold",
+                                        "font-semibold",
                                         isLandscape ? "text-base" : "text-lg"
                                     )}
                                 >
