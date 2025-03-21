@@ -33,17 +33,14 @@ export default defineConfig({
     output: {
         copy: [
             {
-                from: path.resolve(__dirname, "node_modules/@deriv-com/smartcharts-champion/dist"),
+                from: path.resolve(__dirname, "node_modules/@deriv/deriv-charts/dist"),
                 to: "js/smartcharts/",
                 globOptions: {
                     ignore: ["**/*.LICENSE.txt"],
                 },
             },
             {
-                from: path.resolve(
-                    __dirname,
-                    "node_modules/@deriv-com/smartcharts-champion/dist/chart/assets"
-                ),
+                from: path.resolve(__dirname, "node_modules/@deriv/deriv-charts/dist/chart/assets"),
                 to: "assets",
             },
         ],

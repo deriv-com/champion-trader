@@ -9,6 +9,7 @@ import { MarketIcon } from "./MarketIcon";
 import { ScrollableTabs } from "@/components/ui/scrollable-tabs";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { Instrument } from "@/api/services/instrument/types";
+import { StandaloneStarFillIcon, StandaloneStarRegularIcon } from "@deriv/quill-icons";
 
 // Market category tabs
 interface Tab {
@@ -25,6 +26,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
     const { isMobile } = useDeviceDetection();
+    const { theme } = useMainLayoutStore();
     const [favorites, setFavorites] = useState<Set<string>>(() => {
         const savedFavorites = localStorage.getItem("market-favorites");
         return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
@@ -114,31 +116,31 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             if (isAdding) {
                 newFavorites.add(id);
-                toast({
-                    content: (
-                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
-                            <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                            <span className="text-base">Added to favourites</span>
-                        </div>
-                    ),
-                    variant: "default",
-                    duration: 2000,
-                    position: "bottom-center",
-                });
             } else {
                 newFavorites.delete(id);
-                toast({
-                    content: (
-                        <div className="flex items-center gap-3 bg-theme-text text-theme-bg p-4 rounded-lg">
-                            <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                            <span className="text-base">Removed from favourites</span>
-                        </div>
-                    ),
-                    variant: "default",
-                    duration: 2000,
-                    position: "bottom-center",
-                });
             }
+
+            toast({
+                className: "max-w-full w-[334px]",
+                content: (
+                    <div className="w-full h-12 flex items-center gap-3 bg-theme-text text-theme-bg p-2 pl-4 rounded-lg">
+                        {isAdding ? (
+                            <StandaloneStarFillIcon fill="#F7C60B" iconSize="sm" />
+                        ) : (
+                            <StandaloneStarRegularIcon
+                                fill={theme === "light" ? "#ffffff" : "#000000B8"}
+                                iconSize="sm"
+                            />
+                        )}
+                        <span className="text-sm">
+                            {isAdding ? "Added" : "Removed"} from favourites
+                        </span>
+                    </div>
+                ),
+                duration: 2000,
+                position: "bottom-center",
+            });
+
             return newFavorites;
         });
     };
@@ -236,7 +238,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
             {!isMobile && (
                 <div className="flex items-center justify-between px-6 py-8">
                     <div className="flex-1" />
-                    <h1 className="text-center font-ubuntu text-base font-bold overflow-hidden text-ellipsis text-theme">
+                    <h1 className="text-center text-base font-bold overflow-hidden text-ellipsis text-theme">
                         Markets
                     </h1>
                     <div className="flex-1 flex justify-end">
@@ -262,7 +264,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search markets on Rise/Fall"
-                        className="flex-1 bg-transparent outline-none font-ibm-plex-sans text-sm font-normal leading-[22px] text-theme placeholder:text-theme-muted overflow-hidden text-ellipsis"
+                        className="flex-1 bg-transparent outline-none text-sm font-normal leading-[22px] text-theme placeholder:text-theme-muted overflow-hidden text-ellipsis"
                     />
                     {searchQuery && (
                         <button
@@ -285,6 +287,17 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
 
             {/* Market List */}
             <div className="flex-1 overflow-y-auto px-6 scrollbar-thin">
+                {/* Empty state for favourites tab */}
+                {activeTab === "favourites" && favorites.size === 0 && !searchQuery && (
+                    <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+                        <StandaloneStarFillIcon fill="#D1D5DB" iconSize="2xl" className=" mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-500 mb-2">No favourites</h3>
+                        <p className="text-sm text-gray-400">
+                            Your favourite markets will appear here.
+                        </p>
+                    </div>
+                )}
+
                 {/* Market Groups */}
                 <div>
                     {Object.entries(groupedInstruments).map(([marketName, markets]) => (
@@ -337,25 +350,27 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                                                 e.stopPropagation();
                                                 toggleFavorite(instrument.id)(e);
                                             }}
-                                            className={`
-                              ${
-                                  favorites.has(instrument.id)
-                                      ? "text-yellow-400"
-                                      : selectedMarket?.id === instrument.id
-                                        ? "text-theme-bg"
-                                        : "text-theme-muted"
-                              }
-                            `}
+                                            data-testid="star-icon"
                                         >
-                                            <Star
-                                                className={`w-5 h-5 ${
-                                                    favorites.has(instrument.id)
-                                                        ? "fill-yellow-400"
-                                                        : selectedMarket?.id === instrument.id
-                                                          ? "stroke-theme-bg"
-                                                          : ""
-                                                }`}
-                                            />
+                                            {favorites.has(instrument.id) ? (
+                                                <StandaloneStarFillIcon
+                                                    fill="#F7C60B"
+                                                    iconSize="sm"
+                                                />
+                                            ) : (
+                                                <StandaloneStarRegularIcon
+                                                    fill={
+                                                        selectedMarket?.id === instrument.id
+                                                            ? theme === "light"
+                                                                ? "#ffffff"
+                                                                : "#000000B8"
+                                                            : theme === "light"
+                                                              ? "#000000B8"
+                                                              : "#ffffff"
+                                                    }
+                                                    iconSize="sm"
+                                                />
+                                            )}
                                         </button>
                                     </div>
                                 ))}
@@ -365,7 +380,7 @@ export const MarketSelectorList: React.FC<MarketSelectorListProps> = () => {
                 </div>
 
                 {searchQuery && filteredInstruments.length === 0 && (
-                    <div className="p-4 text-center text-theme-muted font-ibm-plex-sans text-sm">
+                    <div className="p-4 text-center text-theme-muted text-sm">
                         No markets found matching "{searchQuery}"
                     </div>
                 )}

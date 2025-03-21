@@ -7,6 +7,28 @@ The Chart component displays market data using a SSE connection and visualizes i
 - **Data Management:** Ensuring proper sorting and deduplication of price data.
 - **Customization:** Accepting an optional `className` prop for styling.
 
+## Folder Structure
+
+```
+Chart/
+├── Components/               # Reusable chart UI components
+│   ├── ToolbarWidgets.tsx    # Chart toolbar with controls
+│   └── index.ts              # Exports for Components
+├── Helpers/                  # Utility functions for chart operations
+│   ├── chartUtils.ts         # Chart-specific utility functions
+│   └── index.ts              # Exports for Helpers
+├── __tests__/                # Unit tests
+│   ├── Chart.test.tsx        # Tests for Chart component
+│   ├── ChartErrorBoundary.test.tsx  # Tests for error boundary
+│   ├── ToolbarWidgets.test.tsx      # Tests for toolbar
+│   └── chartUtils.test.ts    # Tests for utility functions
+├── Chart.tsx                 # Main Chart component
+├── ChartErrorBoundary.tsx    # Error handling wrapper
+├── SmartChart.ts             # Chart configuration and types
+├── index.tsx                 # Public exports
+├── chart-styles.css          # Core chart styles
+```
+
 ## Usage
 
 ```tsx
@@ -44,6 +66,25 @@ function App() {
 - Provides a user-friendly error message with a retry option.
 - Prevents the entire application from crashing due to chart errors.
 
+## Components
+
+### ToolbarWidgets
+The ToolbarWidgets component provides chart controls including:
+- Chart type selection (line, candles, hollow)
+- Time interval selection
+- Drawing tools
+- Technical indicators
+- Sharing options
+
+### Helpers
+
+The Helpers directory contains utility functions for chart operations:
+
+- `sortAndDeduplicate`: Ensures data points are in ascending order by timestamp
+- `formatPrice`: Formats price values for display
+- `calculatePercentageChange`: Calculates percentage change between prices
+- `shouldAutoScroll`: Determines if chart should auto-scroll based on user interaction
+
 ## Error Boundary Usage
 
 The Chart component is automatically wrapped with an error boundary that will catch and handle any errors that occur during rendering or data updates. If an error occurs:
@@ -67,3 +108,4 @@ import { Chart, ChartErrorBoundary } from "@/components/Chart";
 <ChartErrorBoundary>
   <Chart className="h-[500px]" />
 </ChartErrorBoundary>
+```

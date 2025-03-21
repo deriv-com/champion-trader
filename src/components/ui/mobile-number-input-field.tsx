@@ -61,13 +61,13 @@ export const MobileNumberInputField = React.forwardRef<
                     </Button>
                     <div className="flex items-center justify-center w-full">
                         {prefix && (
-                            <span className="font-ibm-plex text-base font-normal leading-6 text-theme-muted">
+                            <span className="text-base font-normal leading-6 text-theme-muted">
                                 {prefix}
                             </span>
                         )}
                         <input
                             ref={ref}
-                            className="w-full bg-transparent focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-theme"
+                            className="w-full bg-transparent focus:outline-none text-center font-ibm text-[1.125rem] font-normal leading-7 text-theme pr-8"
                             inputMode="decimal"
                             onFocus={handleFocus}
                             onBlur={handleBlur}
@@ -84,7 +84,7 @@ export const MobileNumberInputField = React.forwardRef<
                     </Button>
                 </div>
                 {error && errorMessage && (
-                    <p className="text-red-500 font-ibm-plex text-xs font-normal leading-[18px]">
+                    <p className="text-red-500 text-xs font-normal leading-[18px]">
                         {errorMessage}
                     </p>
                 )}

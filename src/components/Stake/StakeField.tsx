@@ -95,7 +95,7 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                     </div>
                     {error && errorMessage && (
                         <div className="mt-1 px-2">
-                            <span className="font-ibm-plex text-xs leading-[18px] font-normal text-red-500">
+                            <span className="text-xs leading-[18px] font-normal text-red-500">
                                 {errorMessage}
                             </span>
                         </div>
@@ -120,8 +120,8 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                     tabIndex={0}
                 >
                     <div ref={containerRef} className="flex rounded-lg h-[48px]">
-                        <div className="flex flex-col flex-1 justify-between">
-                            <span className="text-left font-ibm-plex text-xs leading-[18px] font-normal text-theme-muted">
+                        <div className="flex flex-col flex-1 gap-1">
+                            <span className="text-left text-xs leading-[18px] font-normal text-theme-muted">
                                 Stake ({currency})
                             </span>
                             <div className="relative">
@@ -132,11 +132,11 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                                         value={`${localValue}`}
                                         onChange={handleChange}
                                         onFocus={() => handleSelect(true)}
-                                        className="text-left font-ibm-plex text-base leading-6 font-normal bg-transparent w-24 outline-none text-theme"
+                                        className="text-left text-base leading-6 font-normal bg-transparent w-24 outline-none text-theme"
                                         aria-label="Stake amount"
                                     />
                                 ) : (
-                                    <span className="text-left font-ibm-plex text-base leading-6 font-normal text-gray-900">
+                                    <span className="text-left text-base leading-6 font-normal text-gray-900">
                                         N/A
                                     </span>
                                 )}

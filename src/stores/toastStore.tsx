@@ -7,6 +7,7 @@ type ToastPosition = "bottom-left" | "bottom-center" | "bottom-right" | "top-cen
 type ToastVariant = "success" | "error" | "warning" | "info" | "default";
 
 interface ToastOptions {
+    className?: string;
     content: React.ReactNode;
     variant?: ToastVariant;
     duration?: number;
@@ -35,6 +36,7 @@ export const ToastProvider: FC = (): JSX.Element | null => {
 
     return (
         <Toast
+            className={options.className}
             content={options.content}
             variant={options.variant}
             duration={options.duration}

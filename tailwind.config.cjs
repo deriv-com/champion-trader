@@ -10,11 +10,10 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+    },
     extend: {
-      fontFamily: {
-        ibm: ["IBM Plex Sans", "sans-serif"],
-        ubuntu: ["Ubuntu", "sans-serif"],
-      },
       colors: {
         error: "#C40000",
         dim: "rgba(0, 0, 0, 0.24)",

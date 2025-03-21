@@ -19,10 +19,10 @@ export const ContractSummaryInfo: React.FC<ContractSummaryInfoProps> = ({
             <div className="flex items-center gap-2 mb-1">
                 <MarketIcon symbol={marketSymbol} size="small" />
             </div>
-            <div className="overflow-hidden text-ellipsis text-theme font-ibm-plex text-[14px] leading-[22px] font-normal pb-1">
+            <div className="overflow-hidden text-ellipsis text-theme text-[14px] leading-[22px] font-normal pb-1">
                 {type}
             </div>
-            <div className="overflow-hidden text-ellipsis text-theme-muted font-ibm-plex text-[14px] leading-[22px] font-normal">
+            <div className="overflow-hidden text-ellipsis text-theme-muted text-[14px] leading-[22px] font-normal">
                 {market}
             </div>
         </div>

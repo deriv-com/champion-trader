@@ -1,0 +1,96 @@
+/* Contract Details Chart styles */
+.contract-details-chart {
+    position: relative;
+    background-color: var(--color-background, #ffffff);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contract-details-chart-container {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Contract marker styles */
+.contract-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    z-index: 5;
+}
+
+.contract-marker-line {
+    position: absolute;
+    width: 2px;
+    background-color: var(--color-primary, #2a9d8f);
+    z-index: 4;
+}
+
+.contract-marker-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background, #ffffff);
+    border: 2px solid var(--color-primary, #2a9d8f);
+    z-index: 5;
+}
+
+.contract-marker-label {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: var(--color-background, #ffffff);
+    color: var(--color-text, #333333);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+    white-space: nowrap;
+}
+
+/* Contract result styles */
+.contract-result-win {
+    --color-primary: var(--color-positive, #4caf50);
+}
+
+.contract-result-loss {
+    --color-primary: var(--color-negative, #f44336);
+}
+
+/* Barrier line styles */
+.barrier-line {
+    position: absolute;
+    height: 2px;
+    background-color: var(--color-secondary, #e9c46a);
+    z-index: 3;
+    left: 0;
+    right: 0;
+}
+
+.barrier-line-label {
+    position: absolute;
+    right: 8px;
+    padding: 2px 6px;
+    font-size: 12px;
+    background-color: var(--color-secondary, #e9c46a);
+    color: var(--color-text, #333333);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Loading state */
+.contract-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-background, #ffffff);
+    z-index: 10;
+}

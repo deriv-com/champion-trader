@@ -1,13 +1,20 @@
-import React from "react";
-import { ContractDetailsChart as BaseChart } from "./ContractDetailsChart";
-import { ChartErrorBoundary } from "./ChartErrorBoundary";
+import { ContractDetailsChart } from "./ContractDetailsChart";
+import ChartErrorBoundary from "./ChartErrorBoundary";
+import MarkerLine from "./MarkerLine";
+import SpotMarker from "./SpotMarker";
 
-const ContractDetailsChartWithErrorBoundary = (props: React.ComponentProps<typeof BaseChart>) => {
-    return (
-        <ChartErrorBoundary>
-            <BaseChart {...props} />
-        </ChartErrorBoundary>
-    );
-};
+// Export the ContractDetailsChart component wrapped with error boundary
+export const WrappedContractDetailsChart = (props: any) => (
+    <ChartErrorBoundary>
+        <ContractDetailsChart {...props} />
+    </ChartErrorBoundary>
+);
 
-export { ContractDetailsChartWithErrorBoundary as ContractDetailsChart };
+// Export individual components
+export { ContractDetailsChart };
+export { ChartErrorBoundary };
+export { MarkerLine };
+export { SpotMarker };
+
+// Export default wrapped component
+export default WrappedContractDetailsChart;
