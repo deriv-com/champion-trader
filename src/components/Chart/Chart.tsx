@@ -91,7 +91,7 @@ export const TradeChart: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex h-full relative bg-theme">
+        <div className="flex h-full relative bg-theme border-r text-gray-100">
             <Suspense
                 fallback={
                     <div className="flex items-center justify-center h-full w-full">

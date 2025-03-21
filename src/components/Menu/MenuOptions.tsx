@@ -59,7 +59,7 @@ const getMenuOptions = (
     return [
         {
             icon: <LegacyHomeNewIcon width={24} fill={theme === "dark" ? "#fff" : "#000"} />,
-            name: "Go to Home",
+            name: "Home",
             onClick: isSidebar
                 ? () => window.open("https://champion.trade/", "_blank")
                 : () => navigate("/trade"),
