@@ -106,10 +106,11 @@ export const StakeField: React.FC<StakeFieldProps> = ({
     }
 
     return (
-        <div className="bg-theme-bg rounded-lg">
+        <div className="relative">
             <DesktopTradeFieldCard isSelected={isStakeSelected} error={error}>
                 <div
                     className={`flex flex-col ${className} ${!productConfig ? "opacity-50 cursor-not-allowed" : ""}`}
+                    ref={containerRef}
                     onClick={() => handleSelect(true)}
                     onBlur={(e) => {
                         // Only blur if we're not clicking inside the component
@@ -119,8 +120,8 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                     }}
                     tabIndex={0}
                 >
-                    <div ref={containerRef} className="flex rounded-lg h-[48px]">
-                        <div className="flex flex-col justify-center flex-1">
+                    <div className="flex justify-between items-center">
+                        <div className="flex-1">
                             <span className="text-left text-xs leading-[18px] font-normal text-theme-muted">
                                 Stake ({currency})
                             </span>
@@ -144,24 +145,20 @@ export const StakeField: React.FC<StakeFieldProps> = ({
                         </div>
                         {productConfig && (
                             <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-                                    <button
-                                        className="flex items-center justify-center text-2xl text-theme"
-                                        onClick={handleDecrement}
-                                        aria-label="Decrease stake"
-                                    >
-                                        −
-                                    </button>
-                                </div>
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-                                    <button
-                                        className="flex items-center justify-center text-2xl text-theme"
-                                        onClick={handleIncrement}
-                                        aria-label="Increase stake"
-                                    >
-                                        +
-                                    </button>
-                                </div>
+                                <button
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-2xl text-theme"
+                                    onClick={handleDecrement}
+                                    aria-label="Decrease stake"
+                                >
+                                    −
+                                </button>
+                                <button
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-2xl text-theme"
+                                    onClick={handleIncrement}
+                                    aria-label="Increase stake"
+                                >
+                                    +
+                                </button>
                             </div>
                         )}
                     </div>
