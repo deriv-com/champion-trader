@@ -73,13 +73,16 @@ export const PositionsPanel: FC = () => {
                         Closed
                     </button>
                 </div>
-                <div className="mx-4">
-                    <FilterDropdown
-                        isOpenTab={isOpenTab}
-                        selectedFilter={selectedFilter}
-                        onFilterSelect={handleFilterSelect}
-                    />
-                </div>
+                {/* Filter Dropdown - Only show when there are positions */}
+                {!positionsLoading && !positionsError && currentPositions.length > 0 && (
+                    <div className="mx-4">
+                        <FilterDropdown
+                            isOpenTab={isOpenTab}
+                            selectedFilter={selectedFilter}
+                            onFilterSelect={handleFilterSelect}
+                        />
+                    </div>
+                )}
 
                 {/* Loading State */}
                 {positionsLoading && (

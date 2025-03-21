@@ -105,14 +105,16 @@ const PositionsPage: React.FC = () => {
                 </button>
             </div>
 
-            {/* Filter Dropdown */}
-            <div className="px-4 py-3 bg-theme-secondary">
-                <FilterDropdown
-                    isOpenTab={activeTab === "open"}
-                    selectedFilter={selectedFilter}
-                    onFilterSelect={handleFilterSelect}
-                />
-            </div>
+            {/* Filter Dropdown - Only show when there are positions */}
+            {!positionsLoading && !positionsError && currentPositions.length > 0 && (
+                <div className="px-4 py-3 bg-theme-secondary">
+                    <FilterDropdown
+                        isOpenTab={activeTab === "open"}
+                        selectedFilter={selectedFilter}
+                        onFilterSelect={handleFilterSelect}
+                    />
+                </div>
+            )}
 
             {/* Total Profit/Loss - Only show when in open tab AND there are open positions */}
             {activeTab === "open" && openPositions.length > 0 && (
