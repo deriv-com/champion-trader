@@ -10,10 +10,8 @@ import {
     PositionMapper,
     PositionProfitLoss,
 } from "@/components/PositionComponents";
-import { useToastStore } from "@/stores/toastStore";
-import { TradeNotification } from "@/components/ui/trade-notification";
-import { useOrientationStore } from "@/stores/orientationStore";
-import { StandaloneFlagCheckeredFillIcon } from "@deriv/quill-icons";
+import { FilterDropdown } from "@/components/Sidebar/positions/components/FilterDropdown";
+import { usePositionsFilter } from "@/hooks/usePositionsFilter";
 
 const PositionsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -21,13 +19,15 @@ const PositionsPage: React.FC = () => {
     const [swipedCard, setSwipedCard] = useState<string | null>(null);
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
+    // Use the positions filter hook
+    const { selectedFilter, handleFilterSelect } = usePositionsFilter(activeTab === "open");
+
     // Get positions data using the centralized hook
     const { openPositions, closedPositions, positionsLoading, positionsError, totalProfitLoss } =
         usePositionsData();
 
     // Get trade actions including sell_contract
     const tradeActions = useTradeActions();
-    const { isLandscape } = useOrientationStore();
 
     // Handle closing a contract
     const handleCloseContract = async (contractId: string) => {
@@ -103,6 +103,15 @@ const PositionsPage: React.FC = () => {
                 >
                     Closed
                 </button>
+            </div>
+
+            {/* Filter Dropdown */}
+            <div className="px-4 py-3 bg-theme-secondary">
+                <FilterDropdown
+                    isOpenTab={activeTab === "open"}
+                    selectedFilter={selectedFilter}
+                    onFilterSelect={handleFilterSelect}
+                />
             </div>
 
             {/* Total Profit/Loss - Only show when in open tab AND there are open positions */}
