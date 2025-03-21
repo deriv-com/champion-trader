@@ -41,7 +41,7 @@ export const FilterDropdown: FC<FilterDropdownProps> = ({
             onMouseDown={(event) => event.stopPropagation()}
         >
             <button
-                className="text-sm h-9 w-full p-4 bg-theme border border-theme rounded-full text-theme-muted flex items-center justify-between"
+                className="text-sm h-9 w-full pl-4 pr-2 bg-theme border border-theme rounded-full text-theme-muted flex items-center justify-between"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
             >
                 <span>{selectedFilter}</span>
