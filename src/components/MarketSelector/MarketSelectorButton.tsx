@@ -64,36 +64,90 @@ export const MarketSelectorButton: React.FC<MarketSelectorButtonProps> = ({
         }
     };
 
-    return (
-        <button
-            onClick={handleClick}
-            className="flex items-center gap-3 px-4 py-3 bg-muted/50 hover:bg-muted/70 rounded-lg transition-colors w-auto"
-        >
-            {/* Only show icon if we have a valid instrument */}
-            {instrument ? (
-                <MarketIcon symbol={symbol} size="large" />
-            ) : (
-                <div className="w-[52px] h-[52px] flex items-center justify-center">
-                    {isLoading && (
-                        <div className="w-6 h-6 border-2 border-t-transparent border-theme rounded-full animate-spin"></div>
+    // Combine price and subtitle for display
+    const displaySubtitle = useMemo(() => {
+        if (price && subtitle) {
+            return `${price} · ${subtitle}`;
+        }
+        return price || subtitle || "";
+    }, [price, subtitle]);
+
+    if (isMobile) {
+        return (
+            <div className="h-14 inline-flex cursor-pointer lg:mt-3" data-id="market-info">
+                <div
+                    className="h14 flex items-center gap-4 px-4 bg-theme-secondary rounded-lg font-medium"
+                    onClick={handleClick}
+                >
+                    {/* Only show icon if we have a valid instrument */}
+                    {instrument ? (
+                        <div className="w-8 h-8 flex items-center justify-center">
+                            <MarketIcon symbol={symbol} size="xlarge" showBadge={false} />
+                        </div>
+                    ) : (
+                        <div className="w-8 h-8 flex items-center justify-center">
+                            {isLoading && (
+                                <div className="w-6 h-6 border-2 border-t-transparent border-theme rounded-full animate-spin"></div>
+                            )}
+                        </div>
                     )}
-                </div>
-            )}
-            <div className="flex flex-col items-start">
-                <div className="flex items-center gap-2">
-                    <span className="text-base font-medium">{displayName}</span>
-                    {isClosed && (
-                        <span className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 rounded-full text-rose-500">
-                            Closed
-                        </span>
-                    )}
-                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                </div>
-                <div className="flex flex-col">
-                    {price && <span className="text-lg font-semibold">{price}</span>}
-                    {subtitle && <span className="text-sm text-muted-foreground">{subtitle}</span>}
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                            <div className="text-sm font-semibold text-theme leading-6 truncate">
+                                {displayName}
+                            </div>
+                            {isClosed && (
+                                <span className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 rounded-full text-rose-500">
+                                    Closed
+                                </span>
+                            )}
+                            <ChevronDown className="w-4 h-6 text-theme flex-shrink-0 stroke-[1.5]" />
+                        </div>
+                        <div className="text-[12px] text-theme leading-5 truncate">
+                            {displaySubtitle}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </button>
+        );
+    }
+
+    return (
+        <div
+            className="h-14 inline-flex cursor-pointer bg-theme-secondary hover:bg-theme-hover active:bg-theme-active rounded-lg transition-colors"
+            data-id="market-info"
+            onClick={handleClick}
+        >
+            <div className="h-14 flex items-center gap-4 px-4">
+                {/* Only show icon if we have a valid instrument */}
+                {instrument ? (
+                    <div className="w-8 h-8 flex items-center justify-center">
+                        <MarketIcon symbol={symbol} size="xlarge" showBadge={false} />
+                    </div>
+                ) : (
+                    <div className="w-8 h-8 flex items-center justify-center">
+                        {isLoading && (
+                            <div className="w-6 h-6 border-2 border-t-transparent border-theme rounded-full animate-spin"></div>
+                        )}
+                    </div>
+                )}
+                <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                        <div className="text-sm font-semibold text-theme leading-6 truncate">
+                            {displayName}
+                        </div>
+                        {isClosed && (
+                            <span className="text-[10px] px-1.5 py-0.5 bg-rose-500/10 rounded-full text-rose-500">
+                                Closed
+                            </span>
+                        )}
+                        <ChevronDown className="w-5 text-theme flex-shrink-0 stroke-[1.5]" />
+                    </div>
+                    <div className="text-[12px] text-theme leading-5 truncate rounded-[8px]">
+                        {displaySubtitle}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
