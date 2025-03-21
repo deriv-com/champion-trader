@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Briefcase } from "lucide-react";
+import { StandaloneBriefcaseFillIcon } from "@deriv/quill-icons";
 
 interface PositionEmptyStateProps {
     icon?: ReactNode;
@@ -8,7 +8,7 @@ interface PositionEmptyStateProps {
 }
 
 export const PositionEmptyState: React.FC<PositionEmptyStateProps> = ({
-    icon = <Briefcase size={64} strokeWidth={1.5} />,
+    icon = <StandaloneBriefcaseFillIcon fill="#0000003D" iconSize="2xl" />,
     positionType,
     className = "flex items-center justify-center",
 }) => {
