@@ -25,12 +25,20 @@ export const PositionsPanel: FC = () => {
     // Get current positions based on active tab
     const currentPositions = isOpenTab ? openPositions : closedPositions;
 
-    // Filter logic (simplified for now)
-    const [selectedFilter, setSelectedFilter] = useState<string>("Trade types");
+    // Filter logic with separate states for open and closed positions
+    const [openPositionsFilter, setOpenPositionsFilter] = useState<string>("Trade types");
+    const [closedPositionsFilter, setClosedPositionsFilter] = useState<string>("All time");
     const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
+    // Get the current filter based on active tab
+    const selectedFilter = isOpenTab ? openPositionsFilter : closedPositionsFilter;
+
     const handleFilterSelect = (filter: string) => {
-        setSelectedFilter(filter);
+        if (isOpenTab) {
+            setOpenPositionsFilter(filter);
+        } else {
+            setClosedPositionsFilter(filter);
+        }
         // Filter implementation would go here
     };
 
