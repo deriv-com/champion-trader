@@ -8,6 +8,7 @@ import {
     handleChartSubscribe,
     handleChartForget,
     handleChartForgetStream,
+    clearChartCache,
 } from "@/api/services/chart";
 import { getContractReplayData, closeContractStream } from "@/utils/contractApi";
 import { createChartMarkers } from "@/utils/chart-markers";
@@ -300,10 +301,20 @@ export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
 
     // API request handlers
     const requestAPI = (request: any) => {
+        // If the request is for ticks_history, use the effective symbol
+        if (request.ticks_history) {
+            request.ticks_history = effectiveSymbol;
+        }
         return handleChartApiRequest(request);
     };
 
     const requestSubscribe = (request: any, callback: any) => {
+        // If the request is for ticks or ticks_history, use the effective symbol
+        if (request.ticks) {
+            request.ticks = effectiveSymbol;
+        } else if (request.ticks_history) {
+            request.ticks_history = effectiveSymbol;
+        }
         return handleChartSubscribe(request, callback);
     };
 
@@ -315,13 +326,27 @@ export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
         return handleChartForgetStream();
     };
 
-    // Chart state change listener
-    const chartStateChange = (state: string) => {
-        setChartState(state);
-        if (state === "READY") {
-            setIsChartReady(true);
-        }
-    };
+    // When effectiveSymbol changes, forget all existing streams and force chart reload
+    const [chartKey, setChartKey] = useState(effectiveSymbol);
+    const [isChartLoading, setIsChartLoading] = useState(false);
+
+    useEffect(() => {
+        // Set loading state
+        setIsChartLoading(true);
+
+        // Clear all existing streams
+        clearChartCache();
+
+        // Change the key to force a complete re-render of the SmartChart component
+        setChartKey(effectiveSymbol);
+
+        // Set a timeout to hide the loader after a short delay
+        const loadingTimeout = setTimeout(() => {
+            setIsChartLoading(false);
+        }, 1500); // 1.5 seconds should be enough for most chart loads
+
+        return () => clearTimeout(loadingTimeout);
+    }, [effectiveSymbol]);
 
     // Create markers for entry and exit spots using the chart-markers utility
     const markers_array = useMemo(() => {
@@ -513,6 +538,14 @@ export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
             className={`relative bg-theme shadow-md rounded-lg overflow-hidden ${isLandscape ? "h-full" : "h-[400px]"}`}
         >
             <div className="absolute inset-0 rounded-lg overflow-hidden">
+                {isChartLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-theme bg-opacity-80 rounded-lg">
+                        <div className="text-center">
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-blue-500 border-r-transparent"></div>
+                            <p className="mt-4 text-white">Loading chart data...</p>
+                        </div>
+                    </div>
+                )}
                 <Suspense
                     fallback={
                         <div className="flex items-center justify-center h-full w-full">
@@ -524,8 +557,10 @@ export const ContractDetailsChart: React.FC<ContractDetailsChartProps> = ({
                     }
                 >
                     <SmartChart
+                        key={chartKey} // Add key to force re-render when symbol changes
                         ref={ref}
                         id="replay-chart"
+                        symbol={effectiveSymbol} // Explicitly pass the effective symbol
                         barriers={barriers_array}
                         chartStatusListener={(isChartReady: boolean) => {
                             setIsChartReady(isChartReady);
