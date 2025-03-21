@@ -709,7 +709,7 @@ export const TradeFormController: React.FC<TradeFormControllerProps> = ({ isLand
                         </div>
                     </div>
 
-                    <div className="flex flex-1 mb-4 gap-2" id="trade-buttons">
+                    <div className="flex flex-1 mb-3 gap-2" id="trade-buttons">
                         {config.buttons.map((button) => (
                             <Suspense key={button.actionName} fallback={<div>Loading...</div>}>
                                 <TradeButton

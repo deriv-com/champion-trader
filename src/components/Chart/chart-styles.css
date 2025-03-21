@@ -4,3 +4,8 @@
     position: absolute;
     width: 100%;
 }
+
+.sc-navigation-widget__item .ic-icon svg {
+    display: inline;
+    vertical-align: unset;
+}
