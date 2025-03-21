@@ -12,6 +12,7 @@ import {
     PositionProfitLoss,
 } from "@/components/PositionComponents";
 import { useTradeActions } from "@/hooks";
+import { usePositionsFilter } from "@/hooks/usePositionsFilter";
 
 export const PositionsPanel: FC = () => {
     const [isOpenTab, setIsOpenTab] = useState(true);
@@ -25,14 +26,10 @@ export const PositionsPanel: FC = () => {
     // Get current positions based on active tab
     const currentPositions = isOpenTab ? openPositions : closedPositions;
 
-    // Filter logic (simplified for now)
-    const [selectedFilter, setSelectedFilter] = useState<string>("Trade types");
-    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
+    // Use the positions filter hook
+    const { selectedFilter, handleFilterSelect } = usePositionsFilter(isOpenTab);
 
-    const handleFilterSelect = (filter: string) => {
-        setSelectedFilter(filter);
-        // Filter implementation would go here
-    };
+    const [closingContracts, setClosingContracts] = useState<Record<string, boolean>>({});
 
     const { sell_contract } = useTradeActions();
 
@@ -76,13 +73,16 @@ export const PositionsPanel: FC = () => {
                         Closed
                     </button>
                 </div>
-                <div className="mx-4">
-                    <FilterDropdown
-                        isOpenTab={isOpenTab}
-                        selectedFilter={selectedFilter}
-                        onFilterSelect={handleFilterSelect}
-                    />
-                </div>
+                {/* Filter Dropdown - Only show when there are positions */}
+                {!positionsLoading && !positionsError && currentPositions.length > 0 && (
+                    <div className="mx-4">
+                        <FilterDropdown
+                            isOpenTab={isOpenTab}
+                            selectedFilter={selectedFilter}
+                            onFilterSelect={handleFilterSelect}
+                        />
+                    </div>
+                )}
 
                 {/* Loading State */}
                 {positionsLoading && (

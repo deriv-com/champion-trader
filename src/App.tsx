@@ -5,6 +5,8 @@ import { useClientStore } from "@/stores/clientStore";
 import { ToastProvider } from "@/stores/toastStore";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAccount } from "@/hooks/useAccount";
+import { useTradeStore } from "@/stores/tradeStore";
+import { useInstrumentUtils } from "@/hooks/instrument";
 
 const TradePage = lazy(() =>
     import("@/screens/TradePage").then((module) => ({
@@ -33,9 +35,15 @@ const LoginPage = lazy(() =>
 
 const AppContent = () => {
     const { isLoggedIn } = useClientStore();
+    const trade_type = useTradeStore((state) => state.trade_type);
+    const { fetchInstruments } = useInstrumentUtils();
 
     // Initialize account data
     useAccount();
+
+    useEffect(() => {
+        fetchInstruments({ productId: trade_type });
+    }, [trade_type]);
 
     return (
         <MainLayout>

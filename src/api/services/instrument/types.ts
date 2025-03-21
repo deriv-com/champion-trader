@@ -1,31 +1,29 @@
 /**
- * Context for instrument requests
- */
-export interface Context {
-    app_id: number | string;
-    account_type?: string;
-}
-
-/**
  * Request parameters for available instruments
  */
 export interface AvailableInstrumentsRequest {
-    instrument: string;
-    context: Context;
+    product_id?: string; // Optional, e.g., "rise_fall"
+    account_uuid?: string; // Optional, e.g., "9f8c1b23-4e2a-47ad-92c2-b1e5d2a7e65f"
 }
 
 /**
- * Market group with instruments
+ * Instrument data structure
  */
-export interface MarketGroup {
-    instruments: string[];
-    market_name: string;
+export interface Instrument {
+    id: string;
+    display_name: string;
+    categories: string[];
+    pip_size: number;
+    is_market_open: boolean;
+    opens_at?: number; // Optional timestamp in milliseconds
+    closes_at?: number; // Optional timestamp in milliseconds
 }
 
 /**
  * Response from available instruments API
  */
 export interface AvailableInstrumentsResponse {
-    performance: string;
-    result: MarketGroup[];
+    data: {
+        instruments: Instrument[];
+    };
 }

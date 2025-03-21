@@ -53,14 +53,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({
                             )}
                         >
                             <div className="flex items-center gap-2">
-                                <span
-                                    className={cn(
-                                        "font-semibold",
-                                        isLandscape ? "text-base" : "text-lg"
-                                    )}
-                                >
-                                    {title}
-                                </span>
+                                <span className={cn("font-semibold", "text-base")}>{title}</span>
                                 {loading && (
                                     <div
                                         data-testid="loading-spinner"

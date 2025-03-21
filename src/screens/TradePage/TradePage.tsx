@@ -2,13 +2,10 @@ import React, { Suspense, lazy } from "react";
 import { useOrientationStore } from "@/stores/orientationStore";
 import { BottomSheet } from "@/components/BottomSheet";
 import { TradeFormController } from "./components/TradeFormController";
-import { useBottomSheetStore } from "@/stores/bottomSheetStore";
-import { MarketSelector } from "@/components/MarketSelector";
+import { MarketSelector, MarketSelectorButton } from "@/components/MarketSelector";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 import { useMainLayoutStore } from "@/stores/mainLayoutStore";
-import { useMarketStore } from "@/stores/marketStore";
 import { useTradeStore } from "@/stores/tradeStore";
-import { MarketInfo } from "@/components/MarketInfo";
 import { TradeTypesListController } from "./components/TradeTypesListController";
 
 const Chart = lazy(() =>
@@ -19,19 +16,12 @@ const Chart = lazy(() =>
 
 export const TradePage: React.FC = () => {
     const { isLandscape } = useOrientationStore();
-    const { setBottomSheet } = useBottomSheetStore();
     const { isMobile } = useDeviceDetection();
-    const selectedMarket = useMarketStore((state) => state.selectedMarket);
-    const { setOverlaySidebar, activeSidebar } = useMainLayoutStore();
-    const tradeTypeDisplayName = useTradeStore((state) => state.tradeTypeDisplayName);
-
-    const handleMarketSelect = React.useCallback(() => {
-        if (isMobile) {
-            setBottomSheet(true, "market-info", "80%");
-        } else {
-            setOverlaySidebar(true, "market-list");
-        }
-    }, [isMobile, setBottomSheet, setOverlaySidebar]);
+    const { activeSidebar } = useMainLayoutStore();
+    const { tradeTypeDisplayName, instrument } = useTradeStore((state) => ({
+        tradeTypeDisplayName: state.tradeTypeDisplayName,
+        instrument: state.instrument,
+    }));
 
     return (
         <div
@@ -49,21 +39,19 @@ export const TradePage: React.FC = () => {
                                 activeSidebar ? "left-[calc(320px+16px)]" : "left-4"
                             } z-10 transition-all duration-300`}
                         >
-                            <MarketInfo
-                                title={selectedMarket?.displayName || "Select Market"}
+                            <MarketSelectorButton
+                                symbol={instrument}
                                 subtitle={tradeTypeDisplayName}
-                                onClick={handleMarketSelect}
-                                isMobile={false}
                             />
                         </div>
                     )}
                     {!isLandscape && (
-                        <MarketInfo
-                            title={selectedMarket?.displayName || "Select Market"}
-                            subtitle={tradeTypeDisplayName}
-                            onClick={handleMarketSelect}
-                            isMobile={true}
-                        />
+                        <div className="px-4">
+                            <MarketSelectorButton
+                                symbol={instrument}
+                                subtitle={tradeTypeDisplayName}
+                            />
+                        </div>
                     )}
                     <div className={`flex-1 relative ${isLandscape ? "" : "border-b"}`}>
                         <Suspense fallback={<div>Loading...</div>}>
