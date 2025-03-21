@@ -9,6 +9,7 @@ import {
     handleChartForgetStream,
 } from "@/api/services/chart";
 import { ToolbarWidgets } from "./Components";
+import { useTradeStore } from "@/stores/tradeStore";
 
 export const TradeChart: React.FC = () => {
     const ref = useRef<{
@@ -19,13 +20,24 @@ export const TradeChart: React.FC = () => {
     const { isMobile, isDesktop } = useDeviceDetection();
     const [chartType, setChartType] = useState("line"); // "line", "candles", "hollow"
     const [granularity, setGranularity] = useState(0); // 0 for tick, 60 for 1m candles, etc.
+    const instrument = useTradeStore((state) => state.instrument);
 
-    // Mock API request handlers
+    // API request handlers
     const requestAPI = (request: any) => {
+        // If the request is for ticks_history, use the current instrument
+        if (request.ticks_history) {
+            request.ticks_history = instrument;
+        }
         return handleChartApiRequest(request);
     };
 
     const requestSubscribe = (request: any, callback: any) => {
+        // If the request is for ticks or ticks_history, use the current instrument
+        if (request.ticks) {
+            request.ticks = instrument;
+        } else if (request.ticks_history) {
+            request.ticks_history = instrument;
+        }
         return handleChartSubscribe(request, callback);
     };
 
@@ -36,6 +48,28 @@ export const TradeChart: React.FC = () => {
     const requestForgetStream = () => {
         return handleChartForgetStream();
     };
+
+    // When instrument changes, forget all existing streams and force chart reload
+    const [chartKey, setChartKey] = useState(instrument);
+    const [isChartLoading, setIsChartLoading] = useState(false);
+
+    useEffect(() => {
+        // Set loading state
+        setIsChartLoading(true);
+
+        // Clear all existing streams
+        requestForgetStream();
+
+        // Change the key to force a complete re-render of the SmartChart component
+        setChartKey(instrument);
+
+        // Set a timeout to hide the loader after a short delay
+        const loadingTimeout = setTimeout(() => {
+            setIsChartLoading(false);
+        }, 1500); // 1.5 seconds should be enough for most chart loads
+
+        return () => clearTimeout(loadingTimeout);
+    }, [instrument]);
 
     // Update chart type and granularity
     const updateChartType = (type: string) => {
@@ -92,6 +126,14 @@ export const TradeChart: React.FC = () => {
 
     return (
         <div className="flex h-full relative bg-theme border-r text-gray-100">
+            {isChartLoading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-theme bg-opacity-80">
+                    <div className="text-center">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-blue-500 border-r-transparent"></div>
+                        <p className="mt-4 text-white">Loading chart data...</p>
+                    </div>
+                </div>
+            )}
             <Suspense
                 fallback={
                     <div className="flex items-center justify-center h-full w-full">
@@ -103,8 +145,10 @@ export const TradeChart: React.FC = () => {
                 }
             >
                 <SmartChart
+                    key={chartKey} // Add key to force re-render when instrument changes
                     ref={ref}
                     id="trade-chart"
+                    symbol={instrument} // Explicitly pass the instrument as symbol
                     barriers={[]}
                     chartStatusListener={() => null}
                     crosshair={0}

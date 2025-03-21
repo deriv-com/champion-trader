@@ -14,6 +14,18 @@ const activeSubscriptions = new Map<
     }
 >();
 
+// Function to clear all active subscriptions and history cache
+export const clearChartCache = () => {
+    // Unsubscribe from all active subscriptions
+    activeSubscriptions.forEach((subscription) => {
+        subscription.unsubscribe();
+    });
+
+    // Clear the maps
+    activeSubscriptions.clear();
+    historyCache.clear();
+};
+
 /**
  * Subscribes to candle data stream for a specific symbol
  * @param symbol The symbol to subscribe to
@@ -273,7 +285,8 @@ export const handleChartForget = async (request: any): Promise<{ msg_type: strin
  * @returns Promise resolving to forget_all response
  */
 export const handleChartForgetStream = async (): Promise<{ msg_type: string }> => {
-    // The actual unsubscription is handled by the returned function from handleChartSubscribe
-    // This function is just for compatibility with the existing API
+    // Unsubscribe from all active subscriptions
+    clearChartCache();
+
     return { msg_type: "forget_all" };
 };
