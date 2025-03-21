@@ -10,10 +10,11 @@ interface MarketIconProps {
 }
 
 export const MarketIcon: React.FC<MarketIconProps> = ({ symbol, size = "default" }) => {
+    // Get the icon from the mapping
     const Icon = marketIcons[symbol] as IconTypes;
 
+    // If no icon is found, return null
     if (!Icon) {
-        console.warn(`No icon found for symbol: ${symbol}`);
         return null;
     }
 

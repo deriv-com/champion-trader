@@ -28,7 +28,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                     {selectedMarket && (
                         <div className="w-8 h-8 flex items-center justify-center">
                             <MarketIcon
-                                symbol={selectedMarket.symbol}
+                                symbol={selectedMarket.id}
                                 size="xlarge"
                                 showBadge={false}
                             />
@@ -57,11 +57,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
             <div className="flex items-center gap-4 px-4 py-3">
                 {selectedMarket && (
                     <div className="w-8 h-8 flex items-center justify-center">
-                        <MarketIcon
-                            symbol={selectedMarket.symbol}
-                            size="xlarge"
-                            showBadge={false}
-                        />
+                        <MarketIcon symbol={selectedMarket.id} size="xlarge" showBadge={false} />
                     </div>
                 )}
                 <div className="min-w-0">
