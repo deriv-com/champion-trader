@@ -8,7 +8,7 @@ interface PositionEmptyStateProps {
 }
 
 export const PositionEmptyState: React.FC<PositionEmptyStateProps> = ({
-    icon = <StandaloneBriefcaseFillIcon fill="#0000003D" iconSize="2xl" />,
+    icon = <StandaloneBriefcaseFillIcon fill="#D1D5DB" iconSize="2xl" />,
     positionType,
     className = "flex items-center justify-center",
 }) => {
