@@ -22,7 +22,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
         return (
             <div className="inline-flex cursor-pointer mx-4 lg:mt-3" data-id="market-info">
                 <div
-                    className="flex items-center gap-4 px-4 py-3 bg-theme-secondary rounded-lg"
+                    className="flex items-center gap-4 px-4 py-3 bg-theme-secondary rounded-lg font-medium"
                     onClick={onClick}
                 >
                     {selectedMarket && (
@@ -66,7 +66,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
                 )}
                 <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                        <div className="text-base font-semibold text-theme leading-6 truncate">
+                        <div className="text-base font-medium text-theme leading-6 truncate">
                             {title}
                         </div>
                         <ChevronDown className="w-5 text-theme flex-shrink-0 stroke-[1.5]" />
