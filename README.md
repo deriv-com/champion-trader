@@ -1,3 +1,8 @@
+
+> ⚠️ **Archived Repository**  
+> This repo is no longer maintained.
+
+---
 # Champion Trader
 
 A React-based trading application for options trading, built with Test-Driven Development (TDD) and atomic component design principles.
